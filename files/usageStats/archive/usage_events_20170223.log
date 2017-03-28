@@ -1,0 +1,6 @@
+10.129.12.177 - - "2017-02-23 12:29:26" https://eries.pef.czu.cz/index.php/eries/index 200 "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36"
+10.129.12.177 - - "2017-02-23 14:44:07" https://eries.pef.czu.cz/index.php/eries/index 200 "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36"
+10.60.0.131 - - "2017-02-23 16:02:30" https://eries.pef.czu.cz/index.php/eries/index 200 "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.76 Safari/537.36 OPR/43.0.2442.806"
+::1 - - "2017-02-23 16:19:13" http://localhost/eries/index.php/eries/index 200 "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.76 Safari/537.36 OPR/43.0.2442.806"
+::1 administrative 1 "2017-02-23 16:20:12" http://localhost/eries/index.php/eries/issue/view/4 200 "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.76 Safari/537.36 OPR/43.0.2442.806"
+::1 administrative 1 "2017-02-23 16:20:16" http://localhost/eries/index.php/eries/article/download/16/16 200 "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.76 Safari/537.36 OPR/43.0.2442.806"

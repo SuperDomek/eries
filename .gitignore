@@ -1,0 +1,3 @@
+# Ignore the real config
+/config.inc.php
+.vs
