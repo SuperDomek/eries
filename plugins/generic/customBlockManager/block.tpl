@@ -9,6 +9,7 @@
  *
  *}
 <div class="pkp_block block_custom" id="{$customBlockId|escape}">
+	<span class="title">{$customBlockName|escape}</span>
 	<div class="content">
 		{$customBlockContent}
 	</div>
