@@ -31,9 +31,6 @@
 	{* Latest issue *}
 	{if $issue}
 		<div class="current_issue">
-			<!--<h2>
-				{translate key="journal.currentIssue"}
-			</h2>-->
 			{include file="frontend/objects/issue_toc_home.tpl"}>
 			
 			<a href="{url router=$smarty.const.ROUTE_PAGE page="issue" op="archive"}" class="read_more">
@@ -44,6 +41,7 @@
 
     {* Additional Homepage Content *}
 	{if $additionalHomeContent}
+	<hr />
 		<div class="additional_content">
 			{$additionalHomeContent}
 		</div>
