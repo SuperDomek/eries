@@ -22,9 +22,23 @@
 
 	{call_hook name="Templates::Index::journal"}
 
-	{if $homepageImage}
+	<!--{if $homepageImage}
 		<div class="homepage_image">
 			<img src="{$publicFilesDir}/{$homepageImage.uploadName|escape:"url"}" alt="{$homepageImageAltText|escape}">
+		</div>
+	{/if}-->
+
+	{* Latest issue *}
+	{if $issue}
+		<div class="current_issue">
+			<!--<h2>
+				{translate key="journal.currentIssue"}
+			</h2>-->
+			{include file="frontend/objects/issue_toc_home.tpl"}>
+			
+			<a href="{url router=$smarty.const.ROUTE_PAGE page="issue" op="archive"}" class="read_more">
+				{translate key="journal.viewAllIssues"}
+			</a>
 		</div>
 	{/if}
 
@@ -65,21 +79,7 @@
 		</div>
 	{/if}
 
-	{* Latest issue *}
-	{if $issue}
-		<div class="current_issue">
-			<h2>
-				{translate key="journal.currentIssue"}
-			</h2>
-			<div class="current_issue_title">
-				{$issue->getIssueIdentification()|strip_unsafe_html}
-			</div>
-			{include file="frontend/objects/issue_toc.tpl"}
-			<a href="{url router=$smarty.const.ROUTE_PAGE page="issue" op="archive"}" class="read_more">
-				{translate key="journal.viewAllIssues"}
-			</a>
-		</div>
-	{/if}
+
 
 	
 </div><!-- .page -->
