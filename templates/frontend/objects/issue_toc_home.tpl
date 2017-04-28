@@ -29,14 +29,18 @@
         <div class="issue_overlay">
           {* Title *}
           <div class="current_issue_title">
-            {$issue->getIssueIdentification()|strip_unsafe_html}
+            <a href="{url op="view" page="issue" path=$issue->getBestIssueId()}">
+              {$issue->getIssueIdentification()|strip_unsafe_html}
+            </a>
           </div>
 
           {* Description *}
           
           {if $issue->hasDescription()}
             <div class="description">
-              {$issue->getLocalizedDescription()|strip_unsafe_html}
+              <a href="{url op="view" page="issue" path=$issue->getBestIssueId()}">
+                {$issue->getLocalizedDescription()|strip_unsafe_html}
+              </a>
             </div>
           {/if}
           
