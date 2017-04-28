@@ -23,7 +23,7 @@
 			bottom: 0;
 			color: white;
 			background-color: rgba(0,0,0,0.5); /*dim the background*/
-
+			
 			.galleys {
 				position: absolute;
 				bottom: 0;
@@ -46,6 +46,10 @@
 			.description {
 				padding: 0 @double @double @double;
 				font-size: @font-lead;
+
+				p {
+					margin: 0;
+				}
 			}
 			.published {
 				padding: 0 @double @double @double;
@@ -53,6 +57,10 @@
 				.label {
 					color: inherit;
 				}
+			}
+			a {
+				text-decoration: none !important;
+				color: inherit;
 			}
 		}		
 	}
