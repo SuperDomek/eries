@@ -69,6 +69,10 @@
 	<message key="submission.submit.form.authorRequired">At least one author is required.</message>
 	<message key="submission.submit.form.authorRequiredFields">The first name, last name, and email address of each author is required.</message>
 	<message key="submission.submit.form.titleRequired">Please enter the title of your article.</message>
+	<!-- EDIT Error messages for mandatory keywords and references -->
+	<message key="submission.submit.form.keywordsRequired">Please enter the keywords for your article.</message>
+	<message key="submission.submit.form.referencesRequired">Please enter the references for your article.</message>
+	<!-- EDIT Error messages for mandatory keywords and references -->
 	<message key="submission.submit.form.abstractRequired">Please enter your article's abstract.</message>
 	<message key="submission.submit.form.contributorRoleRequired">Please select the contributor's role.</message>
 
