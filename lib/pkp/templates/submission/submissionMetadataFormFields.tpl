@@ -8,12 +8,9 @@
  * Submission's metadata form fields. To be included in any form that wants to handle
  * submission metadata.
  *}
-{if $coverageEnabled || $typeEnabled || $sourceEnabled || $rightsEnabled ||
-		$languagesEnabled || $subjectEnabled || $keywordsEnabled || $agenciesEnabled || $referencesEnabled}
-	{fbvFormSection title="submission.metadata"}
-		<p class="description">{translate key="submission.metadataDescription"}</p>
-	{/fbvFormSection}
-{/if}
+
+{* EDIT Removed metadata description *}
+
 {if $coverageEnabled || $typeEnabled || $sourceEnabled || $rightsEnabled}
 	{fbvFormArea id="additionalDublinCore"}
 		{if $coverageEnabled}
@@ -40,7 +37,8 @@
 {/if}
 
 {if $languagesEnabled || $subjectEnabled || $keywordsEnabled || $agenciesEnabled || $referencesEnabled || $disciplinesEnabled}
-	{fbvFormArea id="tagitFields" title="submission.submit.metadataForm"}
+	{* EDIT removed title *}
+	{fbvFormArea id="tagitFields"}
 		{if $languagesEnabled}
 			{$languagesField}
 		{/if}
@@ -55,7 +53,8 @@
 			{/fbvFormSection}
 		{/if}
 		{if $keywordsEnabled}
-			{fbvFormSection label="common.keywords"}
+			{* EDIT Keywords mandatory field *}
+			{fbvFormSection label="common.keywords" for="keywords" required=true}
 				{fbvElement type="keyword" id="keywords" multilingual=true current=$keywords disabled=$readOnly}
 			{/fbvFormSection}
 		{/if}
@@ -65,7 +64,8 @@
 			{/fbvFormSection}
 		{/if}
 		{if $referencesEnabled}
-			{fbvFormSection label="submission.citations"}
+			{* EDIT References mandatory field *}
+			{fbvFormSection label="submission.citations" for="citations" required=true}
 				{fbvElement type="textarea" id="citations" value=$citations rich="extended" disabled=$readOnly}
 			{/fbvFormSection}
 		{/if}

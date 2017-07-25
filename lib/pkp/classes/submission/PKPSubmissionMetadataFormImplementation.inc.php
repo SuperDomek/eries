@@ -50,6 +50,9 @@ class PKPSubmissionMetadataFormImplementation {
 		if ($this->_getAbstractsRequired($submission)) {
 			$this->_parentForm->addCheck(new FormValidatorLocale($this->_parentForm, 'abstract', 'required', 'submission.submit.form.abstractRequired'));
 		}
+		// EDIT add check for keywords and references
+		$this->_parentForm->addCheck(new FormValidator($this->_parentForm, 'keywords', 'required', 'submission.submit.form.keywordsRequired'));
+		$this->_parentForm->addCheck(new FormValidator($this->_parentForm, 'citations', 'required', 'submission.submit.form.referencesRequired'));
 
 		// Validates that at least one author has been added (note that authors are in grid, so Form does not
 		// directly see the authors value (there is no "authors" input. Hence the $ignore parameter.

@@ -9,10 +9,10 @@
  * submission metadata.
  *}
 <div class="pkp_helpers_clear">
-	{fbvFormSection for="title" title="common.prefix" inline="true" size=$fbvStyles.size.SMALL}
-		{fbvElement label="common.prefixAndTitle.tip" type="text" multilingual=true name="prefix" id="prefix" value=$prefix readonly=$readOnly maxlength="32"}
-	{/fbvFormSection}
-	{fbvFormSection for="title" title="common.title" inline="true" size=$fbvStyles.size.LARGE required=true}
+	{* EDIT removed field prefix*}
+	{fbvElement type="hidden" name="prefix" id="prefix" value=$prefix}
+	{* EDIT removed size info and inline to keep 100% width*}
+	{fbvFormSection for="title" title="common.title" required=true}
 		{fbvElement type="text" multilingual=true name="title" id="title" value=$title readonly=$readOnly maxlength="255" required=true}
 	{/fbvFormSection}
 </div>
