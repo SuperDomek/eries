@@ -233,16 +233,19 @@
 			{if $citationPlugins|@count}
 				<div class="item citation_formats">
 					{* Output the first citation format *}
+					{* EDIT Set the ERIES citation plugin as default *}
 					{foreach from=$citationPlugins name="citationPlugins" item="citationPlugin"}
-						<div class="sub_item citation_display">
-							<div class="label">
-								{translate key="submission.howToCite"}
+						{if $citationPlugin->getName() == 'EriesCitationPlugin'}
+							<div class="sub_item citation_display">
+								<div class="label">
+									{translate key="submission.howToCite"}
+								</div>
+								<div id="citationOutput" class="value">
+									{$citationPlugin->fetchCitation($article, $issue, $currentContext)}
+								</div>
 							</div>
-							<div id="citationOutput" class="value">
-								{$citationPlugin->fetchCitation($article, $issue, $currentContext)}
-							</div>
-						</div>
-						{php}break;{/php}
+							{php}break;{/php}
+						{/if}
 					{/foreach}
 
 					{* Output list of all citation formats *}
