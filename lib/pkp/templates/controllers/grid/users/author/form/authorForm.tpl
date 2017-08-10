@@ -38,6 +38,7 @@
 		disableSignatureSection=true
 		extraContentSectionUnfolded=true
 		countryRequired=true
+		affiliationRequired=true
 	}
 
 	{fbvFormArea id="submissionSpecific"}
