@@ -14,6 +14,7 @@
  
 <locale name="cs_CZ" full_name="Čeština">
 	<message key="plugins.generic.webfeed.displayName">Plugin Web Feed</message>
+	<message key="plugins.generic.webfeed.displayBlockName">Feed časopisu</message>
 	<message key="plugins.generic.webfeed.description">Tento plugin vytváří RSS/Atom web syndication feedy pro aktuální číslo.</message>
 
 	<message key="plugins.generic.webfeed.settings">Nastavení</message>
