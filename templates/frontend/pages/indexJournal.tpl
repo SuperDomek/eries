@@ -28,25 +28,6 @@
 		</div>
 	{/if}-->
 
-	{* Latest issue *}
-	{if $issue}
-		<div class="current_issue">
-			{include file="frontend/objects/issue_toc_home.tpl"}>
-			
-			<a href="{url router=$smarty.const.ROUTE_PAGE page="issue" op="archive"}" class="read_more">
-				{translate key="journal.viewAllIssues"}
-			</a>
-		</div>
-	{/if}
-
-    {* Additional Homepage Content *}
-	{if $additionalHomeContent}
-	<hr />
-		<div class="additional_content">
-			{$additionalHomeContent}
-		</div>
-	{/if}
-
 	{* Announcements *}
 	{if $numAnnouncementsHomepage && $announcements|@count}
 		<div class="cmp_announcements highlight_first">
@@ -76,6 +57,27 @@
 			{*</div><!-- .more -->*}
 		</div>
 	{/if}
+
+	{* Latest issue *}
+	{if $issue}
+		<div class="current_issue">
+			{include file="frontend/objects/issue_toc_home.tpl"}>
+			
+			<a href="{url router=$smarty.const.ROUTE_PAGE page="issue" op="archive"}" class="read_more">
+				{translate key="journal.viewAllIssues"}
+			</a>
+		</div>
+	{/if}
+
+    {* Additional Homepage Content *}
+	{if $additionalHomeContent}
+	<hr />
+		<div class="additional_content">
+			{$additionalHomeContent}
+		</div>
+	{/if}
+
+	
 
 
 
