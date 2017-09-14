@@ -59,7 +59,7 @@
 				{/if}
 				{if $smarty.foreach.announcements.iteration == 1}
 					{include file="frontend/objects/announcement_summary.tpl" heading="h3"}
-					<div class="more">
+					{*<div class="more">*}
 				{else}
 					<article class="obj_announcement_summary">
 						<h4>
@@ -73,7 +73,7 @@
 					</article>
 				{/if}
 			{/foreach}
-			</div><!-- .more -->
+			{*</div><!-- .more -->*}
 		</div>
 	{/if}
 
