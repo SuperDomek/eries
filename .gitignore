@@ -1,4 +1,5 @@
 # Ignore the real config
-/config.inc.php
+/config.inc.php*
 .vs*
 /files
+/error_log
