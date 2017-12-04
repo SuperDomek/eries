@@ -48,10 +48,10 @@
 	{/if}
 
 	{if $currentContext->getLocalizedSetting('authorGuidelines')}
-	<div class="author_guidelines">
+	<div class="author_guidelines" id="authorGuidelines">
 		<h2>
 			{translate key="about.authorGuidelines"}
-			{include file="frontend/components/editLink.tpl" page="management" op="settings" path="journal" anchor="guidelines" sectionTitleKey="about.authorGuidelines"}
+			{include file="frontend/components/editLink.tpl" page="management" op="settings" path="publication" anchor="submissionStage" sectionTitleKey="about.authorGuidelines"}
 		</h2>
 		{$currentContext->getLocalizedSetting('authorGuidelines')}
 	</div>
@@ -61,10 +61,20 @@
 		<div class="copyright_notice">
 			<h2>
 				{translate key="about.copyrightNotice"}
-				{include file="frontend/components/editLink.tpl" page="management" op="settings" path="journal" anchor="guidelines" sectionTitleKey="about.copyrightNotice"}
+				{include file="frontend/components/editLink.tpl" page="management" op="settings" path="distribution" anchor="permissions" sectionTitleKey="about.copyrightNotice"}
 			</h2>
 			{$currentContext->getLocalizedSetting('copyrightNotice')|nl2br}
 		</div>
+	{/if}
+
+	{if $currentContext->getLocalizedSetting('privacyStatement')}
+	<div class="privacy_statement">
+		<h2>
+			{translate key="about.privacyStatement"}
+			{include file="frontend/components/editLink.tpl" page="management" op="settings" path="publication" anchor="submissionStage" sectionTitleKey="about.privacyStatement"}
+		</h2>
+		{$currentContext->getLocalizedSetting('privacyStatement')}
+	</div>
 	{/if}
 
 </div><!-- .page -->

@@ -19,12 +19,6 @@ import('classes.article.Article');
 import('lib.pkp.classes.submission.PKPAuthorDAO');
 
 class AuthorDAO extends PKPAuthorDAO {
-	/**
-	 * Constructor
-	 */
-	function __construct() {
-		parent::__construct();
-	}
 
 	/**
 	 * Retrieve all published submissions associated with authors with
@@ -64,7 +58,7 @@ class AuthorDAO extends PKPAuthorDAO {
 
 		while (!$result->EOF) {
 			$row = $result->getRowAssoc(false);
-			$publishedArticle = $publishedArticleDao->getPublishedArticleByArticleId($row['submission_id']);
+			$publishedArticle = $publishedArticleDao->getByArticleId($row['submission_id']);
 			if ($publishedArticle) {
 				$publishedArticles[] = $publishedArticle;
 			}

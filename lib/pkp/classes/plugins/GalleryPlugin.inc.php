@@ -20,12 +20,6 @@ define('PLUGIN_GALLERY_STATE_CURRENT', 2);
 define('PLUGIN_GALLERY_STATE_NEWER', 3);
 
 class GalleryPlugin extends DataObject {
-	/**
-	 * Constructor
-	 */
-	function __construct() {
-		parent::__construct();
-	}
 
 	/**
 	 * Get the localized name of the plugin
@@ -363,6 +357,10 @@ class GalleryPlugin extends DataObject {
 		if (!$installedVersion) return PLUGIN_GALLERY_STATE_AVAILABLE;
 		if ($installedVersion->compare($this->getVersion(true))>0) return PLUGIN_GALLERY_STATE_NEWER;
 		if ($installedVersion->compare($this->getVersion(true))<0) return PLUGIN_GALLERY_STATE_UPGRADABLE;
+
+		$targetPath = Core::getBaseDir() . '/plugins/' . $this->getCategory() . '/' . $this->getProduct();
+		if (!is_dir($targetPath)) return PLUGIN_GALLERY_STATE_UPGRADABLE;
+
 		return PLUGIN_GALLERY_STATE_CURRENT;
 	}
 }

@@ -40,14 +40,12 @@ class ContextSiteSettingsForm extends Form {
 	}
 
 	/**
-	 * Display the form.
+	 * Fetch the form.
+	 * @param $request PKPRequest
 	 */
-	function fetch($args, $request) {
-		$json = new JSONMessage();
-
+	function fetch($request) {
 		$templateMgr = TemplateManager::getManager($request);
 		$templateMgr->assign('contextId', $this->contextId);
-
 		return parent::fetch($request);
 	}
 
@@ -113,6 +111,17 @@ class ContextSiteSettingsForm extends Form {
 			$managerUserGroup = $userGroupDao->getDefaultByRoleId($contextId, ROLE_ID_MANAGER);
 			$userGroupDao->assignUserToGroup($userSession->getUserId(), $managerUserGroup->getId());
 		}
+	}
+
+	/**
+	 * Initially populate the navigationMenus and NavigationMenuItems when creating a new context.
+	 * @param $contextId int
+	 */
+	function _loadDefaultNavigationMenus($contextId) {
+		AppLocale::requireComponents(LOCALE_COMPONENT_APP_DEFAULT, LOCALE_COMPONENT_PKP_DEFAULT);
+		// Install default user groups
+		$navigationMenuDao = DAORegistry::getDAO('NavigationMenuDAO');
+		$navigationMenuDao->installSettings($contextId, 'registry/navigationMenus.xml');
 	}
 }
 

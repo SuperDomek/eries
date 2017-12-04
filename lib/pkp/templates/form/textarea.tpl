@@ -28,6 +28,7 @@
 				{if $FBV_disabled} disabled="disabled"{/if}
 				{if $FBV_readonly} readonly="readonly"{/if}
 				{if $FBV_variables} data-variables="{$FBV_variables|@json_encode|escape:"url"}"{/if}
+				{if $FBV_variablesType} data-variablesType="{$FBV_variablesType|@json_encode|escape:"url"}"{/if}
 				{if $FBV_required} required aria-required="true"{/if}
 				name="{$FBV_name|escape}[{$formLocale|escape}]">{$FBV_value[$formLocale]|escape}
 			</textarea>
@@ -38,17 +39,18 @@
 		<div class="localization_popover">
 			{foreach from=$formLocales key=thisFormLocale item=thisFormLocaleName}{if $formLocale != $thisFormLocale}
 				{strip}
+				<label for="{$FBV_id|escape}-{$thisFormLocale|escape}{$uniqId}" class="locale_textarea">{$thisFormLocaleName|escape}</label>
 				<textarea id="{$FBV_id|escape}-{$thisFormLocale|escape}{$uniqId}" {$FBV_textAreaParams}
 					placeholder="{$thisFormLocaleName|escape}"
 					class="flag flag_{$thisFormLocale|escape} {$FBV_class} {$FBV_height}{if $FBV_rich && !$FBV_disabled} richContent{if $FBV_rich==="extended"} extendedRichContent{/if}{/if}"
 					{if $FBV_disabled} disabled="disabled"{/if}
 					{if $FBV_readonly} readonly="readonly"{/if}
 					{if $FBV_variables} data-variables="{$FBV_variables|@json_encode|escape:"url"}"{/if}
+					{if $FBV_variablesType} data-variablesType="{$FBV_variablesType|@json_encode|escape:"url"}"{/if}
 					{if $FBV_required} required aria-required="true"{/if}
 					name="{$FBV_name|escape}[{$thisFormLocale|escape}]">{$FBV_value[$thisFormLocale]|escape}
 				</textarea>
 				{/strip}
-				<label for="{$FBV_id|escape}-{$thisFormLocale|escape}{$uniqId}" class="locale">({$thisFormLocaleName|escape})</label>
 			{/if}{/foreach}
 		</div>
 	</span>
@@ -62,6 +64,7 @@
 			{if $FBV_disabled} disabled="disabled"{/if}
 			{if $FBV_readonly} readonly="readonly"{/if}
 			{if $FBV_variables} data-variables="{$FBV_variables|@json_encode|escape:"url"}"{/if}
+			{if $FBV_variablesType} data-variablesType="{$FBV_variablesType|@json_encode|escape:"url"}"{/if}
 			{if $FBV_required} required aria-required="true"{/if}
 			name="{$FBV_name|escape}{if $FBV_multilingual}[{$formLocale|escape}]{/if}"
 			rows="{$FBV_rows|escape}"

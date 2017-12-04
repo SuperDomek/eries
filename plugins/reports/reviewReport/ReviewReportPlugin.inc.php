@@ -3,7 +3,7 @@
 /**
  * @file ReviewReportPlugin.inc.php
  *
- * Copyright (c) 2014-2017 Simon Fraser University Library
+ * Copyright (c) 2014-2017 Simon Fraser University
  * Copyright (c) 2003-2017 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
@@ -98,7 +98,6 @@ class ReviewReportPlugin extends ReportPlugin {
 			'datecompleted' => __('plugins.reports.reviews.dateCompleted'),
 			'datereminded' => __('plugins.reports.reviews.dateReminded'),
 			'declined' => __('submissions.declined'),
-			'cancelled' => __('common.cancelled'),
 			'recommendation' => __('plugins.reports.reviews.recommendation'),
 			'comments' => __('plugins.reports.reviews.comments')
 		);
@@ -112,7 +111,6 @@ class ReviewReportPlugin extends ReportPlugin {
 					$columns[$index] = __(WorkflowStageDAO::getTranslationKeyFromId($row[$index]));
 					break;
 				case 'declined':
-				case 'cancelled':
 					$columns[$index] = __($row[$index]?'common.yes':'common.no');
 					break;
 				case 'recommendation':

@@ -102,6 +102,7 @@ class UserGroupForm extends Form {
 				'assignedStages' => array_keys($assignedStages),
 				'showTitle' => $userGroup->getShowTitle(),
 				'permitSelfRegistration' => $userGroup->getPermitSelfRegistration(),
+				'recommendOnly' => $userGroup->getRecommendOnly(),
 			);
 			foreach ($data as $field => $value) {
 				$this->setData($field, $value);
@@ -113,7 +114,7 @@ class UserGroupForm extends Form {
 	 * @copydoc Form::readInputData()
 	 */
 	function readInputData() {
-		$this->readUserVars(array('roleId', 'name', 'abbrev', 'assignedStages', 'showTitle', 'permitSelfRegistration'));
+		$this->readUserVars(array('roleId', 'name', 'abbrev', 'assignedStages', 'showTitle', 'permitSelfRegistration', 'recommendOnly'));
 	}
 
 	/**
@@ -122,15 +123,15 @@ class UserGroupForm extends Form {
 	function fetch($request) {
 		$templateMgr = TemplateManager::getManager($request);
 
-		import('classes.security.RoleDAO');
-		$roleOptions = RoleDAO::getRoleNames(true);
-		$templateMgr->assign('roleOptions', $roleOptions);
+		$roleDao = DAORegistry::getDAO('RoleDAO');
+		$templateMgr->assign('roleOptions', Application::getRoleNames(true));
 
 		// Users can't edit the role once user group is created.
 		// userGroupId is 0 for new User Groups because it is cast to int in UserGroupGridHandler.
 		$disableRoleSelect = ($this->getUserGroupId() > 0) ? true : false;
 		$templateMgr->assign('disableRoleSelect', $disableRoleSelect);
 		$templateMgr->assign('selfRegistrationRoleIds', $this->getPermitSelfRegistrationRoles());
+		$templateMgr->assign('recommendOnlyRoleIds', $this->getRecommendOnlyRoles());
 
 		return parent::fetch($request);
 	}
@@ -144,6 +145,14 @@ class UserGroupForm extends Form {
 	}
 
 	/**
+	 * Get a list of roles optionally permitting recommendOnly option.
+	 * @return array
+	 */
+	function getRecommendOnlyRoles() {
+		return array(ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR);
+	}
+
+/**
 	 * @copydoc Form::execute()
 	 */
 	function execute($request) {
@@ -158,6 +167,7 @@ class UserGroupForm extends Form {
 			$userGroup->setDefault(false);
 			$userGroup->setShowTitle($this->getData('showTitle'));
 			$userGroup->setPermitSelfRegistration($this->getData('permitSelfRegistration') && in_array($userGroup->getRoleId(), $this->getPermitSelfRegistrationRoles()));
+			$userGroup->setRecommendOnly($this->getData('recommendOnly') && in_array($userGroup->getRoleId(), $this->getRecommendOnlyRoles()));
 			$userGroup = $this->_setUserGroupLocaleFields($userGroup, $request);
 			$userGroupId = $userGroupDao->insertObject($userGroup);
 		} else {
@@ -165,6 +175,7 @@ class UserGroupForm extends Form {
 			$userGroup = $this->_setUserGroupLocaleFields($userGroup, $request);
 			$userGroup->setShowTitle($this->getData('showTitle'));
 			$userGroup->setPermitSelfRegistration($this->getData('permitSelfRegistration') && in_array($userGroup->getRoleId(), $this->getPermitSelfRegistrationRoles()));
+			$userGroup->setRecommendOnly($this->getData('recommendOnly') && in_array($userGroup->getRoleId(), $this->getRecommendOnlyRoles()));
 			$userGroupDao->updateObject($userGroup);
 		}
 

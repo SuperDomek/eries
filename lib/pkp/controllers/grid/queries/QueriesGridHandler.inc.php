@@ -3,7 +3,7 @@
 /**
  * @file controllers/grid/queries/QueriesGridHandler.inc.php
  *
- * Copyright (c) 2016-2017 Simon Fraser University Library
+ * Copyright (c) 2016-2017 Simon Fraser University
  * Copyright (c) 2000-2017 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
@@ -34,10 +34,10 @@ class QueriesGridHandler extends GridHandler {
 		parent::__construct();
 		$this->addRoleAssignment(
 			array(ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR, ROLE_ID_ASSISTANT, ROLE_ID_AUTHOR),
-			array('fetchGrid', 'fetchRow', 'readQuery', 'participants', 'addQuery', 'editQuery', 'updateQuery'));
+			array('fetchGrid', 'fetchRow', 'readQuery', 'participants', 'addQuery', 'editQuery', 'updateQuery', 'deleteQuery'));
 		$this->addRoleAssignment(
 			array(ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR, ROLE_ID_ASSISTANT),
-			array('deleteQuery', 'openQuery', 'closeQuery', 'saveSequence'));
+			array('openQuery', 'closeQuery', 'saveSequence'));
 	}
 
 
@@ -122,11 +122,10 @@ class QueriesGridHandler extends GridHandler {
 	}
 
 	/**
-	 * Configure the grid
-	 * @param $request PKPRequest
+	 * @copydoc GridHandler::initialize()
 	 */
-	function initialize($request) {
-		parent::initialize($request);
+	function initialize($request, $args = null) {
+		parent::initialize($request, $args);
 		import('lib.pkp.controllers.grid.queries.QueriesGridCellProvider');
 
 		switch ($this->getStageId()) {
@@ -320,20 +319,24 @@ class QueriesGridHandler extends GridHandler {
 		$notificationDao = DAORegistry::getDAO('NotificationDAO');
 		$notificationDao->deleteByAssoc(ASSOC_TYPE_QUERY, $query->getId());
 
-		// Update submission notifications
-		$notificationMgr = new NotificationManager();
-		$notificationMgr->updateNotification(
-			$request,
-			array(
-				NOTIFICATION_TYPE_ASSIGN_COPYEDITOR,
-				NOTIFICATION_TYPE_AWAITING_COPYEDITS,
-				NOTIFICATION_TYPE_ASSIGN_PRODUCTIONUSER,
-				NOTIFICATION_TYPE_AWAITING_REPRESENTATIONS,
-			),
-			null,
-			ASSOC_TYPE_SUBMISSION,
-			$this->getAssocId()
-		);
+		if ($this->getStageId() == WORKFLOW_STAGE_ID_EDITING ||
+			$this->getStageId() == WORKFLOW_STAGE_ID_PRODUCTION) {
+
+			// Update submission notifications
+			$notificationMgr = new NotificationManager();
+			$notificationMgr->updateNotification(
+				$request,
+				array(
+					NOTIFICATION_TYPE_ASSIGN_COPYEDITOR,
+					NOTIFICATION_TYPE_AWAITING_COPYEDITS,
+					NOTIFICATION_TYPE_ASSIGN_PRODUCTIONUSER,
+					NOTIFICATION_TYPE_AWAITING_REPRESENTATIONS,
+				),
+				null,
+				ASSOC_TYPE_SUBMISSION,
+				$this->getAssocId()
+			);
+		}
 
 		return DAO::getDataChangedEvent($query->getId());
 	}
@@ -484,21 +487,24 @@ class QueriesGridHandler extends GridHandler {
 		if ($queryForm->validate()) {
 			$queryForm->execute($request);
 
-			// Update submission notifications
-			$notificationMgr = new NotificationManager();
-			$notificationMgr->updateNotification(
-				$request,
-				array(
-					NOTIFICATION_TYPE_ASSIGN_COPYEDITOR,
-					NOTIFICATION_TYPE_AWAITING_COPYEDITS,
-					NOTIFICATION_TYPE_ASSIGN_PRODUCTIONUSER,
-					NOTIFICATION_TYPE_AWAITING_REPRESENTATIONS,
-				),
-				null,
-				ASSOC_TYPE_SUBMISSION,
-				$this->getAssocId()
-			);
+			if ($this->getStageId() == WORKFLOW_STAGE_ID_EDITING ||
+				$this->getStageId() == WORKFLOW_STAGE_ID_PRODUCTION) {
 
+				// Update submission notifications
+				$notificationMgr = new NotificationManager();
+				$notificationMgr->updateNotification(
+					$request,
+					array(
+						NOTIFICATION_TYPE_ASSIGN_COPYEDITOR,
+						NOTIFICATION_TYPE_AWAITING_COPYEDITS,
+						NOTIFICATION_TYPE_ASSIGN_PRODUCTIONUSER,
+						NOTIFICATION_TYPE_AWAITING_REPRESENTATIONS,
+					),
+					null,
+					ASSOC_TYPE_SUBMISSION,
+					$this->getAssocId()
+				);
+			}
 			return DAO::getDataChangedEvent($query->getId());
 		}
 		return new JSONMessage(

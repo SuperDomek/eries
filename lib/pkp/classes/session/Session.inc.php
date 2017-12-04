@@ -24,12 +24,6 @@ class Session extends DataObject {
 	/** The User object associated with this session */
 	var $user;
 
-	/**
-	 * Constructor.
-	 */
-	function __construct() {
-		parent::__construct();
-	}
 
 	/**
 	 * Get a session variable's value.
@@ -239,6 +233,10 @@ class Session extends DataObject {
 				'timestamp' => time(),
 				'token' => $token,
 			));
+		} else {
+			// Extend timeout of CSRF token
+			$csrf['timestamp'] = time();
+			$this->setSessionVar('csrf', $csrf);
 		}
 		return $csrf['token'];
 	}

@@ -19,12 +19,6 @@ import('lib.pkp.classes.user.InterestEntry');
 import('lib.pkp.classes.controlledVocab.ControlledVocabEntryDAO');
 
 class InterestEntryDAO extends ControlledVocabEntryDAO {
-	/**
-	 * Constructor
-	 */
-	function __construct() {
-		parent::__construct();
-	}
 
 	/**
 	 * Construct a new data object corresponding to this DAO.
@@ -63,7 +57,7 @@ class InterestEntryDAO extends ControlledVocabEntryDAO {
 				JOIN user_interests ui ON (cve.controlled_vocab_entry_id = ui.controlled_vocab_entry_id)
 				' . ($filter?'JOIN controlled_vocab_entry_settings cves ON (cves.controlled_vocab_entry_id = cve.controlled_vocab_entry_id)':'') . '
 			WHERE cve.controlled_vocab_id = ?
-			' . ($filter?'AND cves.setting_name=? AND cves.setting_value LIKE ?':'') . '
+			' . ($filter?'AND cves.setting_name=? AND LOWER(cves.setting_value) LIKE LOWER(?)':'') . '
 			GROUP BY cve.controlled_vocab_entry_id
 			ORDER BY seq',
 			$params,

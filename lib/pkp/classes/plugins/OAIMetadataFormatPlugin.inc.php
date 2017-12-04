@@ -17,12 +17,6 @@ import('lib.pkp.classes.plugins.Plugin');
 import('lib.pkp.classes.oai.OAIStruct');
 
 abstract class OAIMetadataFormatPlugin extends Plugin {
-	/**
-	 * Constructor
-	 */
-	function __construct() {
-		parent::__construct();
-	}
 
 	/**
 	 * Called as a plugin is registered to the registry
@@ -33,7 +27,7 @@ abstract class OAIMetadataFormatPlugin extends Plugin {
 	function register($category, $path) {
 		if (!parent::register($category, $path)) return false;
 		$this->addLocaleData();
-		HookRegistry::register('OAI::metadataFormats', array($this, 'callback_formatRequest'));
+		if ($this->getEnabled()) HookRegistry::register('OAI::metadataFormats', array($this, 'callback_formatRequest'));
 		return true;
 	}
 

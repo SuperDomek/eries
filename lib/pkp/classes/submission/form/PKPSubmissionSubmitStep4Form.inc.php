@@ -50,18 +50,20 @@ class PKPSubmissionSubmitStep4Form extends SubmissionSubmitForm {
 		// Assign the default stage participants.
 		$userGroupDao = DAORegistry::getDAO('UserGroupDAO');
 
-		// Assistant roles -- For each assistant role user group assigned to this
+		// Manager and assistant roles -- for each assigned to this
 		//  stage in setup, iff there is only one user for the group,
-		//  automatically assign the user to the stage
-		// But skip authors and reviewers, since these are very submission specific
+		//  automatically assign the user to the stage.
 		$stageAssignmentDao = DAORegistry::getDAO('StageAssignmentDAO');
-		$submissionStageGroups = $userGroupDao->getUserGroupsByStage($this->submission->getContextId(), WORKFLOW_STAGE_ID_SUBMISSION, true, true);
+		$submissionStageGroups = $userGroupDao->getUserGroupsByStage($this->submission->getContextId(), WORKFLOW_STAGE_ID_SUBMISSION);
 		$managerFound = false;
 		while ($userGroup = $submissionStageGroups->next()) {
+			// Only handle manager and assistant roles
+			if (!in_array($userGroup->getRoleId(), array(ROLE_ID_MANAGER, ROLE_ID_ASSISTANT))) continue;
+
 			$users = $userGroupDao->getUsersById($userGroup->getId(), $this->submission->getContextId());
 			if($users->getCount() == 1) {
 				$user = $users->next();
-				$stageAssignmentDao->build($this->submission->getId(), $userGroup->getId(), $user->getId());
+				$stageAssignmentDao->build($this->submission->getId(), $userGroup->getId(), $user->getId(), $userGroup->getRecommendOnly());
 				if ($userGroup->getRoleId() == ROLE_ID_MANAGER) $managerFound = true;
 			}
 		}
@@ -90,7 +92,7 @@ class PKPSubmissionSubmitStep4Form extends SubmissionSubmitForm {
 			$userGroups = $userGroupDao->getByUserId($subEditor->getId(), $this->submission->getContextId());
 			while ($userGroup = $userGroups->next()) {
 				if ($userGroup->getRoleId() != ROLE_ID_SUB_EDITOR) continue;
-				$stageAssignmentDao->build($this->submission->getId(), $userGroup->getId(), $subEditor->getId());
+				$stageAssignmentDao->build($this->submission->getId(), $userGroup->getId(), $subEditor->getId(), $userGroup->getRecommendOnly());
 				// If we assign a stage assignment in the Submission stage to a sub editor, make note.
 				if ($userGroupDao->userGroupAssignedToStage($userGroup->getId(), WORKFLOW_STAGE_ID_SUBMISSION)) {
 					$submissionSubEditorFound = true;

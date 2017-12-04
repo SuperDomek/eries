@@ -19,13 +19,6 @@ import('lib.pkp.classes.db.DAO');
 import('lib.pkp.classes.submission.SubmissionFile');
 
 class SubmissionFileDAODelegate extends DAO {
-	/**
-	 * Constructor
-	 */
-	function __construct() {
-		parent::__construct();
-	}
-
 
 	//
 	// Abstract public methods to be implemented by subclasses.
@@ -89,18 +82,17 @@ class SubmissionFileDAODelegate extends DAO {
 			$submissionFile->setFileId($this->_getInsertId('submission_files', 'file_id'));
 		}
 
+		$submissionLocale = $submissionFile->getSubmissionLocale();
+
 		$reviewStage = in_array($submissionFile->getFileStage(), array(
 				SUBMISSION_FILE_REVIEW_FILE, SUBMISSION_FILE_REVIEW_ATTACHMENT, SUBMISSION_FILE_REVIEW_REVISION
 		));
-		if (!$submissionFile->getName(AppLocale::getPrimaryLocale())) {
-			if ($reviewStage) {
-				$submissionFile->setName($submissionFile->_generateName(true), AppLocale::getPrimaryLocale());
-			} else {
-				$submissionFile->setName($submissionFile->_generateName(), AppLocale::getPrimaryLocale());
-			}
+
+		if ($reviewStage) {
+			$submissionFile->setName($submissionFile->_generateName(true), $submissionLocale);
 		} else {
-			if ($reviewStage &&	$submissionFile->getName(AppLocale::getPrimaryLocale()) == $submissionFile->_generateName()) {
-				$submissionFile->setName($submissionFile->_generateName(true), AppLocale::getPrimaryLocale());
+			if ($isUpload || !$submissionFile->getName($submissionLocale)) {
+				$submissionFile->setName($submissionFile->_generateName(), $submissionLocale);
 			}
 		}
 
@@ -262,6 +254,7 @@ class SubmissionFileDAODelegate extends DAO {
 	function fromRow($row) {
 		$submissionFile = $this->newDataObject();
 		$submissionFile->setFileId((int)$row['submission_file_id']);
+		$submissionFile->setSubmissionLocale($row['submission_locale']);
 		$submissionFile->setRevision((int)$row['submission_revision']);
 		$submissionFile->setAssocType(is_null($row['assoc_type']) ? null : (int)$row['assoc_type']);
 		$submissionFile->setAssocId(is_null($row['assoc_id']) ? null : (int)$row['assoc_id']);

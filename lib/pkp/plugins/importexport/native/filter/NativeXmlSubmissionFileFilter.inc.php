@@ -95,15 +95,15 @@ class NativeXmlSubmissionFileFilter extends NativeImportFilter {
 				if ($submissionFile) $submissionFiles[] = $submissionFile;
 				break;
 			default:
-				$deployment->addError(ASSOC_TYPE_SUBMISSION, $submission->getId(), __('plugins.importexport.common.error.unknownElement', array('param' => $node->tagName)));
+				$deployment->addWarning(ASSOC_TYPE_SUBMISSION, $submission->getId(), __('plugins.importexport.common.error.unknownElement', array('param' => $node->tagName)));
 		}
 	}
 
 	/**
 	 * Handle a revision element
 	 * @param $node DOMElement
-	 * @param $fileId int File id
 	 * @param $stageId int SUBMISSION_FILE_...
+	 * @param $fileId int File id
 	 */
 	function handleRevisionElement($node, $stageId, $fileId) {
 		static $genresByContextId = array();
@@ -115,6 +115,12 @@ class NativeXmlSubmissionFileFilter extends NativeImportFilter {
 		$errorOccured = false;
 
 		$revisionId = $node->getAttribute('number');
+
+		$source = $node->getAttribute('source');
+		$sourceFileAndRevision = null;
+		if ($source) {
+			$sourceFileAndRevision = explode('-', $source);
+		}
 
 		$genreId = null;
 		$genreName = $node->getAttribute('genre');
@@ -141,6 +147,7 @@ class NativeXmlSubmissionFileFilter extends NativeImportFilter {
 		$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO');
 		$submissionFile = $submissionFileDao->newDataObjectByGenreId($genreId);
 		$submissionFile->setSubmissionId($submission->getId());
+		$submissionFile->setSubmissionLocale($submission->getLocale());
 		$submissionFile->setGenreId($genreId);
 		$submissionFile->setFileStage($stageId);
 		$submissionFile->setDateUploaded(Core::getCurrentDate());
@@ -153,27 +160,27 @@ class NativeXmlSubmissionFileFilter extends NativeImportFilter {
 				$filename = $this->handleRevisionChildElement($n, $submission, $submissionFile);
 			}
 		}
+		if (!$filename) {
+			// $this->handleRevisionChildElement() failed to provide any file (error message should have been handled in called method)
+			$errorOccured = true;
+		} else {
+			clearstatcache(true, $filename);
+			if (!file_exists($filename) || !filesize($filename)) {
+				// $this->handleRevisionChildElement() failed to provide a real file
+				$deployment->addError(ASSOC_TYPE_SUBMISSION, $submission->getId(), __('plugins.importexport.native.error.submissionFileImportFailed'));
+				$errorOccured = true;
+			}
+		}
 
 		$uploaderUsername = $node->getAttribute('uploader');
 		$uploaderUserGroup = $node->getAttribute('user_group_ref');
-
-		// Determine the user group based on the user_group_ref element.
-		$userGroupDao = DAORegistry::getDAO('UserGroupDAO');
-		$userGroups = $userGroupDao->getByContextId($context->getId());
-		while ($userGroup = $userGroups->next()) {
-			if (in_array($uploaderUserGroup, $userGroup->getName(null))) {
-				$submissionFile->setUserGroupId($userGroup->getId());
-				break;
-			}
+		if (!$uploaderUsername) {
+			$user = $deployment->getUser();
+		} else {
+			// Determine the user based on the username
+			$userDao = DAORegistry::getDAO('UserDAO');
+			$user = $userDao->getByUsername($uploaderUsername);
 		}
-		if (!$submissionFile->getUserGroupId()) {
-			$deployment->addError(ASSOC_TYPE_SUBMISSION, $submission->getId(), __('plugins.importexport.common.error.unknownUserGroup', array('param' => $uploaderUserGroup)));
-			$errorOccured = true;
-		}
-
-		// Do the same for the user.
-		$userDao = DAORegistry::getDAO('UserDAO');
-		$user = $userDao->getByUsername($uploaderUsername);
 		if ($user) {
 			$submissionFile->setUploaderUserId($user->getId());
 		} else {
@@ -181,13 +188,82 @@ class NativeXmlSubmissionFileFilter extends NativeImportFilter {
 			$errorOccured = true;
 		}
 
+		// Determine the user group.
+		$userGroupDao = DAORegistry::getDAO('UserGroupDAO');
+		if ($user && !$uploaderUserGroup) {
+			// We have a user, but no group specified in the import.  Select a default group.
+			// We will prefer any group that has access to the submission's stage; find these
+			$stageUserGroups = $userGroupDao->getUserGroupsByStage($context->getId(), $stageId);
+			$stageUserGroupLookup = array();
+			while ($userGroup = $stageUserGroups->next()) {
+				$stageUserGroupLookup[] = $userGroup->getId();
+			}
+			// Check all user groups from this user
+			$userUserGroups = $userGroupDao->getByUserId($user->getId(), $context->getId());
+			$lastUserGroup = null;
+			while ($userGroup = $userUserGroups->next()) {
+				// If the user's user group has access to this stage, select it.
+				$lastUserGroup = $userGroup->getId();
+				if (in_array($lastUserGroup, $stageUserGroupLookup, true)) {
+					break;
+				}
+			}
+			// Select the best match user group (might just be the last one we saw, if none had access to this stage).
+			if ($lastUserGroup) {
+				$submissionFile->setUserGroupId($lastUserGroup);
+			}
+		} else {
+			// Determine the user group based on the user_group_ref element.
+			$userGroups = $userGroupDao->getByContextId($context->getId());
+			while ($userGroup = $userGroups->next()) {
+				if (in_array($uploaderUserGroup, $userGroup->getName(null))) {
+					$submissionFile->setUserGroupId($userGroup->getId());
+					break;
+				}
+			}
+		}
+		if (!$submissionFile->getUserGroupId()) {
+			$deployment->addError(ASSOC_TYPE_SUBMISSION, $submission->getId(), __('plugins.importexport.common.error.unknownUserGroup', array('param' => $uploaderUserGroup)));
+			$errorOccured = true;
+		}
+
 		$fileSize = $node->getAttribute('filesize');
+		$fileSizeOnDisk = filesize($filename);
+		if ($fileSize) {
+			if ($fileSize != $fileSizeOnDisk) {
+				$deployment->addWarning(ASSOC_TYPE_SUBMISSION, $submission->getId(), __('plugins.importexport.common.error.filesizeMismatch', array('expected' => $fileSize, 'actual' => $fileSizeOnDisk)));
+			}
+		}
+		else {
+			$fileSize = $fileSizeOnDisk;
+		}
 		$submissionFile->setFileSize($fileSize);
 
 		$fileType = $node->getAttribute('filetype');
 		$submissionFile->setFileType($fileType);
 
 		$submissionFile->setRevision($revisionId);
+
+		if ($sourceFileAndRevision) {
+			// the source file revision should already be processed, so get the new source file ID
+			$sourceFileId = $deployment->getFileDBId($sourceFileAndRevision[0], $sourceFileAndRevision[1]);
+			if ($sourceFileId) {
+				$submissionFile->setSourceFileId($sourceFileId);
+				$submissionFile->setSourceRevision($sourceFileAndRevision[1]);
+			}
+		}
+
+		// if the same file is already inserted, take its DB file ID
+		$DBId = $deployment->getFileDBId($fileId);
+		if ($DBId) {
+			$submissionFile->setFileId($DBId);
+			$DBRevision = $deployment->getFileDBId($fileId, $revisionId);
+			// If both the file id and the revision id is duplicated, we cannot insert the record
+			if ($DBRevision) {
+				$errorOccured = true;
+				$deployment->addError(ASSOC_TYPE_SUBMISSION, $submission->getId(), __('plugins.importexport.common.error.duplicateRevisionForSubmission', array('fileId' => $fileId, 'revisionId' => $revisionId)));
+			}
+		}
 
 		if ($errorOccured) {
 			// if error occured, the file cannot be inserted into DB, becase
@@ -198,6 +274,7 @@ class NativeXmlSubmissionFileFilter extends NativeImportFilter {
 			$deployment->setFileDBId($fileId, $revisionId, $insertedSubmissionFile->getFileId());
 		}
 
+		import('lib.pkp.classes.file.FileManager');
 		$fileManager = new FileManager();
 		$fileManager->deleteFile($filename);
 		return $submissionFile;
@@ -208,7 +285,7 @@ class NativeXmlSubmissionFileFilter extends NativeImportFilter {
 	 * @param $node DOMElement
 	 * @param $submission Submission
 	 * @param $submissionFile SubmissionFile
-	 * @return string Filename for new file
+	 * @return string Filename for temporary file, if one was created
 	 */
 	function handleRevisionChildElement($node, $submission, $submissionFile) {
 		$deployment = $this->getDeployment();
@@ -225,17 +302,64 @@ class NativeXmlSubmissionFileFilter extends NativeImportFilter {
 				break;
 			case 'href':
 				$submissionFile->setFileType($node->getAttribute('mime_type'));
-				// Allow wrappers to handle URLs
-				return $node->getAttribute('src');
+				import('lib.pkp.classes.file.TemporaryFileManager');
+				$temporaryFileManager = new TemporaryFileManager();
+				$temporaryFilename = tempnam($temporaryFileManager->getBasePath(), 'src');
+				$filesrc = $node->getAttribute('src');
+				$errorFlag = false;
+				if (preg_match('|\w+://.+|', $filesrc)) {
+					// process as a URL
+					import('lib.pkp.classes.file.FileWrapper');
+					$wrapper = FileWrapper::wrapper($filesrc);
+					file_put_contents($temporaryFilename, $wrapper->contents());
+					if (!filesize($temporaryFilename)) {
+						$errorFlag = true;
+					}
+				} elseif (substr($filesrc, 1, 1) === '/') {
+					// local file (absolute path)
+					if (!copy($filesrc, $temporaryFilename)) {
+						$errorFlag = true;
+					}
+				} elseif (is_readable($deployment->getImportPath() . '/' . $filesrc)) {
+					// local file (relative path)
+					$filesrc = $deployment->getImportPath() . '/' . $filesrc;
+					if(!copy($filesrc, $temporaryFilename)) {
+						$errorFlag = true;
+					}
+				} else {
+					// unhandled file path
+					$errorFlag = true;
+				}
+				if ($errorFlag) {
+					$deployment->addError(ASSOC_TYPE_SUBMISSION, $submission->getId(), __('plugins.importexport.common.error.temporaryFileFailed', array('dest' => $temporaryFilename, 'source' => $filesrc)));
+					$fileManager = new FileManager();
+					$fileManager->deleteFile($temporaryFilename);
+					$temporaryFilename = '';
+				}
+				return $temporaryFilename;
 				break;
 			case 'embed':
 				$submissionFile->setFileType($node->getAttribute('mime_type'));
+				import('lib.pkp.classes.file.TemporaryFileManager');
 				$temporaryFileManager = new TemporaryFileManager();
 				$temporaryFilename = tempnam($temporaryFileManager->getBasePath(), 'embed');
 				if (($e = $node->getAttribute('encoding')) != 'base64') {
 					$deployment->addError(ASSOC_TYPE_SUBMISSION, $submission->getId(), __('plugins.importexport.common.error.unknownEncoding', array('param' => $e)));
 				} else {
-					file_put_contents($temporaryFilename, base64_decode($node->textContent));
+					$content = base64_decode($node->textContent, true);
+					$errorFlag = false;
+					if (!$content) {
+						$deployment->addError(ASSOC_TYPE_SUBMISSION, $submission->getId(), __('plugins.importexport.common.error.encodingError', array('param' => $e)));
+						$errorFlag = true;
+					} elseif (!file_put_contents($temporaryFilename, $content)) {
+						$deployment->addError(ASSOC_TYPE_SUBMISSION, $submission->getId(), __('plugins.importexport.common.error.temporaryFileFailed', array('dest' => $temporaryFilename, 'source' => 'embed')));
+						$errorFlag = true;
+					}
+					if ($errorFlag) {
+						$fileManager = new FileManager();
+						$fileManager->deleteFile($temporaryFilename);
+						$temporaryFilename = '';
+					}
 				}
 				return $temporaryFilename;
 				break;

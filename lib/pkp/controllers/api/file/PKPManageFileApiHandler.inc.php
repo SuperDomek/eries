@@ -57,26 +57,25 @@ abstract class PKPManageFileApiHandler extends Handler {
 		$submissionFile = $this->getAuthorizedContextObject(ASSOC_TYPE_SUBMISSION_FILE);
 		$submission = $this->getAuthorizedContextObject(ASSOC_TYPE_SUBMISSION);
 		$stageId = $request->getUserVar('stageId');
-		if ($stageId) {
-			// validate the stage id.
-			$stageAssignmentDao = DAORegistry::getDAO('StageAssignmentDAO');
-			$user = $request->getUser();
-			$stageAssignments = $stageAssignmentDao->getBySubmissionAndStageId($submission->getId(), $stageId, null, $user->getId());
-		}
 
 		assert(isset($submissionFile) && isset($submission)); // Should have been validated already
 
 		$noteDao = DAORegistry::getDAO('NoteDAO');
 		$noteDao->deleteByAssoc(ASSOC_TYPE_SUBMISSION_FILE, $submissionFile->getFileId());
 
-		// Delete the submission file.
-		$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO'); /* @var $submissionFileDao SubmissionFileDAO */
-
-		// check to see if we need to remove review_round_file associations
-		if (!$stageAssignments->wasEmpty()) {
-			$submissionFileDao->deleteReviewRoundAssignment($submission->getId(), $stageId, $submissionFile->getFileId(), $submissionFile->getRevision());
+		// Retrieve the review round so it can be updated after the file is
+		// deleted
+		if ($submissionFile->getFileStage() == SUBMISSION_FILE_REVIEW_REVISION) {
+			import('lib.pkp.classes.submission.reviewRound.ReviewRoundDAO');
+			$reviewRoundDao = DAORegistry::getDAO('ReviewRoundDAO');
+			$reviewRound = $reviewRoundDao->getBySubmissionFileId($submissionFile->getFileId());
 		}
 
+		// Detach any dependent entities to this file deletion.
+		$this->detachEntities($submissionFile, $submission->getId(), $stageId);
+
+		// Delete the submission file.
+		$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO'); /* @var $submissionFileDao SubmissionFileDAO */
 		if (!$submissionFileDao->deleteRevisionById($submissionFile->getFileId(), $submissionFile->getRevision(), $submissionFile->getFileStage(), $submission->getId())) return new JSONMessage(false);
 
 		$notificationMgr = new NotificationManager();
@@ -99,16 +98,11 @@ abstract class PKPManageFileApiHandler extends Handler {
 					$submission->getId()
 				);
 
+				// Update the ReviewRound status when revision is submitted
 				$reviewRoundDao = DAORegistry::getDAO('ReviewRoundDAO');
-				$lastReviewRound = $reviewRoundDao->getLastReviewRoundBySubmissionId($submission->getId(), $stageId);
-				$notificationMgr->updateNotification(
-					$request,
-					array(NOTIFICATION_TYPE_ALL_REVISIONS_IN),
-					null,
-					ASSOC_TYPE_REVIEW_ROUND,
-					$lastReviewRound->getId()
-				);
+				$reviewRoundDao->updateStatus($reviewRound);
 				break;
+
 			case SUBMISSION_FILE_COPYEDIT:
 				$notificationMgr->updateNotification(
 					$request,
@@ -203,15 +197,8 @@ abstract class PKPManageFileApiHandler extends Handler {
 			);
 
 			if ($reviewRound) {
-				$notificationMgr->updateNotification(
-					$request,
-					array(NOTIFICATION_TYPE_ALL_REVISIONS_IN),
-					null,
-					ASSOC_TYPE_REVIEW_ROUND,
-					$reviewRound->getId()
-				);
 
-				// Delete any 'revision requested' notifications since all revisions are now in.
+				// Delete any 'revision requested' notifications since revisions are now in.
 				$context = $request->getContext();
 				$notificationDao = DAORegistry::getDAO('NotificationDAO');
 				$stageAssignmentDao = DAORegistry::getDAO('StageAssignmentDAO');
@@ -230,7 +217,7 @@ abstract class PKPManageFileApiHandler extends Handler {
 				$request, $submission,
 				$submissionFile->getRevision()>1?SUBMISSION_LOG_FILE_REVISION_UPLOAD:SUBMISSION_LOG_FILE_UPLOAD,
 				$submissionFile->getRevision()>1?'submission.event.fileRevised':'submission.event.fileUploaded',
-				array('fileStage' => $submissionFile->getFileStage(), 'fileId' => $submissionFile->getFileId(), 'fileRevision' => $submissionFile->getRevision(), 'originalFileName' => $submissionFile->getOriginalFileName(), 'submissionId' => $submissionFile->getSubmissionId(), 'username' => $user->getUsername())
+				array('fileStage' => $submissionFile->getFileStage(), 'fileId' => $submissionFile->getFileId(), 'fileRevision' => $submissionFile->getRevision(), 'originalFileName' => $submissionFile->getOriginalFileName(), 'submissionId' => $submissionFile->getSubmissionId(), 'username' => $user->getUsername(), 'name' => $submissionFile->getLocalizedName())
 			);
 
 			return DAO::getDataChangedEvent();
@@ -274,6 +261,24 @@ abstract class PKPManageFileApiHandler extends Handler {
 	protected function getUpdateNotifications() {
 		return array(NOTIFICATION_TYPE_PENDING_EXTERNAL_REVISIONS);
 	}
+
+	/**
+	 * Detach any dependent entities to this file upload.
+	 * @param $submissionFile SubmissionFile
+	 * @param $submissionId integer
+	 * @param $stageId integer
+	 */
+	 function detachEntities($submissionFile, $submissionId, $stageId) {
+		switch ($submissionFile->getFileStage()) {
+			case SUBMISSION_FILE_REVIEW_FILE:
+			case SUBMISSION_FILE_REVIEW_ATTACHMENT:
+			case SUBMISSION_FILE_REVIEW_REVISION:
+				// check to see if we need to remove review_round_file associations
+				$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO');
+				$submissionFileDao->deleteReviewRoundAssignment($submissionId, $stageId, $submissionFile->getFileId(), $submissionFile->getRevision());
+		}
+	}
+
 }
 
 ?>

@@ -21,7 +21,7 @@
 	{include file="common/formErrors.tpl"}
 {fbvFormArea id="reviewStep3"}
 	{url|assign:reviewFilesGridUrl router=$smarty.const.ROUTE_COMPONENT component="grid.files.review.ReviewerReviewFilesGridHandler" op="fetchGrid" submissionId=$submission->getId() stageId=$reviewAssignment->getStageId() reviewRoundId=$reviewRoundId reviewAssignmentId=$reviewAssignment->getId() escape=false}
-	{load_url_in_div id="reviewFiles" url=$reviewFilesGridUrl}
+	{load_url_in_div id="reviewFilesStep3" url=$reviewFilesGridUrl}
 
 	{if $viewGuidelinesAction}
 		{fbvFormSection title="reviewer.submission.reviewerGuidelines"}
@@ -54,5 +54,6 @@
 	{url|assign:cancelUrl page="reviewer" op="submission" path=$submission->getId() step=2 escape=false}
 	{fbvFormButtons submitText="reviewer.submission.submitReview" confirmSubmit="reviewer.confirmSubmit" cancelText="navigation.goBack" cancelUrl=$cancelUrl cancelUrlTarget="_self" submitDisabled=$reviewIsComplete}
 {/fbvFormArea}
-</form>
+
 <p><span class="formRequired">{translate key="common.requiredField"}</span></p>
+</form>

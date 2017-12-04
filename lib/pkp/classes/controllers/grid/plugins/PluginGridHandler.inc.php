@@ -15,6 +15,7 @@
 
 import('lib.pkp.classes.controllers.grid.CategoryGridHandler');
 import('lib.pkp.controllers.grid.plugins.form.UploadPluginForm');
+import('lib.pkp.controllers.grid.plugins.PluginGalleryGridHandler');
 
 abstract class PluginGridHandler extends CategoryGridHandler {
 	/**
@@ -119,7 +120,7 @@ abstract class PluginGridHandler extends CategoryGridHandler {
 		$pluginName = $request->getUserVar('pluginName');
 
 		if (is_null($category)) {
-			$category = 'all';
+			$category = PLUGIN_GALLERY_ALL_CATEGORY_SEARCH_VALUE;
 		}
 
 		return array('category' => $category, 'pluginName' => $pluginName);
@@ -128,13 +129,13 @@ abstract class PluginGridHandler extends CategoryGridHandler {
 	/**
 	 * @copydoc GridHandler::renderFilter()
 	 */
-	function renderFilter($request) {
+	function renderFilter($request, $filterData = array()) {
 		$categoriesSymbolic = $this->loadData($request, null);
-		$categories = array('all' => __('grid.plugin.allCategories'));
+		$categories = array(PLUGIN_GALLERY_ALL_CATEGORY_SEARCH_VALUE => __('grid.plugin.allCategories'));
 		foreach ($categoriesSymbolic as $category) {
 			$categories[$category] = __("plugins.categories.$category");
 		}
-		$filterData = array('categories' => $categories);
+		$filterData['categories'] = $categories;
 
 		return parent::renderFilter($request, $filterData);
 	}
@@ -150,7 +151,7 @@ abstract class PluginGridHandler extends CategoryGridHandler {
 	/**
 	 * @copydoc CategoryGridHandler::loadCategoryData()
 	 */
-	function loadCategoryData($request, $categoryDataElement, $filter) {
+	function loadCategoryData($request, &$categoryDataElement, $filter) {
 		$plugins =& PluginRegistry::loadCategory($categoryDataElement);
 
 		$versionDao = DAORegistry::getDAO('VersionDAO');

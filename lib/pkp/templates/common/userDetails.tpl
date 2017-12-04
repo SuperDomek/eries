@@ -130,7 +130,7 @@
 			{if !$disablePhoneSection}
 				{fbvElement type="text" label="user.phone" name="phone" id="phone" value=$phone maxlength="24" inline=true size=$fbvStyles.size.SMALL}
 			{/if}
-			{fbvElement type="text" label="user.orcid" name="orcid" id="orcid" value=$orcid maxlength="36" inline=true size=$fbvStyles.size.SMALL}
+			{fbvElement type="text" label="user.orcid" name="orcid" id="orcid" value=$orcid maxlength="37" inline=true size=$fbvStyles.size.SMALL}
 		{/fbvFormSection}
 
 		{if !$disableLocaleSection && count($availableLocales) > 1}
@@ -153,14 +153,14 @@
 		{/if}
 
 		{if $affiliationRequired}
-			{assign var="affiliationRequired" value=true}
-		{else}
-			{assign var="affiliationRequired" value=false}
-		{/if}
+ 			{assign var="affiliationRequired" value=true}
+ 		{else}
+ 			{assign var="affiliationRequired" value=false}
+ 		{/if}
+
 		{fbvFormSection for="affiliation"}
 			{fbvElement type="text" label="user.affiliation" multilingual="true" name="affiliation" id="affiliation" required=$affiliationRequired value=$affiliation inline=true size=$fbvStyles.size.LARGE}
 		{/fbvFormSection}
-
 
 		{fbvFormSection}
 			{fbvElement type="textarea" label="user.biography" multilingual="true" name="biography" id="biography" rich=true value=$biography}

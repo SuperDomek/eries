@@ -17,13 +17,6 @@
 class WorkflowStageDAO extends DAO {
 
 	/**
-	 * Constructor.
-	 */
-	function __construct() {
-		parent::__construct();
-	}
-
-	/**
 	 * Convert a stage id into a stage path
 	 * @param $stageId integer
 	 * @return string|null
@@ -118,7 +111,7 @@ class WorkflowStageDAO extends DAO {
 	 * @param $stageNotifications array
 	 * @return array
 	 */
-	function getStageStatusesBySubmission($submission, $stagesWithDecisions, $stageNotifications) {
+	static function getStageStatusesBySubmission($submission, $stagesWithDecisions, $stageNotifications) {
 
 		$currentStageId = $submission->getStageId();
 		$workflowStages = self::getWorkflowStageKeysAndPaths();

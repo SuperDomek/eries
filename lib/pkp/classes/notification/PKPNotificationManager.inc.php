@@ -18,12 +18,6 @@ import('lib.pkp.classes.notification.PKPNotificationOperationManager');
 import('lib.pkp.classes.workflow.WorkflowStageDAO');
 
 class PKPNotificationManager extends PKPNotificationOperationManager {
-	/**
-	 * Constructor.
-	 */
-	function __construct() {
-		parent::__construct();
-	}
 
 	/**
 	 * Construct a URL for the notification based on its type and associated object
@@ -36,6 +30,9 @@ class PKPNotificationManager extends PKPNotificationOperationManager {
 		$context = $contextDao->getById($notification->getContextId());
 
 		switch ($notification->getType()) {
+			case NOTIFICATION_TYPE_EDITOR_ASSIGN:
+				assert($notification->getAssocType() == ASSOC_TYPE_SUBMISSION && is_numeric($notification->getAssocId()));
+				return $dispatcher->url($request, ROUTE_PAGE, $context->getPath(), 'workflow', 'access', $notification->getAssocId());
 			case NOTIFICATION_TYPE_COPYEDIT_ASSIGNMENT:
 			case NOTIFICATION_TYPE_LAYOUT_ASSIGNMENT:
 			case NOTIFICATION_TYPE_INDEX_ASSIGNMENT:
@@ -60,6 +57,14 @@ class PKPNotificationManager extends PKPNotificationOperationManager {
 				return $dispatcher->url($request, ROUTE_PAGE, $context->getPath(), 'announcement', 'view', array($notification->getAssocId()));
 			case NOTIFICATION_TYPE_CONFIGURE_PAYMENT_METHOD:
 				return __('notification.type.configurePaymentMethod');
+			case NOTIFICATION_TYPE_PAYMENT_REQUIRED:
+				$context = $contextDao->getById($notification->getContextId());
+				Application::getPaymentManager($context);
+				assert($notification->getAssocType() == ASSOC_TYPE_QUEUED_PAYMENT);
+				$queuedPaymentDao = DAORegistry::getDAO('QueuedPaymentDAO');
+				$queuedPayment = $queuedPaymentDao->getById($notification->getAssocId());
+				$context = $contextDao->getById($queuedPayment->getContextId());
+				return $dispatcher->url($request, ROUTE_PAGE, $context->getPath(), 'payment', 'pay', array($queuedPayment->getId()));
 			default:
 				$delegateResult = $this->getByDelegate(
 					$notification->getType(),
@@ -116,6 +121,10 @@ class PKPNotificationManager extends PKPNotificationOperationManager {
 				$reviewAssignment = $reviewAssignmentDao->getById($notification->getAssocId());
 				$submission = $submissionDao->getById($reviewAssignment->getSubmissionId()); /* @var $submission Submission */
 				return __('notification.type.reviewerComment', array('title' => $submission->getLocalizedTitle()));
+			case NOTIFICATION_TYPE_EDITOR_ASSIGN:
+				assert($notification->getAssocType() == ASSOC_TYPE_SUBMISSION && is_numeric($notification->getAssocId()));
+				$submission = $submissionDao->getById($notification->getAssocId());
+				return __('notification.type.editorAssign', array('title' => $submission->getLocalizedTitle()));
 			case NOTIFICATION_TYPE_COPYEDIT_ASSIGNMENT:
 				assert($notification->getAssocType() == ASSOC_TYPE_SUBMISSION && is_numeric($notification->getAssocId()));
 				$submission = $submissionDao->getById($notification->getAssocId());
@@ -142,6 +151,8 @@ class PKPNotificationManager extends PKPNotificationOperationManager {
 				$isAuthor = $stageAssignments->getCount()>0;
 				$stageAssignments->close();
 				return __($reviewRound->getStatusKey($isAuthor));
+			case NOTIFICATION_TYPE_PAYMENT_REQUIRED:
+				return __('payment.type.publication.required');
 			default:
 				$delegateResult = $this->getByDelegate(
 					$notification->getType(),
@@ -290,6 +301,9 @@ class PKPNotificationManager extends PKPNotificationOperationManager {
 			case NOTIFICATION_TYPE_CONFIGURE_PAYMENT_METHOD:
 				$isVisible = true;
 				break;
+			case NOTIFICATION_TYPE_PAYMENT_REQUIRED:
+				$isVisible = false;
+				break;
 			default:
 				$delegateResult = $this->getByDelegate(
 					$notificationType,
@@ -375,20 +389,12 @@ class PKPNotificationManager extends PKPNotificationOperationManager {
 				assert($assocType == ASSOC_TYPE_SUBMISSION && is_numeric($assocId));
 				import('lib.pkp.classes.notification.managerDelegate.PendingRevisionsNotificationManager');
 				return new PendingRevisionsNotificationManager($notificationType);
-			case NOTIFICATION_TYPE_ALL_REVISIONS_IN:
-				assert($assocType == ASSOC_TYPE_REVIEW_ROUND && is_numeric($assocId));
-				import('lib.pkp.classes.notification.managerDelegate.review.AllRevisionsInNotificationManager');
-				return new AllRevisionsInNotificationManager($notificationType);
-			case NOTIFICATION_TYPE_ALL_REVIEWS_IN:
-				assert($assocType == ASSOC_TYPE_REVIEW_ROUND && is_numeric($assocId));
-				import('lib.pkp.classes.notification.managerDelegate.review.AllReviewsInNotificationManager');
-				return new AllReviewsInNotificationManager($notificationType);
 			case NOTIFICATION_TYPE_ASSIGN_COPYEDITOR:
 			case NOTIFICATION_TYPE_AWAITING_COPYEDITS:
 			case NOTIFICATION_TYPE_ASSIGN_PRODUCTIONUSER:
 			case NOTIFICATION_TYPE_AWAITING_REPRESENTATIONS:
 				assert($assocType == ASSOC_TYPE_SUBMISSION && is_numeric($assocId));
-				import('lib.pkp.classes.notification.managerDelegate.EditingProductionStatusNotificationManager');
+				import('classes.notification.managerDelegate.EditingProductionStatusNotificationManager');
 				return new EditingProductionStatusNotificationManager($notificationType);
 		}
 		return null; // No delegate required, let calling context handle null.

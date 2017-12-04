@@ -15,12 +15,6 @@
  */
 
 class PluginSettingsDAO extends DAO {
-	/**
-	 * Constructor
-	 */
-	function __construct() {
-		parent::__construct();
-	}
 
 	/**
 	 * Get the cache for plugin settings.
@@ -61,6 +55,23 @@ class PluginSettingsDAO extends DAO {
 		// Retrieve the setting.
 		$cache = $this->_getCache($contextId, $pluginName);
 		return $cache->get($name);
+	}
+
+	/**
+	 * Does the plugin setting exist.
+	 * @param $contextId int Context ID
+	 * @param $pluginName string Plugin symbolic name
+	 * @param $name Setting name
+	 * @return boolean
+	 */
+	function settingExists($contextId, $pluginName, $name) {
+		$pluginName = strtolower_codesafe($pluginName);
+		$result = $this->retrieve(
+			'SELECT COUNT(*) FROM plugin_settings WHERE plugin_name = ? AND context_id = ? AND setting_name = ?', array($pluginName, (int) $contextId, $name)
+		);
+		$returner = $result->fields[0] ? true : false;
+		$result->Close();
+		return $returner;
 	}
 
 	/**

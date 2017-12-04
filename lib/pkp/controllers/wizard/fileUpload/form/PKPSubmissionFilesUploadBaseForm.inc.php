@@ -73,6 +73,7 @@ class PKPSubmissionFilesUploadBaseForm extends Form {
 		$this->setData('submissionId', (int)$submissionId);
 		$this->setData('revisionOnly', (boolean)$revisionOnly);
 		$this->setData('revisedFileId', $revisedFileId ? (int)$revisedFileId : null);
+		$this->setData('reviewRoundId', $reviewRound?$reviewRound->getId():null);
 		$this->setData('assocType', $assocType ? (int)$assocType : null);
 		$this->setData('assocId', $assocId ? (int)$assocId : null);
 
@@ -134,8 +135,7 @@ class PKPSubmissionFilesUploadBaseForm extends Form {
 			$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO'); /* @var $submissionFileDao SubmissionFileDAO */
 			if ($this->getStageId() == WORKFLOW_STAGE_ID_INTERNAL_REVIEW || $this->getStageId() == WORKFLOW_STAGE_ID_EXTERNAL_REVIEW) {
 				// If we have a review stage id then we also expect a review round.
-				if (!is_a($this->getReviewRound(), 'ReviewRound')) assert(false);
-
+				if (!$this->getData('fileStage') == SUBMISSION_FILE_QUERY && !is_a($this->getReviewRound(), 'ReviewRound')) assert(false);
 				// Can only upload submission files, review files, review attachments, or query attachments.
 				if (!in_array($this->getData('fileStage'), array(SUBMISSION_FILE_SUBMISSION, SUBMISSION_FILE_REVIEW_FILE, SUBMISSION_FILE_REVIEW_ATTACHMENT, SUBMISSION_FILE_REVIEW_REVISION, SUBMISSION_FILE_QUERY))) fatalError('Invalid file stage!');
 
@@ -206,7 +206,7 @@ class PKPSubmissionFilesUploadBaseForm extends Form {
 		$foundRevisedFile = false;
 		$submissionFiles = $this->getSubmissionFiles();
 
-		foreach ($submissionFiles as $submissionFile) {
+		foreach ((array) $submissionFiles as $submissionFile) {
 			// The uploaded file must be excluded from the list of revisable files.
 			if ($uploadedFile && $uploadedFile->getFileId() == $submissionFile->getFileId()) continue;
 			if (
@@ -265,7 +265,7 @@ class PKPSubmissionFilesUploadBaseForm extends Form {
 
 		// Show ensuring a blind review link.
 		$context = $request->getContext();
-		if ($context->getSetting('showEnsuringLink')) {
+		if ($context->getSetting('showEnsuringLink') && in_array($this->getStageId(), array(WORKFLOW_STAGE_ID_SUBMISSION, WORKFLOW_STAGE_ID_INTERNAL_REVIEW, WORKFLOW_STAGE_ID_EXTERNAL_REVIEW))) {
 			import('lib.pkp.classes.linkAction.request.ConfirmationModal');
 			$ensuringLink = new LinkAction(
 				'addUser',

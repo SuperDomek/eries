@@ -44,12 +44,12 @@
 					{/if}
 				{/foreach}
 				{if !$currentContext->getSetting('publisherInstitution')}
-					{url|assign:journalSettingsUrl router=$smarty.const.ROUTE_PAGE page="management" op="settings" path="journal" escape=false}
+					{url|assign:journalSettingsUrl router=$smarty.const.ROUTE_PAGE page="management" op="settings" path="context" escape=false}
 					{capture assign=missingPublisherMessage}{translate key="plugins.importexport.crossref.error.publisherNotConfigured" journalSettingsUrl=$journalSettingsUrl}{/capture}
 					{include file="controllers/notification/inPlaceNotificationContent.tpl" notificationId=crossrefConfigurationErrors notificationStyleClass="notifyWarning" notificationTitle="plugins.importexport.common.missingRequirements"|translate notificationContents=$missingPublisherMessage}
 				{/if}
 				{if !$currentContext->getSetting('onlineIssn') && !$currentContext->getSetting('printIssn')}
-					{url|assign:journalSettingsUrl router=$smarty.const.ROUTE_PAGE page="management" op="settings" path="journal" escape=false}
+					{url|assign:journalSettingsUrl router=$smarty.const.ROUTE_PAGE page="management" op="settings" path="context" escape=false}
 					{capture assign=missingIssnMessage}{translate key="plugins.importexport.crossref.error.issnNotConfigured" journalSettingsUrl=$journalSettingsUrl}{/capture}
 					{include file="controllers/notification/inPlaceNotificationContent.tpl" notificationId=crossrefConfigurationErrors notificationStyleClass="notifyWarning" notificationTitle="plugins.importexport.common.missingRequirements"|translate notificationContents=$missingIssnMessage}
 				{/if}
@@ -77,7 +77,11 @@
 				{fbvFormArea id="submissionsXmlForm"}
 					{url|assign:submissionsListGridUrl router=$smarty.const.ROUTE_COMPONENT component="grid.pubIds.PubIdExportSubmissionsListGridHandler" op="fetchGrid" plugin="crossref" category="importexport" escape=false}
 					{load_url_in_div id="submissionsListGridContainer" url=$submissionsListGridUrl}
+					{fbvFormSection list="true"}
+						{fbvElement type="checkbox" id="validation" label="plugins.importexport.common.validation" checked=$validation|default:true}
+					{/fbvFormSection}
 					{if !empty($actionNames)}
+						{fbvFormSection}
 						<ul class="export_actions">
 							{foreach from=$actionNames key=action item=actionName}
 								<li class="export_action">
@@ -85,8 +89,9 @@
 								</li>
 							{/foreach}
 						</ul>
+						{/fbvFormSection}
 					{/if}
-			{/fbvFormArea}
+				{/fbvFormArea}
 			</form>
 			<p>{translate key="plugins.importexport.crossref.statusLegend"}</p>
 		</div>

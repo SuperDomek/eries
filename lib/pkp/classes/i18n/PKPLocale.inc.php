@@ -57,6 +57,7 @@ define('LOCALE_COMPONENT_PKP_GRID',		0x00000008);
 define('LOCALE_COMPONENT_PKP_DEFAULT',		0x00000009);
 define('LOCALE_COMPONENT_PKP_EDITOR',		0x0000000A);
 define('LOCALE_COMPONENT_PKP_REVIEWER',		0x0000000B);
+define('LOCALE_COMPONENT_PKP_API',			0x00000107);
 
 // Application-specific locale components
 define('LOCALE_COMPONENT_APP_COMMON',		0x00000100);
@@ -190,6 +191,7 @@ class PKPLocale {
 			LOCALE_COMPONENT_PKP_USER => $baseDir . 'user.xml',
 			LOCALE_COMPONENT_PKP_GRID => $baseDir . 'grid.xml',
 			LOCALE_COMPONENT_PKP_DEFAULT => $baseDir . 'default.xml',
+			LOCALE_COMPONENT_PKP_API => $baseDir . 'api.xml',
 		);
 	}
 
@@ -330,7 +332,8 @@ class PKPLocale {
 	 */
 	static function isLocaleValid($locale) {
 		if (empty($locale)) return false;
-		if (!preg_match('/^[a-z][a-z]_[A-Z][A-Z]$/', $locale)) return false;
+		// variants can be composed of five to eight letters, or of four characters starting with a digit
+		if (!preg_match('/^[a-z][a-z]_[A-Z][A-Z](@([A-Za-z0-9]{5,8}|\d[A-Za-z0-9]{3}))?$/', $locale)) return false;
 		if (file_exists('locale/' . $locale)) return true;
 		return false;
 	}
@@ -473,7 +476,7 @@ class PKPLocale {
 	 * @return string
 	 */
 	static function get3LetterIsoFromLocale($locale) {
-		assert(strlen($locale) == 5);
+		assert(strlen($locale) >= 5);
 		$iso2Letter = substr($locale, 0, 2);
 		return AppLocale::get3LetterFrom2LetterIsoLanguage($iso2Letter);
 	}
@@ -572,7 +575,7 @@ class PKPLocale {
 	 * @return string
 	 */
 	static function getIso3FromLocale($locale) {
-		assert(strlen($locale) == 5);
+		assert(strlen($locale) >= 5);
 		$iso1 = substr($locale, 0, 2);
 		return AppLocale::getIso3FromIso1($iso1);
 	}
@@ -584,7 +587,7 @@ class PKPLocale {
 	* @return string
 	*/
 	static function getIso1FromLocale($locale) {
-		assert(strlen($locale) == 5);
+		assert(strlen($locale) >= 5);
 		return substr($locale, 0, 2);
 	}
 

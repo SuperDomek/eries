@@ -57,12 +57,13 @@ class AddParticipantForm extends StageParticipantNotifyForm {
 		$userGroupDao = DAORegistry::getDAO('UserGroupDAO');
 		$userGroups = $userGroupDao->getUserGroupsByStage(
 			$request->getContext()->getId(),
-			$this->getStageId(),
-			false, true // Exclude reviewers
+			$this->getStageId()
 		);
 
 		$userGroupOptions = array();
 		while ($userGroup = $userGroups->next()) {
+			// Exclude reviewers.
+			if ($userGroup->getRoleId() == ROLE_ID_REVIEWER) continue;
 			$userGroupOptions[$userGroup->getId()] = $userGroup->getLocalizedName();
 		}
 
@@ -72,6 +73,13 @@ class AddParticipantForm extends StageParticipantNotifyForm {
 		$templateMgr->assign('userGroupOptions', $userGroupOptions);
 		// assigned the first element as selected
 		$templateMgr->assign('selectedUserGroupId', array_shift(array_keys($userGroupOptions)));
+		// assign all user group IDs with ROLE_ID_MANAGER or ROLE_ID_SUB_EDITOR
+		$managerGroupIds = $userGroupDao->getUserGroupIdsByRoleId(ROLE_ID_MANAGER, $request->getContext()->getId());
+		$subEditorGroupIds = $userGroupDao->getUserGroupIdsByRoleId(ROLE_ID_SUB_EDITOR, $request->getContext()->getId());
+		$possibleRecommendOnlyUserGroupIds = array_merge($managerGroupIds, $subEditorGroupIds);
+		$templateMgr->assign('possibleRecommendOnlyUserGroupIds', $possibleRecommendOnlyUserGroupIds);
+		// assign user group IDs with recommendOnly option set
+		$templateMgr->assign('recommendOnlyUserGroupIds', $userGroupDao->getRecommendOnlyGroupIds($request->getContext()->getId()));
 
 		// assign the vars required for the request
 		$templateMgr->assign('submissionId', $this->getSubmission()->getId());
@@ -87,7 +95,8 @@ class AddParticipantForm extends StageParticipantNotifyForm {
 			'userGroupId',
 			'userId',
 			'message',
-			'template'
+			'template',
+			'recommendOnly',
 		));
 	}
 
@@ -115,11 +124,12 @@ class AddParticipantForm extends StageParticipantNotifyForm {
 		$submission = $this->getSubmission();
 		$userGroupId = (int) $this->getData('userGroupId');
 		$userId = (int) $this->getData('userId');
+		$recommendOnly = $this->getData('recommendOnly')?true:false;
 
 		// sanity check
 		if ($userGroupDao->userGroupAssignedToStage($userGroupId, $this->getStageId())) {
 			// insert the assignment
-			$stageAssignment = $stageAssignmentDao->build($submission->getId(), $userGroupId, $userId);
+			$stageAssignment = $stageAssignmentDao->build($submission->getId(), $userGroupId, $userId, $recommendOnly);
 		}
 
 		parent::execute($request);

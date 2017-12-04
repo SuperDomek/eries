@@ -29,7 +29,7 @@ class UserUserGroupListbuilderHandler extends ListbuilderHandler {
 	function __construct() {
 		parent::__construct();
 		$this->addRoleAssignment(
-			ROLE_ID_MANAGER,
+			array(ROLE_ID_MANAGER, ROLE_ID_SITE_ADMIN),
 			array('fetch', 'fetchRow', 'fetchOptions', 'save')
 		);
 	}
@@ -116,7 +116,7 @@ class UserUserGroupListbuilderHandler extends ListbuilderHandler {
 		$userGroupDao = DAORegistry::getDAO('UserGroupDAO');
 		$userGroups = $userGroupDao->getByContextId($context->getId());
 		$roleDao = DAORegistry::getDAO('RoleDAO');
-		$roleNames = $roleDao->getRoleNames(true);
+		$roleNames = Application::getRoleNames(true);
 
 		// Assemble the array to return
 		while ($userGroup = $userGroups->next()) {

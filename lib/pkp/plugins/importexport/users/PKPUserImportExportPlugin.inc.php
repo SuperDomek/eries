@@ -16,12 +16,6 @@
 import('lib.pkp.classes.plugins.ImportExportPlugin');
 
 abstract class PKPUserImportExportPlugin extends ImportExportPlugin {
-	/**
-	 * Constructor
-	 */
-	function __construct() {
-		parent::__construct();
-	}
 
 	/**
 	 * Called as a plugin is registered to the registry
@@ -152,8 +146,8 @@ abstract class PKPUserImportExportPlugin extends ImportExportPlugin {
 					$request->getContext(),
 					$request->getUser()
 				);
-				import('lib.pkp.classes.file.TemporaryFileManager');
-				$fileManager = new TemporaryFileManager();
+				import('lib.pkp.classes.file.FileManager');
+				$fileManager = new FileManager();
 				$exportFileName = $this->getExportFileName($this->getExportPath(), 'users', $context, '.xml');
 				$fileManager->writeFile($exportFileName, $exportXml);
 				$fileManager->downloadFile($exportFileName);

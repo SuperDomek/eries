@@ -18,12 +18,6 @@ import('lib.pkp.classes.submission.Genre');
 import('lib.pkp.classes.db.DAO');
 
 class GenreDAO extends DAO {
-	/**
-	 * Constructor
-	 */
-	function __construct() {
-		parent::__construct();
-	}
 
 	/**
 	 * Retrieve a genre by type id.
@@ -88,6 +82,43 @@ class GenreDAO extends DAO {
 	}
 
 	/**
+	 * Retrieve genres based on whether they are supplementary or not.
+	 * @param $supplementaryFilesOnly boolean
+	 * @param $contextId int
+	 * @param $rangeInfo object optional
+	 * @return DAOResultFactory
+	 */
+	public function getBySupplementaryAndContextId($supplementaryFilesOnly, $contextId, $rangeInfo = null) {
+		$result = $this->retrieveRange(
+			'SELECT * FROM genres
+			WHERE enabled = ? AND context_id = ? AND supplementary = ?
+			ORDER BY seq',
+			array(1, (int) $contextId, (int) $supplementaryFilesOnly),
+			$rangeInfo
+		);
+
+		return new DAOResultFactory($result, $this, '_fromRow', array('id'));
+	}
+
+	/**
+	 * Retrieve genres that are not supplementary or dependent.
+	 * @param $contextId int
+	 * @param $rangeInfo object optional
+	 * @return DAOResultFactory
+	 */
+	public function getPrimaryByContextId($contextId, $rangeInfo = null) {
+		$result = $this->retrieveRange(
+			'SELECT * FROM genres
+			WHERE enabled = ? AND context_id = ? AND dependent = ? AND supplementary = ?
+			ORDER BY seq',
+			array(1, (int) $contextId, 0, 0),
+			$rangeInfo
+		);
+
+		return new DAOResultFactory($result, $this, '_fromRow', array('id'));
+	}
+
+	/**
 	 * Retrieve all genres
 	 * @param $contextId int
 	 * @param $rangeInfo object optional
@@ -135,14 +166,6 @@ class GenreDAO extends DAO {
 	}
 
 	/**
-	 * Get a list of field names for which non-localized settings are stored
-	 * @return array
-	 */
-	function getAdditionalFieldNames() {
-		return array('designation');
-	}
-
-	/**
 	 * Update the settings for this object
 	 * @param $genre object
 	 */
@@ -169,7 +192,7 @@ class GenreDAO extends DAO {
 	function _fromRow($row) {
 		$genre = $this->newDataObject();
 		$genre->setId($row['genre_id']);
-		$genre->getKey($row['entry_key']);
+		$genre->setKey($row['entry_key']);
 		$genre->setContextId($row['context_id']);
 		$genre->setSortable($row['sortable']);
 		$genre->setCategory($row['category']);
@@ -313,9 +336,9 @@ class GenreDAO extends DAO {
 			foreach ($locales as $locale) {
 				$genre->setName(__($attrs['localeKey'], array(), $locale), $locale);
 			}
-			$genre->setDesignation($attrs['designation']);
 
 			if ($genre->getId() > 0) { // existing genre.
+				$genre->setEnabled(1);
 				$this->updateObject($genre);
 			} else {
 				$this->insertObject($genre);

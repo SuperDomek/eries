@@ -16,22 +16,15 @@
 import('lib.pkp.classes.controllers.grid.GridRow');
 
 class SectionGridRow extends GridRow {
-	/**
-	 * Constructor
-	 */
-	function __construct() {
-		parent::__construct();
-	}
 
 	//
 	// Overridden template methods
 	//
-	/*
-	 * Configure the grid row
-	 * @param $request PKPRequest
+	/**
+	 * @copydoc GridRow::initialize()
 	 */
-	function initialize($request) {
-		parent::initialize($request);
+	function initialize($request, $template = null) {
+		parent::initialize($request, $template);
 
 		// Is this a new row or an existing row?
 		$sectionId = $this->getId();

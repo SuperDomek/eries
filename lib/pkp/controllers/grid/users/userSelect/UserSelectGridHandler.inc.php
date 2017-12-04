@@ -46,12 +46,11 @@ class UserSelectGridHandler extends GridHandler {
 		return parent::authorize($request, $args, $roleAssignments);
 	}
 
-	/*
-	 * Configure the grid
-	 * @param $request PKPRequest
+	/**
+	 * @copydoc GridHandler::initialize()
 	 */
-	function initialize($request) {
-		parent::initialize($request);
+	function initialize($request, $args = null) {
+		parent::initialize($request, $args);
 
 		AppLocale::requireComponents(
 			LOCALE_COMPONENT_PKP_SUBMISSION,
@@ -65,11 +64,12 @@ class UserSelectGridHandler extends GridHandler {
 		$userGroupDao = DAORegistry::getDAO('UserGroupDAO');
 		$userGroups = $userGroupDao->getUserGroupsByStage(
 			$request->getContext()->getId(),
-			$stageId,
-			false, true // Exclude reviewers
+			$stageId
 		);
 		$this->_userGroupOptions = array();
 		while ($userGroup = $userGroups->next()) {
+			// Exclude reviewers.
+			if ($userGroup->getRoleId() == ROLE_ID_REVIEWER) continue;
 			$this->_userGroupOptions[$userGroup->getId()] = $userGroup->getLocalizedName();
 		}
 

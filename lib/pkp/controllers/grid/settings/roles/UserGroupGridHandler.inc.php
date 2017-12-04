@@ -89,8 +89,8 @@ class UserGroupGridHandler extends GridHandler {
 	/**
 	 * @copydoc PKPHandler::initialize()
 	 */
-	function initialize($request) {
-		parent::initialize($request);
+	function initialize($request, $args = null) {
+		parent::initialize($request, $args);
 
 		$context = $request->getContext();
 		$this->_contextId = $context->getId();
@@ -172,7 +172,7 @@ class UserGroupGridHandler extends GridHandler {
 		$rangeInfo = $this->getGridRangeInfo($request, $this->getId());
 
 		if ($stageIdFilter && $stageIdFilter != 0) {
-			return $userGroupDao->getUserGroupsByStage($contextId, $stageIdFilter, false, false, $roleIdFilter, $rangeInfo);
+			return $userGroupDao->getUserGroupsByStage($contextId, $stageIdFilter, $roleIdFilter, $rangeInfo);
 		} else if ($roleIdFilter && $roleIdFilter != 0) {
 			return $userGroupDao->getByRoleId($contextId, $roleIdFilter, false, $rangeInfo);
 		} else {
@@ -194,8 +194,8 @@ class UserGroupGridHandler extends GridHandler {
 	*/
 	function renderFilter($request) {
 		// Get filter data.
-		import('classes.security.RoleDAO');
-		$roleOptions = array(0 => 'grid.user.allPermissionLevels') + RoleDAO::getRoleNames(true);
+		$roleDao = DAORegistry::getDAO('RoleDAO');
+		$roleOptions = array(0 => 'grid.user.allPermissionLevels') + Application::getRoleNames(true);
 
 		// Reader roles are not important for stage assignments.
 		if (array_key_exists(ROLE_ID_READER, $roleOptions)) {

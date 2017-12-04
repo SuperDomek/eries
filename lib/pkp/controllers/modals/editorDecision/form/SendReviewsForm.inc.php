@@ -48,9 +48,48 @@ class SendReviewsForm extends EditorDecisionWithEmailForm {
 	 * @copydoc Form::initData()
 	 */
 	function initData($args, $request) {
-		$actionLabels = EditorDecisionActionsManager::getActionLabels($this->_getDecisions());
+		$actionLabels = EditorDecisionActionsManager::getActionLabels($request->getContext(), $this->_getDecisions());
 
 		return parent::initData($args, $request, $actionLabels);
+	}
+
+	/**
+	 * @copydoc Form::readInputData()
+	 */
+	function readInputData() {
+		$this->readUserVars(array('decision'));
+		parent::readInputData();
+	}
+
+	/**
+	 * @copydoc Form::fetch()
+	 */
+	function fetch($request) {
+		$templateMgr = TemplateManager::getManager($request);
+		$router = $request->getRouter();
+		$dispatcher = $router->getDispatcher();
+		$submission = $this->getSubmission();
+		$user = $request->getUser();
+
+		import('lib.pkp.classes.mail.SubmissionMailTemplate');
+		$revisionsEmail = new SubmissionMailTemplate($submission, 'EDITOR_DECISION_REVISIONS');
+		$resubmitEmail = new SubmissionMailTemplate($submission, 'EDITOR_DECISION_RESUBMIT');
+
+		foreach (array($revisionsEmail, $resubmitEmail) as &$email) {
+			$email->assignParams(array(
+				'authorName' => $submission->getAuthorString(),
+				'editorialContactSignature' => $user->getContactSignature(),
+				'submissionUrl' => $dispatcher->url($request, ROUTE_PAGE, null, 'authorDashboard', 'submission', $submission->getId()),
+			));
+			$email->replaceParams();
+		}
+
+		$templateMgr->assign(array(
+			'revisionsEmail' => $revisionsEmail->getBody(),
+			'resubmitEmail' => $resubmitEmail->getBody(),
+		));
+
+		return parent::fetch($request);
 	}
 
 	/**
@@ -61,7 +100,7 @@ class SendReviewsForm extends EditorDecisionWithEmailForm {
 		$submission = $this->getSubmission();
 
 		// Get this form decision actions labels.
-		$actionLabels = EditorDecisionActionsManager::getActionLabels($this->_getDecisions());
+		$actionLabels = EditorDecisionActionsManager::getActionLabels($request->getContext(), $this->_getDecisions());
 
 		// Record the decision.
 		$reviewRound = $this->getReviewRound();
@@ -88,6 +127,11 @@ class SendReviewsForm extends EditorDecisionWithEmailForm {
 				$status = REVIEW_ROUND_STATUS_DECLINED;
 				break;
 
+			case SUBMISSION_EDITOR_DECISION_INITIAL_DECLINE:
+				$emailKey = 'EDITOR_DECISION_INITIAL_DECLINE';
+				$status = REVIEW_ROUND_STATUS_DECLINED;
+				break;
+
 			default:
 				fatalError('Unsupported decision!');
 		}
@@ -109,7 +153,8 @@ class SendReviewsForm extends EditorDecisionWithEmailForm {
 		return array(
 			SUBMISSION_EDITOR_DECISION_PENDING_REVISIONS,
 			SUBMISSION_EDITOR_DECISION_RESUBMIT,
-			SUBMISSION_EDITOR_DECISION_DECLINE
+			SUBMISSION_EDITOR_DECISION_DECLINE,
+			SUBMISSION_EDITOR_DECISION_INITIAL_DECLINE
 		);
 	}
 }

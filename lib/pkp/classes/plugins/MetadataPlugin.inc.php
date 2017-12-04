@@ -20,13 +20,6 @@ import('lib.pkp.classes.plugins.Plugin');
 define('METADATA_PLUGIN_VOCAB_DATAFILE', 'controlledVocabs.xml');
 
 abstract class MetadataPlugin extends Plugin {
-	/**
-	 * Constructor
-	 */
-	function __construct() {
-		parent::__construct();
-	}
-
 
 	//
 	// Override public methods from Plugin
@@ -61,6 +54,23 @@ abstract class MetadataPlugin extends Plugin {
 		}
 		return $controlledVocabFiles;
 	}
+
+	/**
+	 * Get a unique id for this metadata format
+	 *
+	 * @param $format string The format to check for support.
+	 * @return string
+	 */
+	abstract function supportsFormat($format);
+
+	/**
+	 * Instantiate and return the schema object for this metadata format
+	 *
+	 * @param $format string The format to return the schema object for in case
+	 *  the plugin supports multiple formats.
+	 * @return mixed
+	 */
+	abstract function getSchemaObject($format);
 }
 
 ?>

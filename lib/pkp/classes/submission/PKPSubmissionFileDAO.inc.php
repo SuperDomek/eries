@@ -30,23 +30,16 @@
  * between DAO implementations.
  */
 
-import('lib.pkp.classes.file.PKPFileDAO');
+import('lib.pkp.classes.db.DAO');
 import('lib.pkp.classes.submission.Genre'); // GENRE_CATEGORY_... constants
 import('lib.pkp.classes.plugins.PKPPubIdPluginDAO');
 
-abstract class PKPSubmissionFileDAO extends PKPFileDAO implements PKPPubIdPluginDAO {
+abstract class PKPSubmissionFileDAO extends DAO implements PKPPubIdPluginDAO {
 	/**
 	 * @var array a private list of delegates that provide operations for
 	 *  different SubmissionFile implementations.
 	 */
 	var $_delegates = array();
-
-	/**
-	 * Constructor
-	 */
-	function __construct() {
-		parent::__construct();
-	}
 
 
 	//
@@ -649,10 +642,12 @@ abstract class PKPSubmissionFileDAO extends PKPFileDAO implements PKPPubIdPlugin
 				sf.file_id AS submission_file_id, sf.revision AS submission_revision,
 				af.file_id AS artwork_file_id, af.revision AS artwork_revision,
 				suf.file_id AS supplementary_file_id, suf.revision AS supplementary_revision,
+				s.locale AS submission_locale,
 				sf.*, af.*, suf.*
 			FROM	submission_files sf
 				LEFT JOIN submission_artwork_files af ON sf.file_id = af.file_id AND sf.revision = af.revision
-				LEFT JOIN submission_supplementary_files suf ON sf.file_id = suf.file_id AND sf.revision = suf.revision ';
+				LEFT JOIN submission_supplementary_files suf ON sf.file_id = suf.file_id AND sf.revision = suf.revision
+				LEFT JOIN submissions s ON s.submission_id = sf.submission_id ';
 	}
 
 
@@ -805,7 +800,7 @@ abstract class PKPSubmissionFileDAO extends PKPFileDAO implements PKPPubIdPlugin
 			$delegateClasses = $this->getDelegateClassNames();
 			assert(isset($delegateClasses[$fileImplementation]));
 			$delegateClass = $delegateClasses[$fileImplementation];
-			$this->_delegates[$fileImplementation] = instantiate($delegateClass, 'SubmissionFileDAODelegate', null, null, $this);
+			$this->_delegates[$fileImplementation] = instantiate($delegateClass, 'SubmissionFileDAODelegate');
 		}
 
 		// Return the delegate.

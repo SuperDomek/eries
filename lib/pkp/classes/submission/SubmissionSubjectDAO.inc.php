@@ -19,12 +19,6 @@ import('lib.pkp.classes.controlledVocab.ControlledVocabDAO');
 define('CONTROLLED_VOCAB_SUBMISSION_SUBJECT', 'submissionSubject');
 
 class SubmissionSubjectDAO extends ControlledVocabDAO {
-	/**
-	 * Constructor
-	 */
-	function __construct() {
-		parent::__construct();
-	}
 
 	/**
 	 * Build/fetch and return a controlled vocabulary for subjects.
@@ -33,7 +27,7 @@ class SubmissionSubjectDAO extends ControlledVocabDAO {
 	 */
 	function build($submissionId) {
 		// may return an array of ControlledVocabs
-		return parent::build(CONTROLLED_VOCAB_SUBMISSION_SUBJECT, ASSOC_TYPE_SUBMISSION, $submissionId);
+		return parent::_build(CONTROLLED_VOCAB_SUBMISSION_SUBJECT, ASSOC_TYPE_SUBMISSION, $submissionId);
 	}
 
 	/**

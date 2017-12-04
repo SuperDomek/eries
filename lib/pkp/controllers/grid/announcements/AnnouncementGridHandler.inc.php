@@ -18,13 +18,6 @@ import('lib.pkp.classes.controllers.grid.DataObjectGridCellProvider');
 import('lib.pkp.classes.controllers.grid.DateGridCellProvider');
 
 class AnnouncementGridHandler extends GridHandler {
-	/**
-	 * Constructor
-	 */
-	function __construct() {
-		parent::__construct();
-	}
-
 
 	//
 	// Overridden template methods
@@ -62,8 +55,8 @@ class AnnouncementGridHandler extends GridHandler {
 	/**
 	 * @copydoc GridHandler::initialize()
 	 */
-	function initialize($request) {
-		parent::initialize($request);
+	function initialize($request, $args = null) {
+		parent::initialize($request, $args);
 
 		// Set the no items row text
 		$this->setEmptyRowText('announcement.noneExist');

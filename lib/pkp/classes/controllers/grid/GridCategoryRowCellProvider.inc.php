@@ -17,12 +17,6 @@
 import('lib.pkp.classes.controllers.grid.GridCellProvider');
 
 class GridCategoryRowCellProvider extends GridCellProvider {
-	/**
-	 * Constructor
-	 */
-	function __construct() {
-		parent::__construct();
-	}
 
 	//
 	// Implemented methods from GridCellProvider.
@@ -41,13 +35,10 @@ class GridCategoryRowCellProvider extends GridCellProvider {
 	}
 
 	/**
-	 * @see GridCellProvider::getCellActions()
+	 * @copydoc GridCellProvider::getCellActions()
 	 */
-	function getCellActions($request, $row, $column) {
-		// Get cell actions from the row, that are
-		// positioned with the GRID_ACTION_POSITION_ROW_CLICK
-		// constant.
-		return $row->getActions(GRID_ACTION_POSITION_ROW_CLICK);
+	function getCellActions($request, $row, $column, $position = GRID_ACTION_POSITION_ROW_CLICK) {
+		return $row->getActions($position);
 	}
 
 	/**

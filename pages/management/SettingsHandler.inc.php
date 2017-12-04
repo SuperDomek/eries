@@ -23,6 +23,12 @@ class SettingsHandler extends ManagementHandler {
 	function __construct() {
 		parent::__construct();
 		$this->addRoleAssignment(
+			array(ROLE_ID_SITE_ADMIN),
+			array(
+				'access',
+			)
+		);
+		$this->addRoleAssignment(
 			ROLE_ID_MANAGER,
 			array(
 				'settings',
@@ -46,7 +52,7 @@ class SettingsHandler extends ManagementHandler {
 		switch($path) {
 			case 'index':
 			case '':
-			case 'journal':
+			case 'context':
 				$this->journal($args, $request);
 				break;
 			case 'website':

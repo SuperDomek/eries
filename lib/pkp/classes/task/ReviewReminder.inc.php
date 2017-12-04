@@ -20,12 +20,6 @@ define('REVIEW_REQUEST_REMIND_AUTO', 'REVIEW_REQUEST_REMIND_AUTO');
 
 class ReviewReminder extends ScheduledTask {
 
-	/**
-	 * Constructor.
-	 */
-	function __construct() {
-		parent::__construct();
-	}
 
 	/**
 	 * @copydoc ScheduledTask::getName()
@@ -67,22 +61,23 @@ class ReviewReminder extends ScheduledTask {
 		$email->addRecipient($reviewer->getEmail(), $reviewer->getFullName());
 		$email->setSubject($email->getSubject($context->getPrimaryLocale()));
 		$email->setBody($email->getBody($context->getPrimaryLocale()));
+		$email->setFrom($context->getSetting('contactEmail'), $context->getSetting('contactName'));
 
-		$urlParams = array(
-			'submissionId' => $reviewAssignment->getSubmissionId(),
-		);
+		$reviewUrlArgs = array('submissionId' => $reviewAssignment->getSubmissionId());
 		if ($reviewerAccessKeysEnabled) {
 			import('lib.pkp.classes.security.AccessKeyManager');
 			$accessKeyManager = new AccessKeyManager();
 
 			// Key lifetime is the typical review period plus four weeks
 			$keyLifetime = ($context->getSetting('numWeeksPerReview') + 4) * 7;
-			$urlParams['key'] = $accessKeyManager->createKey('ReviewerContext', $reviewer->getId(), $reviewId, $keyLifetime);
+			$accessKey = $accessKeyManager->createKey($context->getId(), $reviewer->getId(), $reviewId, $keyLifetime);
+			$reviewUrlArgs = array_merge($reviewUrlArgs, array('reviewId' => $reviewId, 'key' => $accessKey));
 		}
+
 		$application = PKPApplication::getApplication();
 		$request = $application->getRequest();
 		$dispatcher = $application->getDispatcher();
-		$submissionReviewUrl = $dispatcher->url($request, ROUTE_PAGE, $context->getPath(), 'reviewer', 'submission', null, $urlParams);
+		$submissionReviewUrl = $dispatcher->url($request, ROUTE_PAGE, $context->getPath(), 'reviewer', 'submission', null, $reviewUrlArgs);
 
 		// Format the review due date
 		$reviewDueDate = strtotime($reviewAssignment->getDateDue());
@@ -142,7 +137,7 @@ class ReviewReminder extends ScheduledTask {
 			// Avoid review assignments that a reminder exists for.
 			if ($reviewAssignment->getDateReminded() !== null) continue;
 
-			// Fetch the submission and the context.
+			// Fetch the submission
 			if ($submission == null || $submission->getId() != $reviewAssignment->getSubmissionId()) {
 				unset($submission);
 				$submission = $submissionDao->getById($reviewAssignment->getSubmissionId());
@@ -151,13 +146,15 @@ class ReviewReminder extends ScheduledTask {
 
 				if ($submission->getStatus() != STATUS_QUEUED) continue;
 
-				if ($context == null || $context->getId() != $submission->getContextId()) {
-					unset($context);
-					$context = $contextDao->getById($submission->getContextId());
+			}
 
-					$inviteReminderDays = $context->getSetting('numDaysBeforeInviteReminder');
-					$submitReminderDays = $context->getSetting('numDaysBeforeSubmitReminder');
-				}
+			// Fetch the context
+			if ($context == null || $context->getId() != $submission->getContextId()) {
+				unset($context);
+				$context = $contextDao->getById($submission->getContextId());
+
+				$inviteReminderDays = $context->getSetting('numDaysBeforeInviteReminder');
+				$submitReminderDays = $context->getSetting('numDaysBeforeSubmitReminder');
 			}
 
 			$reminderType = false;

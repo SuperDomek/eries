@@ -21,12 +21,6 @@ define('GENRE_CATEGORY_SUPPLEMENTARY', 3);
 define('GENRE_SORTABLE_DESIGNATION', '##');
 
 class Genre extends DataObject {
-	/**
-	 * Constructor
-	 */
-	function __construct() {
-		parent::__construct();
-	}
 
 	/**
 	 * Get ID of context.
@@ -116,22 +110,6 @@ class Genre extends DataObject {
 	 */
 	function getLocalizedName() {
 		return $this->getLocalizedData('name');
-	}
-
-	/**
-	 * Set the designation of the genre
-	 * @param $abbrev string
-	 */
-	function setDesignation($abbrev) {
-		$this->setData('designation', $abbrev);
-	}
-
-	/**
-	 * Get the designation of the genre
-	 * @return string
-	 */
-	function getDesignation() {
-		return $this->getData('designation');
 	}
 
 	/**

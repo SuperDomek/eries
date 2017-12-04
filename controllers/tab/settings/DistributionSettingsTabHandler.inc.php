@@ -30,6 +30,19 @@ class DistributionSettingsTabHandler extends PKPDistributionSettingsTabHandler {
 			)
 		));
 	}
+
+	/**
+	 * @copydoc SettingsTabHandler::saveFormData()
+	 */
+	function saveFormData($args, $request) {
+		$response = parent::saveFormData($args, $request);
+		if (in_array($this->getCurrentTab(), array('access', 'paymentMethod')) && $response->getStatus()) {
+			// Cause the sidebar menu to be reloaded to display/hide the Subscriptions item
+			$dispatcher = $request->getDispatcher();
+			return $request->redirectUrlJson($dispatcher->url($request, ROUTE_PAGE, null, 'management', 'settings', 'distribution', array('_' => uniqid()), $this->getCurrentTab()));
+		}
+		return $response;
+	}
 }
 
 ?>

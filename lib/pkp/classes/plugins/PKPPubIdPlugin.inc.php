@@ -17,14 +17,6 @@ import('lib.pkp.classes.plugins.Plugin');
 
 abstract class PKPPubIdPlugin extends LazyLoadPlugin {
 
-	/**
-	 * Constructor
-	 */
-	function __construct() {
-		parent::__construct();
-	}
-
-
 	//
 	// Implement template methods from Plugin
 	//
@@ -95,7 +87,6 @@ abstract class PKPPubIdPlugin extends LazyLoadPlugin {
 				if (!$request->checkCSRF()) return new JSONMessage(false);
 				$contextDao = Application::getContextDAO();
 				$contextDao->deleteAllPubIds($context->getId(), $this->getPubIdType());
-				$notificationManager->createTrivialNotification($user->getId(), NOTIFICATION_TYPE_SUCCESS);
 				return new JSONMessage(true);
 			default:
 				$form->initData();
@@ -408,10 +399,6 @@ abstract class PKPPubIdPlugin extends LazyLoadPlugin {
 	 * Set and store a public identifier.
 	 * @param $pubObject object
 	 * @param $pubId string
-	 * @return string
-	 *
-	 * This function is currently only used in the pubId import/export plugin.
-	 * After the migration of that plugin, check if this function is still needed.
 	 */
 	function setStoredPubId(&$pubObject, $pubId) {
 		$dao = $pubObject->getDAO();

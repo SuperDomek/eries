@@ -31,7 +31,7 @@
 		text-align: center;
 
 		&:before {
-			&:extend(.fa);
+			.fa();
 			content: @fa-var-arrow-left;
 		}
 
@@ -74,7 +74,7 @@
 		}
 
 		&:before {
-			&:extend(.fa);
+			.fa();
 			content: @fa-var-download;
 		}
 
@@ -105,8 +105,7 @@
 	}
 }
 
-// @todo tie this to a class, not id
-#pdfCanvasContainer {
+.galley_view {
 	position: absolute;
 	top: 0;
 	left: 0;

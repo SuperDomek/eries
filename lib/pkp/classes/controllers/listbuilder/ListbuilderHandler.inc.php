@@ -42,25 +42,15 @@ class ListbuilderHandler extends GridHandler {
 	/** @var string Field for LISTBUILDER_SAVE_TYPE_EXTERNAL naming the field used to send the saved contents of the LB */
 	var $_saveFieldName = null;
 
-	/**
-	 * Constructor.
-	 */
-	function __construct() {
-		parent::__construct();
-	}
 
 	/**
-	 * @see GridHandler::initialize
-	 * @param $request PKPRequest
-	 * @param $addItemLink boolean optional True/default to present an "add item" link action
+	 * @copydoc GridHandler::initialize
 	 */
-	function initialize($request, $addItemLink = true) {
-		parent::initialize($request);
+	function initialize($request, $args = null) {
+		parent::initialize($request, $args);
 
-		if ($addItemLink) {
-			import('lib.pkp.classes.linkAction.request.NullAction');
-			$this->addAction($this->getAddItemLinkAction(new NullAction()));
-		}
+		import('lib.pkp.classes.linkAction.request.NullAction');
+		$this->addAction($this->getAddItemLinkAction(new NullAction()));
 	}
 
 
@@ -270,7 +260,7 @@ class ListbuilderHandler extends GridHandler {
 			$changes = array();
 			foreach ($entry as $key => $value) {
 				// Match the column name and localization data, if any.
-				if (!preg_match('/^newRowId\[([a-zA-Z]+)\](\[([a-z][a-z]_[A-Z][A-Z])\])?$/', $key, $matches)) assert(false);
+				if (!preg_match('/^newRowId\[([a-zA-Z]+)\](\[([a-z][a-z]_[A-Z][A-Z](@([A-Za-z0-9]{5,8}|\d[A-Za-z0-9]{3}))?)\])?$/', $key, $matches)) assert(false);
 
 				// Get the column name
 				$column = $matches[1];

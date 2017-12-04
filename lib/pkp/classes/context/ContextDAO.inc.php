@@ -15,12 +15,6 @@
  */
 
 abstract class ContextDAO extends DAO {
-	/**
-	 * Constructor
-	 */
-	function __construct() {
-		parent::__construct();
-	}
 
 	/**
 	 * Retrieve a context by context ID.
@@ -257,6 +251,14 @@ abstract class ContextDAO extends DAO {
 			'DELETE FROM ' . $this->_getTableName() . ' WHERE ' . $this->_getPrimaryKeyColumn() . ' = ?',
 			(int) $contextId
 		);
+
+		// NavigationMenus
+		$navigationMenuDao = DAORegistry::getDAO('NavigationMenuDAO');
+		$navigationMenuDao->deleteByContextId($contextId);
+
+		// NavigationMenuItems
+		$navigationMenuItemDao = DAORegistry::getDAO('NavigationMenuItemDAO');
+		$navigationMenuItemDao->deleteByContextId($contextId);
 	}
 
 	/**

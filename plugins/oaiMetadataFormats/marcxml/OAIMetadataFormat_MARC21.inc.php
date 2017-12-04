@@ -18,7 +18,7 @@ class OAIMetadataFormat_MARC21 extends OAIMetadataFormat {
 	/**
 	 * @see OAIMetadataFormat#toXml
 	 */
-	function toXml(&$record, $format = null) {
+	function toXml($record, $format = null) {
 		$article = $record->getData('article');
 		$journal = $record->getData('journal');
 
@@ -31,8 +31,8 @@ class OAIMetadataFormat_MARC21 extends OAIMetadataFormat {
 		));
 
 		$subjects = array_merge_recursive(
-			$this->stripAssocArray((array) $article->getDiscipline(null)),
-			$this->stripAssocArray((array) $article->getSubject(null))
+			stripAssocArray((array) $article->getDiscipline(null)),
+			stripAssocArray((array) $article->getSubject(null))
 		);
 
 		$templateMgr->assign(array(

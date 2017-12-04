@@ -28,13 +28,6 @@ define ('AUTHOR_TOC_SHOW', 2);
 import('lib.pkp.classes.submission.Submission');
 
 class Article extends Submission {
-	/**
-	 * Constructor.
-	 */
-	function __construct() {
-		parent::__construct();
-	}
-
 
 	//
 	// Get/set methods
@@ -74,7 +67,7 @@ class Article extends Submission {
 
 				// Override based on context settings
 				$publishedArticleDao =& DAORegistry::getDAO('PublishedArticleDAO');
-				$publishedArticle = $publishedArticleDao->getPublishedArticleByArticleId($this->getId());
+				$publishedArticle = $publishedArticleDao->getByArticleId($this->getId());
 				if ($publishedArticle) {
 					switch($context->getSetting('copyrightYearBasis')) {
 						case 'submission':
@@ -85,7 +78,7 @@ class Article extends Submission {
 							if ($publishedArticle->getIssueId()) {
 								// override to the issue's year if published as issue-based
 								$issueDao =& DAORegistry::getDAO('IssueDAO');
-								$issue = $issueDao->getIssueByArticleId($this->getId());
+								$issue = $issueDao->getByArticleId($this->getId());
 								if ($issue && $issue->getDatePublished()) {
 									$fieldValue = date('Y', strtotime($issue->getDatePublished()));
 								}
@@ -196,38 +189,6 @@ class Article extends Submission {
 	}
 
 	/**
-	 * Get current review round.
-	 * @return int
-	 */
-	function getCurrentRound() {
-		return $this->getData('currentRound');
-	}
-
-	/**
-	 * Set current review round.
-	 * @param $currentRound int
-	 */
-	function setCurrentRound($currentRound) {
-		return $this->setData('currentRound', $currentRound);
-	}
-
-	/**
-	 * get expedited
-	 * @return boolean
-	 */
-	function getFastTracked() {
-		return $this->getData('fastTracked');
-	}
-
-	/**
-	 * set fastTracked
-	 * @param $fastTracked boolean
-	 */
-	function setFastTracked($fastTracked) {
-		return $this->setData('fastTracked',$fastTracked);
-	}
-
-	/**
 	 * Get the localized cover page server-side file name
 	 * @return string
 	 */
@@ -296,6 +257,30 @@ class Article extends Submission {
 		$publicFileManager = new PublicFileManager();
 
 		return $request->getBaseUrl() . '/' . $publicFileManager->getJournalFilesPath($this->getContextId()) . '/' . $coverImage;
+	}
+
+	/**
+	 * Get full URLs all cover images
+	 *
+	 * @return array
+	 */
+	function getCoverImageUrls() {
+		$coverImages = $this->getCoverImage(null);
+		if (empty($coverImages)) {
+			return array();
+		}
+
+		$request = Application::getRequest();
+		import('classes.file.PublicFileManager');
+		$publicFileManager = new PublicFileManager();
+
+		$urls = array();
+
+		foreach ($coverImages as $locale => $coverImage) {
+			$urls[$locale] = sprintf('%s/%s/%s', $request->getBaseUrl(), $publicFileManager->getJournalFilesPath($this->getJournalId()), $coverImage);
+		}
+
+		return $urls;
 	}
 }
 

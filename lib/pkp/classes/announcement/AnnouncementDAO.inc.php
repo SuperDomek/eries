@@ -17,12 +17,6 @@
 import('lib.pkp.classes.announcement.Announcement');
 
 class AnnouncementDAO extends DAO {
-	/**
-	 * Constructor
-	 */
-	function __construct() {
-		parent::__construct();
-	}
 
 	/**
 	 * Retrieve an announcement by announcement ID.
@@ -228,7 +222,7 @@ class AnnouncementDAO extends DAO {
 			'SELECT *
 			FROM announcements
 			WHERE assoc_type = ? AND assoc_id = ?
-			ORDER BY announcement_id DESC',
+			ORDER BY date_posted DESC',
 			array((int) $assocType, (int) $assocId),
 			$rangeInfo
 		);
@@ -244,7 +238,7 @@ class AnnouncementDAO extends DAO {
 	 */
 	function getByTypeId($typeId, $rangeInfo = null) {
 		$result = $this->retrieveRange(
-			'SELECT * FROM announcements WHERE type_id = ? ORDER BY announcement_id DESC',
+			'SELECT * FROM announcements WHERE type_id = ? ORDER BY date_posted DESC',
 			(int) $typeId,
 			$rangeInfo
 		);
@@ -266,7 +260,7 @@ class AnnouncementDAO extends DAO {
 			FROM announcements
 			WHERE assoc_type = ?
 				AND assoc_id = ?
-			ORDER BY announcement_id DESC LIMIT ?',
+			ORDER BY date_posted DESC LIMIT ?',
 			array((int) $assocType, (int) $assocId, (int) $numAnnouncements),
 			$rangeInfo
 		);
@@ -289,7 +283,7 @@ class AnnouncementDAO extends DAO {
 				AND assoc_id = ?
 				AND (date_expire IS NULL OR DATE(date_expire) > CURRENT_DATE)
 				AND (DATE(date_posted) <= CURRENT_DATE)
-			ORDER BY announcement_id DESC',
+			ORDER BY date_posted DESC',
 			array((int) $assocType, (int) $assocId),
 			$rangeInfo
 		);
@@ -313,7 +307,7 @@ class AnnouncementDAO extends DAO {
 				AND assoc_id = ?
 				AND (date_expire IS NULL OR DATE(date_expire) > CURRENT_DATE)
 				AND (DATE(date_posted) <= CURRENT_DATE)
-			ORDER BY announcement_id DESC LIMIT ?',
+			ORDER BY date_posted DESC LIMIT ?',
 			array((int) $assocType, (int) $assocId, (int) $numAnnouncements),
 			$rangeInfo
 		);
@@ -333,7 +327,7 @@ class AnnouncementDAO extends DAO {
 			FROM announcements
 			WHERE assoc_type = ?
 				AND assoc_id = ?
-			ORDER BY announcement_id DESC LIMIT 1',
+			ORDER BY date_posted DESC LIMIT 1',
 			array((int) $assocType, (int) $assocId)
 		);
 

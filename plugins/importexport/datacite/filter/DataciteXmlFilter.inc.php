@@ -105,7 +105,7 @@ class DataciteXmlFilter extends NativeExportFilter {
 				$article = $cache->get('articles', $articleId);
 			} else {
 				$articleDao = DAORegistry::getDAO('PublishedArticleDAO'); /* @var $articleDao PublishedArticleDAO */
-				$article = $articleDao->getPublishedArticleByArticleId($pubObject->getSubmissionId(), $context->getId());
+				$article = $articleDao->getByArticleId($pubObject->getSubmissionId(), $context->getId());
 				if ($article) $cache->add($article, null);
 			}
 		}
@@ -120,6 +120,8 @@ class DataciteXmlFilter extends NativeExportFilter {
 			}
 		}
 
+		// Identify the object locale.
+		$objectLocalePrecedence = $this->getObjectLocalePrecedence($context, $article, $galley);
 		// The publisher is required.
 		// Use the journal title as DataCite recommends for now.
 		$publisher = $this->getPrimaryTranslation($context->getName(null), $objectLocalePrecedence);
@@ -134,8 +136,6 @@ class DataciteXmlFilter extends NativeExportFilter {
 		// Create the root node
 		$rootNode = $this->createRootNode($doc);
 		$doc->appendChild($rootNode);
-		// Identify the object locale.
-		$objectLocalePrecedence = $this->getObjectLocalePrecedence($context, $article, $galley);
 		// DOI (mandatory)
 		$doi = $pubObject->getStoredPubId('doi');
 		if ($plugin->isTestMode($context)) {
@@ -391,8 +391,7 @@ class DataciteXmlFilter extends NativeExportFilter {
 	 * @param $article PublishedArticle
 	 * @param $galley ArticleGalley
 	 * @param $galleyFile SubmissionFile
-	 * @return DOMElement|null Can be null if a size
-	 *  cannot be identified for the given object.
+	 * @return DOMElement.
 	 */
 	function createResourceTypeNode($doc, $issue, $article, $galley, $galleyFile) {
 		$deployment = $this->getDeployment();
@@ -422,6 +421,10 @@ class DataciteXmlFilter extends NativeExportFilter {
 			// Create the resourceType element.
 			$resourceTypeNode = $doc->createElementNS($deployment->getNamespace(), 'resourceType', $resourceType);
 			$resourceTypeNode->setAttribute('resourceTypeGeneral', 'Text');
+		} else {
+			// It is a supplementary file
+			$resourceTypeNode = $doc->createElementNS($deployment->getNamespace(), 'resourceType');
+			$resourceTypeNode->setAttribute('resourceTypeGeneral', 'Dataset');
 		}
 		return $resourceTypeNode;
 	}

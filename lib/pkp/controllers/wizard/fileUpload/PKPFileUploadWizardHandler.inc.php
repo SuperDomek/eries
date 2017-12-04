@@ -120,7 +120,7 @@ class PKPFileUploadWizardHandler extends Handler {
 
 	function authorize($request, &$args, $roleAssignments) {
 		// Allow both reviewers (if in review) and context roles.
-		import('classes.security.authorization.ReviewStageAccessPolicy');
+		import('lib.pkp.classes.security.authorization.ReviewStageAccessPolicy');
 
 		$this->addPolicy(new ReviewStageAccessPolicy($request, $args, $roleAssignments, 'submissionId', $request->getUserVar('stageId')), true);
 
@@ -347,13 +347,11 @@ class PKPFileUploadWizardHandler extends Handler {
 						ASSOC_TYPE_SUBMISSION,
 						$reviewRound->getSubmissionId()
 					);
-					$notificationMgr->updateNotification(
-						PKPApplication::getRequest(),
-						array(NOTIFICATION_TYPE_ALL_REVISIONS_IN),
-						null,
-						ASSOC_TYPE_REVIEW_ROUND,
-						$reviewRound->getId()
-					);
+
+					// Update the ReviewRound status when revision is submitted
+					import('lib.pkp.classes.submission.reviewRound.ReviewRoundDAO');
+					$reviewRoundDao = DAORegistry::getDAO('ReviewRoundDAO');
+					$reviewRoundDao->updateStatus($reviewRound);
 				}
 				break;
 		}
@@ -380,9 +378,13 @@ class PKPFileUploadWizardHandler extends Handler {
 		// Validate the form and revise the file.
 		if ($confirmationForm->validate($request)) {
 			if (is_a($uploadedFile = $confirmationForm->execute($request), 'SubmissionFile')) {
+
+				$this->_attachEntities($uploadedFile);
+
 				// Go to the meta-data editing step.
 				return new JSONMessage(true, '', '0', $this->_getUploadedFileInfo($uploadedFile));
 			} else {
+
 				return new JSONMessage(false, __('common.uploadFailed'));
 			}
 		} else {
@@ -459,7 +461,7 @@ class PKPFileUploadWizardHandler extends Handler {
 		// file stage matches the given file name.
 		$possibleRevisedFileId = null;
 		$matchedPercentage = 0;
-		foreach ($submissionFiles as $submissionFile) { /* @var $submissionFile SubmissionFile */
+		foreach ((array) $submissionFiles as $submissionFile) { /* @var $submissionFile SubmissionFile */
 			// Do not consider the uploaded file itself.
 			if ($uploadedFile->getFileId() == $submissionFile->getFileId()) continue;
 

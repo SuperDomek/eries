@@ -16,6 +16,7 @@
 
 define('ROUTE_COMPONENT', 'component');
 define('ROUTE_PAGE', 'page');
+define('ROUTE_API', 'api');
 
 define('CONTEXT_SITE', 0);
 define('CONTEXT_ID_NONE', 0);
@@ -44,6 +45,10 @@ define('ASSOC_TYPE_USER_ROLES',			0x0100007);
 define('ASSOC_TYPE_ACCESSIBLE_WORKFLOW_STAGES',	0x0100008);
 define('ASSOC_TYPE_SUBMISSION',			0x0100009);
 define('ASSOC_TYPE_QUERY',			0x010000a);
+define('ASSOC_TYPE_QUEUED_PAYMENT',		0x010000b);
+
+// Constant used in UsageStats for submission files that are not full texts
+define('ASSOC_TYPE_SUBMISSION_FILE_COUNTER_OTHER', 0x0000213);
 
 // FIXME: these were defined in userGroup. they need to be moved somewhere with classes that do mapping.
 define('WORKFLOW_STAGE_PATH_SUBMISSION', 'submission');
@@ -79,7 +84,7 @@ interface iPKPApplicationInfoProvider {
 	 * This is necessary to prevent a column name mismatch during
 	 * the upgrade process when the codebase and the database are out
 	 * of sync.
-	 * See:  http://pkp.sfu.ca/bugzilla/show_bug.cgi?id=8265
+	 * See:  https://pkp.sfu.ca/bugzilla/show_bug.cgi?id=8265
 	 *
 	 * The 'generic' category of plugin is loaded before the schema
 	 * is reconciled.  Subclasses of PKPApplication perform a check
@@ -118,6 +123,9 @@ abstract class PKPApplication implements iPKPApplicationInfoProvider {
 		// Seed random number generator
 		mt_srand(((double) microtime()) * 1000000);
 
+		// Load Composer autoloader
+		require_once('lib/pkp/lib/vendor/autoload.php');
+
 		import('lib.pkp.classes.core.Core');
 		import('lib.pkp.classes.core.PKPString');
 		import('lib.pkp.classes.core.Registry');
@@ -133,7 +141,7 @@ abstract class PKPApplication implements iPKPApplicationInfoProvider {
 
 		import('lib.pkp.classes.cache.CacheManager');
 
-		import('classes.security.RoleDAO');
+		import('lib.pkp.classes.security.RoleDAO');
 		import('lib.pkp.classes.security.Validation');
 		import('lib.pkp.classes.session.SessionManager');
 		import('classes.template.TemplateManager');
@@ -166,6 +174,13 @@ abstract class PKPApplication implements iPKPApplicationInfoProvider {
 				}
 			}
 		}
+
+		// Register custom autoloader function for PKP namespace
+		spl_autoload_register(function($class) {
+			$prefix = 'PKP\\';
+			$rootPath = BASE_SYS_DIR . "/lib/pkp/classes";
+			customAutoload($rootPath, $prefix, $class);
+		});
 	}
 
 	/**
@@ -210,6 +225,7 @@ abstract class PKPApplication implements iPKPApplicationInfoProvider {
 			$dispatcher->setApplication(PKPApplication::getApplication());
 
 			// Inject router configuration
+			$dispatcher->addRouterName('lib.pkp.classes.core.APIRouter', ROUTE_API);
 			$dispatcher->addRouterName('lib.pkp.classes.core.PKPComponentRouter', ROUTE_COMPONENT);
 			$dispatcher->addRouterName('classes.core.PageRouter', ROUTE_PAGE);
 		}
@@ -298,7 +314,7 @@ abstract class PKPApplication implements iPKPApplicationInfoProvider {
 			}
 
 			$versionDao = DAORegistry::getDAO('VersionDAO'); /* @var $versionDao VersionDAO */
-			$this->enabledProducts =& $versionDao->getCurrentProducts($settingContext);
+			$this->enabledProducts = $versionDao->getCurrentProducts($settingContext);
 		}
 
 		if (is_null($category)) {
@@ -346,6 +362,7 @@ abstract class PKPApplication implements iPKPApplicationInfoProvider {
 			'DataObjectTombstoneDAO' => 'lib.pkp.classes.tombstone.DataObjectTombstoneDAO',
 			'DataObjectTombstoneSettingsDAO' => 'lib.pkp.classes.tombstone.DataObjectTombstoneSettingsDAO',
 			'EditDecisionDAO' => 'lib.pkp.classes.submission.EditDecisionDAO',
+			'EmailTemplateDAO' => 'lib.pkp.classes.mail.EmailTemplateDAO',
 			'FilterDAO' => 'lib.pkp.classes.filter.FilterDAO',
 			'FilterGroupDAO' => 'lib.pkp.classes.filter.FilterGroupDAO',
 			'GenreDAO' => 'lib.pkp.classes.submission.GenreDAO',
@@ -354,6 +371,9 @@ abstract class PKPApplication implements iPKPApplicationInfoProvider {
 			'LanguageDAO' => 'lib.pkp.classes.language.LanguageDAO',
 			'LibraryFileDAO' => 'lib.pkp.classes.context.LibraryFileDAO',
 			'MetadataDescriptionDAO' => 'lib.pkp.classes.metadata.MetadataDescriptionDAO',
+			'NavigationMenuDAO' => 'lib.pkp.classes.navigationMenu.NavigationMenuDAO',
+			'NavigationMenuItemDAO' => 'lib.pkp.classes.navigationMenu.NavigationMenuItemDAO',
+			'NavigationMenuItemAssignmentDAO' => 'lib.pkp.classes.navigationMenu.NavigationMenuItemAssignmentDAO',
 			'NoteDAO' => 'lib.pkp.classes.note.NoteDAO',
 			'NotificationDAO' => 'lib.pkp.classes.notification.NotificationDAO',
 			'NotificationMailListDAO' => 'lib.pkp.classes.notification.NotificationMailListDAO',
@@ -361,19 +381,23 @@ abstract class PKPApplication implements iPKPApplicationInfoProvider {
 			'NotificationSubscriptionSettingsDAO' => 'lib.pkp.classes.notification.NotificationSubscriptionSettingsDAO',
 			'PluginGalleryDAO' => 'lib.pkp.classes.plugins.PluginGalleryDAO',
 			'PluginSettingsDAO' => 'lib.pkp.classes.plugins.PluginSettingsDAO',
-			'ProcessDAO' => 'lib.pkp.classes.process.ProcessDAO',
+			'QueuedPaymentDAO' => 'lib.pkp.classes.payment.QueuedPaymentDAO',
+			'ReviewAssignmentDAO' => 'lib.pkp.classes.submission.reviewAssignment.ReviewAssignmentDAO',
 			'ReviewFilesDAO' => 'lib.pkp.classes.submission.ReviewFilesDAO',
 			'ReviewFormDAO' => 'lib.pkp.classes.reviewForm.ReviewFormDAO',
 			'ReviewFormElementDAO' => 'lib.pkp.classes.reviewForm.ReviewFormElementDAO',
 			'ReviewFormResponseDAO' => 'lib.pkp.classes.reviewForm.ReviewFormResponseDAO',
 			'ReviewRoundDAO' => 'lib.pkp.classes.submission.reviewRound.ReviewRoundDAO',
+			'RoleDAO' => 'lib.pkp.classes.security.RoleDAO',
 			'ScheduledTaskDAO' => 'lib.pkp.classes.scheduledTask.ScheduledTaskDAO',
 			'SessionDAO' => 'lib.pkp.classes.session.SessionDAO',
 			'SiteDAO' => 'lib.pkp.classes.site.SiteDAO',
 			'SiteSettingsDAO' => 'lib.pkp.classes.site.SiteSettingsDAO',
+			'StageAssignmentDAO' => 'lib.pkp.classes.stageAssignment.StageAssignmentDAO',
 			'SubEditorsDAO' => 'lib.pkp.classes.context.SubEditorsDAO',
 			'SubmissionAgencyDAO' => 'lib.pkp.classes.submission.SubmissionAgencyDAO',
 			'SubmissionAgencyEntryDAO' => 'lib.pkp.classes.submission.SubmissionAgencyEntryDAO',
+			'SubmissionCommentDAO' => 'lib.pkp.classes.submission.SubmissionCommentDAO',
 			'SubmissionDisciplineDAO' => 'lib.pkp.classes.submission.SubmissionDisciplineDAO',
 			'SubmissionDisciplineEntryDAO' => 'lib.pkp.classes.submission.SubmissionDisciplineEntryDAO',
 			'SubmissionEmailLogDAO' => 'lib.pkp.classes.log.SubmissionEmailLogDAO',
@@ -387,6 +411,7 @@ abstract class PKPApplication implements iPKPApplicationInfoProvider {
 			'SubmissionSubjectEntryDAO' => 'lib.pkp.classes.submission.SubmissionSubjectEntryDAO',
 			'TimeZoneDAO' => 'lib.pkp.classes.i18n.TimeZoneDAO',
 			'TemporaryFileDAO' => 'lib.pkp.classes.file.TemporaryFileDAO',
+			'UserGroupAssignmentDAO' => 'lib.pkp.classes.security.UserGroupAssignmentDAO',
 			'UserGroupDAO' => 'lib.pkp.classes.security.UserGroupDAO',
 			'UserStageAssignmentDAO' => 'lib.pkp.classes.user.UserStageAssignmentDAO',
 			'VersionDAO' => 'lib.pkp.classes.site.VersionDAO',
@@ -436,10 +461,14 @@ abstract class PKPApplication implements iPKPApplicationInfoProvider {
 	 * @return array
 	 */
 	function getJSLocaleKeys() {
+		AppLocale::requireComponents(LOCALE_COMPONENT_PKP_API);
 		return array(
 			'form.dataHasChanged',
 			'common.close',
+			'common.ok',
+			'common.error',
 			'search.noKeywordError',
+			'api.submissions.unknownError',
 		);
 	}
 
@@ -506,7 +535,7 @@ abstract class PKPApplication implements iPKPApplicationInfoProvider {
 	/**
 	 * Main entry point for PKP statistics reports.
 	 *
-	 * @see <http://pkp.sfu.ca/wiki/index.php/OJSdeStatisticsConcept#Input_and_Output_Formats_.28Aggregation.2C_Filters.2C_Metrics_Data.29>
+	 * @see <https://pkp.sfu.ca/wiki/index.php/OJSdeStatisticsConcept#Input_and_Output_Formats_.28Aggregation.2C_Filters.2C_Metrics_Data.29>
 	 * for a full specification of the input and output format of this method.
 	 *
 	 * @param $metricType null|string|array metrics selection
@@ -575,7 +604,7 @@ abstract class PKPApplication implements iPKPApplicationInfoProvider {
 			$partialReport = $reportPlugin->getMetrics($availableMetrics, $columns, $filter, $orderBy, $range);
 
 			// Merge the partial report with the main report.
-			$report = array_merge($report, $partialReport);
+			$report = array_merge($report, (array) $partialReport);
 
 			// Remove the found metric types from the metric type array.
 			$metricType = array_diff($metricType, $availableMetrics);
@@ -652,6 +681,28 @@ abstract class PKPApplication implements iPKPApplicationInfoProvider {
 		}
 		return null;
 	}
+
+	/**
+	 * Get a mapping of role keys and i18n key names.
+	 * @param boolean $contextOnly If false, also returns site-level roles (Site admin)
+	 * @param array|null $roleIds Only return role names of these IDs
+	 * @return array
+	 */
+	static function getRoleNames($contextOnly = false, $roleIds = null) {
+		$siteRoleNames = array(ROLE_ID_SITE_ADMIN => 'user.role.siteAdmin');
+		$appRoleNames = array(
+			ROLE_ID_MANAGER => 'user.role.manager',
+			ROLE_ID_SUB_EDITOR => 'user.role.subEditor',
+			ROLE_ID_ASSISTANT => 'user.role.assistant',
+			ROLE_ID_AUTHOR => 'user.role.author',
+			ROLE_ID_REVIEWER => 'user.role.reviewer',
+			ROLE_ID_READER => 'user.role.reader',
+		);
+		$roleNames = $contextOnly ? $appRoleNames : $siteRoleNames + $appRoleNames;
+		if (!empty($roleIds)) $roleNames = array_intersect_key($roleNames, array_flip($roleIds));
+
+		return $roleNames;
+	}
 }
 
 /**
@@ -670,6 +721,9 @@ define_exposed('WORKFLOW_STAGE_ID_INTERNAL_REVIEW', 2);
 define_exposed('WORKFLOW_STAGE_ID_EXTERNAL_REVIEW', 3);
 define_exposed('WORKFLOW_STAGE_ID_EDITING', 4);
 define_exposed('WORKFLOW_STAGE_ID_PRODUCTION', 5);
+
+/* TextArea insert tag variable types used to change their display when selected */
+define_exposed('INSERT_TAG_VARIABLE_TYPE_PLAIN_TEXT', 'PLAIN_TEXT');
 
 // To expose LISTBUILDER_SOURCE_TYPE_... constants via JS
 import('lib.pkp.classes.controllers.listbuilder.ListbuilderHandler');

@@ -39,9 +39,9 @@ class JournalSiteSettingsForm extends ContextSiteSettingsForm {
 
 	/**
 	 * Save journal settings.
-	 * @param $request PKPRequest
 	 */
-	function execute($request) {
+	function execute() {
+		$request = Application::getRequest();
 		$site = $request->getSite();
 		$journalDao = DAORegistry::getDAO('JournalDAO');
 
@@ -120,8 +120,13 @@ class JournalSiteSettingsForm extends ContextSiteSettingsForm {
 			$section->setEditorRestricted(false);
 			$section->setHideTitle(false);
 			$sectionDao->insertObject($section);
+
+			$journal->updateSetting('supportedLocales', $site->getSupportedLocales());
+
+			// load default navigationMenus.
+			$this->_loadDefaultNavigationMenus($journalId);
+
 		}
-		$journal->updateSetting('supportedLocales', $site->getSupportedLocales());
 		$journal->updateSetting('name', $this->getData('name'), 'string', true);
 		$journal->updateSetting('description', $this->getData('description'), 'string', true);
 

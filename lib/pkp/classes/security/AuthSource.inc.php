@@ -15,15 +15,9 @@
  */
 
 
-import('classes.plugins.AuthPlugin');
+import('lib.pkp.classes.plugins.AuthPlugin');
 
 class AuthSource extends DataObject {
-	/**
-	 * Constructor.
-	 */
-	function __construct() {
-		parent::__construct();
-	}
 
 	//
 	// Get/set methods

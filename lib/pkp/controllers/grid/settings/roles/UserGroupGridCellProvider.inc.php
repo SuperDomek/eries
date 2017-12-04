@@ -18,13 +18,6 @@ import('lib.pkp.classes.controllers.grid.GridCellProvider');
 class UserGroupGridCellProvider extends GridCellProvider {
 
 	/**
-	 * Constructor
-	 */
-	function __construct() {
-		parent::__construct();
-	}
-
-	/**
 	 * Extracts variables for a given column from a data element
 	 * so that they may be assigned to template before rendering.
 	 * @param $row GridRow
@@ -52,6 +45,7 @@ class UserGroupGridCellProvider extends GridCellProvider {
 					// This stage should not be assigned to the user group.
 					$selectDisabled = true;
 				}
+				if ($userGroup->getRoleId() == ROLE_ID_MANAGER) $selectDisabled = true;
 
 				return array('selected' => in_array($columnId, array_keys($assignedStages)),
 					'disabled' => $selectDisabled);

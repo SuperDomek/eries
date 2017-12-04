@@ -20,12 +20,6 @@ import('lib.pkp.classes.file.FileWrapper');
 define('PLUGIN_GALLERY_XML_URL', 'http://pkp.sfu.ca/ojs/xml/plugins.xml');
 
 class PluginGalleryDAO extends DAO {
-	/**
-	 * Constructor
-	 */
-	function __construct() {
-		parent::__construct();
-	}
 
 	/**
 	 * Get a set of GalleryPlugin objects describing the available
@@ -44,7 +38,7 @@ class PluginGalleryDAO extends DAO {
 			// apply search filters if any supplied.
 			if (
 				$plugin &&
-				($category == '' || $plugin->getCategory() == $category) &&
+				($category == '' || $category == PLUGIN_GALLERY_ALL_CATEGORY_SEARCH_VALUE || $plugin->getCategory() == $category) &&
 				($search == '' || PKPString::strpos(PKPString::strtolower(serialize($plugin)), PKPString::strtolower($search)) !== false)
 			) {
 				$plugins[] = $plugin;

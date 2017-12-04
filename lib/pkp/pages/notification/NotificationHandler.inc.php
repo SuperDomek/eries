@@ -17,12 +17,6 @@ import('classes.handler.Handler');
 import('classes.notification.Notification');
 
 class NotificationHandler extends Handler {
-	/**
-	 * Constructor
-	 */
-	function __construct() {
-		parent::__construct();
-	}
 
 	/**
 	 * Display help table of contents.
@@ -51,7 +45,7 @@ class NotificationHandler extends Handler {
 		$notificationDao = DAORegistry::getDAO('NotificationDAO');
 		$templateMgr->assign('unread', $notificationDao->getNotificationCount(false, $userId, $contextId));
 		$templateMgr->assign('read', $notificationDao->getNotificationCount(true, $userId, $contextId));
-		$templateMgr->assign('url', $router->url($request, null, 'user', 'profile'));
+		$templateMgr->assign('url', $router->url($request, null, 'user', 'profile', array(), array(), 'notificationSettings'));
 		$templateMgr->display('notification/index.tpl');
 	}
 

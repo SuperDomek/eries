@@ -19,13 +19,6 @@ import('classes.handler.Handler');
 import('lib.pkp.classes.core.JSONMessage');
 
 class PKPEditorDecisionHandler extends Handler {
-	/**
-	 * Constructor.
-	 */
-	function __construct() {
-		parent::__construct();
-	}
-
 
 	//
 	// Implement template methods from PKPHandler
@@ -43,9 +36,9 @@ class PKPEditorDecisionHandler extends Handler {
 	}
 
 	/**
-	 * @see PKPHandler::initialize()
+	 * @copydoc PKPHandler::initialize()
 	 */
-	function initialize($request, $args) {
+	function initialize($request) {
 		AppLocale::requireComponents(
 			LOCALE_COMPONENT_APP_COMMON,
 			LOCALE_COMPONENT_APP_EDITOR,
@@ -206,7 +199,7 @@ class PKPEditorDecisionHandler extends Handler {
 		$textSeparator = '------------------------------------------------------';
 		foreach ($reviewAssignments as $reviewAssignment) {
 			// If the reviewer has completed the assignment, then import the review.
-			if ($reviewAssignment->getDateCompleted() != null && !$reviewAssignment->getCancelled()) {
+			if ($reviewAssignment->getDateCompleted() != null) {
 				// Get the comments associated with this review assignment
 				$submissionComments = $submissionCommentDao->getSubmissionComments($submission->getId(), COMMENT_TYPE_PEER_REVIEW, $reviewAssignment->getId());
 
@@ -244,6 +237,11 @@ class PKPEditorDecisionHandler extends Handler {
 
 						if ($reviewFormResponse) {
 							$possibleResponses = $reviewFormElement->getLocalizedPossibleResponses();
+							// See issue #2437.
+							if (in_array($reviewFormElement->getElementType(), array(REVIEW_FORM_ELEMENT_TYPE_CHECKBOXES, REVIEW_FORM_ELEMENT_TYPE_RADIO_BUTTONS))) {
+								ksort($possibleResponses);
+								$possibleResponses = array_values($possibleResponses);
+							}
 							if (in_array($reviewFormElement->getElementType(), $reviewFormElement->getMultipleResponsesElementTypes())) {
 								if ($reviewFormElement->getElementType() == REVIEW_FORM_ELEMENT_TYPE_CHECKBOXES) {
 									$body .= '<ul>';
@@ -256,7 +254,7 @@ class PKPEditorDecisionHandler extends Handler {
 								}
 								$body .= '<br>';
 							} else {
-								$body .= '<blockquote>' . htmlspecialchars($reviewFormResponse->getValue()) . '</blockquote>';
+								$body .= '<blockquote>' . nl2br(htmlspecialchars($reviewFormResponse->getValue())) . '</blockquote>';
 							}
 						}
 
@@ -264,16 +262,63 @@ class PKPEditorDecisionHandler extends Handler {
 					$body .= "$textSeparator<br><br>";
 
 				}
-
-
 			}
 		}
 
-		if(empty($body)) {
-			return new JSONMessage(false, __('editor.review.noReviews'));
-		} else {
-			return new JSONMessage(true, $body);
+		// Notify the user.
+		$notificationMgr = new NotificationManager();
+		$user = $request->getUser();
+		$notificationMgr->createTrivialNotification($user->getId(), NOTIFICATION_TYPE_SUCCESS, array('contents' => __('editor.review.reviewsAdded')));
+
+		return new JSONMessage(true, empty($body)?__('editor.review.noReviews'):$body);
+	}
+
+	/**
+	 * Show the editor recommendation form
+	 * @param $args array
+	 * @param $request PKPRequest
+	 * @return JSONMessage
+	 */
+	function sendRecommendation($args, $request) {
+		// Retrieve the authorized submission, stage id and review round.
+		$submission = $this->getAuthorizedContextObject(ASSOC_TYPE_SUBMISSION);
+		$stageId = $this->getAuthorizedContextObject(ASSOC_TYPE_WORKFLOW_STAGE);
+		assert(in_array($stageId, $this->_getReviewStages()));
+		$reviewRound = $this->getAuthorizedContextObject(ASSOC_TYPE_REVIEW_ROUND);
+		assert(is_a($reviewRound, 'ReviewRound'));
+
+		// Form handling
+		import('lib.pkp.controllers.modals.editorDecision.form.RecommendationForm');
+		$editorRecommendationForm = new RecommendationForm($submission, $stageId, $reviewRound);
+		$editorRecommendationForm->initData($request);
+		return new JSONMessage(true, $editorRecommendationForm->fetch($request));
+	}
+
+	/**
+	 * Show the editor recommendation form
+	 * @param $args array
+	 * @param $request PKPRequest
+	 * @return JSONMessage
+	 */
+	function saveRecommendation($args, $request) {
+		// Retrieve the authorized submission, stage id and review round.
+		$submission = $this->getAuthorizedContextObject(ASSOC_TYPE_SUBMISSION);
+		$stageId = $this->getAuthorizedContextObject(ASSOC_TYPE_WORKFLOW_STAGE);
+		assert(in_array($stageId, $this->_getReviewStages()));
+		$reviewRound = $this->getAuthorizedContextObject(ASSOC_TYPE_REVIEW_ROUND);
+		assert(is_a($reviewRound, 'ReviewRound'));
+
+		// Form handling
+		import('lib.pkp.controllers.modals.editorDecision.form.RecommendationForm');
+		$editorRecommendationForm = new RecommendationForm($submission, $stageId, $reviewRound);
+		$editorRecommendationForm->readInputData();
+		if ($editorRecommendationForm->validate()) {
+			$editorRecommendationForm->execute($request);
+			$json = new JSONMessage(true);
+			$json->setGlobalEvent('decisionActionUpdated');
+			return $json;
 		}
+		return new JSONMessage(false);
 	}
 
 
@@ -285,7 +330,7 @@ class PKPEditorDecisionHandler extends Handler {
 	 * @return array
 	 */
 	protected function _getReviewRoundOps() {
-		return array('promoteInReview', 'savePromoteInReview', 'newReviewRound', 'saveNewReviewRound', 'sendReviewsInReview', 'saveSendReviewsInReview', 'importPeerReviews');
+		return array('promoteInReview', 'savePromoteInReview', 'newReviewRound', 'saveNewReviewRound', 'sendReviewsInReview', 'saveSendReviewsInReview', 'importPeerReviews', 'sendRecommendation', 'saveRecommendation');
 	}
 
 	/**
@@ -401,18 +446,6 @@ class PKPEditorDecisionHandler extends Handler {
 				ASSOC_TYPE_SUBMISSION,
 				$submission->getId()
 			);
-
-			// Update review round notifications
-			$reviewRound = $this->getAuthorizedContextObject(ASSOC_TYPE_REVIEW_ROUND);
-			if ($reviewRound) {
-				$notificationMgr->updateNotification(
-					$request,
-					array(NOTIFICATION_TYPE_ALL_REVIEWS_IN, NOTIFICATION_TYPE_ALL_REVISIONS_IN),
-					null,
-					ASSOC_TYPE_REVIEW_ROUND,
-					$reviewRound->getId()
-				);
-			}
 
 			// Update submission notifications
 			$submissionNotificationsToUpdate = array(

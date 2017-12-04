@@ -3,7 +3,7 @@
 /**
  * @file controllers/grid/queries/QueriesAccessHelper.inc.php
  *
- * Copyright (c) 2016-2017 Simon Fraser University Library
+ * Copyright (c) 2016-2017 Simon Fraser University
  * Copyright (c) 2000-2017 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
@@ -19,7 +19,7 @@
  *  Edit Q     All       All         If Creator If Creator
  *  List/View  All       All	     Assigned   Assigned
  *  Open/close All       All	     Assigned   No
- *  Delete Q   All       All	     No         No
+ *  Delete Q   All       All	     If Blank	If Blank
  */
 
 class QueriesAccessHelper {

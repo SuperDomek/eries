@@ -172,6 +172,15 @@ class UserGroupDAO extends DAO {
 	}
 
 	/**
+	 * @copydoc DAO::getAdditionalFieldNames()
+	 */
+	function getAdditionalFieldNames() {
+		return array_merge(parent::getAdditionalFieldNames(), array(
+			'recommendOnly',
+		));
+	}
+
+	/**
 	 * Update the localized data for this object
 	 * @param $author object
 	 */
@@ -246,7 +255,8 @@ class UserGroupDAO extends DAO {
 			FROM	user_groups
 			WHERE	context_id = ? AND
 				role_id = ?
-				' . ($default?' AND is_default = ?':''),
+				' . ($default?' AND is_default = ?':'')
+			. ' ORDER BY user_group_id',
 			$params,
 			$dbResultRange
 		);
@@ -438,17 +448,18 @@ class UserGroupDAO extends DAO {
 
 	/**
 	 * Find users that don't have a given role
-	 * @param $contextId int optional
-	 * @param ROLE_ID_... int (const)
-	 * @param $search string
+	 * @param $roleId ROLE_ID_... int (const)
+	 * @param $contextId int Optional context ID
+	 * @param $search string Optional search string
+	 * @param $rangeInfo RangeInfo Optional range info
 	 * @return DAOResultFactory
 	 */
-	function getUsersNotInRole($roleId, $contextId = null, $search = null) {
+	function getUsersNotInRole($roleId, $contextId = null, $search = null, $rangeInfo = null) {
 		$params = array((int) $roleId);
 		if ($contextId) $params[] = (int) $contextId;
 		if(isset($search)) $params = array_merge($params, array_pad(array(), 5, '%' . $search . '%'));
 
-		$result = $this->retrieve(
+		$result = $this->retrieveRange(
 			'SELECT	*
 			FROM	users u
 			WHERE	u.user_id NOT IN (
@@ -460,7 +471,8 @@ class UserGroupDAO extends DAO {
 					($contextId ? ' AND ug.context_id = ?' : '') .
 				')' .
 				(isset($search) ? ' AND (u.first_name LIKE ? OR u.middle_name LIKE ? OR u.last_name LIKE ? OR u.email LIKE ? OR u.username LIKE ?)' : ''),
-			$params
+			$params,
+			$rangeInfo
 		);
 
 		return new DAOResultFactory($result, $this->userDao, '_returnUserFromRowWithData');
@@ -490,9 +502,9 @@ class UserGroupDAO extends DAO {
 				LEFT JOIN controlled_vocab_entry_settings cves ON (ui.controlled_vocab_entry_id = cves.controlled_vocab_entry_id)
 				LEFT JOIN user_user_groups uug ON (uug.user_id = u.user_id)
 				LEFT JOIN user_groups ug ON (ug.user_group_id = uug.user_group_id)
-			WHERE	1=1' .
-				($contextId?' AND ug.context_id = ?':'') .
-				($userGroupId?' AND ug.user_group_id = ?':'') .
+			WHERE	1=1 ' .
+				($contextId?'AND ug.context_id = ? ':'') .
+				($userGroupId?'AND ug.user_group_id = ? ':'') .
 				$this->_getSearchSql($searchType, $search, $searchMatch, $params),
 			$params,
 			$dbResultRange
@@ -847,36 +859,31 @@ class UserGroupDAO extends DAO {
 	//
 
 	/**
-	 * Get the user groups assigned to each stage. Provide the ability to omit authors and reviewers
-	 * Since these are typically stored differently and displayed in different circumstances
-	 * @param Integer $contextId
-	 * @param Integer $stageId
-	 * @param boolean (optional) $omitAuthors
-	 * @param boolean (optional) $omitReviewers
-	 * @param Integer (optional) $roleId
+	 * Get the user groups assigned to each stage.
+	 * @param int $contextId Context ID
+	 * @param int $stageId WORKFLOW_STAGE_ID_...
+	 * @param int $roleId Optional ROLE_ID_... to filter results by
 	 * @param DBResultRange (optional) $dbResultRange
 	 * @return DAOResultFactory
 	 */
-	function getUserGroupsByStage($contextId, $stageId, $omitAuthors = false, $omitReviewers = false, $roleId = null, $dbResultRange = null) {
+	function getUserGroupsByStage($contextId, $stageId, $roleId = null, $dbResultRange = null) {
 		$params = array((int) $contextId, (int) $stageId);
-		if ($omitAuthors) $params[] = ROLE_ID_AUTHOR;
-		if ($omitReviewers) $params[] = ROLE_ID_REVIEWER;
-		if ($roleId) $params[] = $roleId;
-		$result = $this->retrieveRange(
-			'SELECT	ug.*
-			FROM	user_groups ug
-			JOIN user_group_stage ugs ON (ug.user_group_id = ugs.user_group_id AND ug.context_id = ugs.context_id)
-			WHERE	ugs.context_id = ? AND
-			ugs.stage_id = ?' .
-			($omitAuthors?' AND ug.role_id <> ?':'') .
-			($omitReviewers?' AND ug.role_id <> ?':'') .
-			($roleId?' AND ug.role_id = ?':'') .
-			' ORDER BY ug.role_id ASC',
-			$params,
-			$dbResultRange
+		if ($roleId) $params[] = (int) $roleId;
+		return new DAOResultFactory(
+			$this->retrieveRange(
+				'SELECT	ug.*
+				FROM	user_groups ug
+					JOIN user_group_stage ugs ON (ug.user_group_id = ugs.user_group_id AND ug.context_id = ugs.context_id)
+				WHERE	ugs.context_id = ? AND
+					ugs.stage_id = ?
+					' . ($roleId?'AND ug.role_id = ?':'') . '
+				ORDER BY ug.role_id ASC',
+				$params,
+				$dbResultRange
+			),
+			$this,
+			'_returnFromRow'
 		);
-
-		return new DAOResultFactory($result, $this, '_returnFromRow');
 	}
 
 	/**
@@ -949,6 +956,36 @@ class UserGroupDAO extends DAO {
 		$result->Close();
 		return $returner;
 	}
+
+	/**
+	 * Get all user group IDs with recommendOnly option enabled.
+	 * @param $contextId integer
+	 * @param $roleId integer (optional)
+	 * @return array
+	 */
+	function getRecommendOnlyGroupIds($contextId, $roleId = null) {
+		$params = array((int) $contextId);
+		if ($roleId) $params[] = (int) $roleId;
+
+		$result = $this->retrieve(
+			'SELECT	ug.user_group_id
+			FROM user_groups ug
+			JOIN user_group_settings ugs ON (ugs.user_group_id = ug.user_group_id AND ugs.setting_name = \'recommendOnly\' AND ugs.setting_value = \'1\')
+			WHERE ug.context_id = ?
+			' . ($roleId?' AND ug.role_id = ?':''),
+			$params
+		);
+
+		$userGroupIds = array();
+		while (!$result->EOF) {
+			$userGroupIds[] = (int) $result->fields[0];
+			$result->MoveNext();
+		}
+
+		$result->Close();
+		return $userGroupIds;
+	}
+
 }
 
 ?>

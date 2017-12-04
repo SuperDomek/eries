@@ -127,7 +127,7 @@ class StageParticipantGridHandler extends CategoryGridHandler {
 						__('editor.submission.addStageParticipant'),
 						'modal_add_user'
 					),
-					__('common.add'),
+					__('common.assign'),
 					'add_user'
 				)
 			);
@@ -224,11 +224,12 @@ class StageParticipantGridHandler extends CategoryGridHandler {
 		$result = array();
 		$userGroups = $userGroupDao->getUserGroupsByStage(
 			$request->getContext()->getId(),
-			$this->getStageId(),
-			false, true // Exclude reviewers
+			$this->getStageId()
 		);
 		while ($userGroup = $userGroups->next()) {
-			if (in_array($userGroup->getId(), $userGroupIds)) $result[$userGroup->getId()] = $userGroup;
+			if ($userGroup->getRoleId() == ROLE_ID_REVIEWER) continue;
+			if (!in_array($userGroup->getId(), $userGroupIds)) continue;
+			$result[$userGroup->getId()] = $userGroup;
 		}
 		return $result;
 	}
@@ -289,13 +290,14 @@ class StageParticipantGridHandler extends CategoryGridHandler {
 					ASSOC_TYPE_SUBMISSION,
 					$submission->getId()
 				);
-				$stages = Application::getApplicationStages();
-				foreach ($stages as $workingStageId) {
-					// remove the 'editor required' task if we now have an editor assigned
-					if ($stageAssignmentDao->editorAssignedToStage($submission->getId(), $stageId)) {
-						$notificationDao = DAORegistry::getDAO('NotificationDAO');
-						$notificationDao->deleteByAssoc(ASSOC_TYPE_SUBMISSION, $submission->getId(), null, NOTIFICATION_TYPE_EDITOR_ASSIGNMENT_REQUIRED);
-					}
+			}
+
+			$stages = Application::getApplicationStages();
+			foreach ($stages as $workingStageId) {
+				// remove the 'editor required' task if we now have an editor assigned
+				if ($stageAssignmentDao->editorAssignedToStage($submission->getId(), $workingStageId)) {
+					$notificationDao = DAORegistry::getDAO('NotificationDAO');
+					$notificationDao->deleteByAssoc(ASSOC_TYPE_SUBMISSION, $submission->getId(), null, NOTIFICATION_TYPE_EDITOR_ASSIGNMENT_REQUIRED);
 				}
 			}
 
@@ -353,19 +355,23 @@ class StageParticipantGridHandler extends CategoryGridHandler {
 			$submission->getId()
 		);
 
-		// Update submission notifications
-		$notificationMgr->updateNotification(
-			$request,
-			array(
-				NOTIFICATION_TYPE_ASSIGN_COPYEDITOR,
-				NOTIFICATION_TYPE_AWAITING_COPYEDITS,
-				NOTIFICATION_TYPE_ASSIGN_PRODUCTIONUSER,
-				NOTIFICATION_TYPE_AWAITING_REPRESENTATIONS,
-			),
-			null,
-			ASSOC_TYPE_SUBMISSION,
-			$submission->getId()
-		);
+		if ($stageId == WORKFLOW_STAGE_ID_EDITING ||
+			$stageId == WORKFLOW_STAGE_ID_PRODUCTION) {
+
+			// Update submission notifications
+			$notificationMgr->updateNotification(
+				$request,
+				array(
+					NOTIFICATION_TYPE_ASSIGN_COPYEDITOR,
+					NOTIFICATION_TYPE_AWAITING_COPYEDITS,
+					NOTIFICATION_TYPE_ASSIGN_PRODUCTIONUSER,
+					NOTIFICATION_TYPE_AWAITING_REPRESENTATIONS,
+				),
+				null,
+				ASSOC_TYPE_SUBMISSION,
+				$submission->getId()
+			);
+		}
 
 		// Log removal.
 		$userDao = DAORegistry::getDAO('UserDAO');
@@ -445,22 +451,29 @@ class StageParticipantGridHandler extends CategoryGridHandler {
 			// (will clear the form on return)
 			$this->_logEventAndCreateNotification($request);
 
-			// Update submission notifications
-			$notificationMgr = new NotificationManager();
-			$notificationMgr->updateNotification(
-				$request,
-				array(
-					NOTIFICATION_TYPE_ASSIGN_COPYEDITOR,
-					NOTIFICATION_TYPE_AWAITING_COPYEDITS,
-					NOTIFICATION_TYPE_ASSIGN_PRODUCTIONUSER,
-					NOTIFICATION_TYPE_AWAITING_REPRESENTATIONS,
-				),
-				null,
-				ASSOC_TYPE_SUBMISSION,
-				$this->getSubmission()->getId()
-			);
 
-			return new JSONMessage(true);
+			if ($this->getStageId() == WORKFLOW_STAGE_ID_EDITING ||
+				$this->getStageId() == WORKFLOW_STAGE_ID_PRODUCTION) {
+
+				// Update submission notifications
+				$notificationMgr = new NotificationManager();
+				$notificationMgr->updateNotification(
+					$request,
+					array(
+						NOTIFICATION_TYPE_ASSIGN_COPYEDITOR,
+						NOTIFICATION_TYPE_AWAITING_COPYEDITS,
+						NOTIFICATION_TYPE_ASSIGN_PRODUCTIONUSER,
+						NOTIFICATION_TYPE_AWAITING_REPRESENTATIONS,
+					),
+					null,
+					ASSOC_TYPE_SUBMISSION,
+					$this->getSubmission()->getId()
+				);
+			}
+
+			$json = new JSONMessage(true);
+			$json->setGlobalEvent('stageStatusUpdated');
+			return $json;
 		} else {
 			// Return a JSON string indicating failure
 			return new JSONMessage(false);

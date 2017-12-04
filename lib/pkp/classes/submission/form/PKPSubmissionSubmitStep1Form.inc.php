@@ -33,7 +33,7 @@ class PKPSubmissionSubmitStep1Form extends SubmissionSubmitForm {
 		}
 		$this->addCheck(new FormValidator($this, 'authorUserGroupId', 'required', 'author.submit.userGroupRequired'));
 
-		foreach ($context->getLocalizedSetting('submissionChecklist') as $key => $checklistItem) {
+		foreach ((array) $context->getLocalizedSetting('submissionChecklist') as $key => $checklistItem) {
 			$this->addCheck(new FormValidator($this, "checklist-$key", 'required', 'submission.submit.checklistErrors'));
 		}
 	}
@@ -142,9 +142,9 @@ class PKPSubmissionSubmitStep1Form extends SubmissionSubmitForm {
 	 */
 	function readInputData() {
 		$vars = array(
-			'authorUserGroupId', 'locale', 'copyrightNoticeAgree', 'commentsToEditor', 'copyrightNoticeAgree'
+			'authorUserGroupId', 'locale', 'copyrightNoticeAgree', 'commentsToEditor',
 		);
-		foreach ($this->context->getLocalizedSetting('submissionChecklist') as $key => $checklistItem) {
+		foreach ((array) $this->context->getLocalizedSetting('submissionChecklist') as $key => $checklistItem) {
 			$vars[] = "checklist-$key";
 		}
 
@@ -272,6 +272,7 @@ class PKPSubmissionSubmitStep1Form extends SubmissionSubmitForm {
 			$author->setBiography($user->getBiography(null), null);
 			$author->setPrimaryContact(1);
 			$author->setIncludeInBrowse(1);
+			$author->setOrcid($user->getOrcid());
 
 			// Get the user group to display the submitter as
 			$authorUserGroupId = (int) $this->getData('authorUserGroupId');

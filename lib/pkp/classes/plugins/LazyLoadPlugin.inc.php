@@ -17,13 +17,6 @@
 import('lib.pkp.classes.plugins.Plugin');
 
 abstract class LazyLoadPlugin extends Plugin {
-	/**
-	 * Constructor
-	 */
-	function __construct() {
-		parent::__construct();
-	}
-
 
 	//
 	// Override public methods from Plugin
@@ -61,7 +54,11 @@ abstract class LazyLoadPlugin extends Plugin {
 	 * @return boolean
 	 */
 	function getEnabled() {
-		return $this->getSetting($this->getCurrentContextId(), 'enabled');
+		$contextId = $this->getCurrentContextId();
+		if ($this->isSitePlugin()) {
+			$contextId = 0;
+		}
+		return $this->getSetting($contextId, 'enabled');
 	}
 
 	/**
@@ -69,7 +66,11 @@ abstract class LazyLoadPlugin extends Plugin {
 	 * @param $enabled boolean
 	 */
 	function setEnabled($enabled) {
-		$this->updateSetting($this->getCurrentContextId(), 'enabled', $enabled, 'bool');
+		$contextId = $this->getCurrentContextId();
+		if ($this->isSitePlugin()) {
+			$contextId = 0;
+		}
+		$this->updateSetting($contextId, 'enabled', $enabled, 'bool');
 	}
 
 	/**

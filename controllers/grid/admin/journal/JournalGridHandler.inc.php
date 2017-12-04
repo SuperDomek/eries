@@ -17,13 +17,6 @@ import('lib.pkp.controllers.grid.admin.context.ContextGridHandler');
 import('controllers.grid.admin.journal.form.JournalSiteSettingsForm');
 
 class JournalGridHandler extends ContextGridHandler {
-	/**
-	 * Constructor
-	 */
-	function __construct() {
-		parent::__construct();
-	}
-
 
 	//
 	// Public grid actions.
@@ -41,7 +34,7 @@ class JournalGridHandler extends ContextGridHandler {
 		// Form handling.
 		$settingsForm = new JournalSiteSettingsForm(!isset($journalId) || empty($journalId) ? null : $journalId);
 		$settingsForm->initData();
-		return new JSONMessage(true, $settingsForm->fetch($args, $request));
+		return new JSONMessage(true, $settingsForm->fetch($request));
 	}
 
 	/**

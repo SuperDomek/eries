@@ -18,12 +18,6 @@ import('lib.pkp.classes.core.JSONMessage');
 import('lib.pkp.classes.submission.reviewer.ReviewerAction');
 
 class PKPReviewerHandler extends Handler {
-	/**
-	 * Constructor
-	 */
-	function __construct() {
-		parent::__construct();
-	}
 
 	/**
 	 * Display the submission review page.
@@ -123,6 +117,7 @@ class PKPReviewerHandler extends Handler {
 			$json->setEvent('setStep', $step+1);
 			return $json;
 		} else {
+			$this->setupTemplate($request);
 			return new JSONMessage(true, $reviewerForm->fetch($request));
 		}
 	}

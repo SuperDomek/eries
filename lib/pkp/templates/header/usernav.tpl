@@ -23,12 +23,12 @@
 
 <ul id="navigationContextMenu" class="pkp_nav_context pkp_nav_list" role="navigation" aria-label="{translate|escape key="common.navigation.siteContext"}">
 
-	<li {if $multipleContexts}class="submenuOpensBelow"{/if} aria-haspopup="true" aria-expanded="false">
+	<li {if $multipleContexts}class="submenuOpensBelow" aria-haspopup="true" aria-expanded="false"{/if}>
 		<span class="pkp_screen_reader">
 			{translate key="context.current"}
 		</span>
 
-		<a href="#" class="pkp_current_context">
+		<a href="{if $multipleContexts}#{else}{url router=$smarty.const.ROUTE_PAGE page="submissions"}{/if}" class="pkp_current_context">
 			{if $displayPageHeaderTitle && is_string($displayPageHeaderTitle)}
 				{$displayPageHeaderTitle}
 			{elseif $currentContextName}
@@ -55,6 +55,26 @@
 		{/if}
 	</li>
 </ul>
+
+{if $isUserLoggedIn}
+	<script type="text/javascript">
+		// Attach the JS file tab handler.
+		$(function() {ldelim}
+			$('#navigationTasks').pkpHandler(
+					'$.pkp.controllers.MenuHandler');
+		{rdelim});
+	</script>
+	<ul id="navigationTasks" class="pkp_nav_tasks pkp_nav_list" role="navigation" aria-label="{translate|escape key="common.tasks"}">
+		{url|assign:fetchTaskUrl router=$smarty.const.ROUTE_COMPONENT component="page.PageHandler" op="tasks" escape=false}
+		{capture assign="tasksNavPlaceholder"}
+			<a href="#">
+				{translate key="common.tasks"}
+				<span class="pkp_spinner"></span>
+			</a>
+		{/capture}
+		{load_url_in_el el="li" class="pkp_tasks" id="userTasksWrapper" url=$fetchTaskUrl placeholder=$tasksNavPlaceholder}
+	</ul>
+{/if}
 
 <script type="text/javascript">
 	// Attach the JS file tab handler.
@@ -93,7 +113,7 @@
 	{/if}
 	{if $isUserLoggedIn}
 		<li class="user" aria-haspopup="true" aria-expanded="false">
-			<a href="{url router=$smarty.const.ROUTE_PAGE page="user" op="profile"}">
+			<a href="#">
 				<span class="fa fa-user"></span>
 				{$loggedInUsername|escape}
 			</a>

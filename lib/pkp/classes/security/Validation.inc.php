@@ -13,8 +13,6 @@
  * @brief Class providing user validation/authentication operations.
  */
 
-require_once(BASE_SYS_DIR . '/lib/pkp/lib/vendor/ircmaxell/password-compat/lib/password.php');
-
 class Validation {
 
 	/**
@@ -126,6 +124,7 @@ class Validation {
 		$session->setSessionVar('userId', $user->getId());
 		$session->setUserId($user->getId());
 		$session->setSessionVar('username', $user->getUsername());
+		$session->getCSRFToken(); // Force generation (see issue #2417)
 		$session->setRemember($remember);
 
 		if ($remember && Config::getVar('general', 'session_lifetime') > 0) {

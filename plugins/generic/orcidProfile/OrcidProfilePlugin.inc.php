@@ -24,8 +24,9 @@ define('ORCID_API_URL_MEMBER', 'https://api.orcid.org/');
 define('ORCID_API_URL_MEMBER_SANDBOX', 'https://api.sandbox.orcid.org/');
 
 define('OAUTH_TOKEN_URL', 'oauth/token');
-define('ORCID_API_VERSION_URL', 'v1.2/');
-define('ORCID_PROFILE_URL', 'orcid-profile');
+define('ORCID_API_VERSION_URL', 'v2.0/');
+define('ORCID_PROFILE_URL', 'person');
+define('ORCID_EMAIL_URL', 'email');
 
 class OrcidProfilePlugin extends GenericPlugin {
 	/**
@@ -102,6 +103,9 @@ class OrcidProfilePlugin extends GenericPlugin {
 			case 'frontend/pages/userRegister.tpl':
 				$templateMgr->register_outputfilter(array($this, 'registrationFilter'));
 				break;
+			case 'frontend/pages/article.tpl':
+				$templateMgr->assign('orcidIcon', $this->getIcon());
+				break;
 			case 'user/publicProfileForm.tpl':
 				$templateMgr->register_outputfilter(array($this, 'profileFilter'));
 				break;
@@ -142,6 +146,7 @@ class OrcidProfilePlugin extends GenericPlugin {
 				'targetOp' => 'register',
 				'orcidProfileOauthPath' => $this->getOauthPath(),
 				'orcidClientId' => $this->getSetting($contextId, 'orcidClientId'),
+				'orcidIcon' => $this->getIcon(),
 			));
 
 			$newOutput = substr($output, 0, $offset+strlen($match));
@@ -172,6 +177,7 @@ class OrcidProfilePlugin extends GenericPlugin {
 				'targetOp' => 'profile',
 				'orcidProfileOauthPath' => $this->getOauthPath(),
 				'orcidClientId' => $this->getSetting($contextId, 'orcidClientId'),
+				'orcidIcon' => $this->getIcon(),
 			));
 
 			$newOutput = substr($output, 0, $offset+strlen($match));
@@ -392,6 +398,15 @@ class OrcidProfilePlugin extends GenericPlugin {
 	 */
 	function getStyleSheet() {
 		return $this->getPluginPath() . '/css/orcidProfile.css';
+	}
+
+	/**
+	 * Return a string of the ORCiD SVG icon
+	 * @return string
+	 */
+	function getIcon() {
+		$path = Core::getBaseDir() . '/' . $this->getPluginPath() . '/templates/images/orcid.svg';
+		return file_exists($path) ? file_get_contents($path) : '';
 	}
 
 	/**

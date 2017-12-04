@@ -43,7 +43,7 @@ class NewReviewRoundForm extends EditorDecisionForm {
 		$submission = $this->getSubmission();
 
 		// Get this form decision actions labels.
-		$actionLabels = EditorDecisionActionsManager::getActionLabels($this->_getDecisions());
+		$actionLabels = EditorDecisionActionsManager::getActionLabels($request->getContext(), $this->_getDecisions());
 
 		// Record the decision.
 		$reviewRound = $this->getReviewRound();
@@ -53,7 +53,7 @@ class NewReviewRoundForm extends EditorDecisionForm {
 
 		// Update the review round status.
 		$reviewRoundDao = DAORegistry::getDAO('ReviewRoundDAO');
-		$reviewRoundDao->updateStatus($reviewRound, null, REVIEW_ROUND_STATUS_RESUBMITTED);
+		$reviewRoundDao->updateStatus($reviewRound, REVIEW_ROUND_STATUS_RESUBMITTED);
 
 		// Create a new review round.
 		$newRound = $this->_initiateReviewRound(

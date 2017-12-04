@@ -29,12 +29,6 @@ define('USER_FIELD_AFFILIATION', 'affiliation');
 define('USER_FIELD_NONE', null);
 
 class PKPUserDAO extends DAO {
-	/**
-	 * Constructor
-	 */
-	function __construct() {
-		parent::__construct();
-	}
 
 	/**
 	 * Construct a new User object.
@@ -74,6 +68,27 @@ class PKPUserDAO extends DAO {
 		$result = $this->retrieve(
 			'SELECT * FROM users WHERE username = ?' . ($allowDisabled?'':' AND disabled = 0'),
 			array($username)
+		);
+
+		$returner = null;
+		if ($result->RecordCount() != 0) {
+			$returner =& $this->_returnUserFromRowWithData($result->GetRowAssoc(false));
+		}
+		$result->Close();
+		return $returner;
+	}
+
+	/**
+	 * Retrieve a user by setting.
+	 * @param $settingName string
+	 * @param $settingValue string
+	 * @param $allowDisabled boolean
+	 * @return PKPUser
+	 */
+	function getBySetting($settingName, $settingValue, $allowDisabled = true) {
+		$result = $this->retrieve(
+			'SELECT u.* FROM users u JOIN user_settings us ON (u.user_id = us.user_id) WHERE us.setting_name = ? AND us.setting_value = ?' . ($allowDisabled?'':' AND u.disabled = 0'),
+			array($settingName, $settingValue)
 		);
 
 		$returner = null;
@@ -270,7 +285,7 @@ class PKPUserDAO extends DAO {
 				LEFT JOIN review_assignments rac ON (rac.reviewer_id = u.user_id AND rac.date_notified IS NOT NULL AND rac.date_completed IS NOT NULL)
 				LEFT JOIN review_assignments raf ON (raf.reviewer_id = u.user_id)
 				LEFT JOIN review_assignments ran ON (ran.reviewer_id = u.user_id AND ran.review_id > raf.review_id)
-				LEFT JOIN review_assignments rai ON (rai.reviewer_id = u.user_id AND rai.date_notified IS NOT NULL AND rai.date_completed IS NULL AND rai.cancelled = 0 AND rai.declined = 0 AND rai.replaced = 0)
+				LEFT JOIN review_assignments rai ON (rai.reviewer_id = u.user_id AND rai.date_notified IS NOT NULL AND rai.date_completed IS NULL AND rai.declined = 0 AND rai.replaced = 0)
 			WHERE	ras.review_id IS NULL
 				AND ran.review_id IS NULL' .
 				($reviewRound !== null ? ' AND rac.submission_id = ? AND rac.stage_id = ? AND rac.round < ?':'') .
@@ -449,6 +464,8 @@ class PKPUserDAO extends DAO {
 	function getAdditionalFieldNames() {
 		return array_merge(parent::getAdditionalFieldNames(), array(
 			'orcid',
+			'apiKey',
+			'apiKeyEnabled',
 		));
 	}
 
@@ -617,7 +634,7 @@ class PKPUserDAO extends DAO {
 			case USER_FIELD_INTERESTS:
 				$interestDao = DAORegistry::getDAO('InterestDAO');  // Loaded to ensure interest constant is in namespace
 				$sql .=', controlled_vocabs cv, controlled_vocab_entries cve, controlled_vocab_entry_settings cves, user_interests ui
-					WHERE cv.symbolic = "' . CONTROLLED_VOCAB_INTEREST .  '" AND cve.controlled_vocab_id = cv.controlled_vocab_id
+					WHERE cv.symbolic = \'' . CONTROLLED_VOCAB_INTEREST .  '\' AND cve.controlled_vocab_id = cv.controlled_vocab_id
 					AND cves.controlled_vocab_entry_id = cve.controlled_vocab_entry_id AND LOWER(cves.setting_value) ' . ($match == 'is' ? '=' : 'LIKE') . ' LOWER(?)
 					AND ui.user_id = u.user_id AND cve.controlled_vocab_entry_id = ui.controlled_vocab_entry_id';
 				$var = $match == 'is' ? $value : "%$value%";

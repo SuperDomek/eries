@@ -17,19 +17,13 @@
 
 
 class QueuedPaymentDAO extends DAO {
-	/**
-	 * Constructor.
-	 */
-	function __construct() {
-		parent::__construct();
-	}
 
 	/**
 	 * Retrieve a queued payment by ID.
 	 * @param $queuedPaymentId int
 	 * @return QueuedPayment or null on failure
 	 */
-	function &getQueuedPayment($queuedPaymentId) {
+	function getById($queuedPaymentId) {
 		$result = $this->retrieve(
 			'SELECT * FROM queued_payments WHERE queued_payment_id = ?',
 			(int) $queuedPaymentId
@@ -38,7 +32,7 @@ class QueuedPaymentDAO extends DAO {
 		$queuedPayment = null;
 		if ($result->RecordCount() != 0) {
 			$queuedPayment = unserialize($result->fields['payment_data']);
-			if (!is_object($queuedPayment)) $queuedPayment = null;
+			$queuedPayment->setId($result->fields['queued_payment_id']);
 		}
 		$result->Close();
 		return $queuedPayment;
@@ -71,7 +65,7 @@ class QueuedPaymentDAO extends DAO {
 	 * @param $queuedPaymentId int
 	 * @param $queuedPayment QueuedPayment
 	 */
-	function updateQueuedPayment($queuedPaymentId, &$queuedPayment) {
+	function updateObject($queuedPaymentId, $queuedPayment) {
 		return $this->update(
 			sprintf('UPDATE queued_payments
 				SET
@@ -98,7 +92,9 @@ class QueuedPaymentDAO extends DAO {
 	 * Delete a queued payment.
 	 * @param $queuedPaymentId int
 	 */
-	function deleteQueuedPayment($queuedPaymentId) {
+	function deleteById($queuedPaymentId) {
+		$notificationDao = DAORegistry::getDAO('NotificationDAO');
+		$notificationDao->deleteByAssoc(ASSOC_TYPE_QUEUED_PAYMENT, $queuedPaymentId);
 		return $this->update(
 			'DELETE FROM queued_payments WHERE queued_payment_id = ?',
 			array((int) $queuedPaymentId)
@@ -108,7 +104,7 @@ class QueuedPaymentDAO extends DAO {
 	/**
 	 * Delete expired queued payments.
 	 */
-	function deleteExpiredQueuedPayments() {
+	function deleteExpired() {
 		return $this->update(
 			'DELETE FROM queued_payments WHERE expiry_date < now()'
 		);

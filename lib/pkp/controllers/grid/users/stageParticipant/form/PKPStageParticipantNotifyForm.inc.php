@@ -73,7 +73,7 @@ abstract class PKPStageParticipantNotifyForm extends Form {
 		foreach ($userRoles as $userRole) {
 			if (in_array($userRole->getId(), array(ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR, ROLE_ID_ASSISTANT))) {
 				$emailTemplateDao = DAORegistry::getDAO('EmailTemplateDAO');
-				$customTemplates = $emailTemplateDao->getCustomTemplateKeys(Application::getContextAssocType(), $submission->getContextId());
+				$customTemplates = $emailTemplateDao->getCustomTemplateKeys($submission->getContextId());
 				$templateKeys = array_merge($templateKeys, $customTemplates);
 				break;
 			}
@@ -166,7 +166,6 @@ abstract class PKPStageParticipantNotifyForm extends Form {
 		$email = $this->_getMailTemplate($submission, $template, false);
 		$email->setReplyTo($fromUser->getEmail(), $fromUser->getFullName());
 
-		import('lib.pkp.controllers.grid.submissions.SubmissionsListGridCellProvider');
 		$dispatcher = $request->getDispatcher();
 
 		$userDao = DAORegistry::getDAO('UserDAO');
@@ -174,7 +173,9 @@ abstract class PKPStageParticipantNotifyForm extends Form {
 		if (isset($user)) {
 			$email->addRecipient($user->getEmail(), $user->getFullName());
 			$email->setBody($this->getData('message'));
-			$submissionUrl = SubmissionsListGridCellProvider::getUrlByUserRoles($request, $submission, $user->getId());
+
+			import('classes.core.ServicesContainer');
+			$submissionUrl = ServicesContainer::instance()->get('submission')->getWorkflowUrlByUserRoles($submission, $user->getId());
 
 			// Parameters for various emails
 			$email->assignParams(array(
@@ -191,6 +192,9 @@ abstract class PKPStageParticipantNotifyForm extends Form {
 			$email->send($request);
 			// remove the INDEX_ and LAYOUT_ tasks if a user has sent the appropriate _COMPLETE email
 			switch ($template) {
+				case 'EDITOR_ASSIGN':
+					$this->_addAssignmentTaskNotification($request, NOTIFICATION_TYPE_EDITOR_ASSIGN, $user->getId(), $submission->getId());
+					break;
 				case 'COPYEDIT_REQUEST':
 					$this->_addAssignmentTaskNotification($request, NOTIFICATION_TYPE_COPYEDIT_ASSIGNMENT, $user->getId(), $submission->getId());
 					break;
@@ -229,20 +233,23 @@ abstract class PKPStageParticipantNotifyForm extends Form {
 			$headNote->setContents($email->getBody());
 			$noteDao->insertObject($headNote);
 
-			$notificationMgr = new NotificationManager();
-			$notificationMgr->updateNotification(
-				$request,
-				array(
-					NOTIFICATION_TYPE_ASSIGN_COPYEDITOR,
-					NOTIFICATION_TYPE_AWAITING_COPYEDITS,
-					NOTIFICATION_TYPE_ASSIGN_PRODUCTIONUSER,
-					NOTIFICATION_TYPE_AWAITING_REPRESENTATIONS,
-				),
-				null,
-				ASSOC_TYPE_SUBMISSION,
-				$submission->getId()
-			);
+			if ($submission->getStageId() == WORKFLOW_STAGE_ID_EDITING ||
+				$submission->getStageId() == WORKFLOW_STAGE_ID_PRODUCTION) {
 
+				$notificationMgr = new NotificationManager();
+				$notificationMgr->updateNotification(
+					$request,
+					array(
+						NOTIFICATION_TYPE_ASSIGN_COPYEDITOR,
+						NOTIFICATION_TYPE_AWAITING_COPYEDITS,
+						NOTIFICATION_TYPE_ASSIGN_PRODUCTIONUSER,
+						NOTIFICATION_TYPE_AWAITING_REPRESENTATIONS,
+					),
+					null,
+					ASSOC_TYPE_SUBMISSION,
+					$submission->getId()
+				);
+			}
 		}
 	}
 

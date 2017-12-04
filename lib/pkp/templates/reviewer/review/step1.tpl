@@ -32,6 +32,11 @@
 		{$submission->getLocalizedAbstract()|strip_unsafe_html}
 	{/fbvFormSection}
 
+	{if !$restrictReviewerFileAccess}
+	{url|assign:reviewFilesGridUrl router=$smarty.const.ROUTE_COMPONENT component="grid.files.review.ReviewerReviewFilesGridHandler" op="fetchGrid" submissionId=$submission->getId() stageId=$reviewAssignment->getStageId() reviewRoundId=$reviewRoundId reviewAssignmentId=$reviewAssignment->getId() escape=false}
+	{load_url_in_div id="reviewFilesStep1" url=$reviewFilesGridUrl}
+	{/if}
+
 	<div class="pkp_linkActions">
 		{include file="linkAction/linkAction.tpl" action=$viewMetadataAction contextId="reviewStep1Form"}
 	</div>
@@ -73,9 +78,9 @@
 		{/fbvFormSection}
 	{/if}
 
-	{if $reviewAssignment->getDateConfirmed()}
+	{if $reviewAssignment->getDateConfirmed() && !$reviewAssignment->getDeclined()}
 		{fbvFormButtons hideCancel=true submitText="common.saveAndContinue" submitDisabled=$reviewIsComplete}
-	{else}
+	{elseif !$reviewAssignment->getDateConfirmed()}
 		{fbvFormButtons submitText="reviewer.submission.acceptReview" cancelText="reviewer.submission.declineReview" cancelAction=$declineReviewAction submitDisabled=$reviewIsComplete}
 	{/if}
 {/fbvFormArea}

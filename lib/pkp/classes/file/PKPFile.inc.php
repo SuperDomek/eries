@@ -14,13 +14,6 @@
  */
 
 class PKPFile extends DataObject {
-	/**
-	 * Constructor.
-	 */
-	function __construct() {
-		parent::__construct();
-	}
-
 
 	//
 	// Get/set methods
@@ -77,7 +70,7 @@ class PKPFile extends DataObject {
 
 	/**
 	 * Get type of the file.
-	 * @ return string
+	 * @return string
 	 */
 	function getFileType() {
 		return $this->getData('filetype');

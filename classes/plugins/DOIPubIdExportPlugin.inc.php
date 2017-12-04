@@ -23,23 +23,6 @@ define('DOI_EXPORT_REGISTERED_DOI', 'registeredDoi');
 
 abstract class DOIPubIdExportPlugin extends PubObjectsExportPlugin {
 
-	/**
-	 * Constructor
-	 */
-	function __construct() {
-		parent::__construct();
-	}
-
-	/**
-	 * @copydoc Plugin::register()
-	 */
-	function register($category, $path) {
-		$success = parent::register($category, $path);
-		if ($success) {
-			HookRegistry::register('AcronPlugin::parseCronTab', array($this, 'callbackParseCronTab'));
-		}
-		return $success;
-	}
 
 	/**
 	 * @copydoc ImportExportPlugin::display()
@@ -209,7 +192,7 @@ abstract class DOIPubIdExportPlugin extends PubObjectsExportPlugin {
 	}
 
 	/**
-	 * Get published articles with a DOI asigned from submission IDs.
+	 * Get published articles with a DOI assigned from submission IDs.
 	 * @param $submissionIds array
 	 * @param $context Context
 	 * @return array
@@ -218,14 +201,14 @@ abstract class DOIPubIdExportPlugin extends PubObjectsExportPlugin {
 		$publishedArticles = array();
 		$publishedArticleDao = DAORegistry::getDAO('PublishedArticleDAO');
 		foreach ($submissionIds as $submissionId) {
-			$publishedArticle = $publishedArticleDao->getPublishedArticleByArticleId($submissionId, $context->getId());
+			$publishedArticle = $publishedArticleDao->getByArticleId($submissionId, $context->getId());
 			if ($publishedArticle && $publishedArticle->getStoredPubId('doi')) $publishedArticles[] = $publishedArticle;
 		}
 		return $publishedArticles;
 	}
 
 	/**
-	 * Get published issues with a DOI asigned  from issue IDs.
+	 * Get published issues with a DOI assigned from issue IDs.
 	 * @param $issueIds array
 	 * @param $context Context
 	 * @return array

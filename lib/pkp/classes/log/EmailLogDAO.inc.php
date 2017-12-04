@@ -18,12 +18,6 @@
 import ('lib.pkp.classes.log.EmailLogEntry');
 
 class EmailLogDAO extends DAO {
-	/**
-	 * Constructor
-	 */
-	function __construct() {
-		parent::__construct();
-	}
 
 	/**
 	 * Retrieve a log entry by ID.
@@ -63,7 +57,7 @@ class EmailLogDAO extends DAO {
 	 * @param $rangeInfo object optional
 	 * @return EmailLogEntry
 	 */
-	function getByEventType($assocType, $assocId, $eventType, $userId = null, $rangeInfo = null) {
+	function _getByEventType($assocType, $assocId, $eventType, $userId = null, $rangeInfo = null) {
 		$params = array(
 				(int) $assocType,
 				(int) $assocId,

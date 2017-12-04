@@ -90,6 +90,7 @@ class UserXmlPKPUserFilter extends NativeImportFilter {
 			case 'country': $user->setCountry($n->textContent); break;
 			case 'email': $user->setEmail($n->textContent); break;
 			case 'url': $user->setUrl($n->textContent); break;
+			case 'orcid': $user->setOrcid($n->textContent); break;
 			case 'phone': $user->setPhone($n->textContent); break;
 			case 'billing_address': $user->setBillingAddress($n->textContent); break;
 			case 'mailing_address': $user->setMailingAddress($n->textContent); break;
@@ -133,7 +134,7 @@ class UserXmlPKPUserFilter extends NativeImportFilter {
 
 			// Insert reviewing interests, now that there is a userId.
 			$interestNodeList = $node->getElementsByTagNameNS($deployment->getNamespace(), 'review_interests');
-			if ($interestNodeList->length == 0) {
+			if ($interestNodeList->length == 1) {
 				$n = $interestNodeList->item(0);
 				if ($n) {
 					$interests = preg_split('/,\s*/', $n->textContent);

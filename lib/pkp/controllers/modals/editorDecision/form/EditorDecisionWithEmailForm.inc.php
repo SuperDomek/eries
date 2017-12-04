@@ -69,6 +69,7 @@ class EditorDecisionWithEmailForm extends EditorDecisionForm {
 		$emailKeys = array(
 			SUBMISSION_EDITOR_DECISION_ACCEPT => 'EDITOR_DECISION_ACCEPT',
 			SUBMISSION_EDITOR_DECISION_DECLINE => 'EDITOR_DECISION_DECLINE',
+			SUBMISSION_EDITOR_DECISION_INITIAL_DECLINE => 'EDITOR_DECISION_INITIAL_DECLINE',
 			SUBMISSION_EDITOR_DECISION_EXTERNAL_REVIEW => 'EDITOR_DECISION_SEND_TO_EXTERNAL',
 			SUBMISSION_EDITOR_DECISION_RESUBMIT => 'EDITOR_DECISION_RESUBMIT',
 			SUBMISSION_EDITOR_DECISION_PENDING_REVISIONS => 'EDITOR_DECISION_REVISIONS',
@@ -81,7 +82,7 @@ class EditorDecisionWithEmailForm extends EditorDecisionForm {
 		$email->assignParams(array(
 			'authorName' => $submission->getAuthorString(),
 			'editorialContactSignature' => $user->getContactSignature(),
-			'submissionUrl' => "<a href=\"$submissionUrl\">$submissionUrl</a>",
+			'submissionUrl' => $submissionUrl,
 		));
 		$email->replaceParams();
 
@@ -129,7 +130,7 @@ class EditorDecisionWithEmailForm extends EditorDecisionForm {
 			$reviewAssignmentDao = DAORegistry::getDAO('ReviewAssignmentDAO');
 			$reviewAssignments = $reviewAssignmentDao->getBySubmissionId($submission->getId(), $reviewRound->getId());
 			foreach ($reviewAssignments as $reviewAssignment) {
-				if ($reviewAssignment->getDateCompleted() != null && !$reviewAssignment->getCancelled()) {
+				if ($reviewAssignment->getDateCompleted() != null) {
 					$reviewsAvailable = true;
 					break;
 				}
@@ -165,6 +166,7 @@ class EditorDecisionWithEmailForm extends EditorDecisionForm {
 		}
 
 		$templateMgr->assign('allowedVariables', $this->_getAllowedVariables($request));
+		$templateMgr->assign('allowedVariablesType', $this->_getAllowedVariablesType());
 
 		return parent::fetch($request);
 	}
@@ -175,6 +177,11 @@ class EditorDecisionWithEmailForm extends EditorDecisionForm {
 	//
 	/**
 	 * Retrieve the last review round and update it with the new status.
+	 *
+	 * The review round status is typically set according to the statuses of its
+	 * ReviewAssignments. This method overrides that status and sets a new one
+	 * based on an EditorDecision.
+	 *
 	 * @param $submission Submission
 	 * @param $status integer One of the REVIEW_ROUND_STATUS_* constants.
 	 */
@@ -188,7 +195,7 @@ class EditorDecisionWithEmailForm extends EditorDecisionForm {
 		// accepted without starting any of the review stages. In that case we
 		// do nothing.
 		if (is_a($reviewRound, 'ReviewRound')) {
-			$reviewRoundDao->updateStatus($reviewRound, null, $status);
+			$reviewRoundDao->updateStatus($reviewRound, $status);
 		}
 	}
 
@@ -301,6 +308,20 @@ class EditorDecisionWithEmailForm extends EditorDecisionForm {
 			'editorialContactSignature' => strip_tags($user->getContactSignature(), "<br>"),
 			'submissionTitle' => strip_tags($submission->getLocalizedTitle()),
 			'authorName' => strip_tags($submission->getAuthorString()),
+		);
+	}
+
+	/**
+	 * Get a list of allowed email template variables type.
+	 * @param $request PKPRequest Request object
+	 * @return array
+	 */
+	function _getAllowedVariablesType() {
+		return array(
+			'contextName' => INSERT_TAG_VARIABLE_TYPE_PLAIN_TEXT,
+			'editorialContactSignature' => INSERT_TAG_VARIABLE_TYPE_PLAIN_TEXT,
+			'submissionTitle' => INSERT_TAG_VARIABLE_TYPE_PLAIN_TEXT,
+			'authorName' => INSERT_TAG_VARIABLE_TYPE_PLAIN_TEXT,
 		);
 	}
 }

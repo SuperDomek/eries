@@ -18,12 +18,6 @@ import('lib.pkp.classes.controllers.grid.GridCellProvider');
 import('lib.pkp.classes.linkAction.request.AjaxAction');
 
 class NotificationsGridCellProvider extends GridCellProvider {
-	/**
-	 * Constructor
-	 */
-	function __construct() {
-		parent::__construct();
-	}
 
 	/**
 	 * Get cell actions associated with this row/column combination
@@ -93,6 +87,17 @@ class NotificationsGridCellProvider extends GridCellProvider {
 	 */
 	function _getTitle($notification) {
 		switch ($notification->getAssocType()) {
+			case ASSOC_TYPE_QUEUED_PAYMENT:
+				$contextDao = Application::getContextDAO();
+				$paymentManager = Application::getPaymentManager($contextDao->getById($notification->getContextId()));
+				$queuedPayment = DAORegistry::getDAO('QueuedPaymentDAO')->getById($notification->getAssocId());
+				if ($queuedPayment) switch ($queuedPayment->getType()) {
+					case PAYMENT_TYPE_PUBLICATION:
+						$submissionDao = Application::getSubmissionDAO();
+						return $submissionDao->getById($queuedPayment->getAssocId())->getLocalizedTitle();
+				}
+				assert(false);
+				return '—';
 			case ASSOC_TYPE_ANNOUNCEMENT:
 				$announcementId = $notification->getAssocId();
 				$announcement = DAORegistry::getDAO('AnnouncementDAO')->getById($announcementId);
@@ -133,8 +138,7 @@ class NotificationsGridCellProvider extends GridCellProvider {
 				}
 				break;
 			default:
-				// Don't know of other ASSOC_TYPEs for TASK notifications
-				assert(false);
+				return '—';
 		}
 
 		if (!isset($submissionId) && isset($fileId)) {

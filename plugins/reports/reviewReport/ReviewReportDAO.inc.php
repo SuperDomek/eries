@@ -3,7 +3,7 @@
 /**
  * @file ReviewReportDAO.inc.php
  *
- * Copyright (c) 2014-2017 Simon Fraser University Library
+ * Copyright (c) 2014-2017 Simon Fraser University
  * Copyright (c) 2003-2017 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
@@ -54,7 +54,6 @@ class ReviewReportDAO extends DAO {
 				r.date_completed AS dateCompleted,
 				r.date_reminded AS dateReminded,
 				(r.declined=1) AS declined,
-				(r.cancelled=1) AS cancelled,
 				r.recommendation AS recommendation
 			FROM	review_assignments r
 				LEFT JOIN submissions a ON r.submission_id = a.submission_id

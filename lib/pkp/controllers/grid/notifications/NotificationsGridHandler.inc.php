@@ -23,16 +23,9 @@ class NotificationsGridHandler extends GridHandler {
 	/** @var $_selectedNotificationIds array Set of selected IDs */
 	var $_selectedNotificationIds;
 
-	/**
-	 * Constructor
-	 */
-	function __construct() {
-		parent::__construct();
-	}
-
 
 	/**
-	 * @see PKPHandler::initialize()
+	 * @copydoc GridHandler::initialize()
 	 */
 	function initialize($request, $args = null) {
 		parent::initialize($request);
@@ -129,7 +122,7 @@ class NotificationsGridHandler extends GridHandler {
 	/**
 	 * @copydoc GridHandler::initFeatures()
 	 */
-	function initFeatures($request, &$args) {
+	function initFeatures($request, $args) {
 		import('lib.pkp.classes.controllers.grid.feature.selectableItems.SelectableItemsFeature');
 		import('lib.pkp.classes.controllers.grid.feature.PagingFeature');
 		return array(new SelectableItemsFeature(), new PagingFeature());

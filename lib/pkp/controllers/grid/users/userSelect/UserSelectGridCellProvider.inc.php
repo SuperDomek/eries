@@ -16,11 +16,15 @@
 import('lib.pkp.classes.controllers.grid.DataObjectGridCellProvider');
 
 class UserSelectGridCellProvider extends DataObjectGridCellProvider {
+	/** @var int User ID of already-selected user */
+	var $_userId;
+
 	/**
 	 * Constructor
+	 * @param $userId int ID of preselected user.
 	 */
-	function __construct() {
-		parent::__construct();
+	function __construct($userId = null) {
+		$this->_userId = $userId;
 	}
 
 	//
@@ -38,7 +42,7 @@ class UserSelectGridCellProvider extends DataObjectGridCellProvider {
 		assert(is_a($element, 'User'));
 		switch ($column->getId()) {
 			case 'select': // Displays the radio option
-				return array('rowId' => $row->getId());
+				return array('rowId' => $row->getId(), 'userId' => $this->_userId);
 
 			case 'name': // User's name
 				return array('label' => $element->getFullName());

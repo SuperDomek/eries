@@ -23,7 +23,7 @@
 					baseUrl: {$baseUrl|json_encode},
 					filters: {ldelim}
 						mime_types : [
-							{ldelim} title : "Image files", extensions : "jpg,jpeg,png" {rdelim}
+							{ldelim} title : "Image files", extensions : "jpg,jpeg,png,svg" {rdelim}
 						]
 					{rdelim},
 					resize: {ldelim}
@@ -62,7 +62,7 @@
 		{fbvElement type="text" label="user.url" name="userUrl" id="userUrl" value=$userUrl maxlength="255"}
 	{/fbvFormSection}
 	{fbvFormSection}
-		{fbvElement type="text" label="user.orcid" name="orcid" id="orcid" value=$orcid maxlength="36"}
+		{fbvElement type="text" label="user.orcid" name="orcid" id="orcid" value=$orcid maxlength="37"}
 	{/fbvFormSection}
 
 	{fbvFormButtons hideCancel=true submitText="common.save"}
