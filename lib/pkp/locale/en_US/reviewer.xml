@@ -35,7 +35,7 @@
 	<message key="reviewer.submission.noGuidelines">This publisher has not set any reviewer guidelines.</message>
 	<message key="reviewer.submission.downloadDescription">Click on the file names below to download the files associated with this submission.</message>
 	<message key="reviewer.submission.reviewDescription">Enter (or paste) your review of this submission into the form below.</message>
-	<message key="reviewer.submission.uploadDescription">Upload files you would like the editor and/or author to consult, including revised versions of the original review file(s).</message>
+	<message key="reviewer.submission.uploadDescription">In case you would like to upload files you would like the editor and/or author to consult, including revised versions of the original review file(s) do it here. Please keep in mind that your comments in the revised word file should be anonymous.</message>
 	<message key="reviewer.complete">Review Submitted</message>
 	<message key="reviewer.confirmSubmit">Are you sure you want to submit this review?</message>
 	<message key="reviewer.complete.whatNext">Thank you for completing the review of this submission. Your review has been submitted successfully. We appreciate your contribution to the quality of the work that we publish; the editor may contact you again for more information if needed.</message>
