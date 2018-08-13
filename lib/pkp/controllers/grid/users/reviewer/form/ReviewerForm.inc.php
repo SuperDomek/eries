@@ -390,7 +390,8 @@ class ReviewerForm extends Form {
 				'responseDueDate' => $responseDueDate,
 				'reviewDueDate' => $reviewDueDate,
 				'reviewerUserName' => $reviewer->getUsername(),
-				'submissionReviewUrl' => $dispatcher->url($request, ROUTE_PAGE, null, 'reviewer', 'submission', null, $reviewUrlArgs)
+				'submissionReviewUrl' => $dispatcher->url($request, ROUTE_PAGE, null, 'reviewer', 'submission', null, $reviewUrlArgs),
+				'reviewGuidelines' => $context->getLocalizedSetting('reviewGuidelines')
 			));
 			$mail->send($request);
 		}
