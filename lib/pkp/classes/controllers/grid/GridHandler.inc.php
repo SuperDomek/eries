@@ -3,8 +3,8 @@
 /**
  * @file classes/controllers/grid/GridHandler.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class GridHandler
@@ -866,7 +866,7 @@ class GridHandler extends PKPHandler {
 	}
 
 	/**
-	 * Render the filter (a template or a Form).
+	 * Render the filter (a template).
 	 * @param $request PKPRequest
 	 * @param $filterData Array Data to be used by the filter template.
 	 * @return string
@@ -876,16 +876,6 @@ class GridHandler extends PKPHandler {
 		switch(true) {
 			case $form === null: // No filter form.
 				return '';
-			case is_a($form, 'Form'): // Form object subclass
-				// Only read form data if the clientSubmit flag has been checked
-				$clientSubmit = (boolean) $request->getUserVar('clientSubmit');
-				if($clientSubmit) {
-					$form->readInputData();
-					$form->validate();
-				}
-
-				$form->initData($filterData, $request);
-				return $form->fetch($request);
 			case is_string($form): // HTML mark-up
 				$templateMgr = TemplateManager::getManager($request);
 
@@ -951,7 +941,9 @@ class GridHandler extends PKPHandler {
 	 * @return array Array with initialized grid features objects.
 	 */
 	protected function initFeatures($request, $args) {
-		return array();
+		$returner = array();
+		HookRegistry::call(strtolower_codesafe(get_class($this) . '::initFeatures'), array($this, $request, $args, &$returner));
+		return $returner;
 	}
 
 	/**
@@ -1182,4 +1174,4 @@ class GridHandler extends PKPHandler {
 		}
 	}
 }
-?>
+

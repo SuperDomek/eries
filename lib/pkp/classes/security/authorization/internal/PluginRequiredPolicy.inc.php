@@ -2,8 +2,8 @@
 /**
  * @file classes/security/authorization/internal/PluginRequiredPolicy.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class PluginRequiredPolicy
@@ -41,7 +41,7 @@ class PluginRequiredPolicy extends AuthorizationPolicy {
 		$pluginName = $this->_request->getUserVar('plugin');
 
 		// Load the plugin.
-		$plugins =& PluginRegistry::loadCategory($category);
+		$plugins = PluginRegistry::loadCategory($category);
 		$foundPlugin = null;
 		foreach ($plugins as $plugin) { /* @var $plugin Plugin */
 			if ($plugin->getName() == $pluginName) {
@@ -57,4 +57,4 @@ class PluginRequiredPolicy extends AuthorizationPolicy {
 	}
 }
 
-?>
+

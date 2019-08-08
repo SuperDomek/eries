@@ -3,8 +3,8 @@
 /**
  * @file plugins/generic/webFeed/WebFeedGatewayPlugin.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class WebFeedGatewayPlugin
@@ -67,13 +67,6 @@ class WebFeedGatewayPlugin extends GatewayPlugin {
 	}
 
 	/**
-	 * @copydoc PKPPlugin::getTemplatePath
-	 */
-	public function getTemplatePath($inCore = false) {
-		return $this->_parentPlugin->getTemplatePath($inCore);
-	}
-
-	/**
 	 * Get whether or not this plugin is enabled. (Should always return true, as the
 	 * parent plugin will take care of loading this one when needed)
 	 * @param $contextId int Context ID (optional)
@@ -90,7 +83,7 @@ class WebFeedGatewayPlugin extends GatewayPlugin {
 	 */
 	public function fetch($args, $request) {
 		// Make sure we're within a Journal context
-		$request = $this->getRequest();
+		$request = Application::getRequest();
 		$journal = $request->getJournal();
 		if (!$journal) return false;
 
@@ -144,7 +137,9 @@ class WebFeedGatewayPlugin extends GatewayPlugin {
 			'showToc' => true,
 		));
 
-		$templateMgr->display($this->getTemplatePath() . $typeMap[$type], $mimeTypeMap[$type]);
+		AppLocale::requireComponents(LOCALE_COMPONENT_PKP_SUBMISSION); // submission.copyrightStatement
+
+		$templateMgr->display($this->_parentPlugin->getTemplateResource($typeMap[$type]), $mimeTypeMap[$type]);
 
 		return true;
 	}

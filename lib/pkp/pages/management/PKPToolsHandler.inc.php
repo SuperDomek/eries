@@ -3,8 +3,8 @@
 /**
  * @file pages/management/PKPToolsHandler.inc.php
  *
- * Copyright (c) 2013-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2013-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class PKPToolsHandler
@@ -227,6 +227,8 @@ class PKPToolsHandler extends ManagementHandler {
 		header('content-type: text/comma-separated-values');
 		header('content-disposition: attachment; filename=statistics-' . date('Ymd') . '.csv');
 		$fp = fopen('php://output', 'wt');
+		//Add BOM (byte order mark) to fix UTF-8 in Excel
+		fprintf($fp, chr(0xEF).chr(0xBB).chr(0xBF));
 		fputcsv($fp, array($reportPlugin->getDisplayName()));
 		fputcsv($fp, array($reportPlugin->getDescription()));
 		fputcsv($fp, array(__('common.metric') . ': ' . $metricType));
@@ -399,4 +401,4 @@ class PKPToolsHandler extends ManagementHandler {
 
 }
 
-?>
+

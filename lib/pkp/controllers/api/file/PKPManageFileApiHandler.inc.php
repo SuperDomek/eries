@@ -3,8 +3,8 @@
 /**
  * @file controllers/api/file/PKPManageFileApiHandler.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class PKPManageFileApiHandler
@@ -116,7 +116,7 @@ abstract class PKPManageFileApiHandler extends Handler {
 
 		$this->removeFileIndex($submission, $submissionFile);
 		$fileManager = $this->getFileManager($submission->getContextId(), $submission->getId());
-		$fileManager->deleteFile($submissionFile->getFileId(), $submissionFile->getRevision());
+		$fileManager->deleteById($submissionFile->getFileId(), $submissionFile->getRevision());
 
 		$this->setupTemplate($request);
 		$user = $request->getUser();
@@ -175,7 +175,7 @@ abstract class PKPManageFileApiHandler extends Handler {
 		$metadataForm = $submissionFile->getMetadataForm($stageId, $reviewRound);
 		$metadataForm->readInputData();
 		if ($metadataForm->validate()) {
-			$metadataForm->execute($args, $request);
+			$metadataForm->execute();
 			$submissionFile = $metadataForm->getSubmissionFile();
 
 			// Get a list of author user IDs
@@ -250,7 +250,7 @@ abstract class PKPManageFileApiHandler extends Handler {
 	 * @param $request PKPRequest
 	 * @param $submission Submission
 	 * @param $submissionFile SubmissionFile
-	 * @param $user PKPUser
+	 * @param $user User
 	 */
 	abstract function logDeletionEvent($request, $submission, $submissionFile, $user);
 
@@ -281,4 +281,4 @@ abstract class PKPManageFileApiHandler extends Handler {
 
 }
 
-?>
+

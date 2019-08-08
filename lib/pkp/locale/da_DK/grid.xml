@@ -4,8 +4,8 @@
 <!--
   * locale/da_DK/grid.xml
   *
-  * Copyright (c) 2014-2018 Simon Fraser University
-  * Copyright (c) 2000-2018 John Willinsky
+  * Copyright (c) 2014-2019 Simon Fraser University
+  * Copyright (c) 2000-2019 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   *
   * Localization strings for the da_DK (Dansk) locale.
@@ -228,7 +228,7 @@
 	<message key="grid.user.mergeUsers.mergeIntoUser">Flet ind under denne bruger</message>
 	<message key="grid.user.mergeUsers.allUsers">Alle registrerede brugere</message>
 	<message key="grid.action.fileUnconsider">Korrekturtilretninger gennemført. Du kan ignorer denne opgave.</message>
-	<message key="grid.artworkFile.caption">Overskrift</message>
+	<message key="grid.artworkFile.caption">Billedtekst</message>
 	<message key="grid.artworkFile.credit">Kildeangivelse</message>
 	<message key="grid.artworkFile.copyrightOwner">Copyrightindehaver</message>
 	<message key="grid.artworkFile.copyrightContact">Kontaktinfo (hvis ikke forfatter/udgiver)</message>
@@ -250,4 +250,6 @@
 	<message key="grid.action.addNavigationMenuItem">Tilføj element</message>
 	<message key="grid.navigationMenus.navigationMenuItems.noneExist">Ingen navigationsmenu-elementer</message>
 	<message key="grid.navigationMenus.navigationMenu.noneExist">Ingen navigationsmenuer</message>
+	<message key="grid.action.uninstall">Afinstaller</message>
+	<message key="grid.navigationMenus.navigationMenu.selectType">Vælg en type...</message>
 </locale>

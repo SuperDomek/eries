@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/navigationMenus/NavigationMenusGridCellProvider.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class NavigationMenusGridCellProvider
@@ -34,7 +34,7 @@ class NavigationMenusGridCellProvider extends GridCellProvider {
 						__('grid.action.edit'),
 						null,
 						true),
-					$navigationMenu->getTitle()
+					htmlspecialchars($navigationMenu->getTitle())
 				));
 		}
 		return parent::getCellActions($request, $row, $column, $position);
@@ -81,4 +81,4 @@ class NavigationMenusGridCellProvider extends GridCellProvider {
 	}
 }
 
-?>
+

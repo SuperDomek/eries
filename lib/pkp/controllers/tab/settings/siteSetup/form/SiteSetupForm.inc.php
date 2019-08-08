@@ -3,8 +3,8 @@
 /**
  * @file controllers/tab/settings/siteSetup/form/SiteSetupForm.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class SiteSetupForm
@@ -37,11 +37,9 @@ class SiteSetupForm extends PKPSiteSettingsForm {
 	// Extended methods from Form.
 	//
 	/**
-	 * @see Form::fetch()
-	 * @param $request PKPRequest
-	 * @param $params array
+	 * @copydoc PKPSiteSettingsForm::fetch()
 	 */
-	function fetch($request, $params = null) {
+	function fetch($request, $template = null, $display = false) {
 		$site = $request->getSite();
 		$publicFileManager = new PublicFileManager();
 		$contextDao = Application::getContextDAO();
@@ -91,7 +89,7 @@ class SiteSetupForm extends PKPSiteSettingsForm {
 			'activeThemeOptions' => $activeThemeOptions,
 		));
 
-		return parent::fetch($request);
+		return parent::fetch($request, $template, $display);
 	}
 
 
@@ -99,10 +97,10 @@ class SiteSetupForm extends PKPSiteSettingsForm {
 	// Extend method from PKPSiteSettingsForm
 	//
 	/**
-	 * @see PKPSiteSettingsForm::initData()
-	 * @param $request PKPRequest
+	 * @copydoc PKPSiteSettingsForm::initData()
 	 */
-	function initData($request) {
+	function initData() {
+		$request = Application::getRequest();
 		$site = $request->getSite();
 		$publicFileManager = $publicFileManager = new PublicFileManager();
 		$siteStyleFilename = $publicFileManager->getSiteFilesPath() . '/' . $site->getSiteStyleFilename();
@@ -126,6 +124,7 @@ class SiteSetupForm extends PKPSiteSettingsForm {
 		$this->setData('pageHeaderTitleImage', $pageHeaderTitleImage);
 		$this->setData('themePluginPath', $site->getSetting('themePluginPath'));
 		$this->setData('defaultMetricType', $site->getSetting('defaultMetricType'));
+		$this->setData('privacyStatement', $site->getSetting('privacyStatement'));
 
 		parent::initData();
 	}
@@ -136,15 +135,16 @@ class SiteSetupForm extends PKPSiteSettingsForm {
 	function readInputData() {
 		$this->readUserVars(
 			array('pageHeaderTitleType', 'title', 'about', 'redirect', 'contactName',
-				'contactEmail', 'minPasswordLength', 'themePluginPath', 'defaultMetricType','pageFooter',)
+				'contactEmail', 'minPasswordLength', 'themePluginPath',
+				'defaultMetricType', 'pageFooter', 'privacyStatement')
 		);
 	}
 
 	/**
 	 * Save site settings.
 	 */
-	function execute($request) {
-		parent::execute($request);
+	function execute() {
+		parent::execute();
 		$siteDao = DAORegistry::getDAO('SiteDAO');
 		$site = $siteDao->getSite();
 
@@ -165,6 +165,7 @@ class SiteSetupForm extends PKPSiteSettingsForm {
 		$siteDao->updateObject($site);
 
 		// Save block plugins context positions.
+		$request = Application::getRequest();
 		import('lib.pkp.classes.controllers.listbuilder.ListbuilderHandler');
 		ListbuilderHandler::unpack($request, $request->getUserVar('blocks'), array($this, 'deleteEntry'), array($this, 'insertEntry'), array($this, 'updateEntry'));
 
@@ -259,8 +260,8 @@ class SiteSetupForm extends PKPSiteSettingsForm {
 	 * @param $newRowId array
 	 */
 	function updateEntry($request, $rowId, $newRowId) {
-		$plugins =& PluginRegistry::loadCategory('blocks');
-		$plugin =& $plugins[$rowId]; // Ref hack
+		$plugins = PluginRegistry::loadCategory('blocks');
+		$plugin = $plugins[$rowId];
 		switch ($newRowId['listId']) {
 			case 'unselected':
 				$plugin->setEnabled(false, 0);
@@ -354,4 +355,4 @@ class SiteSetupForm extends PKPSiteSettingsForm {
 	}
 }
 
-?>
+

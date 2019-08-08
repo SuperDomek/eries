@@ -1,8 +1,8 @@
 {**
  * templates/submission/form/index.tpl
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * Main template for the author's submission pages.
@@ -30,7 +30,7 @@
 <div id="submitTabs" class="pkp_controllers_tab">
 	<ul>
 		{foreach from=$steps key=step item=stepLocaleKey}
-			<li><a name="step-{$step|escape}" href="{url op="step" path=$step submissionId=$submissionId}">{$step}. {translate key=$stepLocaleKey}</a></li>
+			<li><a name="step-{$step|escape}" href="{url op="step" path=$step submissionId=$submissionId sectionId=$sectionId}">{$step}. {translate key=$stepLocaleKey}</a></li>
 		{/foreach}
 	</ul>
 </div>

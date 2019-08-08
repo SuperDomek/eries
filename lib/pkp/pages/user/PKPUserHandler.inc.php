@@ -3,8 +3,8 @@
 /**
  * @file pages/user/PKPUserHandler.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class PKPUserHandler
@@ -40,6 +40,11 @@ class PKPUserHandler extends Handler {
 		if (AppLocale::isLocaleValid($setLocale) && (!isset($contextSupportedLocales) || in_array($setLocale, $contextSupportedLocales)) && in_array($setLocale, $site->getSupportedLocales())) {
 			$session = $request->getSession();
 			$session->setSessionVar('currentLocale', $setLocale);
+		}
+
+		$source = $request->getUserVar('source');
+		if (preg_match('#^/\w#', $source) === 1) {
+			$request->redirectUrl($source);
 		}
 
 		if(isset($_SERVER['HTTP_REFERER'])) {
@@ -110,4 +115,4 @@ class PKPUserHandler extends Handler {
 	}
 }
 
-?>
+

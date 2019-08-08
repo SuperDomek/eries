@@ -2,8 +2,8 @@
 /**
  * @file controllers/listbuilder/settings/BlockPluginsListbuilderHandler.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class BlockPluginsListbuilderHandler
@@ -45,8 +45,8 @@ class BlockPluginsListbuilderHandler extends MultipleListsListbuilderHandler {
 	/**
 	 * @copydoc ListbuilderHandler::initialize()
 	 */
-	function initialize($request) {
-		parent::initialize($request);
+	function initialize($request, $args = null) {
+		parent::initialize($request, $args);
 		AppLocale::requireComponents(LOCALE_COMPONENT_PKP_MANAGER);
 
 		// Basic configuration
@@ -98,4 +98,4 @@ class BlockPluginsListbuilderHandler extends MultipleListsListbuilderHandler {
 	}
 }
 
-?>
+

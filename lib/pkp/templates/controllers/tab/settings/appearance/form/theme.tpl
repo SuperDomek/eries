@@ -1,8 +1,8 @@
 {**
  * controllers/tab/settings/appearance/form/theme.tpl
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @brief Form fields for selecting the frontend theme
@@ -35,7 +35,7 @@
 					{/fbvFormSection}
 
 				{elseif $themeOption.type == 'radio'}
-					{fbvFormSection label=$themeOption.label list=true}
+					{fbvFormSection label=$themeOption.label description=$themeOption.description list=true}
 						{foreach from=$themeOption.options key=themeOptionItemName item=themeOptionItem}
 							{fbvElement type="radio" id=$smarty.const.THEME_OPTION_PREFIX|concat:$themeOptionName|concat:$themeOptionItemName name=$smarty.const.THEME_OPTION_PREFIX|concat:$themeOptionName value=$themeOptionItemName checked=$themeOption.value|compare:$themeOptionItemName label=$themeOptionItem}
 						{/foreach}

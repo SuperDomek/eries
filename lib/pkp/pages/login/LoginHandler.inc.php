@@ -3,8 +3,8 @@
 /**
  * @file pages/login/LoginHandler.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class LoginHandler
@@ -251,7 +251,11 @@ class LoginHandler extends Handler {
 				'siteTitle' => $site->getLocalizedTitle()
 			));
 			$mail->addRecipient($user->getEmail(), $user->getFullName());
-			$mail->send();
+			if (!$mail->send()) {
+				import('classes.notification.NotificationManager');
+				$notificationMgr = new NotificationManager();
+				$notificationMgr->createTrivialNotification($user->getId(), NOTIFICATION_TYPE_ERROR, array('contents' => __('email.compose.error')));
+			}
 
 			$templateMgr->assign(array(
 				'pageTitle' => 'user.login.resetPassword',
@@ -399,4 +403,4 @@ class LoginHandler extends Handler {
 	}
 }
 
-?>
+

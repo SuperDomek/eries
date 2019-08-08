@@ -4,8 +4,8 @@
 <!--
   * locale/sv_SE/submission.xml
   *
-  * Copyright (c) 2014-2018 Simon Fraser University
-  * Copyright (c) 2000-2018 John Willinsky
+  * Copyright (c) 2014-2019 Simon Fraser University
+  * Copyright (c) 2000-2019 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   * Localization information: https://pkp.sfu.ca/wiki/index.php?title=OJS:_Swedish_(sv_SE)
   * Localization strings.
@@ -13,16 +13,20 @@
 
 <locale name="sv_SE" full_name="Svenska">
 	<!-- Author Submission -->
-	<message key="author.submit.userGroupRequired">Ditt konto har för närvarande inte en roll som tillåter dig att skapa nya bidrag, som exempelvis Författare. Vänligen dubbelkolla detaljerna för ditt konto; det kan vara så att du själv har möjlighet att lägga till en lämplig roll genom att redigera din användarprofil.</message>
 	<message key="author.submit.submissionCitations">Lägg till en formaterad lista av referenser för verk som citeras i bidraget. Separera varje referens med blankrad.</message>
 	<message key="author.submission.roundStatus.reviewsReady">Nya granskningar har inkommit och är under övervägande hos redaktör.</message>
 	<message key="submission.confirm.message">Ditt bidrag har laddats upp och kan skickas in. Du kan gå tillbaka för att granska och justera informationen du har lagt in innan du skickar in. När du är färdig, klicka på "Skicka in bidrag".</message>
+	<message key="submission.submit.availableUserGroups">Skicka in som</message>
+	<message key="submission.submit.availableUserGroupsDescription">Välj den roll som bäst beskriver din del i det här bidraget.</message>
+	<message key="submission.submit.contactConsent">Kontaktperson</message>
+	<message key="submission.submit.contactConsentDescription">Ja, jag vil bli kontaktad i frågor angående det här bidraget.</message>
+	<message key="submission.submit.userGroupDescriptionManagers">Skicka in i någon av följande roller för att redigera och publicera det här bidraget själv: {$managerGroups}</message>
   	<message key="submission.submit.submissionChecklist">Kravlista för bidrag</message>
 	<message key="submission.submit.submissionChecklistDescription">Du måste läsa och godkänna nedanstående krav innan du kan fortsätta.</message>
 	<message key="submission.submit.submissionComplete">Bidraget är inskickat</message>
 	<message key="submission.submit.submissionCompleteThanks">Tack för visat intresse av publicering i {$contextName}.</message>
 	<message key="submission.submit.copyrightNoticeAgreementLabel">Acceptera upphovsrättsdeklaration</message>
-	<message key="submission.submit.copyrightNoticeAgree">Jag accepterar villkoren i upphovsrättsdeklarationen.</message>
+	<message key="submission.submit.copyrightNoticeAgree">Ja, jag accepterar att följa villkoren i upphovsrättsdeklarationen.</message>
 	<message key="submission.submit.whatNext">Vad händer nu?</message>
 	<message key="submission.submit.whatNext.forNow">Nu kan du:</message>
 	<message key="submission.submit.whatNext.review">Granska bidraget</message>
@@ -191,7 +195,7 @@
 	<message key="submission.email.confirmDeleteLogEntry">Är du säker på att du vill ta bort den här händelsen ur e-postloggen?</message>
 	<message key="submission.email.deleteLogEntry">Ta bort händelse i logg</message>
 	<message key="submission.emailLog">E-postlogg</message>
-	<message key="submission.event.participantAdded">"{$name}" ({$username}) tilldelades det här bidraget som {$userGroupName}.</message>
+	<message key="submission.event.participantAdded">{$name} ({$username}) tilldelades det här bidraget som {$userGroupName}.</message>
 	<message key="submission.event.participantRemoved">"{$name}" ({$username}) togs bort som {$userGroupName}.</message>
 	<message key="submission.event.backToEventLog">Tillbaka till Händelselogg</message>
 	<message key="submission.event.confirmClearLog">Är du säker på att du vill ta bort händelseloggen för det här bidraget?</message>
@@ -384,7 +388,7 @@
 	<message key="submission.submit.form.typeRequired">Vänligen ange typ.</message>
 	<message key="submission.submit.form.sourceRequired">Vänligen ange källa.</message>
 	<message key="submission.submit.form.rightsRequired">Vänligen ange rättigheter.</message>
-	<message key="submission.submit.form.citaionsRequired">Vänligen ange referenser.</message>
+	<message key="submission.submit.form.citationsRequired">Vänligen ange referenser.</message>
 
 	<!-- Submission file upload form elements -->
 	<message key="submission.form.name">Namnge filen (t.ex. Manus; Tabell 1)</message>
@@ -439,7 +443,7 @@
 	<message key="editor.submission.roundStatus.revisionsSubmitted">Bearbetningar har skickats in.</message>
 	<message key="editor.submission.roundStatus.resubmitForReview">Bidraget måste sändas in på nytt för en ny granskningsomgäng.</message>
 	<message key="editor.submission.roundStatus.submissionResubmitted">Bidraget har sänts in på nytt för en ny granskningsomgång.</message>
-	
+
 	<message key="editor.submission.roundStatus.sentToExternal">Skickat för extern granskning.</message>
 	<message key="editor.submission.roundStatus.accepted">Bidrag accepterat.</message>
 	<message key="editor.submission.roundStatus.declined">Bidrag refuserat.</message>
@@ -578,12 +582,12 @@
 	<message key="submission.license.cc.by-nd4">CC Erkännande-IngaBearbetningar 4.0</message>
 	<message key="submission.license.cc.by4">CC Erkännande 4.0</message>
 	<message key="submission.license.cc.by-sa4">CC Erkännande-DelaLika 4.0</message>
-	<message key="submission.license.cc.by-nc-nd4.footer"><![CDATA[<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons-licens" src="//i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a><p>Detta verk är licensierat under en <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">Creative Commons Erkännande-Ickekommersiell-IngaBearbetningar 4.0 Internationell-licens</a>.</p>]]></message>
-	<message key="submission.license.cc.by-nc4.footer"><![CDATA[<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="Creative Commons-licens" src="//i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a><p>Detta verk är licensierat under en <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="Creative Commons-licens" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a><br />Detta verk är licensierat under en <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">Creative Commons Erkännande-IckeKommersiell 4.0 Internationell-licens</a>.</p>]]></message>
-	<message key="submission.license.cc.by-nc-sa4.footer"><![CDATA[<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons-licens" src="//i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><p>Detta verk är licensierat under en <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Erkännande-IckeKommersiell-DelaLika 4.0 Internationell Licens</a>.</p>]]></message>
-	<message key="submission.license.cc.by-nd4.footer"><![CDATA[<a rel="license" href="http://creativecommons.org/licenses/by-nd/4.0/"><img alt="Creative Commons-licens" src="//i.creativecommons.org/l/by-nd/4.0/88x31.png" /></a><p>Detta verk är licensierat under en <a rel="license" href="http://creativecommons.org/licenses/by-nd/4.0/">Creative Commons Erkännande-IngaBearbetningar 4.0 Internationell-licens</a>.</p>]]></message>
-	<message key="submission.license.cc.by4.footer"><![CDATA[<a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons-license" src="//i.creativecommons.org/l/by/4.0/88x31.png" /></a><p>Det här verket är licensierat under en <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Erkännande 4.0 Internationell-licens</a>.</p>]]></message>
-	<message key="submission.license.cc.by-sa4.footer"><![CDATA[<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons-licens" src="//i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><p>Det här verket är licensierat under en <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Erkännande-DelaLika 4.0 Internationell-licens</a>.</p>]]></message>
+	<message key="submission.license.cc.by-nc-nd4.footer"><![CDATA[<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons-licens" src="//i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a><p>Detta verk är licensierat under en <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">Creative Commons Erkännande-Ickekommersiell-IngaBearbetningar 4.0 Internationell-licens</a>.</p>]]></message>
+	<message key="submission.license.cc.by-nc4.footer"><![CDATA[<a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/"><img alt="Creative Commons-licens" src="//i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a><p>Detta verk är licensierat under en <a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/"><img alt="Creative Commons-licens" style="border-width:0" src="https://i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a><br />Detta verk är licensierat under en <a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">Creative Commons Erkännande-IckeKommersiell 4.0 Internationell-licens</a>.</p>]]></message>
+	<message key="submission.license.cc.by-nc-sa4.footer"><![CDATA[<a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons-licens" src="//i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><p>Detta verk är licensierat under en <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Erkännande-IckeKommersiell-DelaLika 4.0 Internationell Licens</a>.</p>]]></message>
+	<message key="submission.license.cc.by-nd4.footer"><![CDATA[<a rel="license" href="https://creativecommons.org/licenses/by-nd/4.0/"><img alt="Creative Commons-licens" src="//i.creativecommons.org/l/by-nd/4.0/88x31.png" /></a><p>Detta verk är licensierat under en <a rel="license" href="https://creativecommons.org/licenses/by-nd/4.0/">Creative Commons Erkännande-IngaBearbetningar 4.0 Internationell-licens</a>.</p>]]></message>
+	<message key="submission.license.cc.by4.footer"><![CDATA[<a rel="license" href="https://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons-license" src="//i.creativecommons.org/l/by/4.0/88x31.png" /></a><p>Det här verket är licensierat under en <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Erkännande 4.0 Internationell-licens</a>.</p>]]></message>
+	<message key="submission.license.cc.by-sa4.footer"><![CDATA[<a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons-licens" src="//i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><p>Det här verket är licensierat under en <a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Erkännande-DelaLika 4.0 Internationell-licens</a>.</p>]]></message>
 
 	<!-- Submission Queries -->
 	<message key="submission.queries.submission">Diskussioner före granskning</message>
@@ -626,4 +630,5 @@
 	<message key="submission.list.reviewerWorkflowLink"><![CDATA[Du har blivit tilldelad en redaktörsroll för det här bidraget. Vill du gå till <a href="{$urlEditorialWorkflow}">det redaktionella arbetsflödet</a>?]]></message>
 	<message key="submission.list.incompleteSubmissionNotice">Det här bidraget måste vara färdigt innan en redaktör granskar det.</message>
 	<message key="submission.list.currentStage">För närvarande i {$stage}-steget.</message>
+	<message key="submission.list.assignEditor">Tilldela redaktör</message>
 </locale>

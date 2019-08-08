@@ -3,8 +3,8 @@
 /**
  * @file api/v1/users/PKPUserHandler.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class PKPUserHandler
@@ -45,6 +45,15 @@ class PKPUserHandler extends APIHandler {
 			),
 		);
 		parent::__construct();
+	}
+
+	/**
+	 * @copydoc PKPHandler::authorize()
+	 */
+	function authorize($request, &$args, $roleAssignments) {
+		import('lib.pkp.classes.security.authorization.ContextAccessPolicy');
+		$this->addPolicy(new ContextAccessPolicy($request, $roleAssignments));
+		return parent::authorize($request, $args, $roleAssignments);
 	}
 
 	/**
@@ -130,6 +139,17 @@ class PKPUserHandler extends APIHandler {
 
 		if (!$context) {
 			return $response->withStatus(404)->withJsonError('api.submissions.404.resourceNotFound');
+		}
+
+		// We do not support these params from /users
+		if (isset($returnParams['assignedToSubmission'])) {
+			return $response->withStatus(400)->withJsonError('api.400.paramNotSupported', 'assignedToSubmission');
+		}
+		if (isset($returnParams['assignedToSubmissionStage'])) {
+			return $response->withStatus(400)->withJsonError('api.400.paramNotSupported', 'assignedToSubmissionStage');
+		}
+		if (isset($returnParams['roleIds'])) {
+			return $response->withStatus(400)->withJsonError('api.400.paramNotSupported', 'roleIds');
 		}
 
 		$params = $this->_buildReviewerListRequestParams($slimRequest);
@@ -249,6 +269,7 @@ class PKPUserHandler extends APIHandler {
 			switch ($param) {
 
 				case 'reviewerRating':
+				case 'reviewStage':
 					$returnParams[$param] = (int) $val;
 					break;
 
@@ -266,8 +287,8 @@ class PKPUserHandler extends APIHandler {
 			}
 		}
 
-		// Restrict role IDs to reviewer roles
-		$returnParams['roleIds'] = array(ROLE_ID_REVIEWER);
+		// Don't allow the contextId to be overridden
+		$returnParams['contextId'] = $contextId;
 
 		\HookRegistry::call('API::users::reviewers::params', array(&$returnParams, $slimRequest));
 

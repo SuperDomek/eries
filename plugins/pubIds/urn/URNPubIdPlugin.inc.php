@@ -3,8 +3,8 @@
 /**
  * @file plugins/pubIds/urn/URNPubIdPlugin.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class URNPubIdPlugin
@@ -17,18 +17,6 @@
 import('classes.plugins.PubIdPlugin');
 
 class URNPubIdPlugin extends PubIdPlugin {
-
-	/**
-	 * @copydoc Plugin::register()
-	 */
-	public function register($category, $path, $mainContextId = null) {
-		$success = parent::register($category, $path, $mainContextId);
-		if (!Config::getVar('general', 'installed') || defined('RUNNING_UPGRADE')) return $success;
-		if ($success && $this->getEnabled($mainContextId)) {
-			$this->_registerTemplateResource();
-		}
-		return $success;
-	}
 
 	//
 	// Implement template methods from Plugin.
@@ -45,13 +33,6 @@ class URNPubIdPlugin extends PubIdPlugin {
 	 */
 	function getDescription() {
 		return __('plugins.pubIds.urn.description');
-	}
-
-	/**
-	 * @copydoc Plugin::getTemplatePath()
-	 */
-	function getTemplatePath($inCore = false) {
-		return $this->getTemplateResourceName() . ':templates/';
 	}
 
 
@@ -105,7 +86,7 @@ class URNPubIdPlugin extends PubIdPlugin {
 	 * @copydoc PKPPubIdPlugin::getPubIdMetadataFile()
 	 */
 	function getPubIdMetadataFile() {
-		return $this->getTemplatePath().'urnSuffixEdit.tpl';
+		return $this->getTemplateResource('urnSuffixEdit.tpl');
 	}
 
 	/**
@@ -126,7 +107,7 @@ class URNPubIdPlugin extends PubIdPlugin {
 	 * @copydoc PKPPubIdPlugin::getPubIdAssignFile()
 	 */
 	function getPubIdAssignFile() {
-		return $this->getTemplatePath().'urnAssign.tpl';
+		return $this->getTemplateResource('urnAssign.tpl');
 	}
 
 	/**
@@ -171,8 +152,7 @@ class URNPubIdPlugin extends PubIdPlugin {
 	function getLinkActions($pubObject) {
 		$linkActions = array();
 		import('lib.pkp.classes.linkAction.request.RemoteActionConfirmationModal');
-		$application = PKPApplication::getApplication();
-		$request = $application->getRequest();
+		$request = Application::getRequest();
 		$userVars = $request->getUserVars();
 		$userVars['pubIdPlugIn'] = get_class($this);
 		// Clear object pub id
@@ -278,4 +258,4 @@ class URNPubIdPlugin extends PubIdPlugin {
 	}
 }
 
-?>
+

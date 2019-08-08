@@ -2,7 +2,9 @@
     "name": "smarty/smarty",
     "type": "library",
     "description": "Smarty - the compiling PHP template engine",
-    "keywords": ["templating"],
+    "keywords": [
+        "templating"
+    ],
     "homepage": "http://www.smarty.net",
     "license": "LGPL-3.0",
     "authors": [
@@ -13,27 +15,28 @@
         {
             "name": "Uwe Tews",
             "email": "uwe.tews@googlemail.com"
+        },
+        {
+            "name": "Rodney Rehm",
+            "email": "rodney.rehm@medialize.de"
         }
     ],
     "support": {
         "irc": "irc://irc.freenode.org/smarty",
-        "issues": "http://code.google.com/p/smarty-php/issues/list",
+        "issues": "https://github.com/smarty-php/smarty/issues",
         "forum": "http://www.smarty.net/forums/"
     },
     "require": {
         "php": ">=5.2"
     },
     "autoload": {
-        "classmap": [
-            "libs/Smarty.class.php",
-            "libs/Smarty_Compiler.class.php",
-            "libs/Config_File.class.php"
+        "files": [
+            "libs/bootstrap.php"
         ]
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "2.6.x-dev"
+            "dev-master": "3.1.x-dev"
         }
     }
-
 }

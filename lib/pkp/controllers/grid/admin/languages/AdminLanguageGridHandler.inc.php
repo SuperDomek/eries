@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/admin/languages/AdminLanguageGridHandler.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class AdminLanguageGridHandler
@@ -57,10 +57,10 @@ class AdminLanguageGridHandler extends LanguageGridHandler {
 	}
 
 	/**
-	 * @copydoc PKPHandler::initialize()
+	 * @copydoc LanguageGridHandler::initialize()
 	 */
-	public function initialize($request) {
-		parent::initialize($request);
+	public function initialize($request, $args = null) {
+		parent::initialize($request, $args);
 
 		AppLocale::requireComponents(
 			LOCALE_COMPONENT_PKP_ADMIN,
@@ -186,7 +186,7 @@ class AdminLanguageGridHandler extends LanguageGridHandler {
 	public function installLocale($args, $request) {
 		// Form handling.
 		$installLanguageForm = new InstallLanguageForm();
-		$installLanguageForm->initData($request);
+		$installLanguageForm->initData();
 		return new JSONMessage(true, $installLanguageForm->fetch($request));
 
 	}
@@ -199,10 +199,10 @@ class AdminLanguageGridHandler extends LanguageGridHandler {
 	 */
 	public function saveInstallLocale($args, $request) {
 		$installLanguageForm = new InstallLanguageForm();
-		$installLanguageForm->readInputData($request);
+		$installLanguageForm->readInputData();
 
-		if ($installLanguageForm->validate($request)) {
-			$installLanguageForm->execute($request);
+		if ($installLanguageForm->validate()) {
+			$installLanguageForm->execute();
 			$this->_updateContextLocaleSettings($request);
 
 			$notificationManager = new NotificationManager();
@@ -253,7 +253,7 @@ class AdminLanguageGridHandler extends LanguageGridHandler {
 
 		// Refresh form.
 		$installLanguageForm = new InstallLanguageForm();
-		$installLanguageForm->initData($request);
+		$installLanguageForm->initData();
 		$json->setEvent('refreshForm', $installLanguageForm->fetch($request));
 		return $json;
 	}
@@ -399,6 +399,9 @@ class AdminLanguageGridHandler extends LanguageGridHandler {
 
 		if (array_key_exists($rowId, $gridData)) {
 			if (AppLocale::isLocaleValid($rowId)) {
+				$oldSitePrimaryLocale = $site->getPrimaryLocale();
+				$userDao = DAORegistry::getDAO('UserDAO');
+				$userDao->changeSitePrimaryLocale($oldSitePrimaryLocale, $rowId);
 				$site->setPrimaryLocale($rowId);
 				$siteDao = DAORegistry::getDAO('SiteDAO');
 				$siteDao->updateObject($site);
@@ -497,4 +500,4 @@ class AdminLanguageGridHandler extends LanguageGridHandler {
 	}
 }
 
-?>
+

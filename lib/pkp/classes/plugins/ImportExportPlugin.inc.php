@@ -3,8 +3,8 @@
 /**
  * @file classes/plugins/ImportExportPlugin.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class ImportExportPlugin
@@ -62,10 +62,7 @@ abstract class ImportExportPlugin extends Plugin {
 	 */
 	function display($args, $request) {
 		$templateMgr = TemplateManager::getManager($request);
-		$templateMgr->register_function(
-			'plugin_url',
-			array($this, 'pluginUrl')
-		);
+		$templateMgr->registerPlugin('function', 'plugin_url', array($this, 'pluginUrl'));
 		$this->_request = $request; // Store this for use by the pluginUrl function
 	}
 
@@ -76,7 +73,7 @@ abstract class ImportExportPlugin extends Plugin {
 	 * @param $smarty Smarty
 	 * @return string
 	 */
-	function pluginUrl($params, &$smarty) {
+	function pluginUrl($params, $smarty) {
 		$dispatcher = $this->_request->getDispatcher();
 		return $dispatcher->url($this->_request, ROUTE_PAGE, null, 'management', 'importexport', array_merge(array('plugin', $this->getName(), isset($params['path'])?$params['path']:array())));
 	}
@@ -145,20 +142,31 @@ abstract class ImportExportPlugin extends Plugin {
 	 * @param $xml string
 	 */
 	function displayXMLValidationErrors($errors, $xml) {
-		$charset = Config::getVar('i18n', 'client_charset');
-		header('Content-type: text/html; charset=' . $charset);
-		echo '<html><body>';
-		echo '<h2>' . __('plugins.importexport.common.validationErrors') . '</h2>';
-		foreach ($errors as $error) {
-			echo '<p>' . trim($error->message) . '</p>';
+		AppLocale::requireComponents(LOCALE_COMPONENT_APP_MANAGER, LOCALE_COMPONENT_PKP_MANAGER);
+		if (defined('SESSION_DISABLE_INIT')) {
+			echo __('plugins.importexport.common.validationErrors') . "\n";
+			foreach ($errors as $error) {
+				echo trim($error->message) . "\n";
+			}
+			libxml_clear_errors();
+			echo __('plugins.importexport.common.invalidXML') . "\n";
+			echo $xml . "\n";
+		} else {
+			$charset = Config::getVar('i18n', 'client_charset');
+			header('Content-type: text/html; charset=' . $charset);
+			echo '<html><body>';
+			echo '<h2>' . __('plugins.importexport.common.validationErrors') . '</h2>';
+			foreach ($errors as $error) {
+				echo '<p>' . trim($error->message) . '</p>';
+			}
+			libxml_clear_errors();
+			echo '<h3>' . __('plugins.importexport.common.invalidXML') . '</h3>';
+			echo '<p><pre>' . htmlspecialchars($xml) . '</pre></p>';
+			echo '</body></html>';
 		}
-		libxml_clear_errors();
-		echo '<h3>' . __('plugins.importexport.common.invalidXML') . '</h3>';
-		echo '<p><pre>' . htmlspecialchars($xml) . '</pre></p>';
-		echo '</body></html>';
 		fatalError(__('plugins.importexport.common.error.validation'));
 	}
 
 }
 
-?>
+

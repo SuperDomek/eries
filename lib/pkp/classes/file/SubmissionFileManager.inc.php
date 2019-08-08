@@ -3,8 +3,8 @@
 /**
  * @file classes/file/SubmissionFileManager.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class SubmissionFileManager
@@ -81,10 +81,10 @@ class SubmissionFileManager extends BaseSubmissionFileManager {
 	 * @param $revisionId integer
 	 * @return boolean returns true if successful
 	 */
-	function deleteFile($fileId, $revision = null) {
+	function deleteById($fileId, $revision = null) {
 		$submissionFile = $this->_getFile($fileId, $revision);
 		if (isset($submissionFile)) {
-			return parent::deleteFile($submissionFile->getfilePath());
+			return parent::deleteByPath($submissionFile->getfilePath());
 		} else {
 			return false;
 		}
@@ -98,7 +98,7 @@ class SubmissionFileManager extends BaseSubmissionFileManager {
 	 * @param $filename string The client-side download filename (optional)
 	 * @return boolean
 	 */
-	function downloadFile($fileId, $revision = null, $inline = false, $filename = null) {
+	function downloadById($fileId, $revision = null, $inline = false, $filename = null) {
 		$returner = false;
 		$submissionFile = $this->_getFile($fileId, $revision);
 		if (isset($submissionFile)) {
@@ -111,7 +111,7 @@ class SubmissionFileManager extends BaseSubmissionFileManager {
 			$filePath = $submissionFile->getFilePath();
 			$mediaType = $submissionFile->getFileType();
 			if(!isset($filename)) $filename = $submissionFile->getClientFileName();
-			$returner = parent::downloadFile($filePath, $mediaType, $inline, $filename);
+			$returner = parent::downloadByPath($filePath, $mediaType, $inline, $filename);
 		}
 
 		return $returner;
@@ -178,11 +178,8 @@ class SubmissionFileManager extends BaseSubmissionFileManager {
 		// Find out where the file should go.
 		$destPath = $destFile->getFilePath();
 
-		// Copy the file to the new location.
-		$this->copyFile($sourcePath, $destPath);
-
 		// Now insert the row into the DB and get the inserted file id.
-		$insertedFile = $submissionFileDao->insertObject($destFile, $destPath);
+		$insertedFile = $submissionFileDao->insertObject($destFile, $sourcePath);
 
 		return array($insertedFile->getFileId(), $insertedFile->getRevision());
 	}
@@ -397,4 +394,4 @@ class SubmissionFileManager extends BaseSubmissionFileManager {
 	}
 }
 
-?>
+

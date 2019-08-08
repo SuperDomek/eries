@@ -2,8 +2,8 @@
 /**
  * @file classes/services/UserService.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class UserService
@@ -40,6 +40,8 @@ class UserService extends PKPBaseEntityPropertyService {
 	 * 		@option int assignedToSubmission
 	 * 		@option int assignedToSubmissionStage
 	 * 		@option int assignedToSection
+	 * 		@option array includeUsers
+	 * 		@option array excludeUsers
 	 * 		@option string status
 	 * 		@option string searchPhrase
 	 * 		@option int count
@@ -51,7 +53,7 @@ class UserService extends PKPBaseEntityPropertyService {
 	public function getUsers($contextId, $args = array()) {
 		$userListQB = $this->_buildGetUsersQueryObject($contextId, $args);
 		$userListQO = $userListQB->get();
-		$range = new DBResultRange($args['count'], null, isset($args['offset'])?$args['offset']:0);
+		$range = new DBResultRange(isset($args['count'])?$args['count']:0, null, isset($args['offset'])?$args['offset']:0);
 		$userDao = DAORegistry::getDAO('UserDAO');
 		$result = $userDao->retrieveRange($userListQO->toSql(), $userListQO->getBindings(), $range);
 		$queryResults = new DAOResultFactory($result, $userDao, '_returnUserFromRowWithData');
@@ -91,6 +93,8 @@ class UserService extends PKPBaseEntityPropertyService {
 			'assignedToSubmission' => null,
 			'assignedToSubmissionStage' => null,
 			'assignedToSection' => null,
+			'includeUsers' => null,
+			'excludeUsers' => null,
 			'status' => 'active',
 			'searchPhrase' => null,
 			'count' => 20,
@@ -105,6 +109,8 @@ class UserService extends PKPBaseEntityPropertyService {
 			->filterByRoleIds($args['roleIds'])
 			->assignedToSubmission($args['assignedToSubmission'], $args['assignedToSubmissionStage'])
 			->assignedToSection($args['assignedToSection'])
+			->includeUsers($args['includeUsers'])
+			->excludeUsers($args['excludeUsers'])
 			->filterByStatus($args['status'])
 			->searchPhrase($args['searchPhrase']);
 
@@ -121,7 +127,7 @@ class UserService extends PKPBaseEntityPropertyService {
 	public function getReviewers($contextId, $args = array()) {
 		$userListQB = $this->_buildGetReviewersQueryObject($contextId, $args);
 		$userListQO = $userListQB->get();
-		$range = new DBResultRange($args['count'], null, $args['offset']);
+		$range = $this->getRangeByArgs($args);
 		$userDao = DAORegistry::getDAO('UserDAO');
 		$result = $userDao->retrieveRange($userListQO->toSql(), $userListQO->getBindings(), $range);
 		$queryResults = new DAOResultFactory($result, $userDao, '_returnUserFromRowWithReviewerStats');
@@ -153,6 +159,8 @@ class UserService extends PKPBaseEntityPropertyService {
 	private function _buildGetReviewersQueryObject($contextId, $args = array()) {
 
 		$defaultArgs = array(
+			'contextId' => CONTEXT_ID_NONE,
+			'reviewStage' => null,
 			'reviewsCompleted' => null,
 			'reviewsActive' => null,
 			'daysSinceLastAssignment' => null,
@@ -161,9 +169,12 @@ class UserService extends PKPBaseEntityPropertyService {
 		);
 
 		$args = array_merge($defaultArgs, $args);
+		$args['roleIds'] = [ROLE_ID_REVIEWER];
 
 		$reviewerListQB = $this->_buildGetUsersQueryObject($contextId, $args);
-		$reviewerListQB->getReviewerData(true)
+		$reviewerListQB
+			->getReviewerData(true)
+			->filterByReviewStage($args['reviewStage'])
 			->filterByReviewerRating($args['reviewerRating'])
 			->filterByReviewsCompleted($args['reviewsCompleted'])
 			->filterByReviewsActive($args['reviewsActive'])
@@ -206,23 +217,11 @@ class UserService extends PKPBaseEntityPropertyService {
 				case 'fullName':
 					$values[$prop] = $user->getFullName();
 					break;
-				case 'firstName':
-					$values[$prop] = $user->getFirstName();
+				case 'givenName':
+					$values[$prop] = $user->getGivenName(null);
 					break;
-				case 'middleName':
-					$values[$prop] = $user->getMiddleName();
-					break;
-				case 'lastName':
-					$values[$prop] = $user->getLastName();
-					break;
-				case 'initials':
-					$values[$prop] = $user->getInitials();
-					break;
-				case 'salutation':
-					$values[$prop] = $user->getSalutation();
-					break;
-				case 'suffix':
-					$values[$prop] = $user->getSuffix();
+				case 'familyName':
+					$values[$prop] = $user->getFamilyName(null);
 					break;
 				case 'affiliation':
 					$values[$prop] = $user->getAffiliation(null);
@@ -270,6 +269,9 @@ class UserService extends PKPBaseEntityPropertyService {
 					break;
 				case 'reviewsCompleted':
 					$values[$prop] = $user->getData('completeCount');
+					break;
+				case 'reviewsDeclined':
+					$values[$prop] = $user->getData('declinedCount');
 					break;
 				case 'averageReviewCompletionDays':
 					$values[$prop] = $user->getData('averageTime');
@@ -378,9 +380,9 @@ class UserService extends PKPBaseEntityPropertyService {
 	 */
 	public function getFullProperties($user, $args = null) {
 		$props = array (
-			'id','userName','fullName','firstName','middleName','lastName','initials','salutation',
-			'suffix','affiliation','country','email','url','orcid','groups','interests','biography','signature','authId',
-			'authString','phone','mailingAddress','billingAddress','gossip','disabled','disabledReason',
+			'id','userName','fullName','givenName','familyName','affiliation','country','email','url',
+			'orcid','groups','interests','biography','signature','authId','authString','phone',
+			'mailingAddress','billingAddress','gossip','disabled','disabledReason',
 			'dateRegistered','dateValidated','dateLastLogin','mustChangePassword',
 		);
 
@@ -400,7 +402,7 @@ class UserService extends PKPBaseEntityPropertyService {
 	public function getReviewerSummaryProperties($user, $args = null) {
 		$props = array (
 			'id','_href','userName','fullName','affiliation','biography','groups','interests','gossip',
-			'reviewsActive','reviewsCompleted','averageReviewCompletionDays',
+			'reviewsActive','reviewsCompleted','reviewsDeclined','averageReviewCompletionDays',
 			'dateLastReviewAssignment','reviewerRating', 'orcid','disabled',
 		);
 

@@ -3,8 +3,8 @@
 /**
  * @file api/v1/submission/SubmissionHandler.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class SubmissionHandler
@@ -64,6 +64,9 @@ class SubmissionHandler extends APIHandler {
 		$routeName = null;
 		$slimRequest = $this->getSlimRequest();
 
+		import('lib.pkp.classes.security.authorization.ContextAccessPolicy');
+		$this->addPolicy(new ContextAccessPolicy($request, $roleAssignments));
+
 		if (!is_null($slimRequest) && ($route = $slimRequest->getAttribute('route'))) {
 			$routeName = $route->getName();
 		}
@@ -85,9 +88,8 @@ class SubmissionHandler extends APIHandler {
 	 * @return Response
 	 */
 	public function getSubmissionList($slimRequest, $response, $args) {
-		$request = $this->getRequest();
+		$request = Application::getRequest();
 		$currentUser = $request->getUser();
-		$dispatcher = $request->getDispatcher();
 		$context = $request->getContext();
 		$submissionService = ServicesContainer::instance()->get('submission');
 
@@ -99,8 +101,9 @@ class SubmissionHandler extends APIHandler {
 
 		// Prevent users from viewing submissions they're not assigned to,
 		// except for journal managers and admins.
-		if (!$currentUser->hasRole(array(ROLE_ID_MANAGER, ROLE_ID_SITE_ADMIN), $context->getId())
-				&& $params['assignedTo'] != $currentUser->getId()) {
+		$userRoles = $this->getAuthorizedContextObject(ASSOC_TYPE_USER_ROLES);
+		$canAccessUnassignedSubmission = !empty(array_intersect(array(ROLE_ID_SITE_ADMIN, ROLE_ID_MANAGER), $userRoles));
+		if (!$canAccessUnassignedSubmission && $params['assignedTo'] != $currentUser->getId()) {
 			return $response->withStatus(403)->withJsonError('api.submissions.403.requestedOthersUnpublishedSubmissions');
 		}
 
@@ -135,10 +138,7 @@ class SubmissionHandler extends APIHandler {
 	public function getSubmission($slimRequest, $response, $args) {
 		AppLocale::requireComponents(LOCALE_COMPONENT_PKP_READER, LOCALE_COMPONENT_PKP_SUBMISSION);
 
-		$request = $this->getRequest();
-		$dispatcher = $request->getDispatcher();
-		$context = $request->getContext();
-
+		$request = Application::getRequest();
 		$submission = $this->getAuthorizedContextObject(ASSOC_TYPE_SUBMISSION);
 
 		$data = ServicesContainer::instance()
@@ -161,10 +161,11 @@ class SubmissionHandler extends APIHandler {
 	 * @return Response
 	 */
 	public function getGalleys($slimRequest, $response, $args) {
-		$request = $this->getRequest();
+		$request = Application::getRequest();
 		$context = $request->getContext();
 		$submission = $this->getAuthorizedContextObject(ASSOC_TYPE_SUBMISSION);
 
+		$publishedArticle = null;
 		if ($submission && $context) {
 			$publishedArticleDao = DAORegistry::getDAO('PublishedArticleDAO');
 			$publishedArticle = $publishedArticleDao->getPublishedArticleByBestArticleId(
@@ -208,7 +209,7 @@ class SubmissionHandler extends APIHandler {
 	 * @return Response
 	 */
 	public function getParticipants($slimRequest, $response, $args) {
-		$request = $this->getRequest();
+		$request = Application::getRequest();
 		$context = $request->getContext();
 		$submission = $this->getAuthorizedContextObject(ASSOC_TYPE_SUBMISSION);
 		$stageId = isset($args['stageId']) ? $args['stageId'] : null;
@@ -248,9 +249,8 @@ class SubmissionHandler extends APIHandler {
 	 */
 	private function _buildListRequestParams($slimRequest) {
 
-		$request = $this->getRequest();
+		$request = Application::getRequest();
 		$currentUser = $request->getUser();
-		$context = $request->getContext();
 
 		// Merge query params over default params
 		$defaultParams = array(
@@ -258,13 +258,13 @@ class SubmissionHandler extends APIHandler {
 			'offset' => 0,
 		);
 
-		$requestParams = array_merge($defaultParams, $slimRequest->getQueryParams());
-
-		// Anyone not a manager or site admin can only access their assigned
-		// submissions
-		if (!$currentUser->hasRole(array(ROLE_ID_MANAGER, ROLE_ID_SITE_ADMIN), $context->getId())) {
-			$requestParams['assignedTo'] = $currentUser->getId();
+		$userRoles = $this->getAuthorizedContextObject(ASSOC_TYPE_USER_ROLES);
+		$canAccessUnassignedSubmission = !empty(array_intersect(array(ROLE_ID_SITE_ADMIN, ROLE_ID_MANAGER), $userRoles));
+		if (!$canAccessUnassignedSubmission) {
+			$defaultParams['assignedTo'] = $currentUser->getId();
 		}
+
+		$requestParams = array_merge($defaultParams, $slimRequest->getQueryParams());
 
 		$returnParams = array();
 

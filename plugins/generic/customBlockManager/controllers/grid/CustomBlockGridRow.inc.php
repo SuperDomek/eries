@@ -3,8 +3,8 @@
 /**
  * @file plugins/generic/customBlockManager/controllers/grid/CustomBlockGridRow.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class CustomBlockGridRow
@@ -23,8 +23,8 @@ class CustomBlockGridRow extends GridRow {
 	/**
 	 * @copydoc GridRow::initialize()
 	 */
-	function initialize($request) {
-		parent::initialize($request);
+	function initialize($request, $template = null) {
+		parent::initialize($request, $template);
 
 		$blockName = $this->getId();
 		if (!empty($blockName)) {
@@ -64,4 +64,3 @@ class CustomBlockGridRow extends GridRow {
 	}
 }
 
-?>

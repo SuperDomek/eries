@@ -3,8 +3,8 @@
 /**
  * @file plugins/generic/lensGalley/LensGalleyPlugin.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class LensGalleyPlugin
@@ -17,18 +17,14 @@ import('lib.pkp.classes.plugins.GenericPlugin');
 
 class LensGalleyPlugin extends GenericPlugin {
 	/**
-	 * Register the plugin, if enabled
-	 * @param $category string
-	 * @param $path string
-	 * @return boolean
+	 * @copydoc LazyLoadPlugin::register()
 	 */
-	function register($category, $path) {
-		if (parent::register($category, $path)) {
+	function register($category, $path, $mainContextId = null) {
+		if (parent::register($category, $path, $mainContextId)) {
 			if ($this->getEnabled()) {
 				HookRegistry::register('ArticleHandler::view::galley', array($this, 'articleCallback'));
 				HookRegistry::register('IssueHandler::view::galley', array($this, 'issueCallback'));
 				HookRegistry::register('ArticleHandler::download', array($this, 'articleDownloadCallback'), HOOK_SEQUENCE_LATE);
-				$this->_registerTemplateResource();
 			}
 			return true;
 		}
@@ -74,7 +70,7 @@ class LensGalleyPlugin extends GenericPlugin {
 		if ($galley && in_array($galley->getFileType(), array('application/xml', 'text/xml'))) {
 			$templateMgr->assign(array(
 				'pluginLensPath' => $this->getLensPath($request),
-				'pluginTemplatePath' => $this->getTemplatePath(),
+				'displayTemplatePath' => $this->getTemplateResource('display.tpl'),
 				'pluginUrl' => $request->getBaseUrl() . '/' . $this->getPluginPath(),
 				'galleyFile' => $galley->getFile(),
 				'issue' => $issue,
@@ -82,7 +78,7 @@ class LensGalleyPlugin extends GenericPlugin {
 				'galley' => $galley,
 				'jQueryUrl' => $this->_getJQueryUrl($request),
 			));
-			$templateMgr->display($this->getTemplatePath() . '/articleGalley.tpl');
+			$templateMgr->display($this->getTemplateResource('articleGalley.tpl'));
 			return true;
 		}
 
@@ -104,7 +100,7 @@ class LensGalleyPlugin extends GenericPlugin {
 		if ($galley && $galley->getFileType() == 'application/xml') {
 			$templateMgr->assign(array(
 				'pluginLensPath' => $this->getLensPath($request),
-				'pluginTemplatePath' => $this->getTemplatePath(),
+				'displayTemplatePath' => $this->getTemplateResource('display.tpl'),
 				'pluginUrl' => $request->getBaseUrl() . '/' . $this->getPluginPath(),
 				'galleyFile' => $galley->getFile(),
 				'issue' => $issue,
@@ -119,7 +115,7 @@ class LensGalleyPlugin extends GenericPlugin {
 					'contexts' => 'frontend',
 				)
 			);
-			$templateMgr->display($this->getTemplatePath() . '/issueGalley.tpl');
+			$templateMgr->display($this->getTemplateResource('issueGalley.tpl'));
 			return true;
 		}
 
@@ -136,7 +132,7 @@ class LensGalleyPlugin extends GenericPlugin {
 		if (Config::getVar('general', 'enable_cdn')) {
 			return '//ajax.googleapis.com/ajax/libs/jquery/' . CDN_JQUERY_VERSION . '/jquery' . $min . '.js';
 		} else {
-			return $request->getBaseUrl() . '/lib/pkp/lib/components/jquery/jquery' . $min . '.js';
+			return $request->getBaseUrl() . '/lib/pkp/lib/vendor/components/jquery/jquery' . $min . '.js';
 		}
 	}
 
@@ -147,13 +143,6 @@ class LensGalleyPlugin extends GenericPlugin {
 	 */
 	function getLensPath($request) {
 		return $request->getBaseUrl() . '/' . $this->getPluginPath() . '/lib/lens';
-	}
-
-	/**
-	 * @copydoc Plugin::getTemplatePath()
-	 */
-	function getTemplatePath($inCore = false) {
-		return $this->getTemplateResourceName() . ':templates/';
 	}
 
 	/**

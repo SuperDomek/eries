@@ -3,8 +3,8 @@
 /**
  * @file classes/submission/SubmissionFileDAODelegate.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class SubmissionFileDAODelegate
@@ -196,7 +196,7 @@ class SubmissionFileDAODelegate extends DAO {
 			import('lib.pkp.classes.file.FileManager');
 			$fileManager = new FileManager();
 			if (!$fileManager->copyFile($previousFilePath, $targetFilePath)) return false;
-			if (!$fileManager->deleteFile($previousFilePath)) return false;
+			if (!$fileManager->deleteByPath($previousFilePath)) return false;
 		}
 
 		return file_exists($targetFilePath);
@@ -238,7 +238,7 @@ class SubmissionFileDAODelegate extends DAO {
 
 		import('lib.pkp.classes.file.FileManager');
 		$fileManager = new FileManager();
-		$fileManager->deleteFile($filePath);
+		$fileManager->deleteByPath($filePath);
 
 		return !file_exists($filePath);
 	}
@@ -444,4 +444,4 @@ class SubmissionFileDAODelegate extends DAO {
 	}
 }
 
-?>
+

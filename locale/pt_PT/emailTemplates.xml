@@ -4,8 +4,8 @@
 <!--
   * locale/pt_PT/emailTemplates.xml
   *
-  * Copyright (c) 2014-2018 Simon Fraser University
-  * Copyright (c) 2003-2018 John Willinsky
+  * Copyright (c) 2014-2019 Simon Fraser University
+  * Copyright (c) 2003-2019 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   * Localization information: https://pkp.sfu.ca/wiki/index.php?title=OJS:_Portuguese_(pt_PT)
   * Localized email templates XML file.
@@ -768,31 +768,6 @@ Link: {$url}<br />
 {$principalContactSignature}]]></body>
 		<description>Esta mensagem é enviada a utilizadores registados que escolheram activar este tipo de notificação via email.</description>
 	</email_text>
-	<email_text key="NOTIFICATION_MAILLIST">
-		<subject>Nova notificação de {$siteTitle}</subject>
-		<body><![CDATA[Você possui uma nova notificação de {$siteTitle}:<br />
---<br />
-{$notificationContents}<br />
-<br />
-Link: {$url}<br />
---<br />
-<br />
-Caso não deseje receber mais notificações via e-mail, aceda a {$unsubscribeLink} e forneça o seu endereço de e-mail e senha.<br />
-<br />
-{$principalContactSignature}]]></body>
-		<description>Esta mensagem é enviada a utilizadores não registados que pertencem à lista de correio.</description>
-	</email_text>
-	<email_text key="NOTIFICATION_MAILLIST_WELCOME">
-		<subject>Bem-vindo à mailing list de {$siteTitle}!</subject>
-		<body><![CDATA[Subscreveu a recepção de notificações de {$siteTitle}.<br />
-<br />
-Clique no seguinte link para confirmar o seu pedido e adicionar o seu e-mail à mailing list: {$confirmLink}<br />
-<br />
-Caso deseje interromper a recepção de notificações, aceda a {$unsubscribeLink}.<br />
-<br />
-{$principalContactSignature}]]></body>
-		<description>Esta mensagem é enviada a utilizadores não registados que acabaram de se registar no serviço de notificações da mailing list.</description>
-	</email_text>
 	<email_text key="EDITOR_DECISION_ACCEPT">
 		<subject>Decisão editorial</subject>
 		<body><![CDATA[{$authorName},<br />
@@ -968,64 +943,6 @@ URL da submissão : {$submissionUrl}<br />
 {$editorialContactSignature}<br />]]></body>
 		<description>Este e-mail do Editor ou Editor de Secção para o Autor notifica-o que a sua submissão foi enviada para produção.</description>
 	</email_text>
-	<email_text key="GIFT_AVAILABLE">
-		<subject>{$giftNoteTitle}</subject>
-		<body><![CDATA[Cara(o) {$recipientFirstName},<br />
-<br />
-{$buyerFullName} gostaria de partilhar uma prenda consigo em {$giftJournalName}:<br />
-<br />
-{$giftDetails}<br />
-<br />
-<br />
-{$giftNote}<br />
-<br />
-<br />
-Receberá um e-mail de follow-up, o qual inclui os detalhes do login e instruções para aceder à sua prenda.<br />
-<br />
-Esperamos que goste da sua prenda!<br />
-<br />
-{$giftContactSignature}<br />]]></body>
-		<description>Este e-mail notifica um destinatário da prenda que a sua prenda foi comprada e já está disponível.</description>
-	</email_text>
-	<email_text key="GIFT_USER_LOGIN">
-		<subject>Acesso à sua prenda: Detalhes do login</subject>
-		<body><![CDATA[Cara(o) {$recipientFirstName},<br />
-<br />
-{$buyerFullName} gostaria de partilhar uma prenda consigo em {$giftJournalName}:<br />
-<br />
-{$giftDetails}<br />
-<br />
-<br />
-Para ter acesso à sua prenda, por favor faça login no portal da revista <a href="{$giftUrl}">{$giftUrl}</a><br />
-<br />
-Nome de utilizador: {$username}<br />
-<br />
-Esperamos que goste da prenda!<br />
-<br />
-{$giftContactSignature}<br />]]></body>
-		<description>Este e-mail notifica o destinatário da prenda sobre os detalhes do login.</description>
-	</email_text>
-	<email_text key="GIFT_USER_REGISTER">
-		<subject>Acesso à sua prenda: Detalhes do login</subject>
-		<body><![CDATA[Cara(o) {$recipientFirstName},<br />
-<br />
-{$buyerFullName} gostaria de partilhar uma prenda em {$giftJournalName}:<br />
-<br />
-{$giftDetails}<br />
-<br />
-<br />
-Para aceder à sua prenda, por favor faça login no portal da revista em <a href="{$giftUrl}">{$giftUrl}</a><br />
-<br />
-Nome de utilizador: {$username}<br />
-A sua senha: {$password}<br />
-<br />
-Assim que tenha acedido ao portal, poderá modificar a sua senha em qualquer altura.<br />
-<br />
-Esperamos que goste da sua prenda!<br />
-<br />
-{$giftContactSignature}<br />]]></body>
-		<description>Este e-mail notifica um destinatário sobre os detalhes de login para uma nova conta.</description>
-	</email_text>
 	<email_text key="NOTIFICATION_CENTER_DEFAULT">
 		<subject>Uma mensagem relativa {$contextName}</subject>
 		<body>Por favor, insira a sua mensagem.</body>
@@ -1168,5 +1085,25 @@ Se tiver questões, por favor contacte-me. Obrigado por considerar esta revisão
 <br />
 {$editorialContactSignature}]]></body>
 		<description>Este e-mail, quando activado, é enviado automaticamente para os outros autores que não são utilizadores do Portal especificados durante o processo de envio.</description>
+	</email_text>
+	<email_text key="EDITOR_DECISION_INITIAL_DECLINE">
+		<subject>Decisão Editorial</subject>
+		<body><![CDATA[{$authorName}:<br />
+<br />
+Em relação à sua submissão à revista {$contextName}, &quot;{$submissionTitle}&quot; foi tomada uma decisão.<br />
+<br />
+A decisão é: Rejeitar a Submissão<br />
+<br />
+{$editorialContactSignature}<br />]]></body>
+		<description>Ete e-mail é enviado ao autor se o editor decidir rejeitar a submissão à priori, antes do processo de revisão.</description>
+	</email_text>
+	<email_text key="EDITOR_RECOMMENDATION">
+		<subject>Recomenda;ção Editorial</subject>
+		<body><![CDATA[{$editors}:<br />
+<br />
+A recomendação relativamente à submissão para  {$contextName}, &quot;{$submissionTitle}&quot; é: {$recommendation}<br />
+<br />
+{$editorialContactSignature}<br />]]></body>
+		<description>Este e-mail é enviado pelo Editor de Secção ou Editor Acessor para o Editor de Secção ou Editor Priincipal, a notificar da recomendação final relativa à submissão.</description>
 	</email_text>
 </email_texts>

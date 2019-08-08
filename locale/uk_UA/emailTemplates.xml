@@ -4,8 +4,8 @@
 <!--
   * locale/uk_UA/emailTemplates.xml
   *
-  * Copyright (c) 2014-2018 Simon Fraser University
-  * Copyright (c) 2003-2018 John Willinsky
+  * Copyright (c) 2014-2019 Simon Fraser University
+  * Copyright (c) 2003-2019 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   * Localization information: https://pkp.sfu.ca/wiki/index.php?title=OJS:_Ukrainian_(uk_UA)
   * Localization strings.
@@ -22,31 +22,6 @@
 <br />
 {$principalContactSignature}]]></body>
 		<description>Цей лист надсилається зареєстрованому користувачу, який обрав опцію отримання повідомлень цього типу електронною поштою.</description>
-	</email_text>
-	<email_text key="NOTIFICATION_MAILLIST">
-		<subject>Ви маєте нове повідомлення від сайту {$siteTitle}</subject>
-		<body><![CDATA[Ви маєте нове повідомлення від сайту {$siteTitle}:<br />
---<br />
-{$notificationContents}<br />
-<br />
-Посилання: {$url}<br />
---<br />
-<br />
-Якщо Ви не хочете отримувати повідомлення електронною поштою, будь ласка, перейдіть за адресою {$unsubscribeLink} та вкажіть Вашу email адресу та пароль.<br />
-<br />
-{$principalContactSignature}]]></body>
-		<description>Цей лист надсилається незареєстрованим користувачам зі списку поштової розсилки.</description>
-	</email_text>
-	<email_text key="NOTIFICATION_MAILLIST_WELCOME">
-		<subject>Вітаємо у списку поштової розсилки {$siteTitle}!</subject>
-		<body><![CDATA[Ви зареєстрували себе для отримання повідомлень від сайту {$siteTitle}.<br />
-			<br />
-Будь ласка, натисніть це посилання, щоб підтвердити свій запит та додати Вашу email адресу до списку поштової розсилки: {$confirmLink}<br />
-<br />
-Якщо Ви не хочете отримувати повідомлення електронною поштою, будь ласка, перейдіть за адресою {$unsubscribeLink}.<br />
-<br />
-{$principalContactSignature}]]></body>
-		<description>Цей лист надсилається незареєстрованому користувачу, після його реєстрації у списку поштової розсилки повідомлень.</description>
 	</email_text>
 		<email_text key="PASSWORD_RESET_CONFIRM">
 		<subject>Підтвердження скидання пароля</subject>
@@ -935,46 +910,6 @@ URL подання: <a href="{$submissionReviewUrl}">{$submissionReviewUrl}</a><
 {$reviewGuidelines}]]></body>
 		<description>Цим листом редактор розділу просить рецензента виконати другий раунд рецензування подання або відмовитись від цієї роботи. У додатку до листа міститься рукопис, поданий до редакції. Цей шаблон використовується, якщо на кроці 2 Налаштування журналу обраний доступ рецензента "єдиним натисканням" (у іншому випадку див. REVIEW_REQUEST_SUBSEQUENT.)</description>
 	</email_text>
-
-	<email_text key="GIFT_USER_REGISTER">
-		<subject>Активуйте свій подарунок: Інформація для авторизації</subject>
-		<body><![CDATA[Шановний {$recipientFirstName},<br />
-<br />
-{$buyerFullName} бажає зробити Вам подарунок у виданні {$giftJournalName}:<br />
-<br />
-{$giftDetails}<br />
-<br />
-<br />
-Щоб активувати свій подарунок, будь ласка, зайдіть з даними, вказаними нижче, на веб-сайт журналу <a href="{$giftUrl}">{$giftUrl}</a><br />
-<br />
-Ваше ім'я користувача: {$username}<br />
-Ваш пароль: {$password}<br />
-<br />
-Після першого входу до системи, Ви у будь-який час можете змінити пароль.<br />
-<br />
-Сподіваємося, цей подарунок Вам сподобається!<br />
-<br />
-{$giftContactSignature}]]></body>
-		<description>Цим листом отримувачу подарунку повідомляються ім'я користувача та пароль для нового облікового запису.</description>
-	</email_text>
-	<email_text key="GIFT_USER_LOGIN">
-		<subject>Активуйте свій подарунок: Інформація для авторизації</subject>
-		<body><![CDATA[Шановний {$recipientFirstName},<br />
-<br />
-{$buyerFullName} бажає зробити Вам подарунок у виданні {$giftJournalName}:<br />
-<br />
-{$giftDetails}<br />
-<br />
-<br />
-Щоб активувати свій подарунок, будь ласка, перейдіть на сторінку веб-сайту журналу <a href="{$giftUrl}">{$giftUrl}</a><br />
-<br />
-Ваше ім'я користувача: {$username}<br />
-<br />
-Сподіваємося, цей подарунок Вам сподобається!<br />
-<br />
-{$giftContactSignature}]]></body>
-		<description>Цим листом отримувачу подарунку нагадуються його ім'я користувача та пароль.</description>
-	</email_text>
 	<email_text key="REVISED_VERSION_NOTIFY">
 		<subject>Перероблена версія вивантажена</subject>
 		<body><![CDATA[{$editorialContactName}:<br />
@@ -987,5 +922,3 @@ URL подання: {$submissionUrl}<br />
 		<description>Цей лист автоматично надсилається призначеному редактору, коли автор вивантажує перероблену версію своєї статті.</description>
 	</email_text>
 </email_texts>
-
-

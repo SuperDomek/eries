@@ -3,8 +3,8 @@
 /**
  * @file classes/services/IssueService.php
 *
-* Copyright (c) 2014-2018 Simon Fraser University
-* Copyright (c) 2000-2018 John Willinsky
+* Copyright (c) 2014-2019 Simon Fraser University
+* Copyright (c) 2000-2019 John Willinsky
 * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
 *
 * @class IssueService
@@ -51,7 +51,7 @@ class IssueService extends PKPBaseEntityPropertyService {
 	public function getIssues($contextId, $args = array()) {
 		$issueListQB = $this->_buildGetIssuesQueryObject($contextId, $args);
 		$issueListQO = $issueListQB->get();
-		$range = new DBResultRange($args['count'], null, $args['offset']);
+		$range = $this->getRangeByArgs($args);
 		$issueDao = DAORegistry::getDAO('IssueDAO');
 		$result = $issueDao->retrieveRange($issueListQO->toSql(), $issueListQO->getBindings(), $range);
 		$queryResults = new DAOResultFactory($result, $issueDao, '_fromRow');

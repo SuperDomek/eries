@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/users/reviewer/form/CreateReviewerForm.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class CreateReviewerForm
@@ -25,8 +25,22 @@ class CreateReviewerForm extends ReviewerForm {
 		parent::__construct($submission, $reviewRound);
 		$this->setTemplate('controllers/grid/users/reviewer/form/createReviewerForm.tpl');
 
-		$this->addCheck(new FormValidator($this, 'firstName', 'required', 'user.profile.form.firstNameRequired'));
-		$this->addCheck(new FormValidator($this, 'lastName', 'required', 'user.profile.form.lastNameRequired'));
+		// the users register for the site, thus
+		// the site primary locale is the required default locale
+		$site = Application::getRequest()->getSite();
+		$this->addSupportedFormLocale($site->getPrimaryLocale());
+
+		$form = $this;
+		$this->addCheck(new FormValidatorLocale($this, 'givenName', 'required', 'user.profile.form.givenNameRequired', $site->getPrimaryLocale()));
+		$this->addCheck(new FormValidatorCustom($this, 'familyName', 'optional', 'user.profile.form.givenNameRequired.locale', function($familyName) use ($form) {
+			$givenNames = $form->getData('givenName');
+			foreach ($familyName as $locale => $value) {
+				if (!empty($value) && empty($givenNames[$locale])) {
+					return false;
+				}
+			}
+			return true;
+		}));
 		$this->addCheck(new FormValidatorCustom($this, 'username', 'required', 'user.register.form.usernameExists', array(DAORegistry::getDAO('UserDAO'), 'userExistsByUsername'), array(), true));
 		$this->addCheck(new FormValidatorUsername($this, 'username', 'required', 'user.register.form.usernameAlphaNumeric'));
 		$this->addCheck(new FormValidatorEmail($this, 'email', 'required', 'user.profile.form.emailRequired'));
@@ -36,14 +50,15 @@ class CreateReviewerForm extends ReviewerForm {
 
 
 	/**
-	 * Fetch the form.
-	 * @see Form::fetch()
+	 * @copydoc ReviewerForm::fetch
 	 */
-	function fetch($request) {
+	function fetch($request, $template = null, $display = false) {
 		$advancedSearchAction = $this->getAdvancedSearchAction($request);
-
 		$this->setReviewerFormAction($advancedSearchAction);
-		return parent::fetch($request);
+		$site = $request->getSite();
+		$templateMgr = TemplateManager::getManager($request);
+		$templateMgr->assign('sitePrimaryLocale', $site->getPrimaryLocale());
+		return parent::fetch($request, $template, $display);
 	}
 
 	/**
@@ -54,9 +69,8 @@ class CreateReviewerForm extends ReviewerForm {
 		parent::readInputData();
 
 		$this->readUserVars(array(
-			'firstName',
-			'middleName',
-			'lastName',
+			'givenName',
+			'familyName',
 			'affiliation',
 			'interests',
 			'username',
@@ -68,16 +82,13 @@ class CreateReviewerForm extends ReviewerForm {
 
 	/**
 	 * Save review assignment
-	 * @param $args array
-	 * @param $request PKPRequest
 	 */
-	function execute($args, $request) {
+	function execute() {
 		$userDao = DAORegistry::getDAO('UserDAO');
 		$user = $userDao->newDataObject();
 
-		$user->setFirstName($this->getData('firstName'));
-		$user->setMiddleName($this->getData('middleName'));
-		$user->setLastName($this->getData('lastName'));
+		$user->setGivenName($this->getData('givenName'), null);
+		$user->setFamilyName($this->getData('familyName'), null);
 		$user->setEmail($this->getData('email'));
 		$user->setAffiliation($this->getData('affiliation'), null); // Localized
 
@@ -121,16 +132,21 @@ class CreateReviewerForm extends ReviewerForm {
 			import('lib.pkp.classes.mail.MailTemplate');
 			$mail = new MailTemplate('REVIEWER_REGISTER');
 			if ($mail->isEnabled()) {
+				$request = Application::getRequest();
 				$context = $request->getContext();
 				$mail->setReplyTo($context->getSetting('contactEmail'), $context->getSetting('contactName'));
 				$mail->assignParams(array('username' => $this->getData('username'), 'password' => $password, 'userFullName' => $user->getFullName()));
 				$mail->addRecipient($user->getEmail(), $user->getFullName());
-				$mail->send($request);
+				if (!$mail->send($request)) {
+					import('classes.notification.NotificationManager');
+					$notificationMgr = new NotificationManager();
+					$notificationMgr->createTrivialNotification($request->getUser()->getId(), NOTIFICATION_TYPE_ERROR, array('contents' => __('email.compose.error')));
+				}
 			}
 		}
 
-		return parent::execute($args, $request);
+		return parent::execute();
 	}
 }
 
-?>
+

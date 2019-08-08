@@ -4,15 +4,14 @@
 <!--
   * locale/sr_RS@latin/manager.xml
   *
-  * Copyright (c) 2014-2018 Simon Fraser University
-  * Copyright (c) 2000-2018 John Willinsky
+  * Copyright (c) 2014-2019 Simon Fraser University
+  * Copyright (c) 2000-2019 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   *  Localization information: https://pkp.sfu.ca/wiki/index.php?title=OJS:_Serbian_(sr_RS)
-  * Localization strings for the sr_RS@latin (Srpski) locale.
-  *
+  * Localization strings.
   -->
 
-<locale name="sr_RS@latin" full_name = "Srpski">
+<locale name="sr_RS@latin" full_name="Srpski">
 	<message key="manager.announcements">Obaveštenja</message>
 	<message key="manager.announcements.confirmDelete">Da li ste sigurni da želite da trajno obrišete ovo obaveštenje?</message>
 	<message key="manager.announcements.create">Napravi novo obaveštenje</message>
@@ -419,7 +418,6 @@
 	<message key="manager.setup.sponsors.note">Odnos sa sponzorom i opis politike</message>
 	<message key="manager.setup.sponsors.description">Primeri: akademske asocijacije, univerzitetska odeljenja, kooperative itd. Sponzori su javno prikazani.</message>
 	<message key="manager.setup.styleSheetDescription">Iskusni web programeri mogu postaviti CSS fajl za dalje prilagođavanje izgleda sajta.</message>
-	<message key="manager.setup.privacyStatement.description">Ova izjava će se pojaviti u toku Prijave članka autora i na javno dostupnoj O nama stranici.</message>
 	<message key="manager.setup.peerReview.description">Napišite ukratko politiku recenzije i procesa za čitaoce i autore. Ovaj opis obično uključuje broj recenzenata koji vrše recenziju prijavljenog članka, kriterije koje recenzenti koriste kod ocenjivanja prijavljenog članka, očekivano vreme za koje se izvršava recenzija i principe prilikom izbora recenzenata.</message>
 	<message key="manager.setup.principalContactDescription">Unesite detalje za kontakt, posebno za glavnog urednika, upravnika ili poziciju administrativnog osoblja koji se mogu javno prikazati na vašem sajtu.</message>
 	<message key="manager.setup.notifications.description">Autorima će biti automatski poslata poruka potvrđujući prijem prijavljenog članka. Možete kopije ove poruke poslati sledećim:</message>

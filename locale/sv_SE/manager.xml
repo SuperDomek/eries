@@ -4,8 +4,8 @@
 <!--
   * locale/sv_SE/manager.xml
   *
-  * Copyright (c) 2013-2018 Simon Fraser University
-  * Copyright (c) 2003-2018 John Willinsky
+  * Copyright (c) 2013-2019 Simon Fraser University
+  * Copyright (c) 2003-2019 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   * Localization information: https://pkp.sfu.ca/wiki/index.php?title=OJS:_Swedish_(sv_SE)
   * Localization strings.
@@ -19,7 +19,7 @@
 	<message key="manager.language.ui">Användargränssnitt</message>
 	<message key="manager.language.submissions">Bidrag</message>
 	<message key="manager.language.forms">Formulär</message>
-	<message key="manager.language.confirmDefaultSettingsOverwrite">Byter ut alla språk/region-inställningar som finns för den tidskriften</message>
+	<message key="manager.language.confirmDefaultSettingsOverwrite">Det här kommer att ersätta alla språkspecifika tidskriftsinställningar som finns för det här språket/regionen.</message>
 	<message key="manager.languages.languageInstructions"><![CDATA[OJS kan översättas till flera olika språk och fungerar dessutom som ett flerspråkigt system där användaren kan växla mellan språk på de olika sidorna.<br /><br /> Om ett språk som stöds av OJS inte finns listad nedan, be huvudadministratören att installera språket. För instruktioner om hur ytterligare språk läggs till, se OJS-dokumentationen.]]></message>
 	<message key="manager.languages.noneAvailable">Tyvärr, det finns inga ytterligare språk tillgängliga. Kontakta huvudadministratören om du vill lägga till språk i den här tidskriften.</message>
 	<message key="manager.languages.primaryLocaleInstructions">Detta blir defaultspråk för tidskriftens webbplats.</message>
@@ -301,7 +301,6 @@
 	<message key="manager.setup.reviewOptions.reviewerAccessKeysEnabled.description"><![CDATA[<strong>Observera:</strong> Inbjudan via e-post till granskare innehåller en URL som pekar direkt till sidan för granskning av bidraget (med tillgång till andra sidor som kräver inloggning). Av säkerhetsskäl kan inte redaktörer cc:a eller lägga till andras e-postadresser när de skickar inbjudan till granskare.]]></message>
 	<message key="manager.setup.reviewOptions.reviewerRatings">Granskarens bedömning</message>
 	<message key="manager.setup.reviewOptions.reviewerReminders">Påminnelse (för granskare)</message>
-	<message key="manager.setup.reviewOptions.showEnsuringLink"><![CDATA[Länka till <a href="javascript:openHelp('{$blindReviewHelpId}')" class="action">garanterar att granskningen är anonym</a> på sidor där författare och granskare laddar upp filer.]]></message>
 	<message key="manager.setup.reviewPolicy">Granskningspolicy</message>
 	<message key="manager.setup.searchEngineIndexing">Indexering för sökmotorer</message>
 	<message key="manager.setup.searchEngineIndexingDescription">Lägg till en kort beskrivning av tidskriften som sökmotorer kan visa när tidskriften visas i sökresultatet</message>	

@@ -3,8 +3,8 @@
 /**
  * @file classes/core/PKPApplication.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class PKPApplication
@@ -13,6 +13,8 @@
  * @brief Class describing this application.
  *
  */
+
+define('PHP_REQUIRED_VERSION', '7.0.0');
 
 define('ROUTE_COMPONENT', 'component');
 define('ROUTE_PAGE', 'page');
@@ -127,16 +129,19 @@ abstract class PKPApplication implements iPKPApplicationInfoProvider {
 		// Seed random number generator
 		mt_srand(((double) microtime()) * 1000000);
 
-		// Load Composer autoloader
-		require_once('lib/pkp/lib/vendor/autoload.php');
-
 		import('lib.pkp.classes.core.Core');
 		import('lib.pkp.classes.core.PKPString');
 		import('lib.pkp.classes.core.Registry');
 
 		import('lib.pkp.classes.config.Config');
 
+		// Load Composer autoloader
+		require_once('lib/pkp/lib/vendor/autoload.php');
+
 		ini_set('display_errors', Config::getVar('debug', 'display_errors', ini_get('display_errors')));
+		if (!defined('SESSION_DISABLE_INIT') && !Config::getVar('general', 'installed')) {
+			define('SESSION_DISABLE_INIT', true);
+		}
 
 		Registry::set('application', $this);
 
@@ -251,7 +256,7 @@ abstract class PKPApplication implements iPKPApplicationInfoProvider {
 	 * Get the symbolic name of this application
 	 * @return string
 	 */
-	function getName() {
+	static function getName() {
 		return 'pkp-lib';
 	}
 
@@ -356,6 +361,7 @@ abstract class PKPApplication implements iPKPApplicationInfoProvider {
 			'AnnouncementDAO' => 'lib.pkp.classes.announcement.AnnouncementDAO',
 			'AnnouncementTypeDAO' => 'lib.pkp.classes.announcement.AnnouncementTypeDAO',
 			'AuthSourceDAO' => 'lib.pkp.classes.security.AuthSourceDAO',
+			'CategoryDAO' => 'lib.pkp.classes.context.CategoryDAO',
 			'CitationDAO' => 'lib.pkp.classes.citation.CitationDAO',
 			'ControlledVocabDAO' => 'lib.pkp.classes.controlledVocab.ControlledVocabDAO',
 			'ControlledVocabEntryDAO' => 'lib.pkp.classes.controlledVocab.ControlledVocabEntryDAO',
@@ -378,7 +384,6 @@ abstract class PKPApplication implements iPKPApplicationInfoProvider {
 			'NavigationMenuItemAssignmentDAO' => 'lib.pkp.classes.navigationMenu.NavigationMenuItemAssignmentDAO',
 			'NoteDAO' => 'lib.pkp.classes.note.NoteDAO',
 			'NotificationDAO' => 'lib.pkp.classes.notification.NotificationDAO',
-			'NotificationMailListDAO' => 'lib.pkp.classes.notification.NotificationMailListDAO',
 			'NotificationSettingsDAO' => 'lib.pkp.classes.notification.NotificationSettingsDAO',
 			'NotificationSubscriptionSettingsDAO' => 'lib.pkp.classes.notification.NotificationSubscriptionSettingsDAO',
 			'PluginGalleryDAO' => 'lib.pkp.classes.plugins.PluginGalleryDAO',
@@ -403,6 +408,8 @@ abstract class PKPApplication implements iPKPApplicationInfoProvider {
 			'SubmissionDisciplineDAO' => 'lib.pkp.classes.submission.SubmissionDisciplineDAO',
 			'SubmissionDisciplineEntryDAO' => 'lib.pkp.classes.submission.SubmissionDisciplineEntryDAO',
 			'SubmissionEmailLogDAO' => 'lib.pkp.classes.log.SubmissionEmailLogDAO',
+			'SubmissionEventLogDAO' => 'lib.pkp.classes.log.SubmissionEventLogDAO',
+			'SubmissionFileDAO' => 'lib.pkp.classes.submission.SubmissionFileDAO',
 			'SubmissionFileEventLogDAO' => 'lib.pkp.classes.log.SubmissionFileEventLogDAO',
 			'QueryDAO' => 'lib.pkp.classes.query.QueryDAO',
 			'SubmissionLanguageDAO' => 'lib.pkp.classes.submission.SubmissionLanguageDAO',
@@ -414,12 +421,14 @@ abstract class PKPApplication implements iPKPApplicationInfoProvider {
 			'TimeZoneDAO' => 'lib.pkp.classes.i18n.TimeZoneDAO',
 			'TemporaryFileDAO' => 'lib.pkp.classes.file.TemporaryFileDAO',
 			'UserGroupAssignmentDAO' => 'lib.pkp.classes.security.UserGroupAssignmentDAO',
+			'UserDAO' => 'lib.pkp.classes.user.UserDAO',
 			'UserGroupDAO' => 'lib.pkp.classes.security.UserGroupDAO',
+			'UserSettingsDAO' => 'lib.pkp.classes.user.UserSettingsDAO',
 			'UserStageAssignmentDAO' => 'lib.pkp.classes.user.UserStageAssignmentDAO',
 			'VersionDAO' => 'lib.pkp.classes.site.VersionDAO',
 			'ViewsDAO' => 'lib.pkp.classes.views.ViewsDAO',
 			'WorkflowStageDAO' => 'lib.pkp.classes.workflow.WorkflowStageDAO',
-			'XMLDAO' => 'lib.pkp.classes.db.XMLDAO'
+			'XMLDAO' => 'lib.pkp.classes.db.XMLDAO',
 		);
 	}
 
@@ -653,12 +662,12 @@ abstract class PKPApplication implements iPKPApplicationInfoProvider {
 	 */
 	function getCCLicenseOptions() {
 		return array(
-			'http://creativecommons.org/licenses/by-nc-nd/4.0' => 'submission.license.cc.by-nc-nd4',
-			'http://creativecommons.org/licenses/by-nc/4.0' => 'submission.license.cc.by-nc4',
-			'http://creativecommons.org/licenses/by-nc-sa/4.0' => 'submission.license.cc.by-nc-sa4',
-			'http://creativecommons.org/licenses/by-nd/4.0' => 'submission.license.cc.by-nd4',
-			'http://creativecommons.org/licenses/by/4.0' => 'submission.license.cc.by4',
-			'http://creativecommons.org/licenses/by-sa/4.0' => 'submission.license.cc.by-sa4'
+			'https://creativecommons.org/licenses/by-nc-nd/4.0' => 'submission.license.cc.by-nc-nd4',
+			'https://creativecommons.org/licenses/by-nc/4.0' => 'submission.license.cc.by-nc4',
+			'https://creativecommons.org/licenses/by-nc-sa/4.0' => 'submission.license.cc.by-nc-sa4',
+			'https://creativecommons.org/licenses/by-nd/4.0' => 'submission.license.cc.by-nd4',
+			'https://creativecommons.org/licenses/by/4.0' => 'submission.license.cc.by4',
+			'https://creativecommons.org/licenses/by-sa/4.0' => 'submission.license.cc.by-sa4'
 		);
 	}
 
@@ -670,16 +679,19 @@ abstract class PKPApplication implements iPKPApplicationInfoProvider {
 	 */
 	function getCCLicenseBadge($ccLicenseURL) {
 		$licenseKeyMap = array(
-			'http://creativecommons.org/licenses/by-nc-nd/4.0' => 'submission.license.cc.by-nc-nd4.footer',
-			'http://creativecommons.org/licenses/by-nc/4.0' => 'submission.license.cc.by-nc4.footer',
-			'http://creativecommons.org/licenses/by-nc-sa/4.0' => 'submission.license.cc.by-nc-sa4.footer',
-			'http://creativecommons.org/licenses/by-nd/4.0' => 'submission.license.cc.by-nd4.footer',
-			'http://creativecommons.org/licenses/by/4.0' => 'submission.license.cc.by4.footer',
-			'http://creativecommons.org/licenses/by-sa/4.0' => 'submission.license.cc.by-sa4.footer'
+			'|http[s]?://(www\.)?creativecommons.org/licenses/by-nc-nd/4.0[/]?|' => 'submission.license.cc.by-nc-nd4.footer',
+			'|http[s]?://(www\.)?creativecommons.org/licenses/by-nc/4.0[/]?|' => 'submission.license.cc.by-nc4.footer',
+			'|http[s]?://(www\.)?creativecommons.org/licenses/by-nc-sa/4.0[/]?|' => 'submission.license.cc.by-nc-sa4.footer',
+			'|http[s]?://(www\.)?creativecommons.org/licenses/by-nd/4.0[/]?|' => 'submission.license.cc.by-nd4.footer',
+			'|http[s]?://(www\.)?creativecommons.org/licenses/by/4.0[/]?|' => 'submission.license.cc.by4.footer',
+			'|http[s]?://(www\.)?creativecommons.org/licenses/by-sa/4.0[/]?|' => 'submission.license.cc.by-sa4.footer',
 		);
 
-		if (isset($licenseKeyMap[$ccLicenseURL])) {
-			return __($licenseKeyMap[$ccLicenseURL]);
+		foreach($licenseKeyMap as $pattern => $key) {
+			if (preg_match($pattern, $ccLicenseURL)) {
+				PKPLocale::requireComponents(LOCALE_COMPONENT_PKP_SUBMISSION);
+				return __($key);
+			}
 		}
 		return null;
 	}
@@ -745,4 +757,4 @@ import('lib.pkp.classes.controllers.listbuilder.ListbuilderHandler');
 // To expose ORDER_CATEGORY_GRID_... constants via JS
 import('lib.pkp.classes.controllers.grid.feature.OrderCategoryGridItemsFeature');
 
-?>
+

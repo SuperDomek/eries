@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/settings/user/form/UserForm.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class UserForm
@@ -38,10 +38,8 @@ class UserForm extends Form {
 
 	/**
 	 * Initialize form data from current user profile.
-	 * @param $args array
-	 * @param $request PKPRequest
 	 */
-	public function initData($args, $request) {
+	public function initData() {
 
 		$userGroupDao = DAORegistry::getDAO('UserGroupDAO');
 		$userGroups = $userGroupDao->getByUserId($this->userId);
@@ -50,6 +48,8 @@ class UserForm extends Form {
 			$userGroupIds[] = $userGroup->getId();
 		}
 		$this->setData('userGroupIds', $userGroupIds);
+
+		parent::initData();
 	}
 
 	/**
@@ -61,11 +61,9 @@ class UserForm extends Form {
 	}
 
 	/**
-	 * Display the form.
-	 * @param $args array
-	 * @param $request PKPRequest
+	 * @copydoc Form::display
 	 */
-	public function display($args, $request) {
+	public function display($request = null, $template = null) {
 		$context = $request->getContext();
 		$contextId = $context ? $context->getId() : CONTEXT_ID_NONE;
 		$templateMgr = TemplateManager::getManager($request);
@@ -87,12 +85,12 @@ class UserForm extends Form {
 	/**
 	 * @copydoc Form::execute()
 	 */
-	function execute($args, $request) {
+	function execute() {
 
 		if (isset($this->userId)) {
 			import('lib.pkp.classes.security.UserGroupAssignmentDAO');
 			$userGroupAssignmentDao = DAORegistry::getDAO('UserGroupAssignmentDAO');
-			$userGroupAssignmentDao->deleteAssignmentsByContextId($request->getContext()->getId(), $this->userId);
+			$userGroupAssignmentDao->deleteAssignmentsByContextId(Application::getRequest()->getContext()->getId(), $this->userId);
 			if ($this->getData('userGroupIds')) {
 				$userGroupDao = DAORegistry::getDAO('UserGroupDAO');
 				foreach ($this->getData('userGroupIds') as $userGroupId) {
@@ -101,9 +99,9 @@ class UserForm extends Form {
 			}
 		}
 
-		parent::execute($request);
+		parent::execute();
 	}
 
 }
 
-?>
+

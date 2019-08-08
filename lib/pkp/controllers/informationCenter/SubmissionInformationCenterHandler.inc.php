@@ -3,8 +3,8 @@
 /**
  * @file controllers/informationCenter/SubmissionInformationCenterHandler.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class SubmissionInformationCenterHandler
@@ -97,7 +97,7 @@ class SubmissionInformationCenterHandler extends InformationCenterHandler {
 		$notesForm->readInputData();
 
 		if ($notesForm->validate()) {
-			$notesForm->execute($request);
+			$notesForm->execute();
 
 			// Save to event log
 			$this->_logEvent($request, $this->_submission, SUBMISSION_LOG_NOTE_POSTED, 'SubmissionLog');
@@ -149,4 +149,4 @@ class SubmissionInformationCenterHandler extends InformationCenterHandler {
 	}
 }
 
-?>
+

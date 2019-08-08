@@ -1,8 +1,8 @@
 {**
  * templates/reviewer/review/step1.tpl
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * Show the review step 1 page
@@ -19,7 +19,7 @@
 
 <form class="pkp_form" id="reviewStep1Form" method="post" action="{url page="reviewer" op="saveStep" path=$submission->getId() step="1" escape=false}">
 {csrf}
-{include file="common/formErrors.tpl"}
+{include file="controllers/notification/inPlaceNotification.tpl" notificationId="reviewStep1FormNotification"}
 
 {fbvFormArea id="reviewStep1"}
 	{fbvFormSection title="reviewer.step1.request"}
@@ -32,8 +32,12 @@
 		{$submission->getLocalizedAbstract()|strip_unsafe_html}
 	{/fbvFormSection}
 
+	{fbvFormSection label="editor.submissionReview.reviewType"}
+		{$reviewMethod|escape}
+	{/fbvFormSection}
+	
 	{if !$restrictReviewerFileAccess}
-	{url|assign:reviewFilesGridUrl router=$smarty.const.ROUTE_COMPONENT component="grid.files.review.ReviewerReviewFilesGridHandler" op="fetchGrid" submissionId=$submission->getId() stageId=$reviewAssignment->getStageId() reviewRoundId=$reviewRoundId reviewAssignmentId=$reviewAssignment->getId() escape=false}
+	{capture assign=reviewFilesGridUrl}{url router=$smarty.const.ROUTE_COMPONENT component="grid.files.review.ReviewerReviewFilesGridHandler" op="fetchGrid" submissionId=$submission->getId() stageId=$reviewAssignment->getStageId() reviewRoundId=$reviewRoundId reviewAssignmentId=$reviewAssignment->getId() escape=false}{/capture}
 	{load_url_in_div id="reviewFilesStep1" url=$reviewFilesGridUrl}
 	{/if}
 
@@ -78,7 +82,15 @@
 		{/fbvFormSection}
 	{/if}
 
-	{if $reviewAssignment->getDateConfirmed() && !$reviewAssignment->getDeclined()}
+	{if !$reviewAssignment->getDateConfirmed() && $currentContext->getSetting('privacyStatement')}
+		{fbvFormSection list=true}
+			{capture assign="privacyUrl"}{url router=$smarty.const.ROUTE_PAGE page="about" op="privacy"}{/capture}
+			{capture assign="privacyLabel"}{translate key="user.register.form.privacyConsent" privacyUrl=$privacyUrl}{/capture}
+			{fbvElement type="checkbox" id="privacyConsent" required=true value=1 label=$privacyLabel translate=false checked=$privacyConsent}
+		{/fbvFormSection}
+	{/if}
+
+	{if $reviewAssignment->getDateConfirmed()}
 		{fbvFormButtons hideCancel=true submitText="common.saveAndContinue" submitDisabled=$reviewIsComplete}
 	{elseif !$reviewAssignment->getDateConfirmed()}
 		{fbvFormButtons submitText="reviewer.submission.acceptReview" cancelText="reviewer.submission.declineReview" cancelAction=$declineReviewAction submitDisabled=$reviewIsComplete}

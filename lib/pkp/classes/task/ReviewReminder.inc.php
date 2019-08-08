@@ -3,8 +3,8 @@
 /**
  * @file classes/task/ReviewReminder.inc.php
  *
- * Copyright (c) 2013-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2013-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class ReviewReminder
@@ -74,7 +74,7 @@ class ReviewReminder extends ScheduledTask {
 			$reviewUrlArgs = array_merge($reviewUrlArgs, array('reviewId' => $reviewId, 'key' => $accessKey));
 		}
 
-		$application = PKPApplication::getApplication();
+		$application = Application::getApplication();
 		$request = $application->getRequest();
 		$dispatcher = $application->getDispatcher();
 		$submissionReviewUrl = $dispatcher->url($request, ROUTE_PAGE, $context->getPath(), 'reviewer', 'submission', null, $reviewUrlArgs);
@@ -178,4 +178,4 @@ class ReviewReminder extends ScheduledTask {
 	}
 }
 
-?>
+

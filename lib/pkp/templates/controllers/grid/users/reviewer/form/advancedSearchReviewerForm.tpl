@@ -1,8 +1,8 @@
 {**
  * templates/controllers/grid/user/reviewer/form/advancedSearchReviewerForm.tpl
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * Advanced Search and assignment reviewer form.
@@ -22,7 +22,7 @@
 		{assign var="uuid" value=""|uniqid|escape}
 		<div id="select-reviewer-list-handler-{$uuid}">
 			<script type="text/javascript">
-				pkp.registry.init('select-reviewer-list-handler-{$uuid}', 'SelectReviewerListPanel', {$selectReviewerListData});
+				pkp.registry.init('select-reviewer-list-handler-{$uuid}', 'SelectReviewerListPanel', {$selectReviewerListData|@json_encode});
 			</script>
 		</div>
 
@@ -31,7 +31,7 @@
 			{fbvElement type="button" id="selectReviewerButton" label="editor.submission.selectReviewer"}
 			{foreach from=$reviewerActions item=action}
 				{if $action->getId() == 'advancedSearch'}
-					{php}continue;{/php}
+					{continue}
 				{/if}
 				{include file="linkAction/linkAction.tpl" action=$action contextId="createReviewerForm"}
 			{/foreach}

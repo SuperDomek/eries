@@ -3,8 +3,8 @@
 /**
  * @file pages/admin/AdminHandler.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class AdminHandler
@@ -80,12 +80,11 @@ class AdminHandler extends Handler {
 	/**
 	 * Initialize the handler.
 	 * @param $request PKPRequest
-	 * @param $args array
 	 */
-	function initialize($request, $args = null) {
+	function initialize($request) {
 		AppLocale::requireComponents(LOCALE_COMPONENT_PKP_ADMIN, LOCALE_COMPONENT_APP_MANAGER, LOCALE_COMPONENT_APP_ADMIN, LOCALE_COMPONENT_APP_COMMON, LOCALE_COMPONENT_PKP_MANAGER);
-		return parent::initialize($request, $args);
+		return parent::initialize($request);
 	}
 }
 
-?>
+

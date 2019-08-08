@@ -1,8 +1,8 @@
 {**
  * templates/frontend/components/footer.tpl
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @brief Common site frontend footer.
@@ -16,7 +16,7 @@
 
 	{* Sidebars *}
 	{if empty($isFullWidth)}
-		{call_hook|assign:"sidebarCode" name="Templates::Common::Sidebar"}
+		{capture assign="sidebarCode"}{call_hook name="Templates::Common::Sidebar"}{/capture}
 		{if $sidebarCode}
 			<div class="pkp_structure_sidebar left" role="complementary" aria-label="{translate|escape key="common.navigation.sidebar"}">
 				{$sidebarCode}

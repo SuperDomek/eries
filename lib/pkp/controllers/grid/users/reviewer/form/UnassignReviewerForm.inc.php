@@ -2,8 +2,8 @@
 /**
  * @file controllers/grid/users/reviewer/form/UnassignReviewerForm.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class UnassignReviewerForm
@@ -42,12 +42,10 @@ class UnassignReviewerForm extends Form {
 	// Overridden template methods
 	//
 	/**
-	 * Initialize form data
-	 *
-	 * @param $args array
-	 * @param $request PKPRequest
+	 * @copydoc Form::initData
 	 */
-	function initData($args, $request) {
+	function initData() {
+		$request = Application::getRequest();
 		$context = $request->getContext();
 		$submission = $this->getSubmission();
 		$reviewAssignment = $this->getReviewAssignment();
@@ -81,11 +79,10 @@ class UnassignReviewerForm extends Form {
 	/**
 	 * Deletes the review assignment and notifies the reviewer via email
 	 *
-	 * @param mixed $args
-	 * @param $request PKPRequest
 	 * @return bool whether or not the review assignment was deleted successfully
 	 */
-	function execute($args, $request) {
+	function execute() {
+		$request = Application::getRequest();
 		$submission = $this->getSubmission();
 		$reviewAssignment = $this->getReviewAssignment();
 
@@ -100,7 +97,11 @@ class UnassignReviewerForm extends Form {
 			$mail->addRecipient($reviewer->getEmail(), $reviewer->getFullName());
 			$mail->setBody($this->getData('personalMessage'));
 			$mail->assignParams();
-			$mail->send($request);
+			if (!$mail->send($request)) {
+				import('classes.notification.NotificationManager');
+				$notificationMgr = new NotificationManager();
+				$notificationMgr->createTrivialNotification($request->getUser()->getId(), NOTIFICATION_TYPE_ERROR, array('contents' => __('email.compose.error')));
+			}
 		}
 
 		// Delete the review assignment.

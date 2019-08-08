@@ -4,26 +4,29 @@
 <!--
   * locale/ru_RU/submission.xml
   *
-  * Copyright (c) 2014-2018 Simon Fraser University
-  * Copyright (c) 2000-2018 John Willinsky
+  * Copyright (c) 2014-2019 Simon Fraser University
+  * Copyright (c) 2000-2019 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
-  *
-  * Localization strings for the ru_RU (Русский) locale.
   * Localization information: https://pkp.sfu.ca/wiki/index.php?title=OJS:_Russian_(ru_RU)
+  * Localization strings.
   -->
 
 <locale name="ru_RU" full_name="Русский">
 	<!-- Отправка материала автором -->
-	<message key="author.submit.userGroupRequired">В настоящий момент у вашей учетной записи нет роли, которая позволяла бы отправлять новые материалы, например такой роли как Автор. Пожалуйста, внимательно проверьте свою учетную запись; возможно вы можете добавить подходящую роль самостоятельно, отредактировав свой профиль.</message>
 	<message key="author.submit.submissionCitations">Введите отформатированный список ссылок на работы, использованные при подготовке данного материала. Пожалуйста, отделяйте ссылки одну от другой с помощью пустой строки.</message>
 	<message key="author.submission.roundStatus.reviewsReady">Новые рецензии были отправлены рецензентами и рассмотрены редактором.</message>
 	<message key="submission.confirm.message">Ваш материал был загружен на сервер и готов к отправке. Вы можете вернуться назад, чтобы проверить и откорректировать любую информацию, которую вы ввели, перед тем как продолжить. Когда вы будете готовы, щелкните на кнопке «Завершить отправку».</message>
+	<message key="submission.submit.availableUserGroups">Отправить как</message>
+	<message key="submission.submit.availableUserGroupsDescription">Выберите роль, которая лучше всего описывает ваш вклад в этот материал.</message>
+	<message key="submission.submit.contactConsent">Контакт для переписки</message>
+	<message key="submission.submit.contactConsentDescription">Да, я согласен, чтобы вы связывались со мной по поводу этого материала.</message>
+	<message key="submission.submit.userGroupDescriptionManagers">Отправьте под одной из следующих ролей, если вы хотите иметь возможность редактировать и публиковать этот материал самостоятельно: {$managerGroups}</message>
 	<message key="submission.submit.submissionChecklist">Требования к отправляемому материалу</message>
 	<message key="submission.submit.submissionChecklistDescription">Вы должны прочесть и подтвердить, что вы выполнили все приведенные ниже требования, перед тем как продолжить.</message>
 	<message key="submission.submit.submissionComplete">Отправка материала завершена</message>
 	<message key="submission.submit.submissionCompleteThanks">Спасибо вам за интерес к публикации в «{$contextName}».</message>
 	<message key="submission.submit.copyrightNoticeAgreementLabel">Принятие Условий передачи авторских прав</message>
-	<message key="submission.submit.copyrightNoticeAgree">Я согласен выполнять Условия передачи авторских прав.</message>
+	<message key="submission.submit.copyrightNoticeAgree">Да, я согласен выполнять Условия передачи авторских прав.</message>
 	<message key="submission.submit.whatNext">Что делать дальше?</message>
 	<message key="submission.submit.whatNext.forNow">На текущий момент вы можете:</message>
 	<message key="submission.submit.whatNext.review">Просмотреть этот материал</message>
@@ -385,7 +388,7 @@
 	<message key="submission.submit.form.typeRequired">Пожалуйста, укажите тип.</message>
 	<message key="submission.submit.form.sourceRequired">Пожалуйста, укажите источник.</message>
 	<message key="submission.submit.form.rightsRequired">Пожалуйста, укажите права на материал.</message>
-	<message key="submission.submit.form.citaionsRequired">Пожалуйста, укажите библиографические ссылки.</message>
+	<message key="submission.submit.form.citationsRequired">Пожалуйста, укажите библиографические ссылки.</message>
 
 	<!-- Элементы формы загрузки файла материала -->
 	<message key="submission.form.name">Назовите файл (например, Рукопись; Таблица 1)</message>
@@ -537,6 +540,7 @@
 	<message key="submission.productionReady">Книга доступна</message>
 	<message key="submission.review.uploadRevisionToRound">Загрузить новую версию файла</message>
 	<message key="log.review.reviewerAssigned">Рецензент {$reviewerName} был назначен на рецензирование материала «{$submissionId}» (раунд рецензирования — {$round}).</message>
+	<message key="log.review.reviewUnconsidered">{$editorName} отметил раунд {$round} рецензирования для материала {$submissionId} как нерассмотренный.</message>
 	<message key="submission.review.status.awaitingResponse">Ожидает ответа от рецензента.</message>
 	<message key="submission.review.status.declined">Рецензент отклонил этот запрос на рецензию.</message>
 	<message key="submission.review.status.responseOverdue">Рецензент пропустил срок ответа на запрос.</message>
@@ -579,12 +583,12 @@
 	<message key="submission.license.cc.by-nd4">CC «Attribution-NoDerivatives» («Атрибуция — Без производных произведений») 4.0</message>
 	<message key="submission.license.cc.by4">CC «Attribution» («Атрибуция») 4.0</message>
 	<message key="submission.license.cc.by-sa4">CC «Attribution-ShareAlike» («Атрибуция — На тех же условиях») 4.0</message>
-	<message key="submission.license.cc.by-nc-nd4.footer"><![CDATA[<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Лицензия Creative Commons" src="//i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a><p>Это произведение доступно по <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">лицензии Creative Commons «Attribution-NonCommercial-NoDerivatives» («Атрибуция — Некоммерческое использование — Без производных произведений») 4.0 Всемирная</a>.</p>]]></message>
-	<message key="submission.license.cc.by-nc4.footer"><![CDATA[<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="Лицензия Creative Commons" src="//i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a><p>Это произведение доступно по <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">лицензии Creative Commons «Attribution-NonCommercial» («Атрибуция — Некоммерческое использование») 4.0 Всемирная</a>.</p>]]></message>
-	<message key="submission.license.cc.by-nc-sa4.footer"><![CDATA[<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Лицензия Creative Commons" src="//i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><p>Это произведение доступно по <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">лицензии Creative Commons «Attribution-NonCommercial-ShareAlike» («Атрибуция — Некоммерческое использование — На тех же условиях») 4.0 Всемирная</a>.</p>]]></message>
-	<message key="submission.license.cc.by-nd4.footer"><![CDATA[<a rel="license" href="http://creativecommons.org/licenses/by-nd/4.0/"><img alt="Лицензия Creative Commons" src="//i.creativecommons.org/l/by-nd/4.0/88x31.png" /></a><p>Это произведение доступно по <a rel="license" href="http://creativecommons.org/licenses/by-nd/4.0/">лицензии Creative Commons «Attribution-NoDerivatives» («Атрибуция — Без производных произведений») 4.0 Всемирная</a>.</p>]]></message>
-	<message key="submission.license.cc.by4.footer"><![CDATA[<a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Лицензия Creative Commons" src="//i.creativecommons.org/l/by/4.0/88x31.png" /></a><p>Это произведение доступно по <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">лицензии Creative Commons «Attribution» («Атрибуция») 4.0 Всемирная</a>.</p>]]></message>
-	<message key="submission.license.cc.by-sa4.footer"><![CDATA[<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Лицензия Creative Commons" src="//i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><p>Это произведение доступно по <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">лицензии Creative Commons «Attribution-ShareAlike» («Атрибуция — На тех же условиях») 4.0 Всемирная</a>.</p>]]></message>
+	<message key="submission.license.cc.by-nc-nd4.footer"><![CDATA[<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Лицензия Creative Commons" src="//i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a><p>Это произведение доступно по <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">лицензии Creative Commons «Attribution-NonCommercial-NoDerivatives» («Атрибуция — Некоммерческое использование — Без производных произведений») 4.0 Всемирная</a>.</p>]]></message>
+	<message key="submission.license.cc.by-nc4.footer"><![CDATA[<a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/"><img alt="Лицензия Creative Commons" src="//i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a><p>Это произведение доступно по <a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">лицензии Creative Commons «Attribution-NonCommercial» («Атрибуция — Некоммерческое использование») 4.0 Всемирная</a>.</p>]]></message>
+	<message key="submission.license.cc.by-nc-sa4.footer"><![CDATA[<a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Лицензия Creative Commons" src="//i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><p>Это произведение доступно по <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">лицензии Creative Commons «Attribution-NonCommercial-ShareAlike» («Атрибуция — Некоммерческое использование — На тех же условиях») 4.0 Всемирная</a>.</p>]]></message>
+	<message key="submission.license.cc.by-nd4.footer"><![CDATA[<a rel="license" href="https://creativecommons.org/licenses/by-nd/4.0/"><img alt="Лицензия Creative Commons" src="//i.creativecommons.org/l/by-nd/4.0/88x31.png" /></a><p>Это произведение доступно по <a rel="license" href="https://creativecommons.org/licenses/by-nd/4.0/">лицензии Creative Commons «Attribution-NoDerivatives» («Атрибуция — Без производных произведений») 4.0 Всемирная</a>.</p>]]></message>
+	<message key="submission.license.cc.by4.footer"><![CDATA[<a rel="license" href="https://creativecommons.org/licenses/by/4.0/"><img alt="Лицензия Creative Commons" src="//i.creativecommons.org/l/by/4.0/88x31.png" /></a><p>Это произведение доступно по <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">лицензии Creative Commons «Attribution» («Атрибуция») 4.0 Всемирная</a>.</p>]]></message>
+	<message key="submission.license.cc.by-sa4.footer"><![CDATA[<a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/"><img alt="Лицензия Creative Commons" src="//i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><p>Это произведение доступно по <a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/">лицензии Creative Commons «Attribution-ShareAlike» («Атрибуция — На тех же условиях») 4.0 Всемирная</a>.</p>]]></message>
 
 	<!-- Запросы отправки -->
 	<message key="submission.queries.submission">Обсуждения до рецензирования</message>
@@ -627,4 +631,5 @@
 	<message key="submission.list.reviewerWorkflowLink"><![CDATA[Вам назначена роль в редакции для этого материала. Вы хотите воспользоваться <a href="{$urlEditorialWorkflow}">Рабочим потоком редакции</a>?]]></message>
 	<message key="submission.list.incompleteSubmissionNotice">Этот материал должен быть завершен до того, как редактор будет его рецензировать.</message>
 	<message key="submission.list.currentStage">Сейчас на этапе «{$stage}».</message>
+	<message key="submission.list.assignEditor">Назначить редактора</message>
 </locale>

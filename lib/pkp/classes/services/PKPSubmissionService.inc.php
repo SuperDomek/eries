@@ -3,8 +3,8 @@
 /**
  * @file classes/services/PKPSubmissionService.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class SubmissionService
@@ -21,8 +21,6 @@ use \DAOResultFactory;
 use \DAORegistry;
 use \ServicesContainer;
 use \PKP\Services\EntityProperties\PKPBaseEntityPropertyService;
-
-import('lib.pkp.classes.db.DBResultRange');
 
 define('STAGE_STATUS_SUBMISSION_UNASSIGNED', 1);
 define('SUBMISSION_RETURN_SUBMISSION', 0);
@@ -59,7 +57,7 @@ abstract class PKPSubmissionService extends PKPBaseEntityPropertyService {
 	public function getSubmissions($contextId, $args = array()) {
 		$submissionListQB = $this->_buildGetSubmissionsQueryObject($contextId, $args);
 		$submissionListQO = $submissionListQB->get();
-		$range = new DBResultRange($args['count'], null, $args['offset']);
+		$range = $this->getRangeByArgs($args);
 		$dao = Application::getSubmissionDAO();
 		if (!empty($args['returnObject']) && $args['returnObject'] === SUBMISSION_RETURN_PUBLISHED) {
 			$dao = Application::getPublishedSubmissionDAO();
@@ -122,6 +120,7 @@ abstract class PKPSubmissionService extends PKPBaseEntityPropertyService {
 			->filterByStageIds($args['stageIds'])
 			->filterByIncomplete($args['isIncomplete'])
 			->filterByOverdue($args['isOverdue'])
+			->filterByCategories(isset($args['categoryIds'])?$args['categoryIds']:null)
 			->searchPhrase($args['searchPhrase'])
 			->returnObject($args['returnObject']);
 
@@ -181,7 +180,9 @@ abstract class PKPSubmissionService extends PKPBaseEntityPropertyService {
 		// Send authors, journal managers and site admins to the submission
 		// wizard for incomplete submissions
 		if ($submission->getSubmissionProgress() > 0 &&
-				($authorDashboard || $user->hasRole(array(ROLE_ID_MANAGER, ROLE_ID_SITE_ADMIN), $submissionContext->getId()))) {
+			($authorDashboard ||
+				$user->hasRole(array(ROLE_ID_MANAGER), $submissionContext->getId()) ||
+				$user->hasRole(array(ROLE_ID_SITE_ADMIN), CONTEXT_SITE))) {
 			return $dispatcher->url(
 				$request,
 				ROUTE_PAGE,
@@ -257,8 +258,7 @@ abstract class PKPSubmissionService extends PKPBaseEntityPropertyService {
 		}
 
 		$request = Application::getRequest();
-		$context = $request->getContext();
-		$contextId = $context ? $context->getId() : 0;
+		$contextId = $submission->getContextId();
 
 		$currentUser = $request->getUser();
 		if (!$currentUser) {
@@ -269,7 +269,7 @@ abstract class PKPSubmissionService extends PKPBaseEntityPropertyService {
 
 		// Only allow admins and journal managers to delete submissions, except
 		// for authors who can delete their own incomplete submissions
-		if ($currentUser->hasRole(array(ROLE_ID_MANAGER, ROLE_ID_SITE_ADMIN), $contextId)) {
+		if ($currentUser->hasRole(array(ROLE_ID_MANAGER), $contextId) || $currentUser->hasRole(array(ROLE_ID_SITE_ADMIN), CONTEXT_SITE)) {
 			$canDelete = true;
 		} else {
 			if ($submission->getSubmissionProgress() != 0 ) {
@@ -347,7 +347,7 @@ abstract class PKPSubmissionService extends PKPBaseEntityPropertyService {
 
 		$contextId = $submission->getContextId();
 
-		if ($user->hasRole(array(ROLE_ID_MANAGER), $contextId) || $user->hasRole(array(ROLE_ID_SITE_ADMIN), CONTEXT_ID_NONE)) {
+		if ($user->hasRole(array(ROLE_ID_MANAGER), $contextId) || $user->hasRole(array(ROLE_ID_SITE_ADMIN), CONTEXT_SITE)) {
 			return true;
 		}
 
@@ -608,6 +608,40 @@ abstract class PKPSubmissionService extends PKPBaseEntityPropertyService {
 	}
 
 	/**
+	 * Returns properties for when a submission is retrieved as part of the
+	 * statistics API endpoint
+	 *
+	 * Defines a minimal set of props to reduce long load times when retrieving
+	 * statistics for several articles
+	 *
+	 * @param Submission $submission
+	 * @param array extra arguments
+	 *		$args['request'] PKPRequest Required
+	 *		$args['slimRequest'] SlimRequest
+	 */
+	public function getStatsObjectSummaryProperties($submission, $args = null) {
+		$request = $args['request'];
+		$context = $request->getContext();
+		$currentUser = $request->getUser();
+
+		$props = [
+			'_href',
+			'id',
+			'fullTitle',
+			'urlWorkflow',
+			'urlPublished',
+		];
+
+		if ($this->canUserViewAuthor($currentUser, $submission)) {
+			$props[] = 'shortAuthorString';
+		}
+
+		\HookRegistry::call('Submission::getStatsObjectSummaryProperties::properties', array(&$props, $submission, $args));
+
+		return $this->getProperties($submission, $props, $args);
+	}
+
+	/**
 	 * Get details about the review assignments for a submission
 	 *
 	 * @todo account for extra review stage in omp
@@ -751,7 +785,7 @@ abstract class PKPSubmissionService extends PKPBaseEntityPropertyService {
 					$currentUserAssignedRoles[] = (int) $userGroup->getRoleId();
 				}
 			}
-			$stage['currentUserAssignedRoles'] = array_unique($currentUserAssignedRoles);
+			$stage['currentUserAssignedRoles'] = array_values(array_unique($currentUserAssignedRoles));
 
 			// Stage-specific statuses
 			switch ($stageId) {

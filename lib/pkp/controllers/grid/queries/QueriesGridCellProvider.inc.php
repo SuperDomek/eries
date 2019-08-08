@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/queries/QueriesGridCellProvider.inc.php
  *
- * Copyright (c) 2016-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2016-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class QueriesGridCellProvider
@@ -61,19 +61,19 @@ class QueriesGridCellProvider extends DataObjectGridCellProvider {
 			case 'replies':
 				return array('label' => max(0,$notes->getCount()-1));
 			case 'from':
-				return array('label' => ($user?$user->getUsername():'&mdash;') . '<br />' . ($headNote?date('M/d', strtotime($headNote->getDateCreated())):''));
+				return array('label' => ($user?$user->getUsername():'&mdash;') . '<br />' . ($headNote?strftime(Config::getVar('general','datetime_format_short'), strtotime($headNote->getDateCreated())):''));
 			case 'lastReply':
 				$latestReply = $notes->next();
 				if ($latestReply && $latestReply->getId() != $headNote->getId()) {
 					$repliedUser = $latestReply->getUser();
-					return array('label' => ($repliedUser?$repliedUser->getUsername():'&mdash;') . '<br />' . date('M/d', strtotime($latestReply->getDateCreated())));
+					return array('label' => ($repliedUser?$repliedUser->getUsername():'&mdash;') . '<br />' . strftime(Config::getVar('general','datetime_format_short'), strtotime($latestReply->getDateCreated())));
 				} else {
 					return array('label' => '-');
 				}
 			case 'closed':
 				return array(
 					'selected' => $element->getIsClosed(),
-					'disabled' => !$this->_queriesAccessHelper->getCanOpenClose($element->getId()),
+					'disabled' => !$this->_queriesAccessHelper->getCanOpenClose($element),
 				);
 		}
 		return parent::getTemplateVarsFromRowColumn($row, $column);
@@ -82,7 +82,7 @@ class QueriesGridCellProvider extends DataObjectGridCellProvider {
 	/**
 	 * @copydoc GridCellProvider::getCellActions()
 	 */
-	function getCellActions($request, $row, $column) {
+	function getCellActions($request, $row, $column, $position = GRID_ACTION_POSITION_DEFAULT) {
 		import('lib.pkp.classes.linkAction.request.RemoteActionConfirmationModal');
 		import('lib.pkp.classes.linkAction.request.AjaxAction');
 
@@ -91,7 +91,7 @@ class QueriesGridCellProvider extends DataObjectGridCellProvider {
 		$actionArgs = $this->getRequestArgs($row);
 		switch ($column->getId()) {
 			case 'closed':
-				if ($this->_queriesAccessHelper->getCanOpenClose($row->getId())) {
+				if ($this->_queriesAccessHelper->getCanOpenClose($element)) {
 					$enabled = !$element->getIsClosed();
 					if ($enabled) {
 						return array(new LinkAction(
@@ -109,7 +109,7 @@ class QueriesGridCellProvider extends DataObjectGridCellProvider {
 				}
 				break;
 		}
-		return parent::getCellActions($request, $row, $column);
+		return parent::getCellActions($request, $row, $column, $position);
 	}
 
 	/**
@@ -126,4 +126,4 @@ class QueriesGridCellProvider extends DataObjectGridCellProvider {
 	}
 }
 
-?>
+

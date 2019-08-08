@@ -3,8 +3,8 @@
 /**
  * @file classes/controllers/grid/users/reviewer/PKPReviewerGridHandler.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class PKPReviewerGridHandler
@@ -61,59 +61,69 @@ class PKPReviewerGridHandler extends GridHandler {
 			array(ROLE_ID_ASSISTANT),
 			$assistantOperations
 		);
+
+		$this->isAuthorGrid = false;
 	}
 
 	/**
 	 * @copydoc PKPHandler::authorize()
 	 */
 	function authorize($request, &$args, $roleAssignments) {
-		$stageId = $request->getUserVar('stageId'); // This is being validated in WorkflowStageAccessPolicy
 
-		// Not all actions need a stageId. Some work off the reviewAssignment which has the type and round.
-		$this->_stageId = (int)$stageId;
+		if (!$this->isAuthorGrid) {
 
-		// Get the stage access policy
-		import('lib.pkp.classes.security.authorization.WorkflowStageAccessPolicy');
-		$workflowStageAccessPolicy = new WorkflowStageAccessPolicy($request, $args, $roleAssignments, 'submissionId', $stageId, WORKFLOW_TYPE_EDITORIAL);
+			$stageId = $request->getUserVar('stageId'); // This is being validated in WorkflowStageAccessPolicy
 
-		// Add policy to ensure there is a review round id.
-		import('lib.pkp.classes.security.authorization.internal.ReviewRoundRequiredPolicy');
-		$workflowStageAccessPolicy->addPolicy(new ReviewRoundRequiredPolicy($request, $args, 'reviewRoundId', $this->_getReviewRoundOps()));
+			// Not all actions need a stageId. Some work off the reviewAssignment which has the type and round.
+			$this->_stageId = (int)$stageId;
 
-		// Add policy to ensure there is a review assignment for certain operations.
-		import('lib.pkp.classes.security.authorization.internal.ReviewAssignmentRequiredPolicy');
-		$workflowStageAccessPolicy->addPolicy(new ReviewAssignmentRequiredPolicy($request, $args, 'reviewAssignmentId', $this->_getReviewAssignmentOps()));
-		$this->addPolicy($workflowStageAccessPolicy);
+			// Get the stage access policy
+			import('lib.pkp.classes.security.authorization.WorkflowStageAccessPolicy');
+			$workflowStageAccessPolicy = new WorkflowStageAccessPolicy($request, $args, $roleAssignments, 'submissionId', $stageId, WORKFLOW_TYPE_EDITORIAL);
 
-		$success = parent::authorize($request, $args, $roleAssignments);
+			// Add policy to ensure there is a review round id.
+			import('lib.pkp.classes.security.authorization.internal.ReviewRoundRequiredPolicy');
+			$workflowStageAccessPolicy->addPolicy(new ReviewRoundRequiredPolicy($request, $args, 'reviewRoundId', $this->_getReviewRoundOps()));
 
-		// Prevent authors from accessing review details, even if they are also
-		// assigned as an editor, sub-editor or assistant.
-		$userAssignedRoles = $this->getAuthorizedContextObject(ASSOC_TYPE_ACCESSIBLE_WORKFLOW_STAGES);
-		$this->_isCurrentUserAssignedAuthor = false;
-		foreach ($userAssignedRoles as $stageId => $roles) {
-			if (in_array(ROLE_ID_AUTHOR, $roles)) {
-				$this->_isCurrentUserAssignedAuthor = true;
-				break;
-			}
-		}
+			// Add policy to ensure there is a review assignment for certain operations.
+			import('lib.pkp.classes.security.authorization.internal.ReviewAssignmentRequiredPolicy');
+			$workflowStageAccessPolicy->addPolicy(new ReviewAssignmentRequiredPolicy($request, $args, 'reviewAssignmentId', $this->_getReviewAssignmentOps()));
+			$this->addPolicy($workflowStageAccessPolicy);
 
-		if ($this->_isCurrentUserAssignedAuthor) {
-			$operation = $request->getRouter()->getRequestedOp($request);
+			$success = parent::authorize($request, $args, $roleAssignments);
 
-			if (in_array($operation, $this->_getAuthorDeniedOps())) {
-				return false;
-			}
-
-			if (in_array($operation, $this->_getAuthorDeniedBlindOps())) {
-				$reviewAssignment = $this->getAuthorizedContextObject(ASSOC_TYPE_REVIEW_ASSIGNMENT);
-				if ($reviewAssignment && in_array($reviewAssignment->getReviewMethod(), array(SUBMISSION_REVIEW_METHOD_BLIND, SUBMISSION_REVIEW_METHOD_DOUBLEBLIND))) {
-					return false;
+			// Prevent authors from accessing review details, even if they are also
+			// assigned as an editor, sub-editor or assistant.
+			$userAssignedRoles = $this->getAuthorizedContextObject(ASSOC_TYPE_ACCESSIBLE_WORKFLOW_STAGES);
+			$this->_isCurrentUserAssignedAuthor = false;
+			foreach ($userAssignedRoles as $stageId => $roles) {
+				if (in_array(ROLE_ID_AUTHOR, $roles)) {
+					$this->_isCurrentUserAssignedAuthor = true;
+					break;
 				}
 			}
+
+			if ($this->_isCurrentUserAssignedAuthor) {
+				$operation = $request->getRouter()->getRequestedOp($request);
+
+				if (in_array($operation, $this->_getAuthorDeniedOps())) {
+					return false;
+				}
+
+				if (in_array($operation, $this->_getAuthorDeniedBlindOps())) {
+					$reviewAssignment = $this->getAuthorizedContextObject(ASSOC_TYPE_REVIEW_ASSIGNMENT);
+					if ($reviewAssignment && in_array($reviewAssignment->getReviewMethod(), array(SUBMISSION_REVIEW_METHOD_BLIND, SUBMISSION_REVIEW_METHOD_DOUBLEBLIND))) {
+						return false;
+					}
+				}
+			}
+
+			return $success;
+
+		} else {
+			return parent::authorize($request, $args, $roleAssignments);
 		}
 
-		return $success;
 	}
 
 
@@ -215,6 +225,17 @@ class PKPReviewerGridHandler extends GridHandler {
 				null,
 				$cellProvider,
 				array('anyhtml' => true)
+			)
+		);
+
+		// Add a column for the review method
+		$this->addColumn(
+			new GridColumn(
+				'method',
+				'common.type',
+				null,
+				null,
+				$cellProvider
 			)
 		);
 
@@ -326,7 +347,7 @@ class PKPReviewerGridHandler extends GridHandler {
 		$reviewerForm = new $formClassName($this->getSubmission(), $this->getReviewRound());
 		$reviewerForm->readInputData();
 		if ($reviewerForm->validate()) {
-			$reviewAssignment = $reviewerForm->execute($args, $request);
+			$reviewAssignment = $reviewerForm->execute();
 			return DAO::getDataChangedEvent($reviewAssignment->getId());
 		} else {
 			// There was an error, redisplay the form
@@ -405,7 +426,7 @@ class PKPReviewerGridHandler extends GridHandler {
 
 		import('lib.pkp.controllers.grid.users.reviewer.form.UnassignReviewerForm');
 		$unassignReviewerForm = new UnassignReviewerForm($reviewAssignment, $reviewRound, $submission);
-		$unassignReviewerForm->initData($args, $request);
+		$unassignReviewerForm->initData();
 
 		return new JSONMessage(true, $unassignReviewerForm->fetch($request));
 	}
@@ -428,7 +449,7 @@ class PKPReviewerGridHandler extends GridHandler {
 
 		// Unassign the reviewer and return status message
 		if ($unassignReviewerForm->validate()) {
-			if ($unassignReviewerForm->execute($args, $request)) {
+			if ($unassignReviewerForm->execute()) {
 				return DAO::getDataChangedEvent($reviewAssignment->getId());
 			} else {
 				return new JSONMessage(false, __('editor.review.errorDeletingReviewer'));
@@ -544,7 +565,7 @@ class PKPReviewerGridHandler extends GridHandler {
 		// Initialize form.
 		import('lib.pkp.controllers.grid.users.reviewer.form.ThankReviewerForm');
 		$thankReviewerForm = new ThankReviewerForm($reviewAssignment);
-		$thankReviewerForm->initData($args, $request);
+		$thankReviewerForm->initData();
 
 		// Render form.
 		return new JSONMessage(true, $thankReviewerForm->fetch($request));
@@ -620,7 +641,7 @@ class PKPReviewerGridHandler extends GridHandler {
 		$thankReviewerForm = new ThankReviewerForm($reviewAssignment);
 		$thankReviewerForm->readInputData();
 		if ($thankReviewerForm->validate()) {
-			$thankReviewerForm->execute($args, $request);
+			$thankReviewerForm->execute();
 			$json = DAO::getDataChangedEvent($reviewAssignment->getId());
 			// Insert a trivial notification to indicate the reviewer was reminded successfully.
 			$currentUser = $request->getUser();
@@ -647,7 +668,7 @@ class PKPReviewerGridHandler extends GridHandler {
 		// Initialize form.
 		import('lib.pkp.controllers.grid.users.reviewer.form.ReviewReminderForm');
 		$reviewReminderForm = new ReviewReminderForm($reviewAssignment);
-		$reviewReminderForm->initData($args, $request);
+		$reviewReminderForm->initData();
 
 		// Render form.
 		return new JSONMessage(true, $reviewReminderForm->fetch($request));
@@ -667,7 +688,7 @@ class PKPReviewerGridHandler extends GridHandler {
 		$reviewReminderForm = new ReviewReminderForm($reviewAssignment);
 		$reviewReminderForm->readInputData();
 		if ($reviewReminderForm->validate()) {
-			$reviewReminderForm->execute($args, $request);
+			$reviewReminderForm->execute();
 			// Insert a trivial notification to indicate the reviewer was reminded successfully.
 			$currentUser = $request->getUser();
 			$notificationMgr = new NotificationManager();
@@ -697,12 +718,14 @@ class PKPReviewerGridHandler extends GridHandler {
 				true,
 				$emailReviewerForm->fetch(
 					$request,
+					null,
+					false,
 					$this->getRequestArgs()
 				)
 			);
 		}
 		$emailReviewerForm->readInputData();
-		$emailReviewerForm->execute($request, $submission);
+		$emailReviewerForm->execute($submission);
 		return new JSONMessage(true);
 	}
 
@@ -717,7 +740,17 @@ class PKPReviewerGridHandler extends GridHandler {
 		$reviewAssignment = $this->getAuthorizedContextObject(ASSOC_TYPE_REVIEW_ASSIGNMENT);
 
 		$templateMgr = TemplateManager::getManager($request);
-		$templateMgr->assign('reviewAssignment', $reviewAssignment);
+		$dates = array(
+			'common.assigned' => $reviewAssignment->getDateAssigned(),
+			'common.notified' => $reviewAssignment->getDateNotified(),
+			'common.reminder' => $reviewAssignment->getDateReminded(),
+			'common.confirm' => $reviewAssignment->getDateConfirmed(),
+			'common.completed' => $reviewAssignment->getDateCompleted(),
+			'common.acknowledged' => $reviewAssignment->getDateAcknowledged(),
+		);
+		asort($dates);
+		$templateMgr->assign('dates', $dates);
+
 		return $templateMgr->fetchJson('workflow/reviewHistory.tpl');
 	}
 
@@ -779,9 +812,14 @@ class PKPReviewerGridHandler extends GridHandler {
 		$context = $request->getContext();
 
 		$template->assignParams(array(
+			'contextUrl' => $dispatcher->url($request, ROUTE_PAGE, $context->getPath()),
 			'editorialContactSignature' => $user->getContactSignature(),
 			'signatureFullName' => $user->getFullname(),
+			'passwordResetUrl' => $dispatcher->url($request, ROUTE_PAGE, $context->getPath(), 'login', 'lostPassword'),
+			'messageToReviewer' => __('reviewer.step1.requestBoilerplate'),
+			'abstractTermIfEnabled' => ($this->getSubmission()->getLocalizedAbstract() == '' ? '' : __('common.abstract')), // Deprecated; for OJS 2.x templates
 		));
+		$template->replaceParams();
 
 		return new JSONMessage(true, $template->getBody());
 	}
@@ -805,7 +843,7 @@ class PKPReviewerGridHandler extends GridHandler {
 		// Form handling.
 		import('lib.pkp.controllers.grid.users.reviewer.form.' . $formClassName );
 		$reviewerForm = new $formClassName($this->getSubmission(), $this->getReviewRound());
-		$reviewerForm->initData($args, $request);
+		$reviewerForm->initData();
 		$reviewerForm->setUserRoles($userRoles);
 
 		return $reviewerForm->fetch($request);
@@ -894,4 +932,4 @@ class PKPReviewerGridHandler extends GridHandler {
 	}
 }
 
-?>
+

@@ -4,8 +4,8 @@
 <!--
   * locale/fi_FI/common.xml
   *
-  * Copyright (c) 2014-2018 Simon Fraser University
-  * Copyright (c) 2000-2018 John Willinsky
+  * Copyright (c) 2014-2019 Simon Fraser University
+  * Copyright (c) 2000-2019 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   *
   * Localization strings.
@@ -78,10 +78,10 @@
 	<message key="common.captchaField.description">Kirjoita kirjaimet, kuten ne näkyvät kuvassa.</message>
 	<message key="common.captchaField">Vahvistus</message>
 	<message key="common.ccLicense"><![CDATA[
-		]]><![CDATA[<br /><br /> <a target="_blank" rel="license" href="http://creativecommons.org/licenses/by/3.0/"> <img alt="Creative Commons License" style="border-width:0" src="//i.creativecommons.org/l/by/3.0/80x15.png"/> </a> <br/> Tämä työ on lisensoitu <a rel="license" target="_blank" href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0 License -lisenssillä</a>.]]><![CDATA[
+		]]><![CDATA[<br /><br /> <a target="_blank" rel="license" href="https://creativecommons.org/licenses/by/3.0/"> <img alt="Creative Commons License" style="border-width:0" src="//i.creativecommons.org/l/by/3.0/80x15.png"/> </a> <br/> Tämä työ on lisensoitu <a rel="license" target="_blank" href="https://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0 License -lisenssillä</a>.]]><![CDATA[
 	]]></message>
 	<message key="common.ccLicense.rt"><![CDATA[
-	]]><![CDATA[<div class="rtBlock"> <br /> <a rel="license" href="http://creativecommons.org/licenses/by/3.0/" target="_blank"><img alt="Creative Commons License" style="border-width:0" src="//i.creativecommons.org/l/by/3.0/80x15.png" /></a> <br /> Tämä työ on lisensoitu <a rel="license" href="http://creativecommons.org/licenses/by/3.0/" target="_blank">Creative Commons Attribution 3.0 License -lisenssillä</a>. </div>]]><![CDATA[
+	]]><![CDATA[<div class="rtBlock"> <br /> <a rel="license" href="https://creativecommons.org/licenses/by/3.0/" target="_blank"><img alt="Creative Commons License" style="border-width:0" src="//i.creativecommons.org/l/by/3.0/80x15.png" /></a> <br /> Tämä työ on lisensoitu <a rel="license" href="https://creativecommons.org/licenses/by/3.0/" target="_blank">Creative Commons Attribution 3.0 License -lisenssillä</a>. </div>]]><![CDATA[
 	]]></message>
 	<message key="common.changesSaved">Tekemäsi muutokset on tallennettu.</message>
 	<message key="common.chooseOne">Valitse yksi</message>
@@ -195,7 +195,6 @@
 	<message key="common.pluginDisabled">"{$pluginName}"-lisäosa on poistettu käytöstä.</message>
 	<message key="common.prefix">Prefiksi</message>
 	<message key="common.prefixAndTitle.tip">Esimerkkejä: A, The</message>
-	<message key="common.subtitle.tip">Valinnainen alaotsikko näkyy kaksoispisteen (:) jälkeen, pääotsikon perässä.</message>
 	<message key="common.preview">Esikatselu</message>
 	<message key="common.publisher">Julkaisija</message>
 	<message key="common.quality">Laatu</message>
@@ -231,7 +230,6 @@
 	<message key="common.size">Koko</message>
 	<message key="common.source">Lähde</message>
 	<message key="common.status">Tila</message>
-	<message key="common.startTyping">Aloita kirjoittaminen</message>
 	<message key="common.subject">Aihe</message>
 	<message key="common.subjects">Aiheet</message>
 	<message key="common.subtitle">Alaotsikko</message>
@@ -418,14 +416,6 @@
 	<message key="notification.confirmError">Tilaustasi vahvistettaessa tapahtui virhe.</message>
 	<message key="notification.confirmSuccess">Tilauksesi onnistui.</message>
 	<message key="notification.email">En halua sähköpostia tämäntyyppisistä ilmoituksista.</message>
-	<message key="notification.location">Siirry URL-osoitteeseen</message>
-	<message key="notification.mailList">Ilmoitusten postituslista</message>
-	<message key="notification.mailList.emailInvalid">Anna voimassa oleva sähköpostiosoite.</message>
-	<message key="notification.mailList.privacyProtection">Yksityisyydensuojakäytäntö</message>
-	<message key="notification.mailList.protectedContent"><![CDATA[<a href="{$subscribeUrl}">Tilata</a> suojattua sisältöä.]]></message>
-	<message key="notification.mailList.submit"><![CDATA[<a href="{$submitUrl}">Lähettää</a> artikkelin]]></message>
-	<message key="notification.mailList.register">Sinun pitää rekisteröityä tähän sivustoon, jotta voit...</message>
-	<message key="notification.mailList.review"><![CDATA[Osallistua <a href="{$reviewUrl}">vertaisarviointi</a>prosessiin]]></message>
 	<message key="notification.noneExist">Sinulle ei ole ilmoituksia tällä hetkellä.</message>
 	<message key="notification.addedNote">Muistiinpano lähetetty.</message>
 	<message key="notification.removedNote">Muistiinpano poistettu.</message>
@@ -433,19 +423,11 @@
 	<message key="notification.removedSubmission">Poistettu käsikirjoitus.</message>
 	<message key="notification.notification">Ilmoitus</message>
 	<message key="notification.notifications">Ilmoitukset</message>
-	<message key="notification.notificationsNew">({$numNew} uutta)</message>
-	<message key="notification.notificationsDescription"><![CDATA[Sinulla on {$unreadCount} lukematonta ja {$readCount} luettua ilmoitusta. Muuta ilmoitusasetuksiasi <a href="{$settingsUrl}">klikkaamalla tästä</a> .]]></message>
 	<message key="notification.sentNotification">Ilmoitus lähetetty.</message>
 	<message key="notification.settings">Ilmoitusten asetukset</message>
 	<message key="notification.settingsDescription">Valitse järjestelmän tapahtumat, joista haluat ilmoituksen. Valinnan poistaminen kohdasta estää tapahtumaan liittyvien ilmoitusten näkymisen järjestelmässä ja niiden lähettämisen sinulle sähköpostitse. Valitut tapahtumat näkyvät järjestelmässä ja lisäksi voit valita haluatko samat ilmoitukset sähköpostitse vai et.</message>
-	<message key="notification.subscribe">Tilaa</message>
-	<message key="notification.subscribeError">Ilmoitukset on jo tilattu sähköpostiosoitteeseesi.</message>
-	<message key="notification.subscribeSuccess">Sähköposti on lähetetty ilmoittamaasi osoitteeseen. Klikkaa vahvistuslinkkiä sähköpostissa lisätäksesi itsesi postituslistalle.</message>
 	<message key="notification.reminderError">Salasanan lähettämisessä tapahtui virhe. Varmista, että kirjoitit sähköpostiosoitteesi oikein.</message>
 	<message key="notification.reminderSent">Uusi salasanasi on lähetetty annettuun sähköpostiosoitteeseen.</message>
-	<message key="notification.unsubscribe">Peruuta tilaus</message>
-	<message key="notification.unsubscribeError">Tilaustasi peruutettaessa tapahtui virhe. Varmista, että käytät oikeaa, ilmoitussähköpostissa annettua URL-osoitetta.</message>
-	<message key="notification.unsubscribeSuccess">Tilauksesi peruutus onnistui.</message>
 	<message key="notification.savedSubmissionMetadata">Käsikirjoituksen metatiedot tallennettu.</message>
 	<message key="search.author">Kirjoittajan mukaan</message>
 	<message key="search.abstract">Abstrakti</message>
@@ -547,7 +529,6 @@
 	<message key="stageParticipants.recommendOnly">Tämä käyttäjä voi ainostaan suositella toimituksellista päätöstä ja vaatii toisen toimittajan päätöksen vahvistamiseen.</message>
 	<message key="common.deleting">Poistetaan</message>
 	<message key="common.lessThan">{$value} tai vähemmän</message>
-	<message key="common.listSeparator">,</message>
 	<message key="common.moreThan">{$value} tai enemmän</message>
 	<message key="common.pagination">{$start}-{$end} / {$total}</message>
 	<message key="common.pagination.label">Selaa sivuja</message>
@@ -557,4 +538,8 @@
 	<message key="list.viewMore">Näytä lisätietoja {$name}</message>
 	<message key="list.viewLess">Piilota lisätiedot {$name}</message>
 	<message key="common.filterAdd">Lisää suodatin: {$filterTitle}</message>
+	<message key="notification.type.reviewAssignmentUpdated">Arviointipyyntö päivitetty.</message>
+	<message key="common.commaListSeparator">,</message>
+	<message key="common.semicolonListSeparator">;</message>
+	<message key="email.compose.error">Sähköpostin lähetyksessä tapahtui virhe. Ole hyvä ja yritä uudelleen tai ota yhteyttä sivuston ylläpitäjään.</message>
 </locale>

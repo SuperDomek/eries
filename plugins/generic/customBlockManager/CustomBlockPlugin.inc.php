@@ -3,8 +3,8 @@
 /**
  * @file plugins/generic/customBlockManager/CustomBlockPlugin.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @package plugins.generic.customBlockManager
@@ -75,9 +75,9 @@ class CustomBlockPlugin extends BlockPlugin {
 	/**
 	 * @copydoc LazyLoadPlugin::getEnabled()
 	 */
-	function getEnabled() {
+	function getEnabled($contextId = null) {
 		if (!Config::getVar('general', 'installed')) return true;
-		return parent::getEnabled();
+		return parent::getEnabled($contextId);
 	}
 
 	/**
@@ -109,11 +109,11 @@ class CustomBlockPlugin extends BlockPlugin {
 
 		$divCustomBlockId = 'customblock-'.preg_replace('/\W+/', '-', $this->getName());
 		$templateMgr->assign('customBlockId', $divCustomBlockId);
-		$templateMgr->assign('customBlockName', $customBlockName);
 
 		$content = $customBlockContent[$currentLocale] ? $customBlockContent[$currentLocale] : $customBlockContent[$contextPrimaryLocale];
 
 		$templateMgr->assign('customBlockContent', $content);
+		$templateMgr->assign('customBlockName', $customBlockName);
 		return parent::getContents($templateMgr, $request);
 
 	}
@@ -135,4 +135,3 @@ class CustomBlockPlugin extends BlockPlugin {
 	}
 }
 
-?>

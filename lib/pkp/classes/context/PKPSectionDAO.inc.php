@@ -3,8 +3,8 @@
 /**
  * @file classes/context/PKPSectionDAO.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class PKPSectionDAO
@@ -51,7 +51,7 @@ abstract class PKPSectionDAO extends DAO {
 	 * @return array
 	 */
 	function getLocaleFieldNames() {
-		return array_merge(parent::getLocaleFieldNames(), array('title'));
+		return array_merge(parent::getLocaleFieldNames(), array('title', 'policy'));
 	}
 
 	/**
@@ -83,9 +83,29 @@ abstract class PKPSectionDAO extends DAO {
 
 	/**
 	 * Retrieve all sections for a context.
+	 * @param $contextId int context ID
+	 * @param $rangeInfo DBResultRange optional
+	 * @param $submittableOnly boolean optional. Whether to return only sections
+	 *  that can be submitted to by anyone.
 	 * @return DAOResultFactory containing Sections ordered by sequence
 	 */
-	abstract function getByContextId($contextId, $rangeInfo = null);
+	abstract function getByContextId($contextId, $rangeInfo = null, $submittableOnly = false);
+
+	/**
+	 * Retrieve the IDs and titles of the sections for a context in an associative array.
+	 * @param $contextId int context ID
+	 * @param $submittableOnly boolean optional. Whether to return only sections
+	 *  that can be submitted to by anyone.
+	 * @return array
+	 */
+	function getTitlesByContextId($contextId, $submittableOnly = false) {
+		$sections = array();
+		$sectionsIterator = $this->getByContextId($contextId, null, $submittableOnly);
+		while ($section = $sectionsIterator->next()) {
+			$sections[$section->getId()] = $section->getLocalizedTitle();
+		}
+		return $sections;
+	}
 }
 
-?>
+

@@ -4,8 +4,8 @@
 <!--
   * locale/da_DK/installer.xml
   *
-  * Copyright (c) 2014-2018 Simon Fraser University
-  * Copyright (c) 2000-2018 John Willinsky
+  * Copyright (c) 2014-2019 Simon Fraser University
+  * Copyright (c) 2000-2019 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   *
   * Localization strings for the da_DK (Dansk) locale.
@@ -55,7 +55,7 @@
 	<message key="installer.installParseDBFileError"><![CDATA[Der opstod en fejl under parsing af databaseinstallationsfilen <tt>{$file}</tt>.]]></message>
 	<message key="installer.locale">Landestandard</message>
 	<message key="installer.localeSettings">Landestandardindstillinger</message>
-	<message key="installer.oaiRepositoryIdInstructions"><![CDATA[Et entydigt id, som bruges til at identificere metadataposter, der er indekseret fra dette websted ved hjælp af <a href="http://www.openarchives.org/" target="_blank">Open Archives Initiative</a> Protocol for Metadata Harvesting.]]></message>
+	<message key="installer.oaiRepositoryIdInstructions"><![CDATA[Et entydigt id, som bruges til at identificere metadataposter, der er indekseret fra dette websted ved hjælp af <a href="https://www.openarchives.org/" target="_blank">Open Archives Initiative</a> Protocol for Metadata Harvesting.]]></message>
 	<message key="installer.oaiRepositoryId">Id til OAI-lager</message>
 	<message key="installer.publicFilesDirError">Den offentlige filmappe findes ikke eller er ikke skrivbar.</message>
 	<message key="installer.releaseNotes">Produktbemærkninger</message>
@@ -79,4 +79,5 @@
 	<message key="installer.configureXSLMessage"><![CDATA[<p>XSL-modulet er ikke aktiveret på denne PHP-installation. Enten skal den aktiveres eller også skal xslt_command parameteret konfigureres i config.inc.php filen.</p>]]></message>
 	<message key="installer.beacon">Beacon</message>
 	<message key="installer.beacon.enable">Levér et unikt webside-id og OAI-basis-URL til PKP til brug for statistiske og sikkerhedsalarmmæssige formål.</message>
+	<message key="installer.unsupportedPhpError">Din servers PHP-version er ikke understøttet af denne software. Dobbeltklik på installationskravene i docs/README.</message>
 </locale>

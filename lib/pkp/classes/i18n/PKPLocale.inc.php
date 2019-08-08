@@ -8,8 +8,8 @@
 /**
  * @file classes/i18n/PKPLocale.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class PKPLocale
@@ -57,7 +57,7 @@ define('LOCALE_COMPONENT_PKP_GRID',		0x00000008);
 define('LOCALE_COMPONENT_PKP_DEFAULT',		0x00000009);
 define('LOCALE_COMPONENT_PKP_EDITOR',		0x0000000A);
 define('LOCALE_COMPONENT_PKP_REVIEWER',		0x0000000B);
-define('LOCALE_COMPONENT_PKP_API',			0x00000107);
+define('LOCALE_COMPONENT_PKP_API',		0x0000000C);
 
 // Application-specific locale components
 define('LOCALE_COMPONENT_APP_COMMON',		0x00000100);
@@ -216,6 +216,7 @@ class PKPLocale {
 	 */
 	static function requireComponents() {
 		$params = func_get_args();
+
 		$paramCount = count($params);
 		if ($paramCount === 0) return;
 
@@ -324,6 +325,19 @@ class PKPLocale {
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * Determine whether or not a locale uses family name first.
+	 * @param $locale xx_XX symbolic name of locale to check
+	 * @return boolean
+	 */
+	static function isLocaleWithFamilyFirst($locale) {
+		$contents =& AppLocale::_getAllLocalesCacheContent();
+		if (isset($contents[$locale]) && isset($contents[$locale]['familyFirst']) && $contents[$locale]['familyFirst'] == 'true') {
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -752,4 +766,4 @@ function __($key, $params = array(), $locale = null) {
 	return AppLocale::translate($key, $params, $locale);
 }
 
-?>
+

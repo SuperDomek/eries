@@ -4,8 +4,8 @@
 <!--
   * locale/nb_NO/locale.xml
   *
-  * Copyright (c) 2014-2018 Simon Fraser University
-  * Copyright (c) 2003-2018 John Willinsky
+  * Copyright (c) 2014-2019 Simon Fraser University
+  * Copyright (c) 2003-2019 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   * (Norwegian translation from english by Karl Henrik Flyum, Dept. of teacher education and school development, University of Oslo, Norway, 2006-2007)
   * Localization strings for the nb_NO (Norsk bokmål) locale.
@@ -84,6 +84,7 @@
 	<message key="section.abbreviation.example">(Eksempel: Artikler=ART)</message>
 	<!-- Common Article Terms -->
 	<message key="article.articles">Artikler</message>
+	<message key="common.publishedSubmissions">Artikler</message>
 	<message key="article.submissionId">Manus-ID</message>
 	<message key="article.title">Tittel</message>
 	<message key="article.authors">Forfattere</message>
@@ -620,7 +621,7 @@ nåværende passordet.<br /><br />Skriv inn e-postadressen din nedenfor for å t
 	<message key="installer.ojsUpgrade">OJS oppgradering</message>
 	<message key="installer.installationInstructions"><![CDATA[<h4>OJS versjon {$version}</h4>
 
-<p>Takk for at du laster ned Public Knowledge Project's <strong>Open Journal Systems</strong>. Før du går videre, vennligst les <a href="{$baseUrl}/docs/README">README</a> filen som følger med denne programvare. For mer informasjon om Public Knowledge Project og deres programvareprosjekter, vennligst oppsøk <a href="http://pkp.sfu.ca/" target="_blank">PKP nettstedet</a>. Hvis du har feilmeldinger eller trenger svar om teknisk støtte for Open Journal Systems, oppsøk <a href="http://forum.pkp.sfu.ca">støtteforum</a> eller PKPs online <a href="https://github.com/pkp/pkp-lib#issues" target="_blank">feilmeldingssystem</a>. Selv om støtteforumet er den kontaktkanalen vi foretrekker, kan du også e-poste teamet: <a href="mailto:pkp-support@sfu.ca">pkp-support@sfu.ca</a>.</p>
+<p>Takk for at du laster ned Public Knowledge Project's <strong>Open Journal Systems</strong>. Før du går videre, vennligst les <a href="{$baseUrl}/docs/README.md">README</a> filen som følger med denne programvare. For mer informasjon om Public Knowledge Project og deres programvareprosjekter, vennligst oppsøk <a href="http://pkp.sfu.ca/" target="_blank">PKP nettstedet</a>. Hvis du har feilmeldinger eller trenger svar om teknisk støtte for Open Journal Systems, oppsøk <a href="http://forum.pkp.sfu.ca">støtteforum</a> eller PKPs online <a href="https://github.com/pkp/pkp-lib#issues" target="_blank">feilmeldingssystem</a>. Selv om støtteforumet er den kontaktkanalen vi foretrekker, kan du også e-poste teamet: <a href="mailto:pkp-support@sfu.ca">pkp-support@sfu.ca</a>.</p>
 
 <h4>Oppgradering</h4>
 
@@ -662,7 +663,7 @@ nåværende passordet.<br /><br />Skriv inn e-postadressen din nedenfor for å t
 <p>Velg <strong>Manuell installering</strong> for å vise SQL-setninger  som trengs for å opprette OJS databaseskjema og første data, slik at databaseinstallasjonen kan utføres manuelt. Denne valgmuligheten er nyttig for debugging av installasjonsproblemer, særlig på platformer systemet ikke har støtte for. Merk at denne installasjonsmåten verken vil lage databasen eller tabeller, selv om konfigurasjonsfilen likevel kommer til å bli skrevet med de medfølgende databaseinnstillingene.</p>]]></message>
 	<message key="installer.upgradeInstructions"><![CDATA[<h4>OJS versjon {$version}</h4>
 
-<p>Takk for at du laster ned Public Knowledge Project's <strong>Open Journal Systems</strong>. Før du går videre, vennligst les <a href="{$baseUrl}/docs/README">README</a>- og <a href="{$baseUrl}/docs/UPGRADE">UPGRADE</a>-filene som følger med denne programvaren. For mer informasjon om Public Knowledge Project og deres programvareprosjekter, vennligst oppsøk <a href="http://pkp.sfu.ca/" target="_blank">PKPs nettsted</a>. Hvis du har feilmeldinger eller spørsmål om teknisk støtte for Open Journal Systems, se OJS' <a href="http://forum.pkp.sfu.ca">støtteforum</a> eller besøk PKPs online <a href="https://github.com/pkp/pkp-lib#issues" target="_blank">feilmeldingssystem</a>. Selv om støtteforumet er den foretrukne kontaktkanalen, kan du også e-poste teamet: <a href="mailto:pkp-support@sfu.ca">pkp-support@sfu.ca</a>.</p>
+<p>Takk for at du laster ned Public Knowledge Project's <strong>Open Journal Systems</strong>. Før du går videre, vennligst les <a href="{$baseUrl}/docs/README.md">README</a>- og <a href="{$baseUrl}/docs/UPGRADE.md">UPGRADE</a>-filene som følger med denne programvaren. For mer informasjon om Public Knowledge Project og deres programvareprosjekter, vennligst oppsøk <a href="http://pkp.sfu.ca/" target="_blank">PKPs nettsted</a>. Hvis du har feilmeldinger eller spørsmål om teknisk støtte for Open Journal Systems, se OJS' <a href="http://forum.pkp.sfu.ca">støtteforum</a> eller besøk PKPs online <a href="https://github.com/pkp/pkp-lib#issues" target="_blank">feilmeldingssystem</a>. Selv om støtteforumet er den foretrukne kontaktkanalen, kan du også e-poste teamet: <a href="mailto:pkp-support@sfu.ca">pkp-support@sfu.ca</a>.</p>
 <p>Det er <strong>på det sterkeste anbefalt</strong> at du tar backup av database din, filmappen, og OJS installasjonsmappe før du går videre.</p>
 <p>Hvis du kjører installasjonen i <a href="http://www.php.net/features.safe-mode" target="_blank">PHP Safe Mode</a>, vennligst forsikre deg om at max_execution_time directive i din php.ini konfigurasjonsfil er satt til en høy grense. Hvis denne eller en annen tidsbegrensning (for eks. Apache's "Timeout" direktiv) blir overskredet og oppgraderingsprosessen dermed blir avbrutt, vil det bli nødvendig å gripe inn manuelt.</p>]]></message>
 	<message key="installer.localeInstructions">Primærspråket som skal brukes i dette systemet. Vennligst slå opp i OJS-dokumentasjonen hvis du er interessert i støtte for språk som ikke er oppført her.</message>
@@ -893,6 +894,7 @@ Authors who publish with this journal agree to the following terms:
 	<message key="rt.admin.settings.addComment.anonymous">Brukeren må være registrert og innlogget før innsending; anonym innsending tillates.</message>
 	<message key="rt.admin.settings.addComment.unauthenticated">Brukeren trenger ikke være registrert før innsending; anonym innsending tillates.</message>
 	<message key="article.article">Artikkel</message>
+	<message key="common.publishedSubmission">Artikkel</message>
 	<message key="user.manageMySubscriptions">Administrer mine abonnementer</message>
 	<message key="subscriptionTypes.currency">Valuta</message>
 	<message key="subscriptionTypes.year">år</message>
@@ -964,9 +966,6 @@ Authors who publish with this journal agree to the following terms:
 	<message key="payment.subscription.purchase">Kjøp abonnement</message>
 	<message key="installer.installApplication">Installer Open Journal Systems</message>
 	<message key="installer.upgradeApplication">Oppgrader Open Journal Systems</message>
-	<message key="notification.mailListDescription">Oppgi e-postadresse for å få umiddelbar varsling når viktig nytt innhold legges til i tidsskriftet.</message>
-	<message key="notification.notificationsPublicDescription"><![CDATA[Denne siden viser viktige oppdateringer som har med dette tidsskriftet å gjøre, som nye nummer eller kunngjøringer. Du kan abonnere på disse varslingene via RSS-tjenesten (ved å klikke på symbolene til høyre) eller <a href="{$emailUrl}">via e-post.</a>]]></message>
-	<message key="notification.type.articleSubmitted">En ny artikkel, "{$title}", har blitt innlevert.</message>
 	<message key="notification.type.editing">Redigeringshendelser</message>
 	<message key="notification.type.editorDecisionComment">Redaktørens beslutning vedrørende "{$title}" har blitt kommentert.</message>
 	<message key="notification.type.galleyModified">Et sideoppsett til "{$title}" har blitt endret.</message>

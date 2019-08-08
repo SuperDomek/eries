@@ -3,8 +3,8 @@
 /**
  * @file classes/plugins/ThemePlugin.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class ThemePlugin
@@ -145,7 +145,7 @@ abstract class ThemePlugin extends LazyLoadPlugin {
 	 */
 	public function isActive() {
 		if (defined('SESSION_DISABLE_INIT')) return false;
-		$request = $this->getRequest();
+		$request = Application::getRequest();
 		$context = $request->getContext();
 		if (is_a($context, 'Context')) {
 			$activeTheme = $context->getSetting('themePluginPath');
@@ -409,7 +409,7 @@ abstract class ThemePlugin extends LazyLoadPlugin {
 		// Retrieve option values if they haven't been loaded yet
 		if (is_null($this->_optionValues)) {
 			$pluginSettingsDAO = DAORegistry::getDAO('PluginSettingsDAO');
-			$context = PKPApplication::getRequest()->getContext();
+			$context = Application::getRequest()->getContext();
 			$contextId = $context ? $context->getId() : 0;
 			$this->_optionValues = $pluginSettingsDAO->getPluginSettings($contextId, $this->getName());
 		}
@@ -507,7 +507,7 @@ abstract class ThemePlugin extends LazyLoadPlugin {
 
 		$pluginSettingsDAO = DAORegistry::getDAO('PluginSettingsDAO');
 
-		$context = PKPApplication::getRequest()->getContext();
+		$context = Application::getRequest()->getContext();
 		$contextId = empty($context) ? 0 : $context->getId();
 		$values = $pluginSettingsDAO->getPluginSettings($contextId, $this->getName());
 		$values = array_intersect_key($values, $this->options);
@@ -548,14 +548,14 @@ abstract class ThemePlugin extends LazyLoadPlugin {
 		}
 
 		if (is_null($contextId)) {
-			$context = PKPApplication::getRequest()->getContext();
+			$context = Application::getRequest()->getContext();
 			$contextId = $context->getId();
 		}
 
 		$this->updateSetting($contextId, $name, $value, $type);
 
 		// Clear the template cache so that new settings can take effect
-		$templateMgr = TemplateManager::getManager($this->getRequest());
+		$templateMgr = TemplateManager::getManager(Application::getRequest());
 		$templateMgr->clearTemplateCache();
 		$templateMgr->clearCssCache();
 	}
@@ -617,7 +617,7 @@ abstract class ThemePlugin extends LazyLoadPlugin {
 
 		foreach ($options as $optionName => $optionArgs) {
 			$fullOptionName = THEME_OPTION_PREFIX . $optionName;
-			$form->setData($fullOptionName, PKPApplication::getRequest()->getUserVar($fullOptionName));
+			$form->setData($fullOptionName, Application::getRequest()->getUserVar($fullOptionName));
 		}
 	}
 
@@ -695,12 +695,9 @@ abstract class ThemePlugin extends LazyLoadPlugin {
 		}
 
 		// Register this theme's template directory
-		$request = $this->getRequest();
+		$request = Application::getRequest();
 		$templateManager = TemplateManager::getManager($request);
-		array_unshift(
-			$templateManager->template_dir,
-			$this->_getBaseDir('templates')
-		);
+		$templateManager->addTemplateDir($this->_getBaseDir('templates'));
 	}
 
 	/**
@@ -716,7 +713,7 @@ abstract class ThemePlugin extends LazyLoadPlugin {
 			$this->parent->_registerStyles();
 		}
 
-		$request = $this->getRequest();
+		$request = Application::getRequest();
 		$dispatcher = $request->getDispatcher();
 		$templateManager = TemplateManager::getManager($request);
 
@@ -762,7 +759,7 @@ abstract class ThemePlugin extends LazyLoadPlugin {
 			$this->parent->_registerScripts();
 		}
 
-		$request = $this->getRequest();
+		$request = Application::getRequest();
 		$templateManager = TemplateManager::getManager($request);
 
 		foreach($this->scripts as $name => $data) {
@@ -783,7 +780,7 @@ abstract class ThemePlugin extends LazyLoadPlugin {
 	 * @return string
 	 */
 	public function _getBaseUrl($path = '') {
-		$request = $this->getRequest();
+		$request = Application::getRequest();
 		$path = empty($path) ? '' : DIRECTORY_SEPARATOR . $path;
 		return $request->getBaseUrl() . DIRECTORY_SEPARATOR . $this->getPluginPath() . $path;
 	}
@@ -826,4 +823,4 @@ abstract class ThemePlugin extends LazyLoadPlugin {
 	}
 }
 
-?>
+

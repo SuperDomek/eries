@@ -1,8 +1,8 @@
 {**
  * controllers/tab/settings/navigationMenus/form/NavigationMenuSettingsForm.tpl
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * NavigationMenus settings form.
@@ -23,10 +23,10 @@
 	{csrf}
 	{include file="controllers/notification/inPlaceNotification.tpl" notificationId="navigationMenuSettingsFormNotification"}
 
-	{url|assign:navigationMenusGridUrl router=$smarty.const.ROUTE_COMPONENT component="grid.navigationMenus.NavigationMenusGridHandler" op="fetchGrid" escape=false}
+	{capture assign=navigationMenusGridUrl}{url router=$smarty.const.ROUTE_COMPONENT component="grid.navigationMenus.NavigationMenusGridHandler" op="fetchGrid" escape=false}{/capture}
 	{load_url_in_div id="navigationMenuGridContainer" url=$navigationMenusGridUrl}
 
-	{url|assign:navigationMenuItemsGridUrl router=$smarty.const.ROUTE_COMPONENT component="grid.navigationMenus.NavigationMenuItemsGridHandler" op="fetchGrid" escape=false}
+	{capture assign=navigationMenuItemsGridUrl}{url router=$smarty.const.ROUTE_COMPONENT component="grid.navigationMenus.NavigationMenuItemsGridHandler" op="fetchGrid" escape=false}{/capture}
 	{load_url_in_div id="navigationMenuItemsGridContainer" url=$navigationMenuItemsGridUrl}
 
 </form>

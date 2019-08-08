@@ -3,8 +3,8 @@
 /**
  * @file plugins/generic/citationStyleLanguage/CitationStyleLanguageHandler.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2 or later. For full terms see the file docs/COPYING.
  *
  * @class CitationStyleLanguageHandler
@@ -83,12 +83,12 @@ class CitationStyleLanguageHandler extends Handler {
 	 */
 	public function _setupRequest($args, $request) {
 		$userVars = $request->getUserVars();
-		$journal = $request->getContext();
 		$user = $request->getUser();
 		$context = $request->getContext();
-		$contextId = $context ? $context->getId() : 0;
 
-		assert(isset($userVars['submissionId']) && is_array($args) && !empty($args) && $journal);
+		assert(isset($userVars['submissionId']) && is_array($args) && !empty($args) && $context);
+
+		$contextId = $context->getId();
 
 		// Load plugin categories which might need to add data to the citation
 		PluginRegistry::loadCategory('pubIds', true);
@@ -98,7 +98,7 @@ class CitationStyleLanguageHandler extends Handler {
 		$this->returnJson = isset($userVars['return']) && $userVars['return'] === 'json';
 
 		$publishedArticleDao = DAORegistry::getDAO('PublishedArticleDAO');
-		$this->article = $publishedArticleDao->getPublishedArticleByBestArticleId($journal->getId(), $userVars['submissionId'], true);
+		$this->article = $publishedArticleDao->getPublishedArticleByBestArticleId($contextId, $userVars['submissionId'], true);
 
 		$issue = null;
 		if ($this->article) {

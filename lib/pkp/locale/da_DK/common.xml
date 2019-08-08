@@ -4,8 +4,8 @@
 <!--
   * locale/da_DK/common.xml
   *
-  * Copyright (c) 2014-2018 Simon Fraser University
-  * Copyright (c) 2000-2018 John Willinsky
+  * Copyright (c) 2014-2019 Simon Fraser University
+  * Copyright (c) 2000-2019 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   *
   * Localization strings for the da_DK (Dansk) locale.
@@ -254,16 +254,16 @@
 	<message key="search.title">Titel</message>
 	<message key="search.typeMethodApproach">Type (metode/fremgangsmåde)</message>
 	<message key="common.ccLicense"><![CDATA[<br /><br />
-		<a target="_new" rel="license" href="http://creativecommons.org/licenses/by/3.0/">
+		<a target="_new" rel="license" href="https://creativecommons.org/licenses/by/3.0/">
 			<img alt="Creative Commons License" style="border-width:0" src="//i.creativecommons.org/l/by/3.0/80x15.png"/>
 		</a>
 		<br/>
-		Brug af dette værk skal ske i overensstemmelse med copyrightlicensen <a rel="license" target="_new" href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0  License</a>.]]></message>
+		Brug af dette værk skal ske i overensstemmelse med copyrightlicensen <a rel="license" target="_new" href="https://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0  License</a>.]]></message>
 	<message key="common.ccLicense.rt"><![CDATA[<div class="rtBlock">
 		<br />
-		<a rel="license" href="http://creativecommons.org/licenses/by/3.0/" target="_new"><img alt="Creative Commons License" style="border-width:0" src="//i.creativecommons.org/l/by/3.0/80x15.png" /></a>
+		<a rel="license" href="https://creativecommons.org/licenses/by/3.0/" target="_new"><img alt="Creative Commons License" style="border-width:0" src="//i.creativecommons.org/l/by/3.0/80x15.png" /></a>
 		<br />
-		Brug af dette værk skal ske i overensstemmelse med copyrightlicensen<a rel="license" href="http://creativecommons.org/licenses/by/3.0/" target="_new">Creative Commons Attribution 3.0 License</a>.
+		Brug af dette værk skal ske i overensstemmelse med copyrightlicensen<a rel="license" href="https://creativecommons.org/licenses/by/3.0/" target="_new">Creative Commons Attribution 3.0 License</a>.
 	</div>]]></message>
 	<message key="common.disable">Deaktiver</message>
 	<message key="common.enable">Aktiver</message>
@@ -286,29 +286,13 @@
 	<message key="notification.allow">Tillad, at meddelelser af disse typer vises i min meddelelses-feed</message>
 	<message key="notification.confirmError">Der opstod en fejl i forbindelse med bekræftelsen af dit abonnement.</message>
 	<message key="notification.confirmSuccess">Din oprettelse som abonnent er gennemført.</message>
-	<message key="notification.location">Gå til webadressen</message>
-	<message key="notification.mailList">Meddelelses-mailingliste</message>
-	<message key="notification.mailList.emailInvalid">Indtast en gyldig e-mail-adresse.</message>
-	<message key="notification.mailList.privacyProtection">Persondatapolitik</message>
-	<message key="notification.mailList.protectedContent"><![CDATA[<a href="{$subscribeUrl}">Abonnér</a> på beskyttet indhold.]]></message>
-	<message key="notification.mailList.submit"><![CDATA[<a href="{$submitUrl}">Indsend</a> en artikel]]></message>
-	<message key="notification.mailList.register">Du kan registrere dig på dette websted for at …</message>
-	<message key="notification.mailList.review"><![CDATA[Deltag i <a href="{$reviewUrl}">peer review</a>-processen]]></message>
 	<message key="notification.noneExist">Du har ingen nye meddelelser.</message>
 	<message key="notification.notification">Meddelelse</message>
 	<message key="notification.notifications">Meddelelser</message>
-	<message key="notification.notificationsNew">({$numNew} ny(e))</message>
-	<message key="notification.notificationsDescription"><![CDATA[Du har {$unreadCount} ulæst(e) meddelelser og {$readCount} læst(e) meddelelser. <a href="{$settingsUrl}">Klik her</a> for at ændre dine indstillinger for meddelelser.]]></message>
 	<message key="notification.settings">Indstillinger for meddelelser</message>
 	<message key="notification.settingsDescription">Vælg de systemhændelser, som du ønsker at modtage meddelelser om. Hvis du fjerner markeringen fra et element, vil meddelelser vedrørende denne type hændelse ikke blive vist i din meddelelses-feed.</message>
-	<message key="notification.subscribe">Abonnér</message>
-	<message key="notification.subscribeError">Din e-mail-adresse er allerede registreret til at modtage meddelelser.</message>
-	<message key="notification.subscribeSuccess">Der er blevet sendt en e-mail til den adresse, du har angivet. Klik på bekræftelseslinket i e-mailen for at tilføje dig selv til mailinglisten.</message>
 	<message key="notification.reminderError">Der opstod en fejl i forbindelse med afsendelsen af din adgangskode. Kontrollér, at du har indtastet din e-mail-adresse korrekt.</message>
 	<message key="notification.reminderSent">Din nye adgangskode er blevet sendt til den e-mail-adresse, du har angivet.</message>
-	<message key="notification.unsubscribe">Afmeld abonnement</message>
-	<message key="notification.unsubscribeError">Der opstod en fejl i forbindelse med afmeldelsen af dit abonnement. Kontrollér, at e-mail-adresse og adgangskode er korrekte.</message>
-	<message key="notification.unsubscribeSuccess">Din afmelding af abonnementet er gennemført.</message>
 	<message key="announcement.postedOn">Sendt den {$postDate}</message>
 	<message key="common.accepted">Accepteret</message>
 	<message key="common.acknowledged">Anerkendt</message>
@@ -376,7 +360,6 @@
 	<message key="review.ensuringBlindReview">Sikring af blind review</message>
 	<message key="common.prefix">Præfiks</message>
 	<message key="common.prefixAndTitle.tip">Eksempler: A, The</message>
-	<message key="common.subtitle.tip">Undertitlen kan eventuelt indskrives med et kolon indsat efter hovedtitlen.</message>
 	<message key="common.subtitle">Undertitel</message>
 	<message key="common.abstract">Resumé</message>
 	<message key="common.uploadedDate">Upload-tidspunkt</message>
@@ -421,7 +404,7 @@
 	<message key="context.path">Sti</message>
 	<message key="help.previous">Forrige</message>
 	<message key="help.next">Næste</message>
-	<message key="notification.type.assignCopyeditors">Tilføj en manuskriptredaktør ved at klikke på linket 'Tilføj' i feltet Deltagere.</message>
+	<message key="notification.type.assignCopyeditors">Tilføj en manuskriptredaktør ved at klikke på linket 'Tildel' i feltet Deltagere.</message>
 	<message key="review.blindPeerReview"><![CDATA[<p>Med henblik på at sikre integriteten i forbindelse med blind peer review af manuskripter til dette tidsskrift skal der gøres alt for at forhindre, at forfatternes og bedømmernes identiteter afsløres for hinanden. Dette indebærer, at forfatterne, redaktørerne og bedømmerne (der overfører dokumenter som en del af deres bedømmelse) kontrollerer, at følgende trin er udført med hensyn til teksten og filegenskaberne:</p>
 			<ul><li>Dokumentets forfattere har slettet deres navne i teksten, og "Forfatter" og år benyttes i referencerne og fodnoterne i stedet for forfatternes navne, artiklens titel osv.</li>
 			<li>I forbindelse med Microsoft Office-dokumenter skal forfatteridentifikationen også fjernes fra filens egenskaber. Se under Filer i topmenuen i Word > Gem som > Funktioner (eller Indstillinger i forbindelse med en Mac) > Sikkerhed > Fjern personlige oplysninger fra filens egenskaber, når den gemmes > Gem</li>
@@ -464,7 +447,6 @@
 	<message key="common.reminded.date">Påmindet: {$dateReminded}</message>
 	<message key="common.searchQuery">Søgeforespørgsel</message>
 	<message key="common.sendEmail">Sendt e-mail</message>
-	<message key="common.startTyping">Begynd indtastning</message>
 	<message key="common.subjects">Emner</message>
 	<message key="common.component">Dele</message>
 	<message key="common.metric">Mål</message>
@@ -540,4 +522,21 @@
 	<message key="notification.addedNavigationMenu">Navigationsmenuen blev tilføjet</message>
 	<message key="notification.editedNavigationMenu">Navigationsmenu blev opdateret</message>
 	<message key="notification.removedNavigationMenu">Navigationsmenu blev fjernet</message>
+	<message key="common.filter">Filtre</message>
+	<message key="common.filterAdd">Tilføj filter: {$filterTitle}</message>
+	<message key="common.filterRemove">Fjer filter: {$filterTitle}</message>
+	<message key="common.lessThan">{$value} eller mindre</message>
+	<message key="common.commaListSeparator">, </message>
+	<message key="common.semicolonListSeparator">; </message>
+	<message key="common.moreThan">{$value} eller mere</message>
+	<message key="common.pagination">{$start}-{$end} af {$total}</message>
+	<message key="common.pagination.label">Browse ekstra sider</message>
+	<message key="common.clearSearch">Ryd søgetermen</message>
+	<message key="common.publicAccess">Offentlig adgang</message>
+	<message key="stageParticipants.notify.startDiscussion">Påbegynd drøftelse</message>
+	<message key="stageParticipants.notify.startDiscussion.description">Påbegynd en drøftelse mellem dig selv og {$userFullName}.</message>
+	<message key="notification.email">Send mig ikke en e-mail i forbindelse med denne type meddelelser.</message>
+	<message key="list.viewMore">Vis flere detaljer om {$name}</message>
+	<message key="list.viewLess">Skjul flere detaljer om {$name}</message>
+	<message key="notification.type.reviewAssignmentUpdated">Bedømmelsestildeling opdateret</message>
 </locale>

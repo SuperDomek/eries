@@ -4,15 +4,14 @@
 <!--
   * locale/sr_RS@cyrillic/common.xml
   *
-  * Copyright (c) 2014-2018 Simon Fraser University
-  * Copyright (c) 2000-2018 John Willinsky
+  * Copyright (c) 2014-2019 Simon Fraser University
+  * Copyright (c) 2000-2019 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   * Localization information: https://pkp.sfu.ca/wiki/index.php?title=OJS:_Serbian_(sr_RS)
-  * Localization strings for the sr_RS@cyrillic (Cрпски) locale.
-  *
+  * Localization strings.
   -->
 
-<locale name="sr_RS@cyrillic" full_name = "Serbian">
+<locale name="sr_RS@cyrillic" full_name="Cрпски">
 	<message key="about.aboutSite">О нама</message>
 	<message key="about.contact">Контакт</message>
 	<message key="about.contact.email">Имејл</message>
@@ -50,16 +49,16 @@
 	<message key="common.captchaField.description">Молимо унесите карактере редоследом којим су приказани у слици изнад.</message>
 	<message key="common.captchaField">Валидација</message>
 	<message key="common.ccLicense"><![CDATA[<br /><br />
-		<a target="_new" rel="license" href="http://creativecommons.org/licenses/by/3.0/">
+		<a target="_new" rel="license" href="https://creativecommons.org/licenses/by/3.0/">
 			<img alt="Creative Commons License" style="border-width:0" src="//i.creativecommons.org/l/by/3.0/80x15.png"/>
 		</a>
 		<br/>
-		Овај рад је лиценциран под <a rel="license" target="_new" href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0  License</a>.]]></message>
+		Овај рад је лиценциран под <a rel="license" target="_new" href="https://creativecommons.org/licenses/by/3.0/">Creative Commons Attribution 3.0  License</a>.]]></message>
 	<message key="common.ccLicense.rt"><![CDATA[<div class="rtBlock">
 		<br />
-		<a rel="license" href="http://creativecommons.org/licenses/by/3.0/" target="_new"><img alt="Creative Commons License" style="border-width:0" src="//i.creativecommons.org/l/by/3.0/80x15.png" /></a>
+		<a rel="license" href="https://creativecommons.org/licenses/by/3.0/" target="_new"><img alt="Creative Commons License" style="border-width:0" src="//i.creativecommons.org/l/by/3.0/80x15.png" /></a>
 		<br />
-		Овај рад је лиценциран под <a rel="license" href="http://creativecommons.org/licenses/by/3.0/" target="_new">Creative Commons Attribution 3.0 License</a>.
+		Овај рад је лиценциран под <a rel="license" href="https://creativecommons.org/licenses/by/3.0/" target="_new">Creative Commons Attribution 3.0 License</a>.
 	</div>]]></message>
 	<message key="common.changesSaved">Ваше измене су сачуване.</message>
 	<message key="common.chooseOne">Изаберите једно</message>
@@ -267,29 +266,13 @@
 	<message key="notification.allow">Дозволи да ми стижу ове врсте обавештења.</message>
 	<message key="notification.confirmError">Дошло је до грешке приликом потврђивања ваше претплате.</message>
 	<message key="notification.confirmSuccess">Успешно сте се претплатили.</message>
-	<message key="notification.location">Иди на URL</message>
-	<message key="notification.mailList">Мејлинг листа обавештења</message>
-	<message key="notification.mailList.emailInvalid">Унесите исправну имејл адресу.</message>
-	<message key="notification.mailList.privacyProtection">Правила заштите приватности</message>
-	<message key="notification.mailList.protectedContent"><![CDATA[<a href="{$subscribeUrl}">Претплати се</a> на заштићени садржај.]]></message>
-	<message key="notification.mailList.submit"><![CDATA[<a href="{$submitUrl}">Предај</a> чланак]]></message>
-	<message key="notification.mailList.register">Можете се регистровати да би...</message>
-	<message key="notification.mailList.review"><![CDATA[Учествујте у <a href="{$reviewUrl}">професионалном рецензентском</a> процесу]]></message>
 	<message key="notification.noneExist">Немате обавештења.</message>
 	<message key="notification.notification">Обавештење</message>
 	<message key="notification.notifications">Обавештења</message>
-	<message key="notification.notificationsNew">({$numNew} ново)</message>
-	<message key="notification.notificationsDescription"><![CDATA[Имате {$unreadCount} непрочитаних и {$readCount} прочитаних обавештења.  <a href="{$settingsUrl}">Кликните овде</a> да промените подешавање обавештавања.]]></message>
 	<message key="notification.settings">Подешавање обавештавања</message>
 	<message key="notification.settingsDescription">Обележите системска дешавања о којима желите да будете обавештени.</message>
-	<message key="notification.subscribe">Претплата</message>
-	<message key="notification.subscribeError">Ваша имејл адреса је већ претплаћена на обавештења.</message>
-	<message key="notification.subscribeSuccess">Имејл је послат на адресу коју сте навели. Кликните на линк за потврду како бисте се додали на мејлинг листу.</message>
 	<message key="notification.reminderError">Дошло је до грешке приликом слања лозинке, проверите да ли сте унели исправно Вашу имејл адресу.</message>
 	<message key="notification.reminderSent">Нова лозинка је послата на имејл адресу коју сте дали.</message>
-	<message key="notification.unsubscribe">Одјави се</message>
-	<message key="notification.unsubscribeError">Дошло је до грешке приликом Ваше одјаве. Молимо Вас да проверите да ли су имејл адреса и лозинка исправне.</message>
-	<message key="notification.unsubscribeSuccess">Успешно сте одјављени.</message>
 	<message key="search.abstract">Апстракт</message>
 	<message key="search.author">Аутори</message>
 	<message key="search.coverage">Покривеност</message>
@@ -321,6 +304,8 @@
 	<message key="common.finish">Заврши</message>
 	<message key="common.go">Иди</message>
 	<message key="common.less">Мање</message>
+	<message key="common.commaListSeparator">, </message>
+	<message key="common.semicolonListSeparator">; </message>
 	<message key="common.billingAddress">Адреса за наплату (уколико је другачија)</message>
 	<message key="common.more">Више</message>
 	<message key="common.notified">Обавештено</message>
@@ -392,7 +377,6 @@
 	<message key="common.percentage">{$percentage}%</message>
 	<message key="common.prefix">Префикс</message>
 	<message key="common.prefixAndTitle.tip">Нпр. као чланови у енглеском језику: A, The</message>
-	<message key="common.subtitle.tip">Додатни наслов ће се појавити после колоне (:), пратећи главни наслов.</message>
 	<message key="common.quality">Вредност</message>
 	<message key="common.queue.long.active">Сви активни</message>
 	<message key="common.range">{$min}-{$max}</message>
@@ -401,7 +385,6 @@
 	<message key="common.reminded.date">Подсећен: {$dateReminded}</message>
 	<message key="common.searchQuery">Упит за претрагу</message>
 	<message key="common.sendEmail">Пошаљи имејл</message>
-	<message key="common.startTyping">Започни са писањем</message>
 	<message key="common.subjects">Субјекти</message>
 	<message key="common.subtitle">Поднаслов</message>
 	<message key="common.component">Компонента</message>

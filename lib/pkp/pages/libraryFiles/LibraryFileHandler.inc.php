@@ -2,8 +2,8 @@
 /**
  * @file pages/libraryFiles/LibraryFileHandler.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class LibraryFileHandler
@@ -16,6 +16,17 @@
 import('classes.handler.Handler');
 
 class LibraryFileHandler extends Handler {
+
+	/** @var Handler the Handler that calls the LibraryFileHandler functions */
+	var $_callingHandler = null;
+
+	/**
+	 * Constructor.
+	 * @param $callingHandler Handler
+	 */
+	function __construct($callingHandler) {
+		$this->_callingHandler = $callingHandler;
+	}
 
 	//
 	// Public handler methods
@@ -37,7 +48,7 @@ class LibraryFileHandler extends Handler {
 		$libraryFile = $libraryFileDao->getById($publicFileId, $context->getId());
 		if ($libraryFile && $libraryFile->getPublicAccess()) {
 			$filePath = $libraryFileManager->getBasePath() .  $libraryFile->getOriginalFileName();
-			$libraryFileManager->downloadFile($filePath);
+			$libraryFileManager->downloadByPath($filePath);
 		} else {
 				header('HTTP/1.0 403 Forbidden');
 				echo '403 Forbidden<br>';
@@ -64,8 +75,10 @@ class LibraryFileHandler extends Handler {
 				$allowedAccess = false;
 
 				// Managers are always allowed access.
-				$userRoles = $this->getAuthorizedContextObject(ASSOC_TYPE_USER_ROLES);
-				if (array_intersect($userRoles, array(ROLE_ID_MANAGER))) $allowedAccess = true;
+				if ($this->_callingHandler) {
+					$userRoles = $this->_callingHandler->getAuthorizedContextObject(ASSOC_TYPE_USER_ROLES);
+					if (array_intersect($userRoles, array(ROLE_ID_MANAGER))) $allowedAccess = true;
+				}
 
 				// Check for specific assignments.
 				$user = $request->getUser();
@@ -85,7 +98,7 @@ class LibraryFileHandler extends Handler {
 
 			if ($allowedAccess) {
 				$filePath = $libraryFileManager->getBasePath() .  $libraryFile->getOriginalFileName();
-				$libraryFileManager->downloadFile($filePath);
+				$libraryFileManager->downloadByPath($filePath);
 			} else {
 				header('HTTP/1.0 403 Forbidden');
 				echo '403 Forbidden<br>';

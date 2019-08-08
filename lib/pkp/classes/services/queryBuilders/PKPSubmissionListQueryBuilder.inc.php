@@ -3,8 +3,8 @@
 /**
  * @file classes/services/QueryBuilders/PKPSubmissionListQueryBuilder.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class SubmissionListQueryBuilder
@@ -18,6 +18,9 @@ namespace PKP\Services\QueryBuilders;
 use Illuminate\Database\Capsule\Manager as Capsule;
 
 abstract class PKPSubmissionListQueryBuilder extends BaseQueryBuilder {
+
+	/** @var int|array Category ID(s) */
+	protected $categoryIds = null;
 
 	/** @var int|null Context ID */
 	protected $contextId = null;
@@ -77,11 +80,26 @@ abstract class PKPSubmissionListQueryBuilder extends BaseQueryBuilder {
 		if ($column === 'lastModified') {
 			$this->orderColumn = 's.last_modified';
 		} elseif ($column === 'title') {
-			$this->orderColumn = 'st.setting_value';
+			$this->orderColumn = Capsule::raw('COALESCE(submission_tl.setting_value, submission_tpl.setting_value)');
 		} else {
 			$this->orderColumn = 's.date_submitted';
 		}
 		$this->orderDirection = $direction;
+		return $this;
+	}
+
+	/**
+	 * Set category filter
+	 *
+	 * @param int|array|null $categoryIds
+	 *
+	 * @return \OMP\Services\QueryBuilders\SubmissionListQueryBuilder
+	 */
+	public function filterByCategories($categoryIds) {
+		if (!is_null($categoryIds) && !is_array($categoryIds)) {
+			$categoryIds = array($categoryIds);
+		}
+		$this->categoryIds = $categoryIds;
 		return $this;
 	}
 
@@ -200,10 +218,16 @@ abstract class PKPSubmissionListQueryBuilder extends BaseQueryBuilder {
 					->groupBy('s.submission_id');
 
 		// order by title
-		if ($this->orderColumn === 'st.setting_value') {
-			$q->leftJoin('submission_settings as st', 's.submission_id', '=', 'st.submission_id')
-				->where('st.setting_name', '=', 'title');
-			$q->groupBy('st.setting_value');
+		if ($this->orderColumn == Capsule::raw('COALESCE(submission_tl.setting_value, submission_tpl.setting_value)')) {
+			$locale = \AppLocale::getLocale();
+			$this->columns[] = Capsule::raw('COALESCE(submission_tl.setting_value, submission_tpl.setting_value)');
+			$q->leftJoin('submission_settings as submission_tl', 's.submission_id', '=', 'submission_tl.submission_id')
+				->where('submission_tl.setting_name', '=', 'title')
+				->where('submission_tl.locale', '=', $locale);
+			$q->leftJoin('submission_settings as submission_tpl', 's.submission_id', '=', 'submission_tpl.submission_id')
+				->where('submission_tpl.setting_name', '=', 'title')
+				->where('submission_tpl.locale', '=', Capsule::raw('s.locale'));
+			$q->groupBy(Capsule::raw('COALESCE(submission_tl.setting_value, submission_tpl.setting_value)'));
 		}
 
 		// return object
@@ -211,7 +235,8 @@ abstract class PKPSubmissionListQueryBuilder extends BaseQueryBuilder {
 			$this->columns[] = 'ps.*';
 			$q->leftJoin('published_submissions as ps','ps.submission_id','=','s.submission_id')
 				->groupBy('ps.date_published');
-			$q->whereNotNull('ps.pub_id');
+			$q->whereNotNull('ps.published_submission_id');
+			$q->groupBy('ps.published_submission_id');
 		}
 
 		// statuses
@@ -276,6 +301,7 @@ abstract class PKPSubmissionListQueryBuilder extends BaseQueryBuilder {
 			$q->leftJoin('review_assignments as ra', function($table) use ($assigneeId) {
 				$table->on('s.submission_id', '=', 'ra.submission_id');
 				$table->on('ra.reviewer_id', '=', Capsule::raw((int) $assigneeId));
+				$table->on('ra.declined', '=', Capsule::raw((int) 0));
 			});
 
 			$q->where(function($q) {
@@ -299,25 +325,28 @@ abstract class PKPSubmissionListQueryBuilder extends BaseQueryBuilder {
 			$words = explode(' ', $this->searchPhrase);
 			if (count($words)) {
 				$q->leftJoin('submission_settings as ss','s.submission_id','=','ss.submission_id')
-					->leftJoin('authors as au','s.submission_id','=','au.submission_id');
+					->leftJoin('authors as au','s.submission_id','=','au.submission_id')
+					->leftJoin('author_settings as aus', 'aus.author_id', '=', 'au.author_id');
 
 				foreach ($words as $word) {
+					$word = strtolower(addcslashes($word, '%_'));
 					$q->where(function($q) use ($word, $isAssignedOnly)  {
 						$q->where(function($q) use ($word) {
 							$q->where('ss.setting_name', 'title');
-							$q->where('ss.setting_value', 'LIKE', "%{$word}%");
+							$q->where(Capsule::raw('lower(ss.setting_value)'), 'LIKE', "%{$word}%");
+						})
+						->orWhere(function($q) use ($word) {
+							$q->where('aus.setting_name', IDENTITY_SETTING_GIVENNAME);
+							$q->where(Capsule::raw('lower(aus.setting_value)'), 'LIKE', "%{$word}%");
+						})
+						->orWhere(function($q) use ($word, $isAssignedOnly) {
+							$q->where('aus.setting_name', IDENTITY_SETTING_FAMILYNAME);
+							$q->where(Capsule::raw('lower(aus.setting_value)'), 'LIKE', "%{$word}%");
 						});
-						$q->orWhere(function($q) use ($word, $isAssignedOnly) {
-							// Prevent reviewers from matching searches by author name
-							if ($isAssignedOnly) {
-								$q->whereNull('ra.reviewer_id');
-							}
-							$q->where(function($q) use ($word) {
-								$q->where('au.first_name', 'LIKE', "%{$word}%");
-								$q->orWhere('au.middle_name', 'LIKE', "%{$word}%");
-								$q->orWhere('au.last_name', 'LIKE', "%{$word}%");
-							});
-						});
+						// Prevent reviewers from matching searches by author name
+						if ($isAssignedOnly) {
+							$q->whereNull('ra.reviewer_id');
+						}
 						if (ctype_digit($word)) {
 							$q->orWhere('s.submission_id', '=', $word);
 						}
@@ -327,13 +356,19 @@ abstract class PKPSubmissionListQueryBuilder extends BaseQueryBuilder {
 			}
 		}
 
+		// Category IDs
+		if (!empty($this->categoryIds)) {
+			$q->leftJoin('submission_categories as sc', 's.submission_id', '=', 'sc.submission_id')
+				->whereIn('sc.category_id', $this->categoryIds);
+		}
+
 		// Add app-specific query statements
 		\HookRegistry::call('Submission::getSubmissions::queryObject', array(&$q, $this));
 
 		if (!empty($this->countOnly)) {
 			$q->select(Capsule::raw('count(*) as submission_count'));
 		} else {
-			$q->select($this->columns);
+			$q->distinct('s.*')->select($this->columns);
 		}
 
 		return $q;

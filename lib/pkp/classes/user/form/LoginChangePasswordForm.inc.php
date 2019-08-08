@@ -3,8 +3,8 @@
 /**
  * @file classes/user/form/LoginChangePasswordForm.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class LoginChangePasswordForm
@@ -38,13 +38,13 @@ class LoginChangePasswordForm extends Form {
 	}
 
 	/**
-	 * Display the form.
+	 * @copydoc Form::display
 	 */
-	function display($request) {
+	function display($request = null, $template = null) {
 		$templateMgr = TemplateManager::getManager($request);
 		$site = $request->getSite();
 		$templateMgr->assign('minPasswordLength', $site->getMinPasswordLength());
-		parent::display();
+		parent::display($request, $template);
 	}
 
 	/**
@@ -84,4 +84,4 @@ class LoginChangePasswordForm extends Form {
 	}
 }
 
-?>
+

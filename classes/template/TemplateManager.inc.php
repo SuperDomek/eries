@@ -3,8 +3,8 @@
 /**
  * @file classes/template/TemplateManager.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class TemplateManager
@@ -21,12 +21,11 @@ import('lib.pkp.classes.template.PKPTemplateManager');
 
 class TemplateManager extends PKPTemplateManager {
 	/**
-	 * Constructor.
 	 * Initialize template engine and assign basic template variables.
 	 * @param $request PKPRequest
 	 */
-	function __construct($request) {
-		parent::__construct($request);
+	function initialize($request) {
+		parent::initialize($request);
 
 		if (!defined('SESSION_DISABLE_INIT')) {
 			/**
@@ -140,4 +139,4 @@ class TemplateManager extends PKPTemplateManager {
 	}
 }
 
-?>
+

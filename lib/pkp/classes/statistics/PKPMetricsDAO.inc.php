@@ -6,8 +6,8 @@
 /**
  * @file lib/pkp/classes/statistics/PKPMetricsDAO.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class PKPMetricsDAO
@@ -16,6 +16,7 @@
  * @brief Class with basic operations for retrieving and adding statistics data.
  */
 
+import('classes.statistics.StatisticsHelper'); //STATISTICS_DIMENSION_
 
 class PKPMetricsDAO extends DAO {
 
@@ -187,14 +188,8 @@ class PKPMetricsDAO extends DAO {
 
 		// Build the report.
 		$sql = "$selectClause FROM metrics $whereClause $groupByClause $havingClause $orderByClause";
-		if (is_a($range, 'DBResultRange')) {
-			if ($range->getCount() > STATISTICS_MAX_ROWS) {
-				$range->setCount(STATISTICS_MAX_ROWS);
-			}
-			$result = $this->retrieveRange($sql, $params, $range);
-		} else {
-			$result = $this->retrieveLimit($sql, $params, STATISTICS_MAX_ROWS);
-		}
+		if (is_a($range, 'DBResultRange')) $result = $this->retrieveRange($sql, $params, $range);
+		else $result = $this->retrieve($sql, $params);
 
 		// Return the report.
 		$returner = $result->GetAll();
@@ -428,4 +423,4 @@ class PKPMetricsDAO extends DAO {
 		return array(null, null);
 	}
 }
-?>
+

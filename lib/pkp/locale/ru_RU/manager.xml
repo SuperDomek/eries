@@ -4,8 +4,8 @@
 <!--
   * locale/ru_RU/manager.xml
   *
-  * Copyright (c) 2014-2018 Simon Fraser University
-  * Copyright (c) 2000-2018 John Willinsky
+  * Copyright (c) 2014-2019 Simon Fraser University
+  * Copyright (c) 2000-2019 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   *
   * Localization strings for the ru_RU (Русский) locale.
@@ -249,7 +249,7 @@
 	<message key="manager.setup.principalContact">Контактное лицо (общие вопросы)</message>
 	<message key="manager.setup.principalContactDescription">Введите данные контактного лица, обычно это главный редактор, ответственный редактор или сотрудник администрации. Эти данные могут отображаться в открытом доступе на сайте.</message>
 	<message key="manager.setup.privacyStatement">Заявление о конфиденциальности</message>
-	<message key="manager.setup.privacyStatement.description">Это Заявление будет отображаться во время отправки материала автором и на странице сайта с информацией в открытом доступе.</message>
+	<message key="manager.setup.privacyStatement.description">Это заявление будет появляться во время регистрации пользователя, отправки автором материала и на странице «Конфиденциальность» в открытом доступе. В некоторых странах закон требует, чтобы вы в раскрыли как именно вы обрабатываете данные пользователей в этом Заявлении о конфиденциальности.</message>
 	<message key="manager.setup.reviewOptions.numWeeksPerResponse">Недель на согласие или отказ в ответ на запрос выполнения рецензии</message>
 	<message key="manager.setup.reviewOptions.numWeeksPerReview">Недель на выполнение рецензии</message>
 	<message key="manager.setup.reviewOptions.neverSendReminder">Никогда не напоминать</message>
@@ -455,6 +455,7 @@
 	<message key="manager.reviewFormElements.noneCreated">Элементы формы не были созданы.</message>
 	<message key="manager.reviewFormElements.possibleResponse">Выбор</message>
 	<message key="manager.reviewFormElements.question">Элемент</message>
+	<message key="manager.reviewFormElements.description">Описание</message>
 	<message key="manager.reviewFormElements.radiobuttons">Радиокнопки (можно выбрать только один вариант)</message>
 	<message key="manager.reviewFormElements.required">Рецензент обязательно должен заполнить элемент</message>
 	<message key="manager.reviewFormElements.included">Включается в сообщение для автора</message>
@@ -478,12 +479,20 @@
 	<message key="plugins.importexport.common.error.unknownEncoding">Неизвестная кодировка {$param}</message>
 	<message key="plugins.importexport.common.error.encodingError">Кодировка контента не совпадает с {$param}</message>
 	<message key="plugins.importexport.common.error.unknownUserGroup">Неизвестная группа пользователей {$param}</message>
+	<message key="plugins.importexport.common.error.missingGivenName">У автора ({$authorName}) не указано имя на языке отправки ({$localeName}). Материал не может быть импортирован без этой информации.</message>
 	<message key="plugins.importexport.common.error.unknownUploader">Неизвестный загрузчик {$param}</message>
 	<message key="plugins.importexport.common.error.temporaryFileFailed">Временный файл {$dest} не может быть создан из {$source}</message>
 	<message key="plugins.importexport.common.error.filesizeMismatch">Указанный размер файла «{$expected}» и фактический размер «{$actual}» не совпадают</message>
 	<message key="plugins.importexport.common.error.duplicateRevisionForSubmission">Новая версия «{$revisionId}» для файла «{$fileId}» создаст дублирующую запись</message>
 	<!-- родные ключи импорта/экспорта -->
 	<message key="plugins.importexport.native.error.submissionFileImportFailed">Файл материала не может быть импортирован</message>
+
+	<!-- родные ключи импорта пользователей -->
+	<message key="plugins.importexport.user.importExportErrors">Ошибки импорта/экспорта:</message>
+	<message key="plugins.importexport.user.error.userHasNoPassword">У импортируемого пользователя «{$username}» нет пароля. Проверьте формат вашего файла XML для импорта. Пользователь не был импортирован.</message>
+	<message key="plugins.importexport.user.error.passwordHasBeenChanged">Пароль импортируемого пользователя «{$username}» не модет быть импортирован в данном виде. Новый пароль был отправлен на адрес электронной почты пользователя. Пользователь был импортирован.</message>
+	<message key="plugins.importexport.user.error.plainPasswordNotValid">У импортируемого пользователя «{$username}» задан простой пароль, не соответствующий требованиям. Пользователь не был импортирован.</message>
+	<message key="plugins.importexport.user.error.usernameEmailMismatch">Имя пользователя «{$username}» и адрес электронной почты «{$email}» принадлежат двум разным существующим пользователям.</message>
 
 	<!-- Меню навигации -->
 	<message key="manager.navigationMenus.form.title">Название</message>
@@ -538,4 +547,6 @@
 	<message key="manager.navigationMenus.subscriptions.conditionalWarning">Эта ссылка будет показываться только в случае, если включены платежи в Настройки > Распространение > Платежи.</message>
 	<message key="manager.navigationMenus.mySubscriptions.conditionalWarning">Эта ссылка будет показываться только в случае, если посетитель зашел в систему, включены платежи в Настройки > Распространение > Платежи и обязательны подписки в Настройки > Распространение > Доступ.</message>
 	<message key="manager.navigationMenus.search.description">Ссылка на страницу поиска.</message>
+	<message key="manager.navigationMenus.privacyStatement.description">Ссылка на страницу, отображающую ваше Заявление о конфиденциальности.</message>
+	<message key="manager.navigationMenus.privacyStatement.conditionalWarning">Эта ссылка будет показываться только в случае, если вы ввели Заявление о конфиденциальности в Настройки > Рабочий поток > Материалы.</message>
 </locale>

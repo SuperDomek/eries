@@ -3,8 +3,8 @@
 /**
  * @file classes/controllers/grid/feature/GridFeature.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class GridFeature
@@ -13,7 +13,7 @@
  * @brief Base grid feature class. A feature is a type of plugin specific
  * to the grid widgets. It provides several hooks to allow injection of
  * additional grid functionality. This class implements template methods
- * to be extendeded by subclasses.
+ * to be extended by subclasses.
  *
  */
 
@@ -250,4 +250,4 @@ class GridFeature {
 	}
 }
 
-?>
+

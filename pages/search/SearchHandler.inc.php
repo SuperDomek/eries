@@ -3,8 +3,8 @@
 /**
  * @file pages/search/SearchHandler.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class SearchHandler
@@ -67,7 +67,7 @@ class SearchHandler extends Handler {
 			$day = $request->getUserVar("date${fromTo}Day");
 			$year = $request->getUserVar("date${fromTo}Year");
 			if (empty($year)) {
-				$date = '--';
+				$date = NULL;
 				$hasEmptyFilters = true;
 			} else {
 				$defaultMonth = ($fromTo == 'From' ? 1 : 12);
@@ -196,13 +196,13 @@ class SearchHandler extends Handler {
 
 		if (isset($args[0]) && $args[0] == 'view') {
 			// View a specific author
-			$firstName = $request->getUserVar('firstName');
-			$middleName = $request->getUserVar('middleName');
-			$lastName = $request->getUserVar('lastName');
+			$authorName = $request->getUserVar('authorName');
+			$givenName = $request->getUserVar('givenName');
+			$familyName = $request->getUserVar('familyName');
 			$affiliation = $request->getUserVar('affiliation');
 			$country = $request->getUserVar('country');
 
-			$publishedArticles = $authorDao->getPublishedArticlesForAuthor($journal?$journal->getId():null, $firstName, $middleName, $lastName, $affiliation, $country);
+			$publishedArticles = $authorDao->getPublishedArticlesForAuthor($journal?$journal->getId():null, $givenName, $familyName, $affiliation, $country);
 
 			// Load information associated with each article.
 			$journals = array();
@@ -246,10 +246,10 @@ class SearchHandler extends Handler {
 				'issuesUnavailable' => $issuesUnavailable,
 				'sections' => $sections,
 				'journals' => $journals,
-				'firstName' => $firstName,
-				'middleName' => $middleName,
-				'lastName' => $lastName,
+				'givenName' => $givenName,
+				'familyName' => $familyName,
 				'affiliation' => $affiliation,
+				'authorName' => $authorName
 			));
 
 			$countryDao = DAORegistry::getDAO('CountryDAO');
@@ -271,7 +271,7 @@ class SearchHandler extends Handler {
 			$templateMgr = TemplateManager::getManager($request);
 			$templateMgr->assign(array(
 				'searchInitial' => $request->getUserVar('searchInitial'),
-				'alphaList' => explode(' ', __('common.alphaList')),
+				'alphaList' => array_merge(array('-'), explode(' ', __('common.alphaList'))),
 				'authors' => $authors,
 			));
 			$templateMgr->display('frontend/pages/searchAuthorIndex.tpl');
@@ -292,4 +292,4 @@ class SearchHandler extends Handler {
 	}
 }
 
-?>
+

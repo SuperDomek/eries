@@ -1,8 +1,8 @@
 {**
  * templates/frontend/pages/issueArchive.tpl
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @brief Display a list of recent issues.
@@ -42,12 +42,12 @@
 
 		{* Pagination *}
 		{if $prevPage > 1}
-			{url|assign:"prevUrl" router=$smarty.const.ROUTE_PAGE page="issue" op="archive" path=$prevPage}
+			{capture assign=prevUrl}{url router=$smarty.const.ROUTE_PAGE page="issue" op="archive" path=$prevPage}{/capture}
 		{elseif $prevPage === 1}
-			{url|assign:"prevUrl" router=$smarty.const.ROUTE_PAGE page="issue" op="archive"}
+			{capture assign=prevUrl}{url router=$smarty.const.ROUTE_PAGE page="issue" op="archive"}{/capture}
 		{/if}
 		{if $nextPage}
-			{url|assign:"nextUrl" router=$smarty.const.ROUTE_PAGE page="issue" op="archive" path=$nextPage}
+			{capture assign=nextUrl}{url router=$smarty.const.ROUTE_PAGE page="issue" op="archive" path=$nextPage}{/capture}
 		{/if}
 		{include
 			file="frontend/components/pagination.tpl"

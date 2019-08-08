@@ -4,8 +4,8 @@
 <!--
   * locale/en_US/editor.xml
   *
-  * Copyright (c) 2013-2018 Simon Fraser University
-  * Copyright (c) 2003-2018 John Willinsky
+  * Copyright (c) 2013-2019 Simon Fraser University
+  * Copyright (c) 2003-2019 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   * Localization information: https://pkp.sfu.ca/wiki/index.php?title=Translating_OxS
   * Localization strings.
@@ -147,4 +147,5 @@
 	<message key="editor.submission.editorial.finalDraftDescription"><![CDATA[Final draft files in this list are transformed by a Copyeditor into copyedited versions, uploaded below under <span class="pkp_help_title">Copyediting</span>.]]></message>
 	<message key="editor.submission.proof.manageProofFilesDescription">Any files that have already been uploaded to any submission stage can be added to the Proofreading listing by checking the Include checkbox below and clicking Search: all available files will be listed and can be chosen for inclusion.</message>
 	<message key="editor.publicIdentificationExistsForTheSameType">The public identifier '{$publicIdentifier}' already exists for another object of the same type. Please choose unique identifiers for the objects of the same type within your journal.</message>
+	<message key="editor.article.coverImage">Cover Image</message>
 </locale>

@@ -4,10 +4,10 @@
 <!--
   * locale/de_DE/manager.xml
   *
-  * Copyright (c) 2014-2018 Simon Fraser University
-  * Copyright (c) 2000-2018 John Willinsky
+  * Copyright (c) 2014-2019 Simon Fraser University
+  * Copyright (c) 2000-2019 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
-  * Please contact Marco Tullney, marco.tullney@fu-berlin.de, with any questions regarding this translation.
+  * Localization information: https://pkp.sfu.ca/wiki/index.php?title=OJS:_German_(de_DE)
   * Localization strings.
   -->
 
@@ -116,6 +116,7 @@
 	<message key="manager.languages.alternateLocaleInstructions">Dieses System bietet die Möglichkeit, wichtige Informationen in verschiedenen zusätzlichen Sprachen einzutragen. Dazu wählen Sie bitte aus der nachstehenden Liste eine andere Regionaleinstellung aus.</message>
 	<message key="manager.languages.supportedLocalesInstructions">Wählen Sie alle Regionaleinstellungen aus, die von der Website unterstützt werden sollen und die über ein Sprachenmenü auf jeder Seite ausgewählt werden können. Dieses Menü erscheint nur dann, wenn mehr als eine Regionaleinstellung ausgewählt wird.</message>
 	<message key="manager.payment.timestamp">Zeitpunkt</message>
+	<message key="manager.people.existingUserRequired">Ein existierender Benutzer/eine existierende Benutzerin muss eingetragen werden.</message>
 	<message key="manager.people.authSource">Authentifizierungsquelle</message>
 	<message key="manager.people.confirmUnenroll">Diese/n Benutzer/in austragen?</message>
 	<message key="manager.people.createUser">Neue/n Benutzer/in erstellen</message>
@@ -247,7 +248,7 @@
 	<message key="manager.setup.principalContact">Hauptkontakt</message>
 	<message key="manager.setup.principalContactDescription">Geben Sie Kontaktinformationen, üblicherweise für eine Hauptredaktion, Redaktionsleitung oder Redaktionsbüro, an, die auf Ihrer öffentlich zugänglichen Webseite angezeigt werden können.</message>
 	<message key="manager.setup.privacyStatement">Erklärung zum Schutz persönlicher Daten</message>
-	<message key="manager.setup.privacyStatement.description">Diese Erklärung wird während der Einreichung durch den/die Autor/in und auf der öffentlich verfügbaren Seite "Über uns" angezeigt.</message>
+	<message key="manager.setup.privacyStatement.description">Diese Erklärung wird während der Registrierung neuer Nutzer/innen, bei Autor/inneneinreichungen und auf der öffentlichen Seite zum Datenschutz angezeigt. In manchen Staaten sind Sie rechtlich verpflichtet, in dieser Erklärung anzugeben, wie Sie mit den Daten der Nutzer/innen verfahren.</message>
 	<message key="manager.setup.reviewOptions.numWeeksPerResponse">Zeit für Antwort auf Begutachtungsanfrage (Wochen)</message>
 	<message key="manager.setup.reviewOptions.numWeeksPerReview">Zeit für Abschluss des Gutachtens (Wochen)</message>
 	<message key="manager.setup.reviewOptions.neverSendReminder">Nie erinnern</message>
@@ -256,6 +257,8 @@
 	<message key="manager.setup.reviewOptions.remindForSubmit">Eine Erinnerung schicken, wenn ein/e Gutachter/in nicht innerhalb der genannten Zeit eine Empfehlung eingereicht hat (Tage):</message>
 	<message key="manager.setup.reviewOptions.reviewTime">Standard-Fristen für Begutachtung</message>
 	<message key="manager.setup.reviewOptions.showBlindReviewLink">Einen Link zu "blinde Begutachtung gewährleisten" während des Uploads anzeigen</message>
+	<message key="manager.setup.searchEngineIndexing.sitemap">Sitemap</message>
+	<message key="manager.setup.searchEngineIndexing.sitemapDescription"><![CDATA[Eine XML-Sitemap zur Übermittlung an Suchmaschinen steht unter <a href="{$path}" target="_blank">{$path}</a> zur Verfügung.]]></message>
 	<message key="manager.setup.sponsors.note">Sie können einen Hinweis hinzufügen, wie Ihr Verhältnis zu Ihren Sponsoren ist; dieser Hinweis wird in der Sponsorenliste auf Ihrer "Über uns"-Seite erscheinen.</message>
 	<message key="manager.setup.sponsors.description">Beispiele: Fachgesellschaften, Fachbereiche, Konsortien etc. Spnsoren werden öffentlich angezeigt.</message>
 	<message key="manager.setup.styleSheetDescription">Sie können eine zusätzliche CSS-Datei hochladen, um das Aussehen anzupassen.</message>
@@ -393,6 +396,8 @@
 	<message key="settings.libraryFiles.category.permissions">Rechte</message>
 	<message key="settings.libraryFiles.category.reports">Berichte</message>
 	<message key="settings.libraryFiles.category.other">Anderes</message>
+	<message key="settings.libraryFiles.public.viewInstructions"><![CDATA[<p>Diese Bibliotheksdatei kann zum Download bereitgestellt werden, wenn "Öffentlicher Zugang" unter <blockquote>{$downloadUrl}</blockquote> aktiviert ist.</p>]]></message>
+	<message key="settings.libraryFiles.public.selectLibraryFiles">Wählen Sie Bibliotheksdateien aus, um sie anzuhängen.to attach</message>
 
 	<!--  Genre grid settings -->
 	<message key="grid.action.addGenre">Ein Genre hinzufügen</message>
@@ -401,7 +406,11 @@
 	<message key="grid.action.restoreGenres">Genres auf Standard zurücksetzen</message>
 	<message key="manager.setup.genres.dependent">Dateien dieses Typs als abhängige Dateien markieren (z.B. nicht Primärveröffentlichungen)</message>
 	<message key="manager.setup.genres.supplementary">Dateien dieses Typs als Zusatzdateien markieren (z.B. kein primärer Beitragsinhalt)</message>
-	<message key="manager.settings.wizard">Einstellungs-Wizard</message>
+	<message key="manager.setup.genres.key">Schlüssel</message>
+	<message key="manager.setup.genres.key.description">Ein optionales kurzes Kennzeichen für dieses Genre.</message>
+	<message key="manager.setup.genres.key.exists">Dieser Schlüssel existiert bereit.</message>
+	<message key="manager.setup.genres.key.alphaNumeric">Der Schlüssel darf nur alphanumerische Zeichen, Unterstriche und Bindestriche enthalten und muss mit einem alphanumerischen Zeichen beginnen und enden.</message>
+	<message key="manager.settings.wizard">Einstellungs-Assistent</message>
 	<message key="manager.users.roleRequired">Sie müssen wenigstens eine Rolle auswählen, die mit dieser Benutzerin/diesem Benutzer verknüpft wird.</message>
 	<message key="manager.website">Website</message>
 	<message key="manager.website.title">Website-Einstellungen</message>
@@ -445,6 +454,7 @@
 	<message key="manager.reviewFormElements.noneCreated">Es wurden keine Formularfelder angelegt.</message>
 	<message key="manager.reviewFormElements.possibleResponse">Auswahl</message>
 	<message key="manager.reviewFormElements.question">Feld</message>
+	<message key="manager.reviewFormElements.description">Beschreibung</message>
 	<message key="manager.reviewFormElements.radiobuttons">Radiobuttons (keine Mehrfachauswahl möglich)</message>
 	<message key="manager.reviewFormElements.required">Um die Rubrik auszufüllen, werden Gutachter/innen benötigt</message>
 	<message key="manager.reviewFormElements.included">In Nachricht an Autor/in aufgenommen</message>
@@ -468,6 +478,7 @@
 	<message key="plugins.importexport.common.error.unknownEncoding">Unbekanntes Encoding {$param}</message>
 	<message key="plugins.importexport.common.error.encodingError">Dieser Inhalt ist nicht als {$param} encodiert</message>
 	<message key="plugins.importexport.common.error.unknownUserGroup">Unbekannte Nutzergruppe {$param}</message>
+	<message key="plugins.importexport.common.error.missingGivenName">Autor/in {$authorName} hat keinen Vornamen in der in der Einreichung verwendeten Sprache, {$localeName}. Die Einreichung kann nicht importiert werden ohne diese Information.</message>
 	<message key="plugins.importexport.common.error.unknownUploader">Unbekannter Uploader {$param}</message>
 	<message key="plugins.importexport.common.error.temporaryFileFailed">Temporäre Datei {$dest} konnte nicht aus der Quelle {$source} erzeugt werden</message>
 	<message key="plugins.importexport.common.error.filesizeMismatch">Die übermittelte Dateigröße "{$expected}" und die tatsächliche Dateigröße "{$actual}" stimmen nicht überein</message>
@@ -475,6 +486,13 @@
 	<!-- native importexport keys -->
 	<message key="plugins.importexport.native.error.submissionFileImportFailed">Die Einreichungsdatei konnte nicht importiert werden</message>
 
+	<!-- native import user keys -->
+	<message key="plugins.importexport.user.importExportErrors">Import/Export-Fehler:</message>
+	<message key="plugins.importexport.user.error.userHasNoPassword">Importierte/r Nutzer/in "{$username}" besitzt kein Passwort. Bitte überprüfen Sie Ihr Import-XML-Format. Nutzer/in wurde nicht importiert.</message>
+	<message key="plugins.importexport.user.error.passwordHasBeenChanged">Importierte/r Nutzer/in "{$username}" konnte nicht in der vorliegenden Form importiert werden. Ein neues Passwort wird an die E-Mail-Adresse der Nutzerin/des Nutzers geschickt. Nutzer/in wurde importiert.</message>
+	<message key="plugins.importexport.user.error.plainPasswordNotValid">Importierte/r Nutzer/in "{$username}" hat ein ungültiges Klartext-Passwort. Nutzer/in wurde nicht importiert.</message>
+	<message key="plugins.importexport.user.error.usernameEmailMismatch">Benutzer/innenname "{$username}" und die E-Mail-Adresse "{$email}" passen nicht zur selben Benutzerin/zum selben Benutzer.</message>
+	
 	<!-- Navigation Menus -->
 	<message key="manager.navigationMenus.form.title">Titel</message>
 	<message key="manager.navigationMenus.form.path">Pfad</message>
@@ -490,6 +508,7 @@
 	<message key="manager.navigationMenus.unassignedMenuItems">Nicht zugewiesenen Menüeinträge</message>
 	<message key="manager.navigationMenus.form.navigationMenuArea">Aktiver Navigationsbereich</message>
 	<message key="manager.navigationMenus.form.navigationMenuAreaMessage">Wählen Sie einen Navigationsbereich aus</message>
+	<message key="manager.navigationMenus.form.menuAssigned">Diesem Bereich ist bereits ein Navigationsmenü zugewiesen.</message>
 
 	<message key="manager.navigationMenus.form.url">URL</message>
 	<message key="manager.navigationMenus.form.customUrlError">Eine URL ist erforderlich</message>
@@ -521,6 +540,25 @@
 	<message key="manager.navigationMenus.logOut.description">Über diesen Link loggt sich die Benutzerin/der Benutzer aus.</message>
 	<message key="manager.navigationMenus.loggedOut.conditionalWarning">Dieser Link wird nur angezeigt, falls die Besucherin/der Besucher eingeloggt ist.</message>
 	<message key="manager.navigationMenus.loggedIn.conditionalWarning">Dieser Link wird nur angezeigt, falls die Besucherin/der Besucher nicht eingeloggt ist.</message>
+	<message key="manager.navigationMenus.contact.description">Link zu einer Seite, die Ihre Kontaktinformationen anzeigt.</message>
+	<message key="manager.navigationMenus.contact.conditionalWarning">Dieser Link wird nur angezeigt, wenn Sie die Kontaktinformationen unter Einstellungen > Kontakt ausgefüllt haben.</message>
+	<message key="manager.navigationMenus.form.typeMissing">Bitte wählen Sie einen Navigationsmenü-Typ.</message>
+	<message key="manager.navigationMenus.subscriptions.conditionalWarning">Dieser Link wird nur angezeigt, wenn Zahlungen unter Einstellungen > Vertrieb > Zahlungen aktiviert sind.</message>
+	<message key="manager.navigationMenus.mySubscriptions.conditionalWarning">Dieser Link wird nur angezeigt, wenn die Besucherin/der Besucher eingeloggt ist, Zahlungen unter Einstellungen > Vertrieb > Zahlungen aktiviert sind und ein Abonnement laut Einstellungen > Vertrieb > Zugriff erforderlich ist.</message>
+	<message key="manager.navigationMenus.search.description">Link zur Suchseite.</message>
+	<message key="manager.navigationMenus.privacyStatement.description">Link zu der Seite mit der Erklärung zum Schutz persönlicher Daten.</message>
+	<message key="manager.navigationMenus.privacyStatement.conditionalWarning">Dieser Link wird nur angezeigt, wenn Sie eine Erklärung zum Schutz persönlicher Daten unter Einstellungen > Workflow > Einreichungen angegeben haben.</message>
 
-	<message key="manager.people.existingUserRequired">Ein existierender Benutzer/eine existierende Benutzerin muss eingetragen werden.</message>
+	<message key="grid.category.add">Kategorie hinzufügen</message>
+	<message key="grid.category.edit">Kategorie bearbeiten</message>
+	<message key="grid.category.name">Name</message>
+	<message key="grid.category.path">Pfad</message>
+	<message key="grid.category.urlWillBe">Die URL der Kategorie wird: {$sampleUrl}</message>
+	<message key="grid.category.pathAlphaNumeric">Der Kategorienpfad darf nur aus Buchstaben und Ziffern bestehen.</message>
+	<message key="grid.category.pathExists">Der Kategorienpfad existiert bereits. Bitte geben Sie einen eindeutigen Pfad an.</message>
+	<message key="grid.category.description">Beschreibung</message>
+	<message key="grid.category.parentCategory">Elternkategorie</message>
+	<message key="grid.category.removeText">Sind Sie sicher, dass Sie diese Kategorie entfernen möchten?</message>
+	<message key="grid.category.nameRequired">Bitte geben Sie einen Kategoriennamen an.</message>
+	<message key="grid.category.categoryDetails">Kategoriendetails</message>
 </locale>

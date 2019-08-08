@@ -6,8 +6,8 @@
 /**
  * @file classes/submission/reviewRound/ReviewRound.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class ReviewRound
@@ -134,23 +134,31 @@ class ReviewRound extends DataObject {
 		// If revisions have been requested, check to see if any have been
 		// submitted
 		if ($this->getStatus() == REVIEW_ROUND_STATUS_REVISIONS_REQUESTED || $this->getStatus() == REVIEW_ROUND_STATUS_REVISIONS_SUBMITTED) {
-			$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO');
-			$submissionFiles = $submissionFileDao->getRevisionsByReviewRound($this, SUBMISSION_FILE_REVIEW_REVISION);
-			if (empty($submissionFiles)) {
-				return REVIEW_ROUND_STATUS_REVISIONS_REQUESTED;
+			// get editor decisions
+			$editDecisionDao = DAORegistry::getDAO('EditDecisionDAO');
+			$pendingRevisionDecision = $editDecisionDao->findValidPendingRevisionsDecision($this->getSubmissionId(), $this->getStageId(), SUBMISSION_EDITOR_DECISION_PENDING_REVISIONS);
+
+			if ($pendingRevisionDecision) {
+				if ($editDecisionDao->responseExists($pendingRevisionDecision, $this->getSubmissionId())) {
+					return REVIEW_ROUND_STATUS_REVISIONS_SUBMITTED;
+				}
 			}
-			return REVIEW_ROUND_STATUS_REVISIONS_SUBMITTED;
+			return REVIEW_ROUND_STATUS_REVISIONS_REQUESTED;
 		}
 
 		// If revisions have been requested for re-submission, check to see if any have been
 		// submitted
 		if ($this->getStatus() == REVIEW_ROUND_STATUS_RESUBMIT_FOR_REVIEW || $this->getStatus() == REVIEW_ROUND_STATUS_RESUBMIT_FOR_REVIEW_SUBMITTED) {
-			$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO');
-			$submissionFiles = $submissionFileDao->getRevisionsByReviewRound($this, SUBMISSION_FILE_REVIEW_REVISION);
-			if (empty($submissionFiles)) {
-				return REVIEW_ROUND_STATUS_RESUBMIT_FOR_REVIEW;
+			// get editor decisions
+			$editDecisionDao = DAORegistry::getDAO('EditDecisionDAO');
+			$pendingRevisionDecision = $editDecisionDao->findValidPendingRevisionsDecision($this->getSubmissionId(), $this->getStageId(), SUBMISSION_EDITOR_DECISION_RESUBMIT);
+
+			if ($pendingRevisionDecision) {
+				if ($editDecisionDao->responseExists($pendingRevisionDecision, $this->getSubmissionId())) {
+					return REVIEW_ROUND_STATUS_RESUBMIT_FOR_REVIEW_SUBMITTED;
+				}
 			}
-			return REVIEW_ROUND_STATUS_RESUBMIT_FOR_REVIEW_SUBMITTED;
+			return REVIEW_ROUND_STATUS_RESUBMIT_FOR_REVIEW;
 		}
 
 		$statusFinished = in_array(
@@ -284,4 +292,4 @@ class ReviewRound extends DataObject {
 
 }
 
-?>
+

@@ -3,8 +3,8 @@
 /**
  * @file classes/log/PKPSubmissionEmailLogEntry.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class PKPSubmissionEmailLogEntry
@@ -19,6 +19,7 @@ import('lib.pkp.classes.log.EmailLogEntry');
 // General events						0x10000000
 
 // Author events						0x20000000
+define('SUBMISSION_EMAIL_AUTHOR_NOTIFY_REVISED_VERSION',			0x20000001);
 
 // Editor events						0x30000000
 define('SUBMISSION_EMAIL_EDITOR_NOTIFY_AUTHOR',			0x30000001);
@@ -80,4 +81,4 @@ class PKPSubmissionEmailLogEntry extends EmailLogEntry {
 	}
 }
 
-?>
+

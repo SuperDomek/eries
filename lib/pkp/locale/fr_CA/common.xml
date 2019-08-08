@@ -4,8 +4,8 @@
 <!--
   * locale/fr_CA/common.xml
   *
-  * Copyright (c) 2014-2018 Simon Fraser University
-  * Copyright (c) 2000-2018 John Willinsky
+  * Copyright (c) 2014-2019 Simon Fraser University
+  * Copyright (c) 2000-2019 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   *
   * Localization strings for the fr_CA (Français (Canada)) locale.
@@ -283,16 +283,16 @@
 	<message key="search.title">Titre</message>
 	<message key="search.typeMethodApproach">Type (méthode/approche)</message>
 	<message key="common.ccLicense"><![CDATA[<br /><br />
-		<a target="_blank" rel="license" href="http://creativecommons.org/licenses/by/3.0/">
+		<a target="_blank" rel="license" href="https://creativecommons.org/licenses/by/3.0/">
 			<img alt="Creative Commons License" style="border-width:0" src="//i.creativecommons.org/l/by/3.0/80x15.png"/>
 		</a>
 		<br/>
-		Ce travail est autorisé sous licence avec la <a rel="license" target="_blank" href="http://creativecommons.org/licenses/by/3.0/">Licence de paternité Creative Commons 3.0</a>.]]></message>
+		Ce travail est autorisé sous licence avec la <a rel="license" target="_blank" href="https://creativecommons.org/licenses/by/3.0/">Licence de paternité Creative Commons 3.0</a>.]]></message>
 	<message key="common.ccLicense.rt"><![CDATA[<div class="rtBlock">
 		<br />
-		<a rel="license" href="http://creativecommons.org/licenses/by/3.0/" target="_blank"><img alt="Creative Commons License" style="border-width:0" src="//i.creativecommons.org/l/by/3.0/80x15.png" /></a>
+		<a rel="license" href="https://creativecommons.org/licenses/by/3.0/" target="_blank"><img alt="Creative Commons License" style="border-width:0" src="//i.creativecommons.org/l/by/3.0/80x15.png" /></a>
 		<br />
-		Ce travail est autorisé sous licence avec la <a rel="license" href="http://creativecommons.org/licenses/by/3.0/" target="_blank">Licence de paternité Creative Commons 3.0</a>.
+		Ce travail est autorisé sous licence avec la <a rel="license" href="https://creativecommons.org/licenses/by/3.0/" target="_blank">Licence de paternité Creative Commons 3.0</a>.
 	</div>]]></message>
 	<message key="common.re">Re:</message>
 	<message key="common.manage">Gérer</message>
@@ -309,32 +309,16 @@
 	<message key="notification.allow">Permettre à ces types d'avis d'apparaître dans mon flux d'avis.</message>
 	<message key="notification.confirmError">Il s'est produit une erreur lors de la confirmation de votre abonnement.</message>
 	<message key="notification.confirmSuccess">Vous vous êtes abonné avec succès.</message>
-	<message key="notification.email">Ne pas envoyer de courriel pour ces types d'avis.</message>
-	<message key="notification.location">Aller à l'URL</message>
-	<message key="notification.mailList">Liste de diffusion d'avis</message>
-	<message key="notification.mailList.emailInvalid">Veuillez entrer une adresse de courriel valide.</message>
-	<message key="notification.mailList.privacyProtection">Politique de protection de la vie privée</message>
-	<message key="notification.mailList.protectedContent"><![CDATA[<a href="{$subscribeUrl}">S'abonner</a> à du contenu protégé.]]></message>
-	<message key="notification.mailList.submit"><![CDATA[<a href="{$submitUrl}">Soumettre</a> un article]]></message>
-	<message key="notification.mailList.register">Vous pouvez vous inscrire à ce site à...</message>
-	<message key="notification.mailList.review"><![CDATA[Participer au processus d'<a href="{$reviewUrl}">évaluation par les pairs</a>]]></message>
+	<message key="notification.email">Ne pas m'envoyer de courriel pour ce type d'avis.</message>
 	<message key="notification.noneExist">Vous n'avez aucun avis en ce moment.</message>
 	<message key="notification.notification">Avis</message>
 	<message key="notification.notifications">Avis</message>
-	<message key="notification.notificationsNew">({$numNew} nouveau(x))</message>
-	<message key="notification.notificationsDescription"><![CDATA[Vous avez {$unreadCount} avis non lu(s) et {$readCount} avis lu(s).  <a href="{$settingsUrl}">Cliquer ici</a> pour changer vos paramètres d'avis.]]></message>
 	<message key="notification.settings">Paramètres d'avis</message>
 	<message key="notification.settingsDescription">Choisir les événements système dont vous voulez être informé par l'intermédiaire d'avis. Désélectionner un élément empêchera les avis reliés à cet événement d'apparaître dans votre flux d'avis.</message>
-	<message key="notification.subscribe">S'abonner</message>
-	<message key="notification.subscribeError">Votre adresse de courriel est déjà abonnée aux avis.</message>
-	<message key="notification.subscribeSuccess">Un courriel a été envoyé à l'adresse spécifiée. Veuillez cliquer sur le lien de confirmation dans le courriel pour vous ajouter à la liste de diffusion.</message>
 	<message key="notification.reminderError">Il s'est produit une erreur lors de l'envoi de votre mot de passe. Veuillez vous assurer que vous avez saisi votre adresse de courriel correctement.</message>
 	<message key="notification.reminderSent">Votre nouveau mot de passe a été envoyé à l'adresse de courriel fournie.</message>
-	<message key="notification.unsubscribe">Se désabonner</message>
-	<message key="notification.unsubscribeError">Il s'est produit une erreur lors de votre désabonnement. Veuillez vous assurer que votre adresse de courriel et votre mot de passe sont corrects.</message>
-	<message key="notification.unsubscribeSuccess">Vous avez été désabonné avec succès.</message>
 	<message key="notification.savedSubmissionMetadata">Les métadonnées de la soumission ont été sauvegardées.</message>
-	<message key="common.uploadFailed">Le fichier n'a pu être téléverser. Veuillez essayer de nouveau ou communiquer avec l'administrateur si le problème persiste.</message>
+	<message key="common.uploadFailed">Le fichier n'a pu être téléversé. Veuillez essayer de nouveau ou communiquer avec l'administrateur si le problème persiste.</message>
 	<message key="navigation.dashboard">Tableau de bord</message>
 	<message key="common.false">Faux</message>
 	<message key="common.ok">OK</message>
@@ -381,7 +365,7 @@
 	<message key="stageParticipants.notify.message">Message</message>
 	<message key="stageParticipants.notify.warning">Assurez-vous d'avoir rempli le champ Message et d'avoir choisi au moins un destinataire.</message>
 
-	<message key="notification.addedReviewer">{$reviewerName} a été assigné comme évaluateur pour cette soumission et un courriel d'avis lui a été envoyé.</message>
+	<message key="notification.addedReviewer">{$reviewerName} a été assigné(e) comme évaluateur pour cette soumission et un courriel d'avis lui a été envoyé.</message>
 	<message key="notification.removedReviewer">L'évaluateur a été supprimé.</message>
 	<message key="notification.addedStageParticipant">L'utilisateur a été ajouté à titre de participant.</message>
 	<message key="notification.addedQuery">Discussion ajoutée</message>
@@ -402,7 +386,7 @@
 	<message key="notification.type.roundStatusTitle">Statut de la série {$round} </message>
 	<message key="notification.signedFile">Fichier considéré.</message>
 	<message key="user.authorization.authorRoleMissing">Vos privilèges actuels ne vous permettent pas de visionner cette soumission. Veuillez modifier votre profil pour vous assurer que l'on vous a assigné les rôles appropriés dans la section "S'inscrire comme".</message>
-	<message key="common.publicKnowledgeProject">Projet de connaissances publiques (Public Knowledge Project)</message>
+	<message key="common.publicKnowledgeProject">Public Knowledge Project</message>
 	<message key="common.currentStyleSheet">Feuille de style actuelle</message>
 	<message key="about.description">Description</message>
 	<message key="about.guidelines">Guides</message>
@@ -447,6 +431,8 @@
 	<message key="common.homepageNavigationLabel">Accueil</message>
 	<message key="common.itemsPerPage">Items par page</message>
 	<message key="common.less">Réduire</message>
+	<message key="common.commaListSeparator">, </message>
+	<message key="common.semicolonListSeparator">; </message>
 	<message key="common.billingAddress">Adresse de facturation (si différente)</message>
 	<message key="common.more">Plus</message>
 	<message key="common.notes.tooltip">Notes (jaune: contient de nouvelles notes; bleu: contient des notes déjà visionnées; gris: aucunes notes)</message>
@@ -455,14 +441,12 @@
 	<message key="common.overdue">En retard</message>
 	<message key="common.prefix">Préfixe</message>
 	<message key="common.prefixAndTitle.tip">Si le titre du document commence par "un/une" ou "le/la" (ou quelque chose de similaire concernant l'ordre alphabétique), mettre le mot dans Préfixe.</message>
-	<message key="common.subtitle.tip">Le titre optionnel de la soumission suivra les deux points (:), après le titre principal.</message>
 	<message key="common.reminder">Rappel</message>
 	<message key="common.remote">À distance</message>
 	<message key="common.remoteURL">URL Distante</message>
 	<message key="common.reset">Réinitialiser</message>
 	<message key="common.sendEmail">Envoyer le courriel</message>
 	<message key="common.signoff">Approuver</message>
-	<message key="common.startTyping">Commencer à écrire</message>
 	<message key="common.subjects">Sujets</message>
 	<message key="common.subtitle">Sous-titre</message>
 	<message key="common.element">Élément</message>
@@ -574,4 +558,19 @@
 	<message key="notification.editedNavigationMenu">Le menu de navigation a été correctement mis à jour.</message>
 	<message key="notification.removedNavigationMenu">Le menu de navigation a été correctement retiré</message>
 	<message key="notification.sendNotificationConfirmation">Envoyer un courriel d'avis à tous les utilisateurs enregistrés</message>
+	<message key="common.filter">Filtres</message>
+	<message key="common.filterAdd">Ajouter le filtre : {$filterTitle}</message>
+	<message key="common.filterRemove">Enlever le filtre : {$filterTitle}</message>
+	<message key="common.lessThan">{$value} ou moins</message>
+	<message key="common.listSeparator">,</message>
+	<message key="common.moreThan">{$value} ou plus</message>
+	<message key="common.pagination">{$start}-{$end} de {$total}</message>
+	<message key="common.pagination.label">Parcourir les pages supplémentaires</message>
+	<message key="common.clearSearch">Effacer la requête</message>
+	<message key="common.publicAccess">Accès public</message>
+	<message key="stageParticipants.notify.startDiscussion">Commencer une discussion</message>
+	<message key="stageParticipants.notify.startDiscussion.description">Commencer une discussion entre {$userFullName} et vous.</message>
+	<message key="list.viewMore">Afficher plus de détails sur {$name}</message>
+	<message key="list.viewLess">Masquer les détails sur {$name}</message>
+	<message key="notification.type.reviewAssignmentUpdated">Demande d'évaluation mise à jour.</message>
 </locale>

@@ -4,8 +4,8 @@
 <!--
   * locale/fr_FR/user.xml
   *
-  * Copyright (c) 2014-2018 Simon Fraser University
-  * Copyright (c) 2000-2018 John Willinsky
+  * Copyright (c) 2014-2019 Simon Fraser University
+  * Copyright (c) 2000-2019 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   *
   * Localization strings for the fr_FR (Français (France)) locale.
@@ -22,14 +22,10 @@
 	<message key="user.dateRegistered">Date d'inscription</message>
 	<message key="user.editMyProfile">Modifier mon profil</message>
 	<message key="user.email">Courriel</message>
-	<message key="user.firstName">Prénom</message>
-	<message key="user.initialsExample">Joan Alice Smith = JAS</message>
-	<message key="user.initials">Initiales</message>
 	<message key="user.interests">Intérêts pour les évaluations</message>
-	<message key="user.lastName">Nom de famille</message>
 	<message key="user.login.accountDisabledWithReason">Votre compte a été désactivé pour les raisons suivantes : {$reason}</message>
 	<message key="user.login.accountDisabled">Votre compte a été désactivé. Veuillez communiquer avec l'administrateur du site pour plus d'information.</message>
-	<message key="user.login.accountNotValidated">Votre courriel "{$email}" n'a pas été validé. Vérifier vos courriels et suivez les directives que nous vous avons fait parvenir. Si vous n'avez pas reçu de courriel, vous devrez peut-être communiquer avec l'administrateur du site pour obtenir de l'aide.</message>
+	<message key="user.login.accountNotValidated">Validez votre compte en suivant les directives que nous vous avons fait parvenir sur {$email}. Si vous n'avez pas reçu de courriel, vous devrez peut-être communiquer avec l'administrateur du site pour obtenir de l'aide.</message>
 	<message key="user.login.activate">Activer le compte</message>
 	<message key="user.login.activated">Merci d'avoir activé votre compte. Vous pouvez maintenant vous connecter en utilisant les authentifiants fournis lors de la création de votre compte.</message>
 	<message key="user.login.changePasswordInstructions"><![CDATA[Vous devez sélectionner un nouveau mot de passe avant de pouvoir vous connecter à ce site.<br /><br />Veuillez entrer votre nom d'utilisateur et vos mots de passe actuel et nouveau ci-dessous pour modifier le mot de passe de votre compte.]]></message>
@@ -45,7 +41,6 @@
 	<message key="user.login.resetPassword">Réinitialiser le mot de passe</message>
 	<message key="user.logOut">Se déconnecter</message>
 	<message key="user.mailingAddress">Adresse postale</message>
-	<message key="user.middleName">Second prénom</message>
 	<message key="user.myAccount">Mon compte</message>
 	<message key="user.name">Nom</message>
 	<message key="user.orcid">Identifiant ORCID</message>
@@ -56,8 +51,6 @@
 	<message key="user.profile.contact">Contact</message>
 	<message key="user.profile.editProfile">Modifier le profil</message>
 	<message key="user.profile.form.emailRequired">Une adresse de courriel valide est obligatoire.</message>
-	<message key="user.profile.form.firstNameRequired">Le prénom est obligatoire.</message>
-	<message key="user.profile.form.lastNameRequired">Le nom de famille est obligatoire.</message>
 	<message key="user.profile.form.newPasswordRequired">Vous devez saisir votre nouveau mot de passe.</message>
 	<message key="user.profile.form.oldPasswordInvalid">Le mot de passe actuel saisi est incorrect.</message>
 	<message key="user.profile.form.openAccessNotifications">Avis par courriel d'un nouveau numéro en accès libre</message>
@@ -89,7 +82,6 @@
 	<message key="user.role.siteAdmin">Administrateur du site</message>
 	<message key="user.role.siteAdmins">Administrateurs du site</message>
 	<message key="user.roles">Rôles</message>
-	<message key="user.salutation">Appel</message>
 	<message key="user.sendPassword">Confirmation</message>
 	<message key="user.sendPassword.description">M'envoyer un courriel de confirmation incluant mon nom d'utilisateur et mon mot de passe</message>
 	<message key="user.signature">Signature</message>
@@ -114,7 +106,6 @@
 	<message key="user.role.authors">Auteurs</message>
 	<message key="user.role.editor">Rédacteur</message>
 	<message key="user.role.editors">Rédacteurs</message>
-	<message key="user.suffix">Suffixe</message>
 	<message key="user.authorization.contextRequired">Vous ne pouvez pas appeler cette opération sans spécifier son contexte (presse, journal, conférence, etc.)</message>
 	<message key="user.authorization.loginRequired">Ouverture de session requise.</message>
 	<message key="user.authorization.privateOperation">L'opération que vous tentez d'accéder est privée ou n'existe pas.</message>
@@ -146,7 +137,7 @@
 	<message key="user.login.registrationComplete.continueBrowsing">Explorer le site de la revue</message>
 	<message key="user.register.form.userGroupRequired">Au moins un rôle doit être sélectionné</message>
 	<message key="user.register.registrationCompleted"><![CDATA[*Vous vous êtes inscrit avec succès. <a href="{$profileUrl}"> Cliquez ici </a> pour compléter votre profil utilisateur.]]></message>
-	<message key="user.orcid.orcidInvalid">Le numéro ORCID que vous avez spécifié n'est pas valide. Veuillez inclure l'URI complet (par exemple "http://orcid.org/0000-0002-1825-0097").</message>
+	<message key="user.orcid.orcidInvalid">Le numéro ORCID que vous avez spécifié n'est pas valide. Veuillez inclure l'URI complet (par exemple "https://orcid.org/0000-0002-1825-0097").</message>
 	<message key="user.login.registrationPendingValidation">Inscription en attente de validation</message>
 	<message key="user.apiKey">API Key</message>
 	<message key="user.apiKeyEnabled">Autoriser les applications externes avec l'API key d'accéder à ce compte</message>
@@ -154,4 +145,12 @@
 	<message key="user.apiKey.generateWarning">Générer une nouvelle API Key invalidera toutes les clés existantes pour cet utilisateur.</message>
 	<message key="user.role.assistant">Assistant</message>
 	<message key="user.apiKey.secretRequired">Avant de générer une clé pour l'API, vous devez mettre un secret dans le fichier de configuration  ("api_key_secret")</message>
+	<message key="user.authorization.assignedStageRoleBasedAccessDenied">Vous n'avez pas les droits pour accéder à cette opération.</message>
+	<message key="user.authorization.invalidReviewAssignment">Vous n'avez pas les droits pour accéder à cette évaluation.</message>
+	<message key="user.authorization.submissionQuery">Vous n'avez pas les droits pour accéder à cette discussion.</message>
+	<message key="user.gossip.description">Vous pouvez associer des informations à propos de ce rapporteur qui seront visibles pour tous les autres rédacteurs. Ces informations seront visibles pour de futures évaluations.</message>
+	<message key="user.profile.form.privacyConsentRequired">Vous devez approuver les déclarations de confidentialité.</message>
+	<message key="user.register.form.privacyConsent"><![CDATA[Oui, je suis d'accord d'avoir mes données collectées selon le traitement décrit ici : <a href="{$privacyUrl}" target="_blank">Déclarations de confidentialité</a>.]]></message>
+	<message key="user.register.form.emailConsent">Oui, je souhaite être notifié des nouvelles publications et annonces.</message>
+	<message key="user.privacyLink"><![CDATA[Vos données personnelles sont traitées selon notre  <a href="{$privacyUrl}" target="_blank">Déclaration de confidentialité</a>.]]></message>
 </locale>

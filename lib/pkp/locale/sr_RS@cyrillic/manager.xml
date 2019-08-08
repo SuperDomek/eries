@@ -4,15 +4,14 @@
 <!--
   * locale/sr_RS@cyrillic/manager.xml
   *
-  * Copyright (c) 2014-2018 Simon Fraser University
-  * Copyright (c) 2000-2018 John Willinsky
+  * Copyright (c) 2014-2019 Simon Fraser University
+  * Copyright (c) 2000-2019 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   * Localization information: https://pkp.sfu.ca/wiki/index.php?title=OJS:_Serbian_(sr_RS)
-  * Localization strings for the sr_RS@cyrillic (Cрпски) locale.
-  *
+  * Localization strings.
   -->
 
-<locale name="sr_RS@cyrillic" full_name = "Serbian">
+<locale name="sr_RS@cyrillic" full_name="Cрпски">
 	<message key="manager.announcements">Обавештења</message>
 	<message key="manager.announcements.confirmDelete">Да ли сте сигурни да желите да трајно обришете ово обавештење?</message>
 	<message key="manager.announcements.create">Направи ново обавештење</message>
@@ -419,7 +418,6 @@
 	<message key="manager.setup.sponsors.note">Однос са спонзором и опис политике</message>
 	<message key="manager.setup.sponsors.description">Примери: академске асоцијације, универзитетска одељења, кооперативе итд. Спонзори су јавно приказани.</message>
 	<message key="manager.setup.styleSheetDescription">Искусни web програмери могу поставити CSS фајл за даље прилагођавање изгледа сајта.</message>
-	<message key="manager.setup.privacyStatement.description">Ова изјава ће се појавити у току Пријаве чланка аутора и на јавно доступној О нама страници.</message>
 	<message key="manager.setup.peerReview.description">Напишите укратко политику рецензије и процеса за читаоце и ауторе. Овај опис обично укључује број рецензената који врше рецензију пријављеног чланка, критерије које рецензенти користе код оцењивања пријављеног чланка, очекивано време за које се извршава рецензија и принципе приликом избора рецензената.</message>
 	<message key="manager.setup.principalContactDescription">Yнесите детаље за контакт, посебно за главног уредника, управника или позицију административног особља који се могу јавно приказати на вашем сајту.</message>
 	<message key="manager.setup.notifications.description">Ауторима ће бити аутоматски послата порука потврђујући пријем пријављеног чланка. Можете копије ове поруке послати следећим:</message>

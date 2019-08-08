@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/announcements/form/AnnouncementForm.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class AnnouncementForm
@@ -96,7 +96,7 @@ class AnnouncementForm extends Form {
 	/**
 	 * @copydoc Form::fetch()
 	 */
-	function fetch($request) {
+	function fetch($request, $template = 'controllers/grid/announcements/form/announcementForm.tpl', $display = false) {
 		$templateMgr = TemplateManager::getManager($request);
 		$templateMgr->assign('readOnly', $this->isReadOnly());
 		$templateMgr->assign('selectedTypeId', $this->getData('typeId'));
@@ -117,7 +117,7 @@ class AnnouncementForm extends Form {
 		}
 		$templateMgr->assign('announcementTypes', $announcementTypeOptions);
 
-		return parent::fetch($request, 'controllers/grid/announcements/form/announcementForm.tpl');
+		return parent::fetch($request, $template, $display);
 	}
 
 	/**
@@ -146,14 +146,13 @@ class AnnouncementForm extends Form {
 	 * Assign form data to user-submitted data.
 	 */
 	function readInputData() {
-		$this->readUserVars(array('typeId', 'title', 'descriptionShort', 'description', 'dateExpireYear', 'dateExpireMonth', 'dateExpireDay', 'dateExpire', 'sendAnnouncementNotification'));
+		$this->readUserVars(array('typeId', 'title', 'descriptionShort', 'description', 'dateExpire', 'sendAnnouncementNotification'));
 	}
 
 	/**
 	 * Save announcement.
-	 * @param $request PKPRequest
 	 */
-	function execute($request) {
+	function execute() {
 		$announcementDao = DAORegistry::getDAO('AnnouncementDAO');
 
 		$announcement = $announcementDao->getById($this->announcementId);
@@ -174,15 +173,7 @@ class AnnouncementForm extends Form {
 			$announcement->setTypeId(null);
 		}
 
-		// Give the parent class a chance to set the dateExpire.
-		$dateExpireSetted = $this->setDateExpire($announcement);
-		if (!$dateExpireSetted) {
-			if ($this->getData('dateExpireYear') != null) {
-				$announcement->setDateExpire($this->getData('dateExpire'));
-			} else {
-				$announcement->setDateExpire(null);
-			}
-		}
+		$announcement->setDateExpire($this->getData('dateExpire'));
 
 		// Update or insert announcement
 		if ($announcement->getId()) {
@@ -206,39 +197,13 @@ class AnnouncementForm extends Form {
 			}
 			foreach ($notificationUsers as $userRole) {
 				$notificationManager->createNotification(
-					$request, $userRole['id'], NOTIFICATION_TYPE_NEW_ANNOUNCEMENT,
+					Application::getRequest(), $userRole['id'], NOTIFICATION_TYPE_NEW_ANNOUNCEMENT,
 					$contextId, ASSOC_TYPE_ANNOUNCEMENT, $announcement->getId()
 				);
 			}
-			$notificationManager->sendToMailingList($request,
-				$notificationManager->createNotification(
-					$request, UNSUBSCRIBED_USER_NOTIFICATION, NOTIFICATION_TYPE_NEW_ANNOUNCEMENT,
-					$contextId, ASSOC_TYPE_ANNOUNCEMENT, $announcement->getId()
-				)
-			);
 		}
 		return $announcement->getId();
 	}
-
-
-	//
-	// Protected methods.
-	//
-	/**
-	 * Set the expiry date.
-	 * @param $announcement Announcement
-	 */
-	function setDateExpire($announcement) {
-		$dateExpire = $this->getData('dateExpire');
-		if ($dateExpire) {
-			$announcement->setDateExpire(DAO::formatDateToDB($dateExpire, null, false));
-		} else {
-			// No date passed but null is acceptable for
-			// announcements.
-			$announcement->setDateExpire(null);
-		}
-		return true;
-	}
 }
 
-?>
+

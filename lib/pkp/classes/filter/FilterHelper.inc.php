@@ -2,8 +2,8 @@
 /**
  * @file classes/filter/FilterHelper.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class FilterHelper
@@ -103,7 +103,7 @@ class FilterHelper {
 		$similarFilterFactory = $filterDao->getObjectsByGroupAndClass($filterGroupSymbolic, $filterClassName, 0, $isTemplate);
 		if ($similarFilterFactory->getCount() > 0) {
 			// 1) Find similar filters.
-			$similarFilters =& $similarFilterFactory->toArray();
+			$similarFilters = $similarFilterFactory->toArray();
 
 			// 2) Go through similar filters and eliminate them
 			//    if they don't have the exact same settings.
@@ -264,4 +264,4 @@ class FilterHelper {
 		return $resultArray;
 	}
 }
-?>
+

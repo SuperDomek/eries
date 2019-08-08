@@ -9,6 +9,7 @@
 namespace Slim;
 
 use Exception;
+use Psr\Http\Message\UriInterface;
 use Slim\Exception\InvalidMethodException;
 use Slim\Http\Response;
 use Throwable;
@@ -52,7 +53,7 @@ class App
      *
      * @var string
      */
-    const VERSION = '3.9.2';
+    const VERSION = '3.12.1-dev';
 
     /**
      * Container
@@ -249,14 +250,32 @@ class App
     }
 
     /**
+     * Add a route that sends an HTTP redirect
+     *
+     * @param string              $from
+     * @param string|UriInterface $to
+     * @param int                 $status
+     *
+     * @return RouteInterface
+     */
+    public function redirect($from, $to, $status = 302)
+    {
+        $handler = function ($request, ResponseInterface $response) use ($to, $status) {
+            return $response->withHeader('Location', (string)$to)->withStatus($status);
+        };
+
+        return $this->get($from, $handler);
+    }
+
+    /**
      * Route Groups
      *
      * This method accepts a route pattern and a callback. All route
      * declarations in the callback will be prepended by the group(s)
      * that it is in.
      *
-     * @param string   $pattern
-     * @param callable $callable
+     * @param string           $pattern
+     * @param callable|Closure $callable
      *
      * @return RouteGroupInterface
      */
@@ -406,8 +425,10 @@ class App
         if (!headers_sent()) {
             // Headers
             foreach ($response->getHeaders() as $name => $values) {
+                $first = stripos($name, 'Set-Cookie') === 0 ? false : true;
                 foreach ($values as $value) {
-                    header(sprintf('%s: %s', $name, $value), false);
+                    header(sprintf('%s: %s', $name, $value), $first);
+                    $first = false;
                 }
             }
 
@@ -420,7 +441,7 @@ class App
                 $response->getProtocolVersion(),
                 $response->getStatusCode(),
                 $response->getReasonPhrase()
-            ));
+            ), true, $response->getStatusCode());
         }
 
         // Body
@@ -441,7 +462,7 @@ class App
             if (isset($contentLength)) {
                 $amountToRead = $contentLength;
                 while ($amountToRead > 0 && !$body->eof()) {
-                    $data = $body->read(min($chunkSize, $amountToRead));
+                    $data = $body->read(min((int)$chunkSize, (int)$amountToRead));
                     echo $data;
 
                     $amountToRead -= strlen($data);
@@ -452,7 +473,7 @@ class App
                 }
             } else {
                 while (!$body->eof()) {
-                    echo $body->read($chunkSize);
+                    echo $body->read((int)$chunkSize);
                     if (connection_status() != CONNECTION_NORMAL) {
                         break;
                     }

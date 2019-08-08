@@ -3,8 +3,8 @@
 /**
  * @file controllers/wizard/fileUpload/form/SubmissionFilesUploadConfirmationForm.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class SubmissionFilesUploadConfirmationForm
@@ -14,9 +14,9 @@
  */
 
 
-import('controllers.wizard.fileUpload.form.SubmissionFilesUploadBaseForm');
+import('lib.pkp.controllers.wizard.fileUpload.form.PKPSubmissionFilesUploadBaseForm');
 
-class SubmissionFilesUploadConfirmationForm extends SubmissionFilesUploadBaseForm {
+class SubmissionFilesUploadConfirmationForm extends PKPSubmissionFilesUploadBaseForm {
 	/**
 	 * Constructor.
 	 * @param $request Request
@@ -58,10 +58,9 @@ class SubmissionFilesUploadConfirmationForm extends SubmissionFilesUploadBaseFor
 	/**
 	 * Save the submission file upload confirmation form.
 	 * @see Form::execute()
-	 * @param $request Request
 	 * @return SubmissionFile if successful, otherwise null
 	 */
-	function execute($request) {
+	function execute() {
 		// Retrieve the file ids of the revised and the uploaded files.
 		$revisedFileId = $this->getRevisedFileId();
 		$uploadedFileId = (int)$this->getData('uploadedFileId');
@@ -86,4 +85,4 @@ class SubmissionFilesUploadConfirmationForm extends SubmissionFilesUploadBaseFor
 	}
 }
 
-?>
+

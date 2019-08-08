@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/form/StaticPageForm.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class StaticPageForm
@@ -33,7 +33,7 @@ class StaticPageForm extends Form {
 	 * @param $staticPageId int Static page ID (if any)
 	 */
 	function __construct($staticPagesPlugin, $contextId, $staticPageId = null) {
-		parent::__construct($staticPagesPlugin->getTemplatePath() . 'editStaticPageForm.tpl');
+		parent::__construct($staticPagesPlugin->getTemplateResource('editStaticPageForm.tpl'));
 
 		$this->contextId = $contextId;
 		$this->staticPageId = $staticPageId;
@@ -75,9 +75,9 @@ class StaticPageForm extends Form {
 	}
 
 	/**
-	 * @see Form::fetch
+	 * @copydoc Form::fetch
 	 */
-	function fetch($request) {
+	function fetch($request, $template = null, $display = false) {
 		$templateMgr = TemplateManager::getManager();
 		$templateMgr->assign(array(
 			'staticPageId' => $this->staticPageId,
@@ -92,7 +92,7 @@ class StaticPageForm extends Form {
 			'supportEmail' => __('plugins.generic.tinymce.variables.supportContactEmail', array('value' => $context->getSetting('supportEmail'))),
 		));
 
-		return parent::fetch($request);
+		return parent::fetch($request, $template, $display);
 	}
 
 	/**
@@ -121,4 +121,3 @@ class StaticPageForm extends Form {
 	}
 }
 
-?>

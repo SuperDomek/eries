@@ -2,8 +2,8 @@
 /**
  * @file classes/services/QueryBuilders/UserListQueryBuilder.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class UserListQueryBuilder
@@ -45,6 +45,12 @@ class UserListQueryBuilder extends BaseQueryBuilder {
 	/** @var int section ID */
 	protected $assignedToSectionId = null;
 
+	/** @var array user IDs */
+	protected $includeUsers = null;
+
+	/** @var array user IDs */
+	protected $excludeUsers = null;
+
 	/** @var string search phrase */
 	protected $searchPhrase = null;
 
@@ -53,6 +59,9 @@ class UserListQueryBuilder extends BaseQueryBuilder {
 
 	/** @var bool whether to return reviewer activity data */
 	protected $getReviewerData = null;
+
+	/** @var int filter by review stage id */
+	protected $reviewStageId = null;
 
 	/** @var int filter by minimum reviewer rating */
 	protected $reviewerRating = null;
@@ -89,9 +98,9 @@ class UserListQueryBuilder extends BaseQueryBuilder {
 	 */
 	public function orderBy($column, $direction = 'DESC') {
 		if ($column === 'givenName') {
-			$this->orderColumn = 'u.first_name';
+			$this->orderColumn = 'user_given';
 		} elseif ($column === 'familyName') {
-			$this->orderColumn = 'u.last_name';
+			$this->orderColumn = 'user_family';
 		} else {
 			$this->orderColumn = 'u.user_id';
 		}
@@ -154,6 +163,30 @@ class UserListQueryBuilder extends BaseQueryBuilder {
 	}
 
 	/**
+	 * Include selected users
+	 *
+	 * @param $userIds array
+	 *
+	 * @return \PKP\Services\QueryBuilders\UserListQueryBuilder
+	 */
+	public function includeUsers($userIds) {
+		$this->includeUsers = $userIds;
+		return $this;
+	}
+
+	/**
+	 * Exclude selected users
+	 *
+	 * @param $userIds array
+	 *
+	 * @return \PKP\Services\QueryBuilders\UserListQueryBuilder
+	 */
+	public function excludeUsers($userIds) {
+		$this->excludeUsers = $userIds;
+		return $this;
+	}
+
+	/**
 	 * Set query search phrase
 	 *
 	 * @param $phrase string
@@ -186,6 +219,21 @@ class UserListQueryBuilder extends BaseQueryBuilder {
 	 */
 	public function getReviewerData($enable = true) {
 		$this->getReviewerData = $enable;
+		return $this;
+	}
+
+	/**
+	 * Limit results to reviewers for a particular stage
+	 *
+	 * @param $reviewStageId int WORKFLOW_STAGE_ID_*_REVIEW
+	 *
+	 * @return \PKP\Services\QueryBuilders\PKPUserQueryBuilder
+	 */
+	public function filterByReviewStage($reviewStageId = null) {
+		if (!is_null($reviewStageId)) {
+			$this->reviewStageId = $reviewStageId;
+		}
+
 		return $this;
 	}
 
@@ -272,19 +320,50 @@ class UserListQueryBuilder extends BaseQueryBuilder {
 	 * @return object Query object
 	 */
 	public function get() {
+		$locale = \AppLocale::getLocale();
+		// the users register for the site, thus
+		// the site primary locale should be the default locale
+		$site = \Application::getRequest()->getSite();
+		$primaryLocale = $site->getPrimaryLocale();
+
 		$this->columns[] = 'u.*';
+		$this->columns[] = Capsule::raw('COALESCE(ugl.setting_value, ugpl.setting_value) AS user_given');
+		$this->columns[] = Capsule::raw('CASE WHEN ugl.setting_value <> \'\' THEN ufl.setting_value ELSE ufpl.setting_value END AS user_family');
 		$q = Capsule::table('users as u')
 					->leftJoin('user_user_groups as uug', 'uug.user_id', '=', 'u.user_id')
 					->leftJoin('user_groups as ug', 'ug.user_group_id', '=', 'uug.user_group_id')
-					->where('ug.context_id','=', $this->contextId)
-					->orderBy($this->orderColumn, $this->orderDirection)
-					->groupBy('u.user_id');
+					->leftJoin('user_settings as ugl', function ($join) use ($locale) {
+						$join->on('ugl.user_id', '=', 'u.user_id')
+							->where('ugl.setting_name', '=', IDENTITY_SETTING_GIVENNAME)
+							->where('ugl.locale', '=', $locale);
+					})
+					->leftJoin('user_settings as ugpl', function ($join) use ($primaryLocale) {
+						$join->on('ugpl.user_id', '=', 'u.user_id')
+							->where('ugpl.setting_name', '=', IDENTITY_SETTING_GIVENNAME)
+							->where('ugpl.locale', '=', $primaryLocale);
+					})
+					->leftJoin('user_settings as ufl', function ($join) use ($locale) {
+						$join->on('ufl.user_id', '=', 'u.user_id')
+							->where('ufl.setting_name', '=', IDENTITY_SETTING_FAMILYNAME)
+							->where('ufl.locale', '=', $locale);
+					})
+					->leftJoin('user_settings as ufpl', function ($join) use ($primaryLocale) {
+						$join->on('ufpl.user_id', '=', 'u.user_id')
+							->where('ufpl.setting_name', '=', IDENTITY_SETTING_FAMILYNAME)
+							->where('ufpl.locale', '=', $primaryLocale);
+					})
+					->where('ug.context_id','=', $this->contextId);
 
 		// roles
 		if (!is_null($this->roleIds)) {
 			$q->whereIn('ug.role_id', $this->roleIds);
 		}
 
+		// Exclude users
+		if (!is_null($this->excludeUsers)) {
+			$excludeUsers = $this->excludeUsers;
+			$q->whereNotIn('u.user_id', $excludeUsers);
+		}
 		// status
 		if (!is_null($this->status)) {
 			if ($this->status === 'disabled') {
@@ -325,6 +404,12 @@ class UserListQueryBuilder extends BaseQueryBuilder {
 			$q->whereNotNull('se.section_id');
 		}
 
+		// review stage id
+		if (!is_null($this->reviewStageId)) {
+			$q->leftJoin('user_group_stage as ugs', 'uug.user_group_id', '=', 'ugs.user_group_id');
+			$q->where('ugs.stage_id', '=', Capsule::raw((int) $this->reviewStageId));
+		}
+
 		// search phrase
 		if (!empty($this->searchPhrase)) {
 			$words = explode(' ', $this->searchPhrase);
@@ -333,28 +418,31 @@ class UserListQueryBuilder extends BaseQueryBuilder {
 				$q->leftJoin('user_interests as ui', 'u.user_id', '=', 'ui.user_id');
 				$q->leftJoin('controlled_vocab_entry_settings as cves', 'ui.controlled_vocab_entry_id', '=', 'cves.controlled_vocab_entry_id');
 				foreach ($words as $word) {
+					$word = strtolower(addcslashes($word, '%_'));
 					$q->where(function($q) use ($word) {
-						$q->where('u.username', 'LIKE', "%{$word}%")
-							->orWhere('u.salutation', 'LIKE', "%{$word}%")
-							->orWhere('u.first_name', 'LIKE', "%{$word}%")
-							->orWhere('u.middle_name', 'LIKE', "%{$word}%")
-							->orWhere('u.last_name', 'LIKE', "%{$word}%")
-							->orWhere('u.suffix', 'LIKE', "%{$word}%")
-							->orWhere('u.initials', 'LIKE', "%{$word}%")
-							->orWhere('u.email', 'LIKE', "%{$word}%")
+						$q->where(Capsule::raw('lower(u.username)'), 'LIKE', "%{$word}%")
+							->orWhere(Capsule::raw('lower(u.email)'), 'LIKE', "%{$word}%")
+							->orWhere(function($q) use ($word) {
+								$q->where('us.setting_name', IDENTITY_SETTING_GIVENNAME);
+								$q->where(Capsule::raw('lower(us.setting_value)'), 'LIKE', "%{$word}%");
+							})
+							->orWhere(function($q) use ($word) {
+								$q->where('us.setting_name', IDENTITY_SETTING_FAMILYNAME);
+								$q->where(Capsule::raw('lower(us.setting_value)'), 'LIKE', "%{$word}%");
+							})
 							->orWhere(function($q) use ($word) {
 								$q->where('us.setting_name', 'affiliation');
-								$q->where('us.setting_value', 'LIKE', "%{$word}%");
+								$q->where(Capsule::raw('lower(us.setting_value)'), 'LIKE', "%{$word}%");
 							})
 							->orWhere(function($q) use ($word) {
 								$q->where('us.setting_name', 'biography');
-								$q->where('us.setting_value', 'LIKE', "%{$word}%");
+								$q->where(Capsule::raw('lower(us.setting_value)'), 'LIKE', "%{$word}%");
 							})
 							->orWhere(function($q) use ($word) {
 								$q->where('us.setting_name', 'orcid');
-								$q->where('us.setting_value', 'LIKE', "%{$word}%");
+								$q->where(Capsule::raw('lower(us.setting_value)'), 'LIKE', "%{$word}%");
 							})
-							->orWhere('cves.setting_value', 'LIKE', "%{$word}%");
+							->orWhere(Capsule::raw('lower(cves.setting_value)'), 'LIKE', "%{$word}%");
 					});
 				}
 			}
@@ -364,8 +452,9 @@ class UserListQueryBuilder extends BaseQueryBuilder {
 		if (!empty($this->getReviewerData)) {
 			$q->leftJoin('review_assignments as ra', 'u.user_id', '=', 'ra.reviewer_id');
 			$this->columns[] = Capsule::raw('MAX(ra.date_assigned) as last_assigned');
-			$this->columns[] = Capsule::raw('(SELECT SUM(CASE WHEN ra.date_completed IS NULL THEN 1 ELSE 0 END) FROM review_assignments AS ra WHERE u.user_id = ra.reviewer_id) as incomplete_count');
-			$this->columns[] = Capsule::raw('(SELECT SUM(CASE WHEN ra.date_completed IS NOT NULL THEN 1 ELSE 0 END) FROM review_assignments AS ra WHERE u.user_id = ra.reviewer_id) as complete_count');
+			$this->columns[] = Capsule::raw('(SELECT SUM(CASE WHEN ra.date_completed IS NULL AND ra.declined <> 1 THEN 1 ELSE 0 END) FROM review_assignments AS ra WHERE u.user_id = ra.reviewer_id) as incomplete_count');
+			$this->columns[] = Capsule::raw('(SELECT SUM(CASE WHEN ra.date_completed IS NOT NULL AND ra.declined <> 1 THEN 1 ELSE 0 END) FROM review_assignments AS ra WHERE u.user_id = ra.reviewer_id) as complete_count');
+			$this->columns[] = Capsule::raw('(SELECT SUM(CASE WHEN ra.declined = 1 THEN 1 ELSE 0 END) FROM review_assignments AS ra WHERE u.user_id = ra.reviewer_id) as declined_count');
 			switch (\Config::getVar('database', 'driver')) {
 				case 'mysql':
 				case 'mysqli':
@@ -395,7 +484,7 @@ class UserListQueryBuilder extends BaseQueryBuilder {
 			// active reviews
 			if (!empty($this->reviewsActive)) {
 				$activeMin = is_array($this->reviewsActive) ? $this->reviewsActive[0] : $this->reviewsActive;
-				$subqueryStatement = '(SELECT SUM(CASE WHEN ra.date_completed IS NULL THEN 1 ELSE 0 END) FROM review_assignments AS ra WHERE u.user_id = ra.reviewer_id)';
+				$subqueryStatement = '(SELECT SUM(CASE WHEN ra.date_completed IS NULL AND ra.declined <> 1 THEN 1 ELSE 0 END) FROM review_assignments AS ra WHERE u.user_id = ra.reviewer_id)';
 				$q->having(Capsule::raw($subqueryStatement), '>=', $activeMin);
 				if (is_array($this->reviewsActive) && !empty($this->reviewsActive[1])) {
 					$q->having(Capsule::raw($subqueryStatement), '<=', $this->reviewsActive[1]);
@@ -423,13 +512,22 @@ class UserListQueryBuilder extends BaseQueryBuilder {
 			}
 		}
 
+		// Include users
+		if (!is_null($this->includeUsers)) {
+			$includeUsers = $this->includeUsers;
+			$q->orWhereIn('u.user_id', $includeUsers);
+		}
+
 		// Add app-specific query statements
 		\HookRegistry::call('User::getUsers::queryObject', array(&$q, $this));
 
 		if (!empty($this->countOnly)) {
-			$q->select(Capsule::raw('count(*) as user_count'));
+			$q->select(Capsule::raw('count(*) as user_count'))
+				->groupBy('u.user_id');
 		} else {
-			$q->select($this->columns);
+			$q->select($this->columns)
+				->groupBy('u.user_id', 'user_given', 'user_family')
+				->orderBy($this->orderColumn, $this->orderDirection);
 		}
 
 		return $q;

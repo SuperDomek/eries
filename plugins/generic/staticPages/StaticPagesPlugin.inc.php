@@ -3,8 +3,8 @@
 /**
  * @file StaticPagesPlugin.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @package plugins.generic.staticPages
@@ -37,7 +37,7 @@ class StaticPagesPlugin extends GenericPlugin {
 	 * @return boolean True iff TinyMCE is installed.
 	 */
 	function isTinyMCEInstalled() {
-		$application = PKPApplication::getApplication();
+		$application = Application::getApplication();
 		$products = $application->getEnabledProducts('plugins.generic');
 		return (isset($products['tinymce']));
 	}
@@ -62,8 +62,6 @@ class StaticPagesPlugin extends GenericPlugin {
 				// Register the components this plugin implements to
 				// permit administration of static pages.
 				HookRegistry::register('LoadComponentHandler', array($this, 'setupGridHandler'));
-
-				$this->_registerTemplateResource();
 			}
 			return true;
 		}
@@ -95,7 +93,7 @@ class StaticPagesPlugin extends GenericPlugin {
 	 * @return boolean Hook handling status
 	 */
 	function callbackHandleContent($hookName, $args) {
-		$request = $this->getRequest();
+		$request = Application::getRequest();
 		$templateMgr = TemplateManager::getManager($request);
 
 		$page =& $args[0];
@@ -190,13 +188,6 @@ class StaticPagesPlugin extends GenericPlugin {
 	}
 
 	/**
-	 * @copydoc PKPPlugin::getTemplatePath
-	 */
-	function getTemplatePath($inCore = false) {
-		return $this->getTemplateResourceName() . ':templates/';
-	}
-
-	/**
 	 * Get the JavaScript URL for this plugin.
 	 */
 	function getJavaScriptURL($request) {
@@ -204,4 +195,3 @@ class StaticPagesPlugin extends GenericPlugin {
 	}
 }
 
-?>

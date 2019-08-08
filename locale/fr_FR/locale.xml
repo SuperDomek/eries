@@ -4,8 +4,8 @@
 <!--
   * locale.xml
   *
-  * Copyright (c) 2013-2018 Simon Fraser University
-  * Copyright (c) 2003-2018 John Willinsky
+  * Copyright (c) 2013-2019 Simon Fraser University
+  * Copyright (c) 2003-2019 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   *
   * Localization strings for the fr_FR (Français (France)) locale.
@@ -84,6 +84,7 @@
 	<message key="section.abbreviation.example">(Par exemple, Articles=ART)</message>
 	<!-- Common Article Terms -->
 	<message key="article.articles">Articles</message>
+	<message key="common.publishedSubmissions">Articles</message>
 	<message key="article.submissionId">ID de la soumission</message>
 	<message key="article.title">Titre</message>
 	<message key="article.authors">Auteurs</message>
@@ -530,7 +531,7 @@ Prendre note que si votre administrateur de site a déjà inscrit ce site auprè
 	<message key="installer.ojsUpgrade">Mise à jour d'OJS</message>
 	<message key="installer.installationInstructions"><![CDATA[<h4>Version d'OJS {$version}</h4>
 
-<p>Merci de télécharger Open Journal Systems <strong> du Public Knowledge Project</strong>. Avant de continuer, veuillez lire le fichier <a href="{$baseUrl}/docs/README">README</a> inclus avec ce logiciel. Pour en savoir plus sur Public Knowledge Project et ses projets de logiciels, veuillez visiter le <a href="http://pkp.sfu.ca/" target="_blank">site Web du PKP</a>. Si vous avez des rapports de bogues ou des demandes de soutien technique concernant Open Journal Systems, voir le <a href="http://forum.pkp.sfu.ca" target="_blank">forum de soutien</a> ou visiter le <a href="https://github.com/pkp/pkp-lib#issues" target="_blank">système de rapports de bogues</a>en ligne de PKP. Même si le forum de soutien est la méthode préférée de contact, vous pouvez aussi vous adresser par courriel à  <a href="mailto:pkp.contact@gmail.com">pkp.contact@gmail.com</a>.</p>
+<p>Merci de télécharger Open Journal Systems <strong> du Public Knowledge Project</strong>. Avant de continuer, veuillez lire le fichier <a href="{$baseUrl}/docs/README.md">README</a> inclus avec ce logiciel. Pour en savoir plus sur Public Knowledge Project et ses projets de logiciels, veuillez visiter le <a href="http://pkp.sfu.ca/" target="_blank">site Web du PKP</a>. Si vous avez des rapports de bogues ou des demandes de soutien technique concernant Open Journal Systems, voir le <a href="http://forum.pkp.sfu.ca" target="_blank">forum de soutien</a> ou visiter le <a href="https://github.com/pkp/pkp-lib#issues" target="_blank">système de rapports de bogues</a>en ligne de PKP. Même si le forum de soutien est la méthode préférée de contact, vous pouvez aussi vous adresser par courriel à  <a href="mailto:pkp.contact@gmail.com">pkp.contact@gmail.com</a>.</p>
 
 <h4>Mise à jour</h4>
 
@@ -554,7 +555,7 @@ Prendre note que si votre administrateur de site a déjà inscrit ce site auprè
 <p>Actuellement, OJS a uniquement été testé sur MySQL et PostgreSQL, bien que d'autres systèmes de gestion de base de données pris en charge par <a href="http://adodb.sourceforge.net/" target="_blank">ADOdb</a> pourraient fonctionner (en tout ou en partie). Il est possible d'envoyer à l'équipe d'OJS des rapports de compatibilité ou des rustines de codes pour d'autres SGBD.</p>]]></message>
 	<message key="installer.upgradeInstructions"><![CDATA[<h4>Version {$version} d'OJS</h4>
 
-<p>Merci de télécharger <strong>Open Journal Systems</strong> du Public Knowledge Project. Avant de continuer, veuillez lire les fichiers <a href="{$baseUrl}/docs/README">README</a> et <a href="{$baseUrl}/docs/UPGRADE">UPGRADE</a> inclus avec ce logiciel. Pour en savoir plus sur le Public Knowledge Project et ses projets logiciels, veuillez visiter le site Web <a href="http://pkp.sfu.ca/" target="_blank">PKP</a>. Si vous avez des rapports de bogues ou des demandes de soutien technique concernant Open Journal Systems, voir le <a href="http://forum.pkp.sfu.ca" target="_blank">forum de soutien</a> ou visiter le <a href="https://github.com/pkp/pkp-lib#issues" target="_blank">système de rapports de bogues</a>en ligne de PKP. Même si le forum de soutien is the preferred method of contact, you can also email the team at <a href="mailto:pkp.contact@gmail.com">pkp.contact@gmail.com</a>.</p>
+<p>Merci de télécharger <strong>Open Journal Systems</strong> du Public Knowledge Project. Avant de continuer, veuillez lire les fichiers <a href="{$baseUrl}/docs/README.md">README</a> et <a href="{$baseUrl}/docs/UPGRADE.md">UPGRADE</a> inclus avec ce logiciel. Pour en savoir plus sur le Public Knowledge Project et ses projets logiciels, veuillez visiter le site Web <a href="http://pkp.sfu.ca/" target="_blank">PKP</a>. Si vous avez des rapports de bogues ou des demandes de soutien technique concernant Open Journal Systems, voir le <a href="http://forum.pkp.sfu.ca" target="_blank">forum de soutien</a> ou visiter le <a href="https://github.com/pkp/pkp-lib#issues" target="_blank">système de rapports de bogues</a>en ligne de PKP. Même si le forum de soutien is the preferred method of contact, you can also email the team at <a href="mailto:pkp.contact@gmail.com">pkp.contact@gmail.com</a>.</p>
 <p>Il est <strong>fortement recommandé</strong> de faire des copies de sauvegardes de vos base de données, répertoires de fichiers, et répertoire d'installation OJS avant de continuer.</p>
 <p>Si votre poste de travail s'exécute en <a href="http://www.php.net/features.safe-mode" target="_blank">mode sans échec PHP</a>, veuillez vous assurer que le paramètre max_execution_time de votre fichier de configuration php.ini contient une valeur élevée. Si ce paramètre ou tout autre limite de temps (par ex., paramètre Timeout d'Apache) est atteint et que le processus de mise à jour est interrompu, une intervention manuelle sera nécessaire.</p>]]></message>
 	<message key="installer.localeSettingsInstructions"><![CDATA[Pour une prise en charge complète d'Unicode (UTF-8), sélectionner UTF-8 pour tous les paramètres de jeux de caractères. Prendre note quecette prise en charge exige actuellement un serveur de base de données MySQL >= 4.1.1 ou PostgreSQL >= 7.1. Veuillez aussi noter que la prise en charge complète d'Unicode exige PHP >= 4.3.0 compilé avec le soutien pour la bibliothèque<a href="http://www.php.net/mbstring" target="_blank">mbstring</a>(activée par défaut dans les plus récentes installations PHP). Vous aurez peut-être des problèmes à utiliser les jeux de caractères étendus si votre serveur ne répond pas à ces exigences.
@@ -779,6 +780,7 @@ le droit de première publication, avec l’ouvrage disponible simultanément [S
 	<message key="payment.type.purchaseArticle">Frais d'achat de l'article</message>
 	<message key="journal.issn">ISSN</message>
 	<message key="article.article">Article</message>
+	<message key="common.publishedSubmission">Article</message>
 	<message key="user.manageMySubscriptions">Gérer Mes abonnements</message>
 	<message key="subscriptionTypes.currency">Devise</message>
 	<message key="subscriptionTypes.year">année</message>
@@ -823,8 +825,8 @@ Titre du système de classification]]></message>
 	<message key="user.subscriptions.purchaseNewSubscription">Souscrire à un nouvel abonnement</message>
 	<message key="user.subscriptions.purchaseIndividualSubscription">Souscrire à un abonnement individuel</message>
 	<message key="user.subscriptions.purchaseInstitutionalSubscription">Souscrire à un abonnement institutionnel</message>
-	<message key="user.subscriptions.expires">Expire</message>
-	<message key="user.subscriptions.expired">Expiré</message>
+	<message key="user.subscriptions.expires">Expire le {$date}</message>
+	<message key="user.subscriptions.expired">Expiré le {$date}</message>
 	<message key="user.subscriptions.viewSubscriptionTypes">Afficher les types d'abonnement disponibles</message>
 	<message key="user.subscriptions.form.typeId">Type d'abonnement</message>
 	<message key="user.subscriptions.form.membership">Adhésion</message>
@@ -858,9 +860,6 @@ Titre du système de classification]]></message>
 	<message key="rt.admin.validateUrls.description"><![CDATA[Des URLs de sites de recherche possiblement invalides sont affichés ci-dessous.<br />
 Vous devriez vérifier manuellement tous les URLs indentifiés comme invalides, car ce test n'est pas fiable à 100%.<br />
 La validation peut échouer sur les URL de recherche qui nécessitent des formulaires de données enregistrés.]]></message>
-	<message key="notification.mailListDescription">Saisir votre adresse de courriel pour être avisé immédiatement de tout nouveau contenu important ajouté à la revue.</message>
-	<message key="notification.notificationsPublicDescription"><![CDATA[Cette page montre les mises à jour importantes associées avec cette revue tel que les nouvelles parutions et les annonces. Vous pouvez vous abonner à ces avis par l'intermédiaire des flux RSS (en cliquant sur les images à droite), ou <a href="{$emailUrl}">par courriel.</a>]]></message>
-	<message key="notification.type.articleSubmitted">Un nouvel article, "{$title}", a été soumis.</message>
 	<message key="notification.type.editing">Événements de révision</message>
 	<message key="notification.type.editorDecisionComment">Un commentaire a été laissé concernant la décision du rédacteur pour "{$title}".</message>
 	<message key="notification.type.galleyModified">Une épreuve a été modifiée pour "{$title}".</message>
@@ -1020,4 +1019,18 @@ La validation peut échouer sur les URL de recherche qui nécessitent des formul
 <br /> <br />
 L'installation de CLOCKSS pour Open Journal Systems n'a pas besoin d'avoir lieu avant que la publication soit en cours.]]></message>
 	<message key="submission.layout.galley.remoteURL">URL du contenu hébergé à distance</message>
+	<message key="reviewer.submission.reviewFormResponse.form.responseRequired">Merci de remplir les champs requis.</message>
+	<message key="user.reviewerPrompt.optin">Oui, j'accepte d'évaluer des articles pour ce journal.</message>
+	<message key="subscriptions.status.noSubscription">Vous n'avez pas d'abonnement actif.</message>
+	<message key="reader.purchasePrice">({$currency} {$price})</message>
+	<message key="manager.setup.porticoDescription">Portico est un service non commercial d'archivage. Si votre journal a signé un contrat avec Portico, activez le ici :</message>
+	<message key="user.register.form.emailConsentAllContexts">Oui, je souhaite être notifié pour toutes les nouvelles publications et annonces pour tous les journaux auxquels je suis abonné.</message>
+	<message key="payment.type.publication.required">Le tarif de publication est requis pour le paiement.</message>
+	<message key="payment.requestPublicationFee">Prix de publication  ({$feeAmount})</message>
+	<message key="payment.notFound">Un paiement a été demandé, mais la requête a expiré. Contactez le responsable du journal pour les détails.</message>
+	<message key="log.editor.recommendation">La recommandation  ({$decision}) pour la soumission {$submissionId} a été déposé par {$editorName}.</message>
+	<message key="notification.type.public">Annonces publiques</message>
+	<message key="notification.type.publicationScheduled">Cette soumission a été programmée pour publication.</message>
+	<message key="navigation.subscriptions">Abonnements</message>
+	<message key="log.editor.submissionExpedited">{$editorName} prend en charge le processus éditorial pour la soumission {$submissionId}.</message>
 </locale>

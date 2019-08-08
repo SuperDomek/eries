@@ -9,8 +9,8 @@
 /**
  * @file classes/file/FileManager.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  * ePUB mime type added  Leah M Root (rootl) SUNY Geneseo
  * @class FileManager
@@ -92,9 +92,12 @@ class FileManager {
 	 */
 	function getUploadedFileType($fileName) {
 		if (isset($_FILES[$fileName])) {
+			// The result of "explode" can't be passed directly to "array_pop" in PHP 7.
+			$exploded = explode('.',$_FILES[$fileName]['name']);
+
 			$type = PKPString::mime_content_type(
 				$_FILES[$fileName]['tmp_name'], // Location on server
-				array_pop(explode('.',$_FILES[$fileName]['name'])) // Extension on client machine
+				array_pop($exploded) // Extension on client machine
 			);
 
 			if (!empty($type)) return $type;
@@ -232,7 +235,7 @@ class FileManager {
 	 * @param $fileName string Optional filename to use on the client side
 	 * @return boolean
 	 */
-	function downloadFile($filePath, $mediaType = null, $inline = false, $fileName = null) {
+	function downloadByPath($filePath, $mediaType = null, $inline = false, $fileName = null) {
 		$result = null;
 		if (HookRegistry::call('FileManager::downloadFile', array(&$filePath, &$mediaType, &$inline, &$result, &$fileName))) return $result;
 		if (is_readable($filePath)) {
@@ -267,7 +270,7 @@ class FileManager {
 	 * @param $filePath string the location of the file to be deleted
 	 * @return boolean returns true if successful
 	 */
-	function deleteFile($filePath) {
+	function deleteByPath($filePath) {
 		if ($this->fileExists($filePath)) {
 			$result = null;
 			if (HookRegistry::call('FileManager::deleteFile', array($filePath, &$result))) return $result;
@@ -601,4 +604,4 @@ class FileManager {
 	}
 }
 
-?>
+

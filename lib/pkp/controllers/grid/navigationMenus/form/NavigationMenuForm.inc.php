@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/navigationMenus/form/NavigationMenuForm.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class NavigationMenuForm
@@ -52,7 +52,7 @@ class NavigationMenuForm extends Form {
 	/**
 	 * @copydoc Form::fetch()
 	 */
-	function fetch($request) {
+	function fetch($request, $template = null, $display = false) {
 		$templateMgr = TemplateManager::getManager($request);
 
 		$themePlugins = PluginRegistry::getPlugins('themes');
@@ -88,6 +88,13 @@ class NavigationMenuForm extends Form {
 			return $a->getId() - $b->getId();
 		});
 
+		foreach ($unassignedItems as $unassignedItem) {
+			import('classes.core.ServicesContainer');
+			ServicesContainer::instance()
+				->get('navigationMenu')
+				->transformNavMenuItemTitle($templateMgr, $unassignedItem);
+		}
+
 		import('classes.core.ServicesContainer');
 		$navigationMenuItemTypes = ServicesContainer::instance()
 			->get('navigationMenu')
@@ -111,7 +118,7 @@ class NavigationMenuForm extends Form {
 			'navigationMenuItemTypeConditionalWarnings' => json_encode($typeConditionalWarnings),
 		));
 
-		return parent::fetch($request);
+		return parent::fetch($request, $template, $display);
 	}
 
 	/**
@@ -198,7 +205,7 @@ class NavigationMenuForm extends Form {
 	 * Perform additional validation checks
 	 * @copydoc Form::validate
 	 */
-	function validate() {
+	function validate($callHooks = true) {
 		$navigationMenuDao = DAORegistry::getDAO('NavigationMenuDAO');
 
 		$navigationMenu = $navigationMenuDao->getByTitle($this->_contextId, $this->getData('title'));
@@ -213,8 +220,8 @@ class NavigationMenuForm extends Form {
 			}
 		}
 
-		return parent::validate();
+		return parent::validate($callHooks);
 	}
 }
 
-?>
+

@@ -4,8 +4,8 @@
 <!--
   * locale/de_DE/locale.xml
   *
-  * Copyright (c) 2013-2018 Simon Fraser University
-  * Copyright (c) 2003-2018 John Willinsky
+  * Copyright (c) 2013-2019 Simon Fraser University
+  * Copyright (c) 2003-2019 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   * Localization information: https://pkp.sfu.ca/wiki/index.php?title=OJS:_German_(de_DE)
   * Localization strings.
@@ -101,10 +101,13 @@
 	<message key="section.title">Titel der Rubrik</message>
 	<message key="section.abbreviation">Abkürzung</message>
 	<message key="section.abbreviation.example">(Zum Beispiel, Artikel=ART)</message>
+	<message key="section.policy">Richtlinien der Rubrik</message>
 
 	<!-- Common Article Terms -->
 	<message key="article.article">Artikel</message>
 	<message key="article.articles">Artikel</message>
+	<message key="common.publishedSubmission">Artikel</message>
+	<message key="common.publishedSubmissions">Artikel</message>
 	<message key="article.submissionId">Beitrags-ID</message>
 	<message key="article.title">Titel</message>
 	<message key="article.authors">Autor/innen</message>
@@ -197,6 +200,7 @@
 	<message key="user.registerForOtherJournals">Für andere Zeitschriften registrieren</message>
 	<message key="user.reviewerPrompt">Wären Sie daran interessiert, Beiträge in dieser Zeitschrift zu begutachten?</message>
 	<message key="user.reviewerPrompt.userGroup">Ja, die {$userGroup}-Rolle beantragen.</message>
+	<message key="user.reviewerPrompt.optin">Ja, ich möchte kontaktiert werden, um für Gutachten zu Einreichungen bei dieser Zeitschrift angefragt zu werden.</message>
 	<message key="user.register.contextsPrompt">Bei welchen Zeitschriften auf dieser Website möchten Sie sich registrieren?</message>
 	<message key="user.register.otherContextRoles">Die folgenden Rollen beantragen.</message>
 	<message key="user.register.noContextReviewerInterests">Wenn Sie die Aufnahme als Gutachter/in bei einer Zeitschrift beantragt haben, geben Sie bitte Ihre Begutachtungsinteressen ein.</message>
@@ -479,7 +483,6 @@ Sie können der Nutzerin/dem Nutzer einen Grund für die Sperrung des Zugangs an
 
 	<!-- Navigation sidebar menu -->
 
-	<!-- Used by editor in submission review / editing -->
 
 
 
@@ -674,6 +677,10 @@ Sie können der Nutzerin/dem Nutzer einen Grund für die Sperrung des Zugangs an
 	<message key="user.register.reviewerDescriptionNoInterests">Sie sind bereit, bei der Zeitschrift eingereichte Beiträge im Peer Review zu begutachten.</message>
 	<message key="user.register.reviewerDescription">Sie sind bereit, bei der Website eingereichte Beiträge im Rahmen des Peer Review zu begutachten.</message>
 	<message key="user.register.reviewerInterests">Bitte geben Sie Begutachtungsinteressen an (Wissenschaftsbereiche und Forschungsmethoden):</message>
+	<message key="user.register.form.emailConsentAllContexts">Ja, ich möchte über neue Veröffentlichungen  und Ankündigungen aller Zeitschriften, bei denen ich registriert bin, erhalten.</message>
+	<message key="user.register.form.privacyConsentThisContext"><![CDATA[Ja, ich stimme der Erfassung und Speicherung gemäß der <a href="{$privacyUrl}" target="_blank">Datenschutzerklärung</a> dieser Zeitschrift zu.]]></message>
+	<message key="user.register.form.missingContextConsent">Sie müssen der Datenschutzerklärung jeder Zeitschrift, bei der Sie sich registrieren, zustimmen.</message>
+	<message key="user.register.form.missingSiteConsent">Sie müssen der Datenschutzerklärung dieser Website zustimmen.</message>
 
 	<!-- Subscriptions -->
 	<message key="user.subscriptions.mySubscriptions">Meine Abonnements</message>
@@ -777,6 +784,7 @@ Sie können der Nutzerin/dem Nutzer einen Grund für die Sperrung des Zugangs an
 	<message key="about.onlineSubmissions.register">Registrieren</message>
 	<message key="about.onlineSubmissions.registrationRequired">Um Beiträge online einzureichen oder den aktuellen Status eines eingereichten Beitrags zu überprüfen, müssen Sie registriert und eingeloggt sein. In einen existierenden Account {$login} oder einen neuen Account {$register}.</message>
 	<message key="about.onlineSubmissions.submissionActions">{$newSubmission} oder {$viewSubmissions}.</message>
+	<message key="about.onlineSubmissions.submitToSection"><![CDATA[Eine neue Einreichung in Rubrik <a href="{$url}">{$name}</a> machen.]]></message>
 	<message key="about.onlineSubmissions.newSubmission">Neuen Beitrag einreichen</message>
 	<message key="about.onlineSubmissions.viewSubmissions">Beiträge in Bearbeitung ansehen</message>
 	<message key="about.authorGuidelines">Richtlinien für Autor/innen</message>
@@ -837,12 +845,15 @@ Sie können der Nutzerin/dem Nutzer einen Grund für die Sperrung des Zugangs an
 	<message key="payment.authorFees">Autor/innengebühren</message>
 	<message key="payment.type.submission">Gebühr für das Einreichen eines Beitrags</message>
 	<message key="payment.type.publication">Veröffentlichungsgebühr</message>
+	<message key="payment.type.publication.required">Die Veröffentlichungsgebühr ist fällig.</message>
 	<message key="payment.type.fastTrack">Gebühr für beschleunigte Begutachtung</message>
 	<message key="payment.type.membership">Mitgliedsbeitrag</message>
 	<message key="payment.type.purchaseArticle">Artikelgebühr</message>
 	<message key="payment.type.purchaseIssue">Ausgabengebühr</message>
 	<message key="payment.type.subscription">Abonnementgebühr</message>
 	<message key="payment.type.donation">Spenden</message>
+	<message key="payment.requestPublicationFee">Fordere Veröffentlichungsgebühr ({$feeAmount}) an</message>
+	<message key="payment.notFound">Eine Zahlung wurde angefordert, aber die Anforderung ist abgelaufen. Kontaktieren Sie den Zeitschriftenverwalter/die Zeitschriftenverwalterin  für Einzelheiten.</message>
 
 	<message key="payment.donation.makeDonation">Spenden</message>
 
@@ -863,7 +874,7 @@ Sie können der Nutzerin/dem Nutzer einen Grund für die Sperrung des Zugangs an
 	<message key="installer.ojsUpgrade">Aktualisierung von OJS</message>
 	<message key="installer.installationInstructions"><![CDATA[<h4>OJS-Version {$version}</h4>
 
-<p>Danke für das Herunterladen von Open Journal Systems <strong>des Public Knowledge Projects (PKP)</strong>. Bevor Sie fortfahren, lesen Sie bitte die zum Programm gehörende <a href="{$baseUrl}/docs/README">README</a>-Datei. Näheres über das Public Knowledge Project und seine Programmentwicklungen finden Sie auf der <a href="http://pkp.sfu.ca/" target="_blank">Webseite des PKP</a>. Wenn Sie Programmfehler melden wollen oder technische Fragen zu Open Journal Systems haben, gehen Sie bitte zum <a href="http://forum.pkp.sfu.ca">Support Forum</a> von PKP oder besuchen Sie unseren <a href="https://github.com/pkp/pkp-lib#issues" target="_blank">Webservice für die Anzeige von Programmfehlern</a>. Wenn Sie im Support Forum keine geeignete Hilfestellung finden, können Sie uns auch unter <a href="mailto:pkp.contact@gmail.com">pkp.contact@gmail.com</a> per E-Mail kontaktieren.</p>
+<p>Danke für das Herunterladen von Open Journal Systems <strong>des Public Knowledge Projects (PKP)</strong>. Bevor Sie fortfahren, lesen Sie bitte die zum Programm gehörende <a href="{$baseUrl}/docs/README.md">README</a>-Datei. Näheres über das Public Knowledge Project und seine Programmentwicklungen finden Sie auf der <a href="http://pkp.sfu.ca/" target="_blank">Webseite des PKP</a>. Wenn Sie Programmfehler melden wollen oder technische Fragen zu Open Journal Systems haben, gehen Sie bitte zum <a href="http://forum.pkp.sfu.ca">Support Forum</a> von PKP oder besuchen Sie unseren <a href="https://github.com/pkp/pkp-lib#issues" target="_blank">Webservice für die Anzeige von Programmfehlern</a>. Wenn Sie im Support Forum keine geeignete Hilfestellung finden, können Sie uns auch unter <a href="mailto:pkp.contact@gmail.com">pkp.contact@gmail.com</a> per E-Mail kontaktieren.</p>
 
 <h4>Aktualisierungen</h4>
 
@@ -903,7 +914,7 @@ Sie können der Nutzerin/dem Nutzer einen Grund für die Sperrung des Zugangs an
 <p>2. Ein Verzeichnis für die Ablage hochgeladener Dateien muss angelegt und beschreibbar gemacht werden (siehe "Datei-Einstellungen" unten).</p>]]></message>
 	<message key="installer.upgradeInstructions"><![CDATA[<h4>OJS-Version{$version}</h4>
 
-<p>Danke für das Herunterladen von Open Journal Systems <strong>des Public Knowledge Project</strong>. Bevor Sie fortfahren, lesen Sie bitte die zum Programm gehörenden Dateien <a href="{$baseUrl}/docs/README">README</a> und <a href="{$baseUrl}/docs/UPGRADE">UPGRADE</a>. Näheres über das Public Knowledge Project und seine Programmentwicklungen finden Sie auf der <a href="http://pkp.sfu.ca/" target="_blank">Webseite des PKP</a>. Wenn Sie Programmfehler melden wollen oder technische Fragen zu Open Journal Systems haben, gehen Sie bitte zum <a href="http://forum.pkp.sfu.ca">Support Forum</a> von PKP oder besuchen Sie unseren <a href="https://github.com/pkp/pkp-lib#issues" target="_blank">Webservice für die Anzeige von Programmfehlern</a>. Wenn Sie im Support Forum keine geeignete Hilfestellung finden, können Sie uns auch unter <a href="mailto:pkp.contact@gmail.com"></a> per E-Mail kontaktieren.</p>
+<p>Danke für das Herunterladen von Open Journal Systems <strong>des Public Knowledge Project</strong>. Bevor Sie fortfahren, lesen Sie bitte die zum Programm gehörenden Dateien <a href="{$baseUrl}/docs/README.md">README</a> und <a href="{$baseUrl}/docs/UPGRADE.md">UPGRADE</a>. Näheres über das Public Knowledge Project und seine Programmentwicklungen finden Sie auf der <a href="http://pkp.sfu.ca/" target="_blank">Webseite des PKP</a>. Wenn Sie Programmfehler melden wollen oder technische Fragen zu Open Journal Systems haben, gehen Sie bitte zum <a href="http://forum.pkp.sfu.ca">Support Forum</a> von PKP oder besuchen Sie unseren <a href="https://github.com/pkp/pkp-lib#issues" target="_blank">Webservice für die Anzeige von Programmfehlern</a>. Wenn Sie im Support Forum keine geeignete Hilfestellung finden, können Sie uns auch unter <a href="mailto:pkp.contact@gmail.com"></a> per E-Mail kontaktieren.</p>
 <p>Wir <strong>empfehlen dringend</strong>, dass Sie ein Backup Ihrer Datenbank, Dateiverzeichnisse und OJS-Installation machen, bevor Sie fortfahren.</p>
 <p>Falls Sie in einem <a href="http://www.php.net/features.safe-mode" target="_blank">PHP-Safe Mode</a> arbeiten, stellen Sie bitte sicher, dass die max_execution_time-Richtlinie in Ihrer php.ini-Konfigurationsdatei auf einen hohen Grenzwert eingestellt ist. Sollte dieses (oder irgendein anderes) Zeitlimit (z.B. die "Timeout"-Regelung von Apache) erreicht werden und der Upgrade-Prozess unterbrochen werden, müssen Sie manuell eingreifen.</p>]]></message>
 	<message key="installer.localeSettingsInstructions"><![CDATA[Zur durchgängigen Unterstützung von Unicode (UTF-8) verwenden Sie stets UTF-8 als Zeichensatz. Beachten Sie, dass MySQL >= 4.1.1 oder PostgreSQL >= 7.1-Datenbankserver erforderlich sind. Beachten Sie bitte außerdem, dass die Unterstützung von Unicode PHP >= 4.3.0 kompiliert mit der Bibliothek <a href="http://www.php.net/mbstring" target="_blank">mbstring</a> verlangt (in den meisten neueren PHP-Installationen standardmäßig aktiviert). Falls Ihr Server diese Anforderungen nicht erfüllt, können Schwierigkeiten mit erweiterten Schriftsätzen auftreten.
@@ -1033,10 +1044,7 @@ Die Prüfung kann bei Such-URLs, die Formularausfüllung verlangen, fehlschlagen
 
 
 	<!-- Notification Types -->
-	<message key="notification.mailListDescription">Geben Sie Ihre E-Mail-Adresse ein, wenn Sie über neue Inhalte in dieser Zeitschrift informiert werden wollen</message>
-	<message key="notification.notificationsPublicDescription"><![CDATA[Auf dieser Seite finden Sie Updates wie neue Ausgaben oder Ankündigungen. Sie können diese Benachrichtigungen als RSS-Feed abonnieren (indem Sie auf die Abbildungen rechts klicken) oder <a href="{$emailUrl}">via E-Mail.</a>]]></message>
 
-	<message key="notification.type.articleSubmitted">Ein neuer Beitrag, "{$title}", wurde eingereicht.</message>
 	<message key="notification.type.editing">Redaktionelle Ereignisse</message>
 	<message key="notification.type.submissionSubmitted">Ein neuer Artikel wurde eingereicht: "{$title}"</message>
 	<message key="notification.type.editorDecisionComment">Ein Kommentar zur Entscheidung des Redakteur/der Redaktuerin über "{$title}" wurde hinterlassen.</message>
@@ -1049,6 +1057,7 @@ Die Prüfung kann bei Such-URLs, die Formularausfüllung verlangen, fehlschlagen
 	<message key="notification.type.submissionComment">Ein/e Redakteur/in hat "{$title}" kommentiert.</message>
 	<message key="notification.type.submissions">Einreichungsereignisse</message>
 	<message key="notification.type.userComment">Ein/e Leser/in hat "{$title}" kommentiert.</message>
+	<message key="notification.type.public">Öffentliche Ankündigungen</message>
 	<message key="notification.savedIssueMetadata">Ausgabenmetadaten gespeichert.</message>
 	<message key="notification.type.editorAssignmentTask">Ein neuer Artikel wurde eingereicht, dem ein/e Redakteur/in zugewiesen werden muss.</message>
 	<message key="notification.type.assignProductionUser">Nutzen Sie den Hinzufügen-Link in der Teilnehmer/innen-Liste, um eine/n Nutzer/in zum Erzeugen von Fahnen einzutragen.</message>
@@ -1097,7 +1106,10 @@ Die Prüfung kann bei Such-URLs, die Formularausfüllung verlangen, fehlschlagen
 	<message key="editor.issues.backIssues">Frühere Ausgaben</message>
 	<message key="editor.issues.futureIssues">Zukünftige Ausgaben</message>
 	<message key="navigation.subscriptions">Abonnements</message>
-	<message key="payment.type.publication.required">Die Veröffentlichungsgebühr ist fällig.</message>
-	<message key="payment.requestPublicationFee">Fordere Veröffentlichungsgebühr ({$feeAmount}) an</message>
-	<message key="payment.notFound">Eine Zahlung wurde angefordert, aber die Anforderung ist abgelaufen. Kontaktieren Sie den Zeitschriftenverwalter/die Zeitschriftenverwalterin  für Einzelheiten.</message>
+
+	<!-- legacy strings from OJS 2, for upgraded installations from OJS 2 -->
+	<message key="log.editor.submissionExpedited">{$editorName} hat den Redaktionsprozess für die Einreichung {$submissionId} übernommen.</message>
+
+	<message key="catalog.sortBy">Artikelreihenfolge</message>
+	<message key="catalog.sortBy.categoryDescription">Wählen Sie, wie Artikel in dieser Kategorie sortiert sein sollen.</message>
 </locale>

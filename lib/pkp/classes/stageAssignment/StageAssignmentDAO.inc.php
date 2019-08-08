@@ -3,8 +3,8 @@
 /**
  * @file classes/stageAssignment/StageAssignmentDAO.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class StageAssignmentDAO
@@ -210,8 +210,8 @@ class StageAssignmentDAO extends DAO {
 				(int) $stageAssignment->getSubmissionId(),
 				$this->nullOrInt($stageAssignment->getUserGroupId()),
 				$this->nullOrInt($stageAssignment->getUserId()),
-				(int) $stageAssignment->getId(),
-				$stageAssignment->getRecommendOnly()?$stageAssignment->getRecommendOnly():0
+				$stageAssignment->getRecommendOnly()?$stageAssignment->getRecommendOnly():0,
+				(int) $stageAssignment->getId()
 			)
 		);
 	}
@@ -321,4 +321,4 @@ class StageAssignmentDAO extends DAO {
 	}
 }
 
-?>
+

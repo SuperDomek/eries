@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/users/reviewer/form/AdvancedSearchReviewerForm.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class AdvancedSearchReviewerForm
@@ -39,11 +39,9 @@ class AdvancedSearchReviewerForm extends ReviewerForm {
 	}
 
 	/**
-	 * Fetch the form.
-	 * @see Form::fetch()
-	 * @param $request PKPRequest
+	 * @copydoc Form::fetch()
 	 */
-	function fetch($request) {
+	function fetch($request, $template = null, $display = false) {
 		// Pass along the request vars
 		$actionArgs = $request->getUserVars();
 		$reviewRound = $this->getReviewRound();
@@ -95,9 +93,14 @@ class AdvancedSearchReviewerForm extends ReviewerForm {
 			'inputType' => 'radio',
 			'currentlyAssigned' => $currentlyAssigned,
 			'warnOnAssignment' => $warnOnAssignment,
+			'getParams' => [
+				'contextId' => $this->getSubmission()->getContextId(),
+				'count' => 15,
+				'reviewStage' => $reviewRound->getStageId(),
+			],
 		));
 		$templateMgr = TemplateManager::getManager($request);
-		$templateMgr->assign('selectReviewerListData', json_encode($selectReviewerListHandler->getConfig()));
+		$templateMgr->assign('selectReviewerListData', $selectReviewerListHandler->getConfig());
 
 		// Only add actions to forms where user can operate.
 		if (array_intersect($this->getUserRoles(), array(ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR))) {
@@ -123,8 +126,8 @@ class AdvancedSearchReviewerForm extends ReviewerForm {
 			$this->setReviewerFormAction($advancedSearchAction);
 		}
 
-		return parent::fetch($request);
+		return parent::fetch($request, $template, $display);
 	}
 }
 
-?>
+

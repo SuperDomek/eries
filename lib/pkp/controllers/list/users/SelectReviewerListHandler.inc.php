@@ -2,8 +2,8 @@
 /**
  * @file controllers/list/users/SelectReviewerListHandler.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class SelectReviewerListHandler
@@ -20,9 +20,7 @@ class SelectReviewerListHandler extends SelectListHandler {
 	public $_count = 15;
 
 	/** @var array Query parameters to pass with every GET request */
-	public $_getParams = array(
-		'roleIds' => array(ROLE_ID_REVIEWER),
-	);
+	public $_getParams = [];
 
 	/** @var string Used to generate URLs to API endpoints for this component. */
 	public $_apiPath = 'users/reviewers';
@@ -40,6 +38,7 @@ class SelectReviewerListHandler extends SelectListHandler {
 		parent::init($args);
 		$this->_count = isset($args['count']) ? (int) $args['count'] : $this->_count;
 		$this->_currentlyAssigned = !empty($args['currentlyAssigned']) ? $args['currentlyAssigned'] : $this->_currentlyAssigned;
+		$this->_getParams = !empty($args['getParams']) ? $args['getParams'] : $this->_getParams;
 		$this->_warnOnAssignment = !empty($args['warnOnAssignment']) ? $args['warnOnAssignment'] : $this->_warnOnAssignment;
 	}
 
@@ -54,6 +53,7 @@ class SelectReviewerListHandler extends SelectListHandler {
 		$config['itemsMax'] = $this->getItemsMax();
 		$config['count'] = $this->_count;
 		$config['currentlyAssigned'] = $this->_currentlyAssigned;
+		$config['getParams'] = $this->_getParams;
 		$config['warnOnAssignment'] = $this->_warnOnAssignment;
 
 		$config['i18n'] = array_merge($config['i18n'], array(
@@ -72,6 +72,7 @@ class SelectReviewerListHandler extends SelectListHandler {
 			'activeReviews' => __('reviewer.list.activeReviews'),
 			'activeReviewsDescription' => __('reviewer.list.activeReviewsDescription'),
 			'completedReviews' => __('reviewer.list.completedReviews'),
+			'declinedReviews' => __('reviewer.list.declinedReviews'),
 			'reviewerRating' => __('reviewer.list.reviewerRating'),
 			'daysSinceLastAssignment' => __('reviewer.list.daysSinceLastAssignment'),
 			'daySinceLastAssignment' => __('reviewer.list.daySinceLastAssignment'),
@@ -84,7 +85,7 @@ class SelectReviewerListHandler extends SelectListHandler {
 			'reviewInterests' => __('reviewer.list.reviewInterests'),
 			'gossip' => __('user.gossip'),
 			'biography' => __('reviewer.list.biography'),
-			'listSeparator' => __('common.listSeparator'),
+			'listSeparator' => __('common.commaListSeparator'),
 			'viewMore' => __('list.viewMore'),
 			'viewLess' => __('list.viewLess'),
 		));

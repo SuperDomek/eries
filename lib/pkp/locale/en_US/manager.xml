@@ -4,8 +4,8 @@
 <!--
   * locale/en_US/manager.xml
   *
-  * Copyright (c) 2014-2018 Simon Fraser University
-  * Copyright (c) 2000-2018 John Willinsky
+  * Copyright (c) 2014-2019 Simon Fraser University
+  * Copyright (c) 2000-2019 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   *
   * Localization strings.
@@ -248,7 +248,7 @@
 	<message key="manager.setup.principalContact">Principal Contact</message>
 	<message key="manager.setup.principalContactDescription">Enter contact details, typically for a principal editorship, managing editorship, or administrative staff position, which can be displayed on your publicly accessible website.</message>
 	<message key="manager.setup.privacyStatement">Privacy Statement</message>
-	<message key="manager.setup.privacyStatement.description">This statement will appear during Author Submission and on the publicly available About page.</message>
+	<message key="manager.setup.privacyStatement.description">This statement will appear during user registration, author submission, and on the publicly available Privacy page. In some jurisdictions, you are legally required to disclose how you handle user data in this privacy policy.</message>
 	<message key="manager.setup.reviewOptions.numWeeksPerResponse">Weeks allowed to accept or decline a review request</message>
 	<message key="manager.setup.reviewOptions.numWeeksPerReview">Weeks allowed for review completion</message>
 	<message key="manager.setup.reviewOptions.neverSendReminder">Never Remind</message>
@@ -454,6 +454,7 @@
 	<message key="manager.reviewFormElements.noneCreated">No form items have been created.</message>
 	<message key="manager.reviewFormElements.possibleResponse">Selection</message>
 	<message key="manager.reviewFormElements.question">Item</message>
+	<message key="manager.reviewFormElements.description">Description</message>
 	<message key="manager.reviewFormElements.radiobuttons">Radio buttons (you can only choose one)</message>
 	<message key="manager.reviewFormElements.required">Reviewers required to complete item</message>
 	<message key="manager.reviewFormElements.included">Included in message to author</message>
@@ -477,12 +478,20 @@
 	<message key="plugins.importexport.common.error.unknownEncoding">Unknown encoding {$param}</message>
 	<message key="plugins.importexport.common.error.encodingError">The content is not encoded as {$param}</message>
 	<message key="plugins.importexport.common.error.unknownUserGroup">Unknown user group {$param}</message>
+	<message key="plugins.importexport.common.error.missingGivenName">The author {$authorName} does not have a given name in the submission's language, {$localeName}. The submission can not be imported without this information.</message>
 	<message key="plugins.importexport.common.error.unknownUploader">Unknown uploader {$param}</message>
 	<message key="plugins.importexport.common.error.temporaryFileFailed">Temporary file {$dest} could not be created from {$source}</message>
 	<message key="plugins.importexport.common.error.filesizeMismatch">The provided filesize "{$expected}" and the actual filesize "{$actual}" do not match</message>
 	<message key="plugins.importexport.common.error.duplicateRevisionForSubmission">The revision "{$revisionId}" for submission file "{$fileId}" would create a duplicate record</message>
 	<!-- native importexport keys -->
 	<message key="plugins.importexport.native.error.submissionFileImportFailed">The submission file could not be imported</message>
+
+	<!-- native import user keys -->
+	<message key="plugins.importexport.user.importExportErrors">Import/Export errors:</message>
+	<message key="plugins.importexport.user.error.userHasNoPassword">The imported user "{$username}" has no password. Check your import XML format. The user has not been imported.</message>
+	<message key="plugins.importexport.user.error.passwordHasBeenChanged">The imported user "{$username}" password could not be imported as is. A new password is been send to the user email. The user has been imported.</message>
+	<message key="plugins.importexport.user.error.plainPasswordNotValid">The imported user "{$username}" has a plain password that is not valid. The user has not been imported.</message>
+	<message key="plugins.importexport.user.error.usernameEmailMismatch">The username "{$username}" and the e-mail "{$email}" do not match to the one and the same existing user.</message>
 
 	<!-- Navigation Menus -->
 	<message key="manager.navigationMenus.form.title">Title</message>
@@ -537,4 +546,47 @@
 	<message key="manager.navigationMenus.subscriptions.conditionalWarning">This link will only be displayed if payments are enabled under Settings > Distribution > Payments.</message>
 	<message key="manager.navigationMenus.mySubscriptions.conditionalWarning">This link will only be displayed if the visitor is logged in, payments are enabled under Settings > Distribution > Payments and subscriptions are required under Settings > Distribution > Access.</message>
 	<message key="manager.navigationMenus.search.description">Link to the search page.</message>
+	<message key="manager.navigationMenus.privacyStatement.description">Link to the page displaying your privacy statement.</message>
+	<message key="manager.navigationMenus.privacyStatement.conditionalWarning">This link will only be displayed if you have entered a privacy statement under Settings > Workflow > Submissions.</message>
+
+	<message key="grid.category.add">Add Category</message>
+	<message key="grid.category.edit">Edit Category</message>
+	<message key="grid.category.name">Name</message>
+	<message key="grid.category.path">Path</message>
+	<message key="grid.category.urlWillBe">The category's URL will be: {$sampleUrl}</message>
+	<message key="grid.category.pathAlphaNumeric">The category path must consist of only letters and numbers.</message>
+	<message key="grid.category.pathExists">The category path already exists. Please enter a unique path.</message>
+	<message key="grid.category.description">Description</message>
+	<message key="grid.category.parentCategory">Parent Category</message>
+	<message key="grid.category.removeText">Are you sure you wish to remove this category?</message>
+	<message key="grid.category.nameRequired">Please enter a category name.</message>
+	<message key="grid.category.categoryDetails">Category Details</message>
+
+	<!-- Statistics -->
+	<message key="stats.articlesOfTotal">{$count} of {$total} articles</message>
+	<message key="stats.daily">Daily</message>
+	<message key="stats.dateRange">Date Range</message>
+	<message key="stats.dateRange.allDates">All dates</message>
+	<message key="stats.dateRange.apply">Apply</message>
+	<message key="stats.dateRange.change">Change date range</message>
+	<message key="stats.dateRange.customRange">Custom Range</message>
+	<message key="stats.dateRange.dateDoesNotExist">One of the dates entered does not exist.</message>
+	<message key="stats.dateRange.from">From</message>
+	<message key="stats.dateRange.instruction">Enter each date in the format YYYY-MM-DD. For example, if you want the date for 15 January, 2019, enter 2019-01-15.</message>
+	<message key="stats.dateRange.invalidDate">The date format is not valid. Enter each date in the format YYYY-MM-DD.</message>
+	<message key="stats.dateRange.invalidDateRange">The start date must be before the end date.</message>
+	<message key="stats.dateRange.invalidEndDateMax">The end date may not be later than {$date}.</message>
+	<message key="stats.dateRange.invalidStartDateMin">The start date may not be earlier than {$date}.</message>
+	<message key="stats.dateRange.last12Months">Last 12 months</message>
+	<message key="stats.dateRange.last30Days">Last 30 days</message>
+	<message key="stats.dateRange.last90Days">Last 90 days</message>
+	<message key="stats.dateRange.sinceDate">Since {$date}</message>
+	<message key="stats.dateRange.to">To</message>
+	<message key="stats.dateRange.untilDate">Until {$date}</message>
+	<message key="stats.fileViews">File Views</message>
+	<message key="stats.html">HTML</message>
+	<message key="stats.monthly">Monthly</message>
+	<message key="stats.pdf">PDF</message>
+	<message key="stats.searchSubmissionDescription">Search by title, author and ID</message>
+	<message key="stats.total">Total</message>
 </locale>

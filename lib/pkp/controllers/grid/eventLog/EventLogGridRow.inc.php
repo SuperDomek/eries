@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/eventLog/EventLogGridRow.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class EventLogGridRow
@@ -71,7 +71,12 @@ class EventLogGridRow extends GridRow {
 							}
 						}
 						if (!$blindAuthor) {
-							$this->addAction(new DownloadFileLinkAction($request, $submissionFile, null, __('common.download')));
+							$workflowStageId = $submissionFileDao->getWorkflowStageId($submissionFile);
+							// If a submission file is attached to a query that has been deleted, we cannot
+							// determine its stage. Don't present a download link in this case.
+							if ($workflowStageId || $submissionFile->getFileStage() != SUBMISSION_FILE_QUERY) {
+								$this->addAction(new DownloadFileLinkAction($request, $submissionFile, $submissionFileDao->getWorkflowStageId($submissionFile), __('common.download')));
+							}
 						}
 					}
 					break;
@@ -92,4 +97,4 @@ class EventLogGridRow extends GridRow {
 	}
 }
 
-?>
+

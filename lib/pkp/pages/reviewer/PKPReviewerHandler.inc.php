@@ -3,8 +3,8 @@
 /**
  * @file pages/reviewer/PKPReviewerHandler.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class PKPReviewerHandler
@@ -73,12 +73,7 @@ class PKPReviewerHandler extends Handler {
 			import("lib.pkp.classes.submission.reviewer.form.$formClass");
 
 			$reviewerForm = new $formClass($request, $reviewerSubmission, $reviewAssignment);
-
-			if ($reviewerForm->isLocaleResubmit()) {
-				$reviewerForm->readInputData();
-			} else {
-				$reviewerForm->initData();
-			}
+			$reviewerForm->initData();
 			return new JSONMessage(true, $reviewerForm->fetch($request));
 		} else {
 			$templateMgr = TemplateManager::getManager($request);
@@ -112,7 +107,7 @@ class PKPReviewerHandler extends Handler {
 		$reviewerForm->readInputData();
 
 		if ($reviewerForm->validate()) {
-			$reviewerForm->execute($request);
+			$reviewerForm->execute();
 			$json = new JSONMessage(true);
 			$json->setEvent('setStep', $step+1);
 			return $json;
@@ -179,7 +174,9 @@ class PKPReviewerHandler extends Handler {
 			LOCALE_COMPONENT_APP_SUBMISSION,
 			LOCALE_COMPONENT_APP_COMMON,
 			LOCALE_COMPONENT_PKP_GRID,
-			LOCALE_COMPONENT_PKP_REVIEWER
+			LOCALE_COMPONENT_PKP_REVIEWER,
+			LOCALE_COMPONENT_PKP_EDITOR,
+			LOCALE_COMPONENT_PKP_USER
 		);
 	}
 
@@ -195,4 +192,4 @@ class PKPReviewerHandler extends Handler {
 	}
 }
 
-?>
+

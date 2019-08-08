@@ -3,8 +3,8 @@
 /**
  * @file classes/user/form/PublicProfileForm.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class PublicProfileForm
@@ -24,7 +24,7 @@ class PublicProfileForm extends BaseProfileForm {
 	/**
 	 * Constructor.
 	 * @param $template string
-	 * @param $user PKPUser
+	 * @param $user User
 	 */
 	function __construct($user) {
 		parent::__construct('user/publicProfileForm.tpl', $user);
@@ -35,7 +35,7 @@ class PublicProfileForm extends BaseProfileForm {
 	}
 
 	/**
-	 * @copydoc Form::initData()
+	 * @copydoc BaseProfileForm::initData()
 	 */
 	function initData() {
 		$user = $this->getUser();
@@ -45,6 +45,8 @@ class PublicProfileForm extends BaseProfileForm {
 			'userUrl' => $user->getUrl(),
 			'biography' => $user->getBiography(null), // Localized
 		);
+
+		parent::initData();
 	}
 
 	/**
@@ -111,11 +113,9 @@ class PublicProfileForm extends BaseProfileForm {
 	}
 
 	/**
-	 * Fetch the form.
-	 * @param $request PKPRequest
-	 * @return string JSON-encoded form contents.
+	 * @copydoc BaseProfileForm::fetch
 	 */
-	function fetch($request) {
+	function fetch($request, $template = null, $display = false) {
 		$templateMgr = TemplateManager::getManager($request);
 
 		$publicFileManager = new PublicFileManager();
@@ -126,22 +126,22 @@ class PublicProfileForm extends BaseProfileForm {
 			'publicSiteFilesPath' => $publicFileManager->getSiteFilesPath(),
 		));
 
-		return parent::fetch($request);
+		return parent::fetch($request, $template, $display);
 	}
 
 	/**
 	 * Save public profile settings.
-	 * @param $request PKPRequest
 	 */
-	function execute($request) {
+	function execute() {
+		$request = Application::getRequest();
 		$user = $request->getUser();
 
 		$user->setOrcid($this->getData('orcid'));
 		$user->setUrl($this->getData('userUrl'));
 		$user->setBiography($this->getData('biography'), null); // Localized
 
-		parent::execute($request, $user);
+		parent::execute();
 	}
 }
 
-?>
+

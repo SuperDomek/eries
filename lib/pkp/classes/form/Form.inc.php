@@ -10,8 +10,8 @@
 /**
  * @file classes/form/Form.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class Form
@@ -189,11 +189,10 @@ class Form {
 				'isError' => !$this->isValid(),
 				'errors' => $this->getErrorsArray(),
 				'formLocales' => $this->supportedLocales,
-				'formLocale' => $this->getFormLocale(),
+				'formLocale' => $this->getDefaultFormLocale(),
 			)
 		));
 
-		$templateMgr->register_function('form_language_chooser', array($this, 'smartyFormLanguageChooser'));
 		if ($display) {
 			$templateMgr->display($this->_template);
 			$returner = null;
@@ -225,7 +224,6 @@ class Form {
 		if (is_array($key)) foreach($key as $aKey => $aValue) {
 			$this->setData($aKey, $aValue);
 		} else {
-			if (is_string($value)) $value = Core::cleanVar($value);
 			$this->_data[$key] = $value;
 		}
 	}
@@ -286,8 +284,7 @@ class Form {
 		}
 
 		if (!defined('SESSION_DISABLE_INIT')) {
-			$application = PKPApplication::getApplication();
-			$request = $application->getRequest();
+			$request = Application::getRequest();
 			$user = $request->getUser();
 
 			if (!$this->isValid() && $user) {
@@ -334,16 +331,6 @@ class Form {
 	}
 
 	/**
-	 * Determine whether or not the current request results from a resubmit
-	 * of locale data resulting from a form language change.
-	 * @return boolean
-	 */
-	function isLocaleResubmit() {
-		$formLocale = Request::getUserVar('formLocale');
-		return (!empty($formLocale));
-	}
-
-	/**
 	 * Get the default form locale.
 	 * @return string
 	 */
@@ -362,15 +349,17 @@ class Form {
 	}
 
 	/**
-	 * Get the current form locale.
-	 * @return string
+	 * Add a supported locale.
+	 * @param $supportedLocale string
 	 */
-	function getFormLocale() {
-		$formLocale = Request::getUserVar('formLocale');
-		if (!$formLocale || !isset($this->supportedLocales[$formLocale])) {
-			$formLocale = $this->getDefaultFormLocale();
+	function addSupportedFormLocale($supportedLocale) {
+		if (!in_array($supportedLocale, $this->supportedLocales)) {
+			$site = Application::getRequest()->getSite();
+			$siteSupportedLocales = $site->getSupportedLocaleNames();
+			if (array_key_exists($supportedLocale, $siteSupportedLocales)) {
+				$this->supportedLocales[$supportedLocale] = $siteSupportedLocales[$supportedLocale];
+			}
 		}
-		return $formLocale;
 	}
 
 	/**
@@ -437,35 +426,6 @@ class Form {
 		return $this->errorsArray;
 	}
 
-	/**
-	 * Add hidden form parameters for the localized fields for this form
-	 * and display the language chooser field
-	 * @param $params array
-	 * @param $smarty object
-	 */
-	function smartyFormLanguageChooser($params, &$smarty) {
-		$returner = '';
-
-		// Print back all non-current language field values so that they
-		// are not lost.
-		$formLocale = $this->getFormLocale();
-		foreach ($this->getLocaleFieldNames() as $field) {
-			$values = $this->getData($field);
-			if (!is_array($values)) continue;
-			foreach ($values as $locale => $value) {
-				if ($locale != $formLocale) $returner .= $this->_decomposeArray($field, $value, array($locale));
-			}
-		}
-
-		// Display the language selector widget.
-		$returner .= '<div id="languageSelector"><select size="1" name="formLocale" id="formLocale" onchange="changeFormAction(\'' . htmlentities($params['form'], ENT_COMPAT, LOCALE_ENCODING) . '\', \'' . htmlentities($params['url'], ENT_QUOTES, LOCALE_ENCODING) . '\')" class="selectMenu">';
-		foreach ($this->supportedLocales as $locale => $name) {
-			$returner .= '<option ' . ($locale == $formLocale?'selected="selected" ':'') . 'value="' . htmlentities($locale, ENT_COMPAT, LOCALE_ENCODING) . '">' . htmlentities($name, ENT_COMPAT, LOCALE_ENCODING) . '</option>';
-		}
-		$returner .= '</select></div>';
-		return $returner;
-	}
-
 	//
 	// Private helper methods
 	//
@@ -499,4 +459,4 @@ class Form {
 	}
 }
 
-?>
+

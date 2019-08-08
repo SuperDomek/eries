@@ -3,8 +3,8 @@
 /**
  * @file classes/services/PKPBaseEntityPropertyService.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class PKPBaseEntityPropertyService
@@ -15,6 +15,7 @@
 
 namespace PKP\Services\EntityProperties;
 
+use \DBResultRange;
 use \PKP\Services\Exceptions\InvalidServiceException;
 
 abstract class PKPBaseEntityPropertyService implements EntityPropertyInterface {
@@ -78,5 +79,17 @@ abstract class PKPBaseEntityPropertyService implements EntityPropertyInterface {
 		}
 
 		return sprintf('%s?journal=%s&endpoint=%s/%s', $baseUrl, $contextPath, $fullBaseEndpoint, $endpointParams);
+	}
+
+	/**
+	 * @param $args array
+	 * @return string
+	 */
+	protected function getRangeByArgs($args) {
+		$range = null;
+		if (isset($args['count'])) {
+			$range = new DBResultRange($args['count'], null, isset($args['offset'])?$args['offset']:0);
+		}
+		return $range;
 	}
 }

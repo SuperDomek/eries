@@ -3,8 +3,8 @@
 /**
  * @file classes/payment/ojs/OJSCompletedPaymentDAO.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class OJSCompletedPaymentDAO
@@ -125,8 +125,8 @@ class OJSCompletedPaymentDAO extends DAO {
 		if ($assocId) $params[] = (int) $assocId;
 		$result = $this->retrieve(
 			'SELECT * FROM completed_payments WHERE 1=1' .
-			($paymentType?' AND payment_type = ?':'') .
 			($userId?' AND user_id = ?':'') .
+			($paymentType?' AND payment_type = ?':'') .
 			($assocId?' AND assoc_id = ?':''),
 			$params
 		);

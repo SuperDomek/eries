@@ -4,8 +4,8 @@
 <!--
   * locale/de_DE/editor.xml
   *
-  * Copyright (c) 2013-2018 Simon Fraser University
-  * Copyright (c) 2003-2018 John Willinsky
+  * Copyright (c) 2013-2019 Simon Fraser University
+  * Copyright (c) 2003-2019 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   * Localization information: https://pkp.sfu.ca/wiki/index.php?title=OJS:_German_(de_DE)
   * Localization strings.
@@ -147,4 +147,5 @@
 	<message key="editor.submission.editorial.finalDraftDescription"><![CDATA[Endgültige Entwurfsdateien in dieser Liste werden durch eine/n Lektor/in in lektorierte Versionen umgewandelt und unter <span class="pkp_help_title">Lektorat</span> hochgeladen.]]></message>
 	<message key="editor.submission.proof.manageProofFilesDescription">Alle Dateien, die bisher zu irgendeiner Phase der Einreichung hochgeladen worden sind, können zur Korrekturliste hinzugefügt werden, indem die Auswahlbox unten angeklickt wird und auf Suchen geklickt wird: Alle verfügbaren Dateien werden aufgelistet und können ausgewählt werden.</message>
 	<message key="editor.publicIdentificationExistsForTheSameType">Die öffentliche Kennung '{$publicIdentifier}' wird bereits für ein Objekt des selben Typs verwendet. Bitte wählen Sie innerhalb Ihrer Zeitschrift eindeutige Kennungen für Objekte gleichen Typs.</message>
+	<message key="editor.article.coverImage">Titelbild</message>
 </locale>

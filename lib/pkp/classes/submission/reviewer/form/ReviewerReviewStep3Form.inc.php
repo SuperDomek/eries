@@ -3,8 +3,8 @@
 /**
  * @file classes/submission/reviewer/form/ReviewerReviewStep3Form.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class ReviewerReviewStep3Form
@@ -39,7 +39,7 @@ class ReviewerReviewStep3Form extends ReviewerReviewForm {
 	}
 
 	/**
-	 * Initialize the form data.
+	 * @copydoc ReviewerReviewForm::initData
 	 */
 	function initData() {
 		$reviewAssignment = $this->getReviewAssignment();
@@ -49,11 +49,11 @@ class ReviewerReviewStep3Form extends ReviewerReviewForm {
 
 		$submissionComments = $submissionCommentDao->getReviewerCommentsByReviewerId($reviewAssignment->getSubmissionId(), $reviewAssignment->getReviewerId(), $reviewAssignment->getId(), true);
 		$submissionComment = $submissionComments->next();
-		$this->setData('comment', $submissionComment?$submissionComment->getComments():'');
+		$this->setData('comments', $submissionComment?$submissionComment->getComments():'');
 
 		$submissionCommentsPrivate = $submissionCommentDao->getReviewerCommentsByReviewerId($reviewAssignment->getSubmissionId(), $reviewAssignment->getReviewerId(), $reviewAssignment->getId(), false);
 		$submissionCommentPrivate = $submissionCommentsPrivate->next();
-		$this->setData('commentPrivate', $submissionCommentPrivate?$submissionCommentPrivate->getComments():'');
+		$this->setData('commentsPrivate', $submissionCommentPrivate?$submissionCommentPrivate->getComments():'');
 	}
 
 	//
@@ -69,9 +69,9 @@ class ReviewerReviewStep3Form extends ReviewerReviewForm {
 	}
 
 	/**
-	 * @see Form::fetch()
+	 * @copydoc ReviewerReviewForm::fetch()
 	 */
-	function fetch($request) {
+	function fetch($request, $template = null, $display = false) {
 		$templateMgr = TemplateManager::getManager($request);
 		$reviewAssignment = $this->getReviewAssignment();
 
@@ -105,15 +105,14 @@ class ReviewerReviewStep3Form extends ReviewerReviewForm {
 		if ($viewReviewGuidelinesAction->getGuidelines()) {
 			$templateMgr->assign('viewGuidelinesAction', $viewReviewGuidelinesAction);
 		}
-		return parent::fetch($request);
+		return parent::fetch($request, $template, $display);
 	}
 
 	/**
 	 * @see Form::execute()
-	 * @param $request PKPRequest
 	 */
-	function execute($request) {
-		$reviewAssignment =& $this->getReviewAssignment();
+	function execute() {
+		$reviewAssignment = $this->getReviewAssignment();
 		$notificationMgr = new NotificationManager();
 		if ($reviewAssignment->getReviewFormId()) {
 			$reviewFormResponseDao = DAORegistry::getDAO('ReviewFormResponseDAO');
@@ -191,30 +190,30 @@ class ReviewerReviewStep3Form extends ReviewerReviewForm {
 			}
 			unset($comment);
 
-			$submissionDao = Application::getSubmissionDAO();
-			$submission = $submissionDao->getById($reviewAssignment->getSubmissionId());
+		}
 
-			$stageAssignmentDao = DAORegistry::getDAO('StageAssignmentDAO');
-			$stageAssignments = $stageAssignmentDao->getBySubmissionAndStageId($submission->getId(), $submission->getStageId());
-			$userGroupDao = DAORegistry::getDAO('UserGroupDAO');
-			$router = $request->getRouter();
-			$context = $router->getContext($request);
-			$receivedList = array(); // Avoid sending twice to the same user.
+		// Send notification
+		$submissionDao = Application::getSubmissionDAO();
+		$submission = $submissionDao->getById($reviewAssignment->getSubmissionId());
 
-			while ($stageAssignment = $stageAssignments->next()) {
-				$userId = $stageAssignment->getUserId();
-				$userGroup = $userGroupDao->getById($stageAssignment->getUserGroupId(), $submission->getContextId());
+		$stageAssignmentDao = DAORegistry::getDAO('StageAssignmentDAO');
+		$stageAssignments = $stageAssignmentDao->getBySubmissionAndStageId($submission->getId(), $submission->getStageId());
+		$userGroupDao = DAORegistry::getDAO('UserGroupDAO');
+		$receivedList = array(); // Avoid sending twice to the same user.
 
-				// Never send reviewer comment notification to users other than mangers and editors.
-				if (!in_array($userGroup->getRoleId(), array(ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR)) || in_array($userId, $receivedList)) continue;
+		while ($stageAssignment = $stageAssignments->next()) {
+			$userId = $stageAssignment->getUserId();
+			$userGroup = $userGroupDao->getById($stageAssignment->getUserGroupId(), $submission->getContextId());
 
-				$notificationMgr->createNotification(
-					$request, $userId, NOTIFICATION_TYPE_REVIEWER_COMMENT,
-					$submission->getContextId(), ASSOC_TYPE_REVIEW_ASSIGNMENT, $reviewAssignment->getId()
-				);
+			// Never send reviewer comment notification to users other than mangers and editors.
+			if (!in_array($userGroup->getRoleId(), array(ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR)) || in_array($userId, $receivedList)) continue;
 
-				$receivedList[] = $userId;
-			}
+			$notificationMgr->createNotification(
+				Application::getRequest(), $userId, NOTIFICATION_TYPE_REVIEWER_COMMENT,
+				$submission->getContextId(), ASSOC_TYPE_REVIEW_ASSIGNMENT, $reviewAssignment->getId()
+			);
+
+			$receivedList[] = $userId;
 		}
 
 		// Set review to next step.
@@ -244,4 +243,4 @@ class ReviewerReviewStep3Form extends ReviewerReviewForm {
 	}
 }
 
-?>
+

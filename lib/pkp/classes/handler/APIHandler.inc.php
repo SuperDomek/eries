@@ -3,8 +3,8 @@
 /**
  * @file lib/pkp/classes/handler/APIHandler.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class APIHandler
@@ -23,7 +23,6 @@ class APIHandler extends PKPHandler {
 	protected $_request;
 	protected $_endpoints = array();
 	protected $_slimRequest = null;
-	protected $_apiToken = null;
 
 	/** @var string The endpoint pattern for this handler */
 	protected $_pathPattern;
@@ -99,23 +98,6 @@ class APIHandler extends PKPHandler {
 	 */
 	public function getRequest() {
 		return $this->_request;
-	}
-
-	/**
-	 * Return API token string
-	 *
-	 * @return string|null
-	 */
-	public function getApiToken() {
-		return $this->_apiToken;
-	}
-
-	/**
-	 * Set API token string
-	 *
-	 */
-	public function setApiToken($apiToken) {
-		return $this->_apiToken = $apiToken;
 	}
 
 	/**
@@ -232,4 +214,4 @@ class APIHandler extends PKPHandler {
 	}
 }
 
-?>
+

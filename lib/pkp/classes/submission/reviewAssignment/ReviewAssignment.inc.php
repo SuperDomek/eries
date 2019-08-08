@@ -3,8 +3,8 @@
 /**
  * @file classes/submission/reviewAssignment/ReviewAssignment.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class ReviewAssignment
@@ -413,7 +413,7 @@ class ReviewAssignment extends DataObject {
 
 	/**
 	 * Get quality.
-	 * @return int
+	 * @return int|null
 	 */
 	function getQuality() {
 		return $this->getData('quality');
@@ -421,7 +421,7 @@ class ReviewAssignment extends DataObject {
 
 	/**
 	 * Set quality.
-	 * @param $quality int
+	 * @param $quality int|null
 	 */
 	function setQuality($quality) {
 		$this->setData('quality', $quality);
@@ -469,16 +469,25 @@ class ReviewAssignment extends DataObject {
 		if ($this->getDeclined()) {
 			return REVIEW_ASSIGNMENT_STATUS_DECLINED;
 		} elseif (!$this->getDateCompleted()) {
+			$dueTimes = array_map(function($dateTime) {
+					// If no due time, set it to the end of the day
+					if (substr($dateTime, 11) === '00:00:00') {
+						$dateTime = substr($dateTime, 0, 11) . '23:59:59';
+					}
+					return strtotime($dateTime);
+				}, array($this->getDateResponseDue(), $this->getDateDue()));
+			$responseDueTime = $dueTimes[0];
+			$reviewDueTime = $dueTimes[1];
 			if (!$this->getDateConfirmed()){ // no response
-				if($this->getDateResponseDue() < Core::getCurrentDate(strtotime('tomorrow'))) { // response overdue
+				if($responseDueTime < time()) { // response overdue
 					return REVIEW_ASSIGNMENT_STATUS_RESPONSE_OVERDUE;
-				} elseif ($this->getDateDue() < Core::getCurrentDate(strtotime('tomorrow'))) { // review overdue but not response
+				} elseif ($reviewDueTime < strtotime('tomorrow')) { // review overdue but not response
 					return REVIEW_ASSIGNMENT_STATUS_REVIEW_OVERDUE;
 				} else { // response not due yet
 					return REVIEW_ASSIGNMENT_STATUS_AWAITING_RESPONSE;
 				}
 			} else { // response given
-				if ($this->getDateDue() < Core::getCurrentDate(strtotime('tomorrow'))) { // review due
+				if ($reviewDueTime < strtotime('tomorrow')) { // review due
 					return REVIEW_ASSIGNMENT_STATUS_REVIEW_OVERDUE;
 				} else {
 					return REVIEW_ASSIGNMENT_STATUS_ACCEPTED;
@@ -582,6 +591,33 @@ class ReviewAssignment extends DataObject {
 		return '';
 	}
 
+	/**
+	 * Get the translation key for the review method
+	 *
+	 * @param $method int|null Optionally pass a method to retrieve a specific key.
+	 *  Default will return the key for the current review method
+	 * @return string
+	 */
+	public function getReviewMethodKey($method = null) {
+
+		if (is_null($method)) {
+			$method = $this->getReviewMethod();
+		}
+
+		switch ($method) {
+			case SUBMISSION_REVIEW_METHOD_OPEN:
+				return 'editor.submissionReview.open';
+			case SUBMISSION_REVIEW_METHOD_BLIND:
+				return 'editor.submissionReview.blind';
+			case SUBMISSION_REVIEW_METHOD_DOUBLEBLIND:
+				return 'editor.submissionReview.doubleBlind';
+		}
+
+		assert(false, 'No review method key could be found for ' . get_class($this) . ' on ' . __LINE__);
+
+		return '';
+	}
+
 	//
 	// Files
 	//
@@ -602,6 +638,7 @@ class ReviewAssignment extends DataObject {
 	 * @return array recommendation => localeString
 	 */
 	function getReviewerRecommendationOptions() {
+
 		// EDIT filter the recommendation types
 		static $reviewerRecommendationOptions = array(
 				'' => 'common.chooseOne',
@@ -609,7 +646,7 @@ class ReviewAssignment extends DataObject {
 				SUBMISSION_REVIEWER_RECOMMENDATION_PENDING_REVISIONS => 'reviewer.article.decision.pendingRevisions',
 				//SUBMISSION_REVIEWER_RECOMMENDATION_RESUBMIT_HERE => 'reviewer.article.decision.resubmitHere',
 				//SUBMISSION_REVIEWER_RECOMMENDATION_RESUBMIT_ELSEWHERE => 'reviewer.article.decision.resubmitElsewhere',
-				SUBMISSION_REVIEWER_RECOMMENDATION_DECLINE => 'reviewer.article.decision.decline'
+				SUBMISSION_REVIEWER_RECOMMENDATION_DECLINE => 'reviewer.article.decision.decline',
 				//SUBMISSION_REVIEWER_RECOMMENDATION_SEE_COMMENTS => 'reviewer.article.decision.seeComments'
 		);
 		return $reviewerRecommendationOptions;
@@ -628,5 +665,3 @@ class ReviewAssignment extends DataObject {
 		}
 	}
 }
-
-?>

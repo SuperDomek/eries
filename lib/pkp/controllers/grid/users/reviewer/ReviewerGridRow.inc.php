@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/users/reviewer/ReviewerGridRow.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class ReviewerGridRow
@@ -49,8 +49,8 @@ class ReviewerGridRow extends GridRow {
 
 		// Authors can't perform any actions on blind reviews
 		$reviewAssignment = $this->getData();
-		$isAuthorBlind = in_array($reviewAssignment->getReviewMethod(), array(SUBMISSION_REVIEW_METHOD_BLIND, SUBMISSION_REVIEW_METHOD_DOUBLEBLIND));
-		if ($this->_isCurrentUserAssignedAuthor && $isAuthorBlind) {
+		$isReviewBlind = in_array($reviewAssignment->getReviewMethod(), array(SUBMISSION_REVIEW_METHOD_BLIND, SUBMISSION_REVIEW_METHOD_DOUBLEBLIND));
+		if ($this->_isCurrentUserAssignedAuthor && $isReviewBlind) {
 			return;
 		}
 
@@ -109,7 +109,6 @@ class ReviewerGridRow extends GridRow {
 					)
 				);
 
-				$reviewAssignment = $this->getData();
 				// Only assign this action if the reviewer has not acknowledged yet.
 				if (!$reviewAssignment->getDateConfirmed()) {
 					$this->addAction(
@@ -140,12 +139,34 @@ class ReviewerGridRow extends GridRow {
 				)
 			);
 
+			$user = $request->getUser();
+			if (
+				!Validation::isLoggedInAs() &&
+				$user->getId() != $reviewAssignment->getReviewerId() &&
+				Validation::canAdminister($reviewAssignment->getReviewerId(), $user->getId())
+			) {
+				$dispatcher = $router->getDispatcher();
+				import('lib.pkp.classes.linkAction.request.RedirectConfirmationModal');
+				$this->addAction(
+					new LinkAction(
+						'logInAs',
+						new RedirectConfirmationModal(
+							__('grid.user.confirmLogInAs'),
+							__('grid.action.logInAs'),
+							$dispatcher->url($request, ROUTE_PAGE, null, 'login', 'signInAsUser', $reviewAssignment->getReviewerId())
+						),
+						__('grid.action.logInAs'),
+						'enroll_user'
+					)
+				);
+			}
+
 			// Add gossip action when appropriate
 			import('classes.core.ServicesContainer');
 			$canCurrentUserGossip = ServicesContainer::instance()
 				->get('user')
 				->canCurrentUserGossip($reviewAssignment->getReviewerId());
-			if ($canCurrentUserGossip && !$isAuthorBlind) {
+			if ($canCurrentUserGossip) {
 				$this->addAction(
 					new LinkAction(
 						'gossip',
@@ -163,4 +184,4 @@ class ReviewerGridRow extends GridRow {
 	}
 }
 
-?>
+

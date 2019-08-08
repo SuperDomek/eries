@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/users/author/AuthorGridHandler.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class AuthorGridHandler
@@ -387,11 +387,11 @@ class AuthorGridHandler extends GridHandler {
 			// Form handling.
 			import('lib.pkp.controllers.grid.settings.user.form.UserDetailsForm');
 			$userForm = new UserDetailsForm($request, null, $author);
-			$userForm->initData($args, $request);
+			$userForm->initData();
 
-			return new JSONMessage(true, $userForm->display($args, $request));
+			return new JSONMessage(true, $userForm->display($request));
 		}
 	}
 }
 
-?>
+

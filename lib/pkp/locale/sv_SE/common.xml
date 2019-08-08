@@ -4,15 +4,15 @@
 <!--
   * locale/sv_SE/common.xml
   *
-  * Copyright (c) 2014-2018 Simon Fraser University
-  * Copyright (c) 2000-2018 John Willinsky
+  * Copyright (c) 2014-2019 Simon Fraser University
+  * Copyright (c) 2000-2019 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   * Localization information: https://pkp.sfu.ca/wiki/index.php?title=OJS:_Swedish_(sv_SE)
   * Localization strings.
   -->
 
 <locale name="sv_SE" full_name="Svenska">
-  <message key="common.publicKnowledgeProject">Public Knowledge Project</message>
+	<message key="common.publicKnowledgeProject">Public Knowledge Project</message>
 	<message key="common.currentStyleSheet">Aktuell stilmall</message>
 	<message key="about.description">Beskrivning</message>
 	<message key="about.guidelines">Riktlinjer</message>
@@ -79,18 +79,18 @@
 	<message key="common.captchaField">Validering</message>
 	<message key="common.ccLicense"><![CDATA[
 		<br /><br />
-		<a target="_blank" rel="license" href="http://creativecommons.org/licenses/by/3.0/">
+		<a target="_blank" rel="license" href="https://creativecommons.org/licenses/by/3.0/">
 			<img alt="Creative Commons-licens" style="border-width:0" src="//i.creativecommons.org/l/by/3.0/80x15.png"/>
 		</a>
 		<br />
-		Detta verk är licensierat under en <a rel="license" target="_blank" href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Erkännande Attribution 3.0-licens</a>.
+		Detta verk är licensierat under en <a rel="license" target="_blank" href="https://creativecommons.org/licenses/by/3.0/">Creative Commons Erkännande Attribution 3.0-licens</a>.
 	]]></message>
 	<message key="common.ccLicense.rt"><![CDATA[
 	<div class="rtBlock">
 		<br />
-		<a rel="license" href="http://creativecommons.org/licenses/by/3.0/" target="_blank"><img alt="Creative Commons License" style="border-width:0" src="//i.creativecommons.org/l/by/3.0/80x15.png" /></a>
+		<a rel="license" href="https://creativecommons.org/licenses/by/3.0/" target="_blank"><img alt="Creative Commons License" style="border-width:0" src="//i.creativecommons.org/l/by/3.0/80x15.png" /></a>
 		<br />
-		Detta verk är licensierat under en <a rel="license" target="_blank" href="http://creativecommons.org/licenses/by/3.0/">Creative Commons Erkännande Attribution 3.0-licens</a>.
+		Detta verk är licensierat under en <a rel="license" target="_blank" href="https://creativecommons.org/licenses/by/3.0/">Creative Commons Erkännande Attribution 3.0-licens</a>.
 	</div>
 	]]></message>
 	<message key="common.changesSaved">Dina ändringar sparades.</message>
@@ -173,7 +173,8 @@
 	<message key="common.languages">Språk</message>
 	<message key="common.less">Färre</message>
 	<message key="common.lessThan">{$value} eller färre</message>
-	<message key="common.listSeparator">, </message>
+	<message key="common.commaListSeparator">, </message>
+	<message key="common.semicolonListSeparator">; </message>
 	<message key="common.manage">Administrera</message>
 	<message key="common.mailingAddress">Adress</message>
 	<message key="common.billingAddress">Faktureringsadress (om annan)</message>
@@ -214,7 +215,6 @@
 	<message key="common.pluginDisabled">Pluginet "{$pluginName}" har avaktiverats.</message>
 	<message key="common.prefix">Prefix</message>
 	<message key="common.prefixAndTitle.tip">Exempel: En, Det, Den</message>
-	<message key="common.subtitle.tip">Undertiteln, som är frivillig, kommer att visas efter huvudtiteln, separerad med kolon (:).</message>
 	<message key="common.preview">Förhandsgranska</message>
 	<message key="common.publisher">Utgivare</message>
 	<message key="common.quality">Kvalitet</message>
@@ -252,7 +252,6 @@
 	<message key="common.size">Storlek</message>
 	<message key="common.source">Källa</message>
 	<message key="common.status">Status</message>
-	<message key="common.startTyping">Börja skriva</message>
 	<message key="common.subject">Ämne</message>
 	<message key="common.subjects">Ämnen</message>
 	<message key="common.subtitle">Undertitel</message>
@@ -449,14 +448,6 @@
 	<message key="notification.confirmError">Det uppstod ett problem när din prenumeration skulle bekräftas.</message>
 	<message key="notification.confirmSuccess">Registreringen av din prenumeration är nu färdig.</message>
 	<message key="notification.email">Sluta skicka den här typen av meddelanden till min e-postadress.</message>
-	<message key="notification.location">Gå till URL</message>
-	<message key="notification.mailList">E-postlista för aviseringar</message>
-	<message key="notification.mailList.emailInvalid">Vänligen skriv in en giltig e-postadress.</message>
-	<message key="notification.mailList.privacyProtection">Sekretesspolicy</message>
-	<message key="notification.mailList.protectedContent"><![CDATA[<a href="{$subscribeUrl}">Prenumerera</a> på låst material.]]></message>
-	<message key="notification.mailList.submit"><![CDATA[<a href="{$submitUrl}">Skicka in</a> en artikel]]></message>
-	<message key="notification.mailList.register">Du kan registrera dig på den här webbplatsen för att...</message>
-	<message key="notification.mailList.review"><![CDATA[Delta i <a href="{$reviewUrl}">sakkunniggranskninggs</a>processen]]></message>
 	<message key="notification.noneExist">Du har inga aviseringar just nu.</message>
 	<message key="notification.addedNote">Anteckning skickad.</message>
 	<message key="notification.removedNote">Antagning borttagen.</message>
@@ -464,19 +455,11 @@
 	<message key="notification.removedSubmission">Tog bort bidrag.</message>
 	<message key="notification.notification">Avisering</message>
 	<message key="notification.notifications">Aviseringar</message>
-	<message key="notification.notificationsNew">({$numNew} nytt)</message>
-	<message key="notification.notificationsDescription">Du har {$unreadCount} olästa aviseringar och {$readCount} lästa aviseringar.<![CDATA[  <a href="{$settingsUrl}">Klicka här</a> för att ändra dina inställningar för aviseringar.]]></message>
 	<message key="notification.sentNotification">Avisering skickad.</message>
 	<message key="notification.settings">Inställningar för aviseringar</message>
 	<message key="notification.settingsDescription">Välj de systemhändelser som du vill bli aviserad om. Om du kryssar ur en händelse dyker inga aviseringar för den händelsen upp i systemet eller via e-post. Ikryssade händelser dyker upp i systemet och du kan välja om du vill få aviseringen även via e-post eller inte.</message>
-	<message key="notification.subscribe">Prenumerera</message>
-	<message key="notification.subscribeError">Din e-postadress prenumererar redan på aviseringar.</message>
-	<message key="notification.subscribeSuccess">Ett e-postmeddelande har skickats till adressen du angav. Vänligen klicka på bekräftelselänken i e-postmeddelandet för att lägga till dig i e-postlistan.</message>
 	<message key="notification.reminderError">Det uppstod ett fel vid utskick av lösenord till dig, vänligen dubbelkolla att den e-postadress du angivit verkligen stämmer.</message>
 	<message key="notification.reminderSent">Ditt nya lösenord har skickats till e-postadressen du angivit.</message>
-	<message key="notification.unsubscribe">Avsluta prenumeration</message>
-	<message key="notification.unsubscribeError">Det uppstod ett fel när din prenumeration skulle avslutas. Vänligen dubbelkolla att du använder korrekt URL, som den stod i e-postmeddelandet med aviseringen.</message>
-	<message key="notification.unsubscribeSuccess">Din prenumeration avslutades utan problem.</message>
 	<message key="notification.savedSubmissionMetadata">Metadata för bidrag sparat.</message>
 	<message key="notification.sendNotificationConfirmation">Skicka e-postmeddelande med avisering till alla registrerade användare.</message>
 	<message key="search.author">Författare</message>
@@ -544,6 +527,7 @@
 	<message key="notification.addedStageParticipant">Användaren tillagd som deltagare i steget.</message>
 	<message key="notification.type.newAnnouncement">Nytt meddelande.</message>
 	<message key="notification.type.reviewAssignment">Väntar på granskning.</message>
+	<message key="notification.type.reviewAssignmentUpdated">Granskningsuppdrag uppdaterat.</message>
 	<message key="notification.type.auditorRequest">Förfrågan om manusgranskning av "{$file}"</message>
 	<message key="notification.type.allReviewsIn">Alla granskningar har kommit in och ett beslut behövs vid {$stage}.</message>
 	<message key="notification.type.allRevisionsIn">En bearbetad fil har laddats upp för redaktionell bedömning av dig vid {$stage}.</message>
@@ -572,7 +556,7 @@
 	<message key="notification.addedNavigationMenu">Navigationsmeny tillagd.</message>
 	<message key="notification.editedNavigationMenu">Navigationsmeny uppdaterad.</message>
 	<message key="notification.removedNavigationMenu">Navigationsmeny borttagen.</message>
-	
+
 	<!-- List Handlers -->
 	<message key="list.viewMore">Visa mer detaljer om {$name}</message>
 	<message key="list.viewLess">Göm visade detaljer om {$name}</message>

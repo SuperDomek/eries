@@ -3,8 +3,8 @@
 /**
  * @file classes/navigationMenu/NavigationMenuItem.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class NavigationMenuItem
@@ -31,6 +31,7 @@ define('NMI_TYPE_USER_DASHBOARD',	'NMI_TYPE_USER_DASHBOARD');
 define('NMI_TYPE_USER_REGISTER',	'NMI_TYPE_USER_REGISTER');
 define('NMI_TYPE_USER_LOGIN',	'NMI_TYPE_USER_LOGIN');
 define('NMI_TYPE_SEARCH',	'NMI_TYPE_SEARCH');
+define('NMI_TYPE_PRIVACY',	'NMI_TYPE_PRIVACY');
 
 class NavigationMenuItem extends DataObject {
 	/** @var $navigationMenuItems array The navigationMenuItems underneath this navigationMenuItem */
@@ -206,6 +207,22 @@ class NavigationMenuItem extends DataObject {
 	function setIsChildVisible($isChildVisible) {
 		$this->_isChildVisible = $isChildVisible;
 	}
+
+	/**
+	 * Get the titleLocaleKey of the navigation Menu.
+	 * @return string
+	 */
+	function getTitleLocaleKey() {
+		return $this->getData('titleLocaleKey');
+	}
+
+	/**
+	 * Set titleLocaleKey for this navigation menu item.
+	 * @param $titleLocaleKey string
+	 */
+	function setTitleLocaleKey($titleLocaleKey) {
+		return $this->setData('titleLocaleKey', $titleLocaleKey);
+	}
 }
 
-?>
+

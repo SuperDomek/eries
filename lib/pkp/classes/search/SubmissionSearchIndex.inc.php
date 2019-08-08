@@ -3,8 +3,8 @@
 /**
  * @file classes/search/SubmissionSearchIndex.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class SubmissionSearchIndex
@@ -36,16 +36,14 @@ class SubmissionSearchIndex {
 		// Join multiple lines into a single string
 		if (is_array($text)) $text = join("\n", $text);
 
-		$cleanText = Core::cleanVar($text);
-
 		// Remove punctuation
-		$cleanText = PKPString::regexp_replace('/[!"\#\$%\'\(\)\.\?@\[\]\^`\{\}~]/', '', $cleanText);
-		$cleanText = PKPString::regexp_replace('/[\+,:;&\/<=>\|\\\]/', ' ', $cleanText);
-		$cleanText = PKPString::regexp_replace('/[\*]/', $allowWildcards ? '%' : ' ', $cleanText);
-		$cleanText = PKPString::strtolower($cleanText);
+		$text = PKPString::regexp_replace('/[!"\#\$%\'\(\)\.\?@\[\]\^`\{\}~]/', '', $text);
+		$text = PKPString::regexp_replace('/[\+,:;&\/<=>\|\\\]/', ' ', $text);
+		$text = PKPString::regexp_replace('/[\*]/', $allowWildcards ? '%' : ' ', $text);
+		$text = PKPString::strtolower($text);
 
 		// Split into words
-		$words = PKPString::regexp_split('/\s+/', $cleanText);
+		$words = PKPString::regexp_split('/\s+/', $text);
 
 		// FIXME Do not perform further filtering for some fields, e.g., author names?
 
@@ -84,4 +82,4 @@ class SubmissionSearchIndex {
 	}
 }
 
-?>
+

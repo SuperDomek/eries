@@ -4,8 +4,8 @@
 <!--
   * locale/fr_FR/emailTemplates.xml
   *
-  * Copyright (c) 2014-2018 Simon Fraser University
-  * Copyright (c) 2003-2018 John Willinsky
+  * Copyright (c) 2014-2019 Simon Fraser University
+  * Copyright (c) 2003-2019 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   *
   * Localized email templates XML file.
@@ -25,9 +25,10 @@ Réinitialisation du mot de passe : {$url}<br />
 	</email_text>
 	<email_text key="PASSWORD_RESET">
 		<subject>Réinitialisation du mot de passe</subject>
-		<body><![CDATA[Votre mot de passe pour le site Web {$siteTitle} a été réinitialisé avec succès. Veuillez conserver précieusement votre nom d'utilisateur ainsi que votre mot de passe. Vous en aurez besoin pour chacune de vos interactions avec la revue.<br />
+		<body><![CDATA[Votre mot de passe pour le site Web {$siteTitle} a été réinitialisé avec succès. Ce mot de passe est temporaire, vous devrez le changer à la prochaine utilisation.<br />
 <br />
 Votre nom d'utilisateur : {$username}<br />
+Mot de passe temporaire : {$password}<br />
 <br />
 {$principalContactSignature}]]></body>
 		<description><![CDATA[Ce courriel est envoyé aux utilisateurs inscrits lorsqu'ils ont réussi à réinitialiser leur mot de passe en ayant suivi la procédure décrite dans le courriel « Confirmation de la réinitialisation du mot de passe ».]]></description>
@@ -574,38 +575,13 @@ Lien: {$url}<br />
 {$principalContactSignature}]]></body>
 		<description>Ce courriel est envoyé aux utilisateurs inscrits qui ont choisi de recevoir par courriel ce type d'avis.</description>
 	</email_text>
-	<email_text key="NOTIFICATION_MAILLIST">
-		<subject>Nouvel avis de {$siteTitle}</subject>
-		<body><![CDATA[Vous avez un avis de {$siteTitle}:<br />
---<br />
-{$notificationContents}<br />
-<br />
-Lien: {$url}<br />
---<br />
-<br />
-Si vous souhaitez ne plus recevoir d'avis par courriel, veuillez aller à {$unsubscribeLink} et saisir votre adresse de courriel et mot de passe.<br />
-<br />
-{$principalContactSignature}]]></body>
-		<description>Ce courriel est envoyé aux utilisateurs non inscrits sur la liste de diffusion d'avis.</description>
-	</email_text>
-	<email_text key="NOTIFICATION_MAILLIST_WELCOME">
-		<subject>Bienvenue à la liste de diffusion de {$siteTitle}!</subject>
-		<body><![CDATA[Vous vous êtes inscrits pour recevoir des avis de {$siteTitle}.<br />
-<br />
-Veuillez cliquer sur ce lien pour confirmer votre demande et ajouter votre adresse de courriel à la liste de diffusion : {$confirmLink}<br />
-<br />
-Si vous souhaitez  arrêter l'envoi d'avis par courriels, veuillez aller à {$unsubscribeLink} et saisir votre adresse de courriel et votre mot de passe.<br />
-<br />
-{$principalContactSignature}]]></body>
-		<description>Cet courriel est envoyé à un utilisateur non enregistré qui vient de s'inscrire à la liste de diffusion des notifications.</description>
-	</email_text>
 	<email_text key="EDITOR_DECISION_ACCEPT">
 		<subject>Décision du rédacteur</subject>
 		<body><![CDATA[{$authorName}:<br />
 <br />
 Nous avons pris une décision concernant votre soumission à {$contextName}, &quot;{$submissionTitle}&quot;.<br />
 <br />
-Notre décision est de :<br />
+Notre décision est d'accepter votre soumission.<br />
 <br />
 {$editorialContactSignature}]]></body>
 		<description>Cet courriel du rédacteur ou du chef de rubrique à un auteur les notifie d'une décision finale de «soumission acceptée» concernant leur soumission.</description>
@@ -616,7 +592,7 @@ Notre décision est de :<br />
 <br />
 Nous avons pris une décision concernant votre soumission à {$contextName}, &quot;{$submissionTitle}&quot;.<br />
 <br />
-Notre décision est de :<br />
+Notre décision est de vous demander une nouvelle version de votre soumission.<br />
 <br />
 {$editorialContactSignature}]]></body>
 		<description>Cet courriel du rédacteur ou du chef de rubrique à un auteur les notifie d'une décision finale de «révision requise» concernant leur soumission.</description>
@@ -627,7 +603,7 @@ Notre décision est de :<br />
 <br />
 Nous avons pris une décision concernant votre soumission à {$contextName}, &quot;{$submissionTitle}&quot;.<br />
 <br />
-Notre décision est de :<br />
+Notre décision est d'accepter votre soumission sous réserve des corrections. <br />
 <br />
 {$editorialContactSignature}]]></body>
 		<description>Cet courriel du rédacteur ou du chef de rubrique à un auteur les notifie d'une décision finale de «soumission à redéposer» concernant leur soumission.</description>
@@ -638,7 +614,7 @@ Notre décision est de :<br />
 <br />
 Nous avons pris une décision concernant votre soumission à {$contextName}, &quot;{$submissionTitle}&quot;.<br />
 <br />
-Notre décision est de :<br />
+Notre décision est de refuser votre soumission.<br />
 <br />
 {$editorialContactSignature}]]></body>
 		<description>Cet courriel du rédacteur ou du chef de rubrique à un auteur les notifie d'une décision finale de «soumission refusée» concernant leur soumission.</description>
@@ -750,7 +726,7 @@ Réviseur, {$contextName}]]></body>
 <br />
 Nous avons pris une décision concernant votre soumission à {$contextName}, &quot;{$submissionTitle}&quot;.<br />
 <br />
-Notre décision est de : Envoyé pour l'évaluation<br />
+Notre décision est d'envoyer votre soumission en évaluation<br />
 <br />
 Submission URL: {$submissionUrl}<br />
 <br />

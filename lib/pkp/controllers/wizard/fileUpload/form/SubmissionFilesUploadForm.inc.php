@@ -3,8 +3,8 @@
 /**
  * @file controllers/wizard/fileUpload/form/SubmissionFilesUploadForm.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class SubmissionFilesUploadForm
@@ -14,9 +14,9 @@
  */
 
 
-import('controllers.wizard.fileUpload.form.SubmissionFilesUploadBaseForm');
+import('lib.pkp.controllers.wizard.fileUpload.form.PKPSubmissionFilesUploadBaseForm');
 
-class SubmissionFilesUploadForm extends SubmissionFilesUploadBaseForm {
+class SubmissionFilesUploadForm extends PKPSubmissionFilesUploadBaseForm {
 
 	/** @var array */
 	var $_uploaderRoles;
@@ -82,7 +82,7 @@ class SubmissionFilesUploadForm extends SubmissionFilesUploadBaseForm {
 	/**
 	 * @copydoc Form::validate()
 	 */
-	function validate($request) {
+	function validate($callHooks = true) {
 		// Is this a revision?
 		$revisedFileId = $this->getRevisedFileId();
 		if ($this->getData('revisionOnly')) {
@@ -90,6 +90,7 @@ class SubmissionFilesUploadForm extends SubmissionFilesUploadBaseForm {
 		}
 
 		// Retrieve the request context.
+		$request = Application::getRequest();
 		$router = $request->getRouter();
 		$context = $router->getContext($request);
 		if (
@@ -107,27 +108,26 @@ class SubmissionFilesUploadForm extends SubmissionFilesUploadBaseForm {
 			));
 		}
 
-		return parent::validate();
+		return parent::validate($callHooks);
 	}
 
 	/**
 	 * @copydoc Form::fetch()
 	 */
-	function fetch($request) {
+	function fetch($request, $template = null, $display = false) {
 		// Retrieve available submission file genres.
 		$genreList = $this->_retrieveGenreList($request);
 		$this->setData('submissionFileGenres', $genreList);
 
-		return parent::fetch($request);
+		return parent::fetch($request, $template, $display);
 	}
 
 	/**
 	 * Save the submission file upload form.
 	 * @see Form::execute()
-	 * @param $request Request
 	 * @return SubmissionFile if successful, otherwise null
 	 */
-	function execute($request) {
+	function execute() {
 		// Identify the file genre and category.
 		$revisedFileId = $this->getRevisedFileId();
 		if ($revisedFileId) {
@@ -139,6 +139,7 @@ class SubmissionFilesUploadForm extends SubmissionFilesUploadBaseForm {
 		}
 
 		// Identify the uploading user.
+		$request = Application::getRequest();
 		$user = $request->getUser();
 		assert(is_a($user, 'User'));
 
@@ -205,4 +206,4 @@ class SubmissionFilesUploadForm extends SubmissionFilesUploadBaseForm {
 	}
 }
 
-?>
+

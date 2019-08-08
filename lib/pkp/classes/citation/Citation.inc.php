@@ -7,8 +7,8 @@
 /**
  * @file classes/citation/Citation.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class Citation
@@ -106,17 +106,12 @@ class Citation extends DataObject {
 	 * @return string
 	 */
 	function _cleanCitationString($citationString) {
-		// 1) If the string contains non-UTF8 characters, convert it to UTF-8
-		if (Config::getVar('i18n', 'charset_normalization') && !PKPString::utf8_compliant($citationString)) {
-			$citationString = PKPString::utf8_normalize($citationString);
-		}
-		// 2) Strip slashes and whitespace
+		// 1) Strip slashes and whitespace
 		$citationString = trim(stripslashes($citationString));
 
-		// 3) Normalize whitespace
+		// 2) Normalize whitespace
 		$citationString = PKPString::regexp_replace('/[\s]+/', ' ', $citationString);
 
 		return $citationString;
 	}
 }
-?>

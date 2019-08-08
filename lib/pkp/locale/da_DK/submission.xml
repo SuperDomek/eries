@@ -4,8 +4,8 @@
 <!--
   * locale/da_DK/submission.xml
   *
-  * Copyright (c) 2014-2018 Simon Fraser University
-  * Copyright (c) 2000-2018 John Willinsky
+  * Copyright (c) 2014-2019 Simon Fraser University
+  * Copyright (c) 2000-2019 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   *
   * Localization strings for the da_DK (Dansk) locale.
@@ -379,7 +379,6 @@
 	<message key="submission.submit.submissionLocale">Sprog</message>
 	<message key="submission.submit.submissionLocaleDescription">Dette tidsskrift accepterer indleverede manuskripter på en række sprog. Vælg det primære sprog for indleveringen i rullemenuen.</message>
 	<message key="notification.type.copyeditorRequest">Du er blevet bedt om at gennemse manuskriptredigeringen af "{$title}".</message>
-	<message key="author.submit.userGroupRequired">Din konto har ikke en rolle tilknyttet, der tillader nye indsendelser, som forfatter. Dobblettjek din konto. Du vil muligvis selv kunne tilføje en passende rolle ved at redigere din profil.</message>
 	<message key="submission.submit.submissionChecklist">Indsendelseskrav</message>
 	<message key="submission.submit.submissionChecklistDescription">Du skal tilkendegive, at du opfylder nedenstående krav inden du fortsætter.</message>
 	<message key="submission.submit.copyrightNoticeAgree">Jeg accepterer at underlægge mig de ophavsretlige betingelserne.</message>
@@ -485,12 +484,12 @@
 	<message key="submission.copyright">Ophavsret</message>
 	<message key="submission.copyrightStatement">Ophavsret (c) {$copyrightYear} {$copyrightHolder}</message>
 	<message key="submission.licenseURLValid">Indsæt en valid ekstern URL (inkludér http://).</message>
-	<message key="submission.license.cc.by-nc-nd4.footer"><![CDATA[<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" src="//i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a><p>Dette værk er under følgende licens <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">Creative Commons Navngivelse – Ikke-kommerciel – Ingen Bearbejdede Værker (by-nc-nd)</a>.</p>]]></message>
-	<message key="submission.license.cc.by-nc4.footer"><![CDATA[<a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/"><img alt="Creative Commons License" src="//i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a><p>Dette værk er under følgende licens <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/">Creative Commons Navngivelse –Ikke-kommerciel (by-nc)</a>.</p>]]></message>
-	<message key="submission.license.cc.by-nc-sa4.footer"><![CDATA[<a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" src="//i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><p>Dette værk er under følgende licens <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Navngivelse – Ikke-kommerciel – Del på samme vilkår (ShareAlike) (by-nc-sa)</a>.</p>]]></message>
-	<message key="submission.license.cc.by-nd4.footer"><![CDATA[<a rel="license" href="http://creativecommons.org/licenses/by-nd/4.0/"><img alt="Creative Commons License" src="//i.creativecommons.org/l/by-nd/4.0/88x31.png" /></a><p>Dette værk er under følgende licens <a rel="license" href="http://creativecommons.org/licenses/by-nd/4.0/">Creative Commons Navngivelse – Ingen bearbejdelser (by-nd)</a>.</p>]]></message>
-	<message key="submission.license.cc.by4.footer"><![CDATA[<a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" src="//i.creativecommons.org/l/by/4.0/88x31.png" /></a><p>Dette værk er under følgende licens <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Navngivelse (by)</a>.</p>]]></message>
-	<message key="submission.license.cc.by-sa4.footer"><![CDATA[<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="//i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><p>Dette værk er under følgende licens <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Del på samme vilkår (ShareAlike) (by-sa)</a>.</p>]]></message>
+	<message key="submission.license.cc.by-nc-nd4.footer"><![CDATA[<a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" src="//i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a><p>Dette værk er under følgende licens <a rel="license" href="https://creativecommons.org/licenses/by-nc-nd/4.0/">Creative Commons Navngivelse – Ikke-kommerciel – Ingen Bearbejdede Værker (by-nc-nd)</a>.</p>]]></message>
+	<message key="submission.license.cc.by-nc4.footer"><![CDATA[<a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/"><img alt="Creative Commons License" src="//i.creativecommons.org/l/by-nc/4.0/88x31.png" /></a><p>Dette værk er under følgende licens <a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">Creative Commons Navngivelse –Ikke-kommerciel (by-nc)</a>.</p>]]></message>
+	<message key="submission.license.cc.by-nc-sa4.footer"><![CDATA[<a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons License" src="//i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><p>Dette værk er under følgende licens <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Navngivelse – Ikke-kommerciel – Del på samme vilkår (ShareAlike) (by-nc-sa)</a>.</p>]]></message>
+	<message key="submission.license.cc.by-nd4.footer"><![CDATA[<a rel="license" href="https://creativecommons.org/licenses/by-nd/4.0/"><img alt="Creative Commons License" src="//i.creativecommons.org/l/by-nd/4.0/88x31.png" /></a><p>Dette værk er under følgende licens <a rel="license" href="https://creativecommons.org/licenses/by-nd/4.0/">Creative Commons Navngivelse – Ingen bearbejdelser (by-nd)</a>.</p>]]></message>
+	<message key="submission.license.cc.by4.footer"><![CDATA[<a rel="license" href="https://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons License" src="//i.creativecommons.org/l/by/4.0/88x31.png" /></a><p>Dette værk er under følgende licens <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Navngivelse (by)</a>.</p>]]></message>
+	<message key="submission.license.cc.by-sa4.footer"><![CDATA[<a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" src="//i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><p>Dette værk er under følgende licens <a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Del på samme vilkår (ShareAlike) (by-sa)</a>.</p>]]></message>
 	<message key="submission.query.subject">Emne</message>
 	<message key="submission.query.messages">Beskeder</message>
 	<message key="submission.query.addNote">Tilføj besked</message>
@@ -538,12 +537,9 @@
 	<message key="submission.list.responseDue">Svar forfalden</message>
 	<message key="submission.list.reviewDue">Bedømmelse forfalden</message>
 	<message key="submission.list.confirmDelete">Slet indsendelse?</message>
-	<message key="submission.list.filter">Filtre</message>
-	<message key="submission.list.filterRemove">Ryd filter: {$filterTitle}</message>
 	<message key="submission.list.itemOrdererUp">Hæv placering af {$itemTitle}</message>
 	<message key="submission.list.itemOrdererDown">Sænk placering af {$itemTitle}</message>
 	<message key="submission.list.viewSubmission">Se indsendelse</message>
-	<message key="submission.list.clearSearch">Ryd søgestreng</message>
 	<message key="submission.list.reviewsCompleted">Angivne bedømmelser afsluttet</message>
 	<message key="submission.list.revisionsSubmitted">Tilretninger indsendt</message>
 	<message key="submission.list.copyeditsSubmitted">Manuskriptredigerede filer indsendt</message>
@@ -551,4 +547,32 @@
 	<message key="submission.list.filesPrepared">Filer klargjort</message>
 	<message key="submission.list.discussions">Påbegynd drøftelser</message>
 	<message key="submission.list.incompleteSubmissionNotice">Denne indsendelse skal afsluttes før en redaktør vil bedømme den.</message>
+	<message key="submission.citations.description">Indsæt hver reference på en ny linje så den kan ekstraheres.</message>
+	<message key="submission.parsedCitations">Ekstraherede referencer</message>
+	<message key="submission.parsedCitations.description">Følgende referencer er blevet ekstraherede og vil blive knyttet til indsendelsesmetadata.</message>
+	<message key="submission.parsedAndSaveCitations">Ekstraher og gem referencer</message>
+	<message key="submission.list.currentStage">I øjeblikket på trin {$stage}</message>
+	<message key="submission.list.dualWorkflowLinks"><![CDATA[Du har fået tildelt flere roller i forbindelse med denne indsendelse. Vil du have adgang til <a href="{$urlAuthorWorkflow}">Forfatter-workflowet</a>  eller til det<a href="{$urlEditorialWorkflow}">Redaktionelle-workflow</a>?]]></message>
+	<message key="submission.query.participantTitle">{$fullName}, {$userGroup}</message>
+	<message key="submission.list.reviewComplete">Bedømmelse indsendt</message>
+	<message key="submission.list.reviewerWorkflowLink"><![CDATA[Du har fået tildelt en redaktionel rolle i forbindelse med denne indsendelse. Vil du have adgang til det <a href="{$urlEditorialWorkflow}">Redaktionelle workflow</a>?]]></message>
+	<message key="editor.submission.addStageParticipant.form.reviewerWarning">Deltageren du valgte er blevet sat til at gennemføre en blind review bedømmelse. Hvis du vælger denne deltager, giver du vedkommende adgang til forfatterens identitet. Du opfordres til ikke at vælge denne deltager, medmindre du kan sikre integriteten i peer review processen</message>
+	<message key="editor.submission.roundStatus.resubmitForReview">Indsendelsen skal fremsendes igen til en ny bedømmelsesrunde.</message>
+	<message key="editor.submission.roundStatus.submissionResubmitted">Indsendelsen er blevet fremsendt igen til en ny bedømmelsesrunde.</message>
+	<message key="submission.submit.form.languagesRequired">Indtast et sprog.</message>
+	<message key="submission.submit.form.subjectsRequired">Indtast et emne.</message>
+	<message key="submission.submit.form.disciplinesRequired">Indtast et fagområde.</message>
+	<message key="submission.submit.form.keywordsRequired">Indtast et nøgleord.</message>
+	<message key="submission.submit.form.agenciesRequired">Indtast en støtteorganisation.</message>
+	<message key="submission.submit.form.coverageRequired">Indtast information om dækning.</message>
+	<message key="submission.submit.form.typeRequired">Indtast en type.</message>
+	<message key="submission.submit.form.sourceRequired">Indtast en kilde.</message>
+	<message key="submission.submit.form.rightsRequired">Indtast rettighederne.</message>
+	<message key="submission.submit.form.citationsRequired">Indtast referencerne.</message>
+	<message key="submission.submit.availableUserGroups">Indsend som</message>
+	<message key="submission.submit.availableUserGroupsDescription">Vælg den rolle, som bedst beskriver dit bidrag til denne indsendelse.</message>
+	<message key="submission.submit.contactConsent">Tilhørende kontakt</message>
+	<message key="submission.submit.contactConsentDescription">Ja, jeg vil gerne kontaktes i forbindelse med denne indsendelse.</message>
+	<message key="submission.submit.userGroupDescriptionManagers">Indsend med en af følgende roller, hvis du gerne selv vil kunne redigere og publicere denne indsendelse: {$managerGroups}</message>
+	<message key="log.review.reviewUnconsidered">{$editorName} har markeret runde {$round} bedømmelsen til indsendelse {$submissionId} som værende ikke overvejet.</message>
 </locale>

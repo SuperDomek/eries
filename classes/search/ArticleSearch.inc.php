@@ -3,8 +3,8 @@
 /**
  * @file classes/search/ArticleSearch.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class ArticleSearch
@@ -46,7 +46,7 @@ class ArticleSearch extends SubmissionSearch {
 		$journalDao = DAORegistry::getDAO('JournalDAO'); /* @var $journalDao JournalDAO */
 		$journalTitles = array();
 		if ($orderBy == 'popularityAll' || $orderBy == 'popularityMonth') {
-			$application = PKPApplication::getApplication();
+			$application = Application::getApplication();
 			$metricType = $application->getDefaultMetricType();
 			if (is_null($metricType)) {
 				// If no default metric has been found then sort by score...
@@ -55,7 +55,7 @@ class ArticleSearch extends SubmissionSearch {
 				// Retrieve a metrics report for all articles.
 				$column = STATISTICS_DIMENSION_ARTICLE_ID;
 				$filter = array(
-					STATISTICS_DIMENSION_ASSOC_TYPE => array(ASSOC_TYPE_GALLEY, ASSOC_TYPE_ARTICLE),
+					STATISTICS_DIMENSION_ASSOC_TYPE => array(ASSOC_TYPE_GALLEY, ASSOC_TYPE_SUBMISSION),
 					STATISTICS_DIMENSION_ARTICLE_ID => array(array_keys($unorderedResults))
 				);
 				if ($orderBy == 'popularityMonth') {
@@ -80,7 +80,7 @@ class ArticleSearch extends SubmissionSearch {
 					$authors = $authorDao->getBySubmissionId($submissionId);
 					$authorNames = array();
 					foreach ($authors as $author) { /* @var $author Author */
-						$authorNames[] = $author->getFullName(true);
+						$authorNames[] = $author->getFullName(false, true);
 					}
 					$orderKey = implode('; ', $authorNames);
 					unset($authors, $authorNames);
@@ -350,7 +350,7 @@ class ArticleSearch extends SubmissionSearch {
 		);
 
 		// Only show the "popularity" options if we have a default metric.
-		$application = PKPApplication::getApplication();
+		$application = Application::getApplication();
 		$metricType = $application->getDefaultMetricType();
 		if (!is_null($metricType)) {
 			$resultSetOrderingOptions['popularityAll'] = __('search.results.orderBy.popularityAll');
@@ -391,4 +391,4 @@ class ArticleSearch extends SubmissionSearch {
 	}
 }
 
-?>
+

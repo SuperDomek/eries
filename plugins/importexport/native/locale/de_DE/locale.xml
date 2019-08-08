@@ -4,8 +4,8 @@
 <!--
   * locale.xml
   *
-  * Copyright (c) 2014-2018 Simon Fraser University
-  * Copyright (c) 2003-2018 John Willinsky
+  * Copyright (c) 2014-2019 Simon Fraser University
+  * Copyright (c) 2003-2019 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   * Localization information: https://pkp.sfu.ca/wiki/index.php?title=OJS:_German_(de_DE)
   * Localization strings.
@@ -16,6 +16,7 @@
 	<message key="plugins.importexport.native.description">Artikel und Ausgaben in OJS' nativem XML-Format importieren und exportieren.</message>
 	<message key="plugins.importexport.native.import">Import</message>
 	<message key="plugins.importexport.native.import.instructions">Lade XML-Datei zum Import hoch</message>
+	<message key="plugins.importexport.native.exportSubmissionsSelect">Wählen Sie Artikel aus, die exportiert werden sollen</message>
 	<message key="plugins.importexport.native.exportSubmissions">Artikel exportieren</message>
 	<message key="plugins.importexport.native.exportIssues">Ausgaben exportieren</message>
 	<message key="plugins.importexport.native.results">Ergebnisse</message>
@@ -54,5 +55,4 @@ Die folgenden Formate sind zulässig:
 	<message key="plugins.importexport.native.import.error.issueIdentificationDuplicate">Die existierende Ausgabe mit der ID {$issueId} passt zur angegebenen Kennung "{$issueIdentification}". Diese Ausgabe wird nicht verändert, aber Artikel werden hinzugefügt werden.</message>
 	<message key="plugins.importexport.native.import.error.issueIdentificationMissing">Das Element zur Ausgabenidentifizierung fehlt für den Artikel "{$articleTitle}".</message>
 	<message key="plugins.importexport.native.import.error.publishedDateMissing">Der Artikel "{$articleTitle}" ist in einer Ausgabe enthalten, aber hat kein Veröffentlichungsdatum.</message>
-	<message key="plugins.importexport.native.exportSubmissionsSelect">Wählen Sie Artikel aus, die exportiert werden sollen</message>
 </locale>

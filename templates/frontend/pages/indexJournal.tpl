@@ -1,8 +1,8 @@
 {**
  * templates/frontend/pages/indexJournal.tpl
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @brief Display the index page for a journal
@@ -28,27 +28,7 @@
 		</div>
 	{/if}-->
 
-	{* Latest issue *}
-	{if $issue}
-		<div class="current_issue">
-			{include file="frontend/objects/issue_toc_home.tpl"}>
-			
-			<a href="{url router=$smarty.const.ROUTE_PAGE page="issue" op="archive"}" class="read_more">
-				{translate key="journal.viewAllIssues"}
-			</a>
-		</div>
-	{/if}
-
-	{* Additional Homepage Content *}
-	{if $additionalHomeContent}
-		<hr />
-		<div class="additional_content">
-			{$additionalHomeContent}
-		</div>
-	{/if}
-
-
-	{* Announcements 
+	{* Announcements
 	{if $numAnnouncementsHomepage && $announcements|@count}
 		<div class="cmp_announcements highlight_first">
 			<h2>
@@ -56,10 +36,11 @@
 			</h2>
 			{foreach name=announcements from=$announcements item=announcement}
 				{if $smarty.foreach.announcements.iteration > $numAnnouncementsHomepage}
-					{php}break;{/php}
+					{break}
 				{/if}
 				{if $smarty.foreach.announcements.iteration == 1}
 					{include file="frontend/objects/announcement_summary.tpl" heading="h3"}
+					{*<div class="more">
 				{else}
 					<article class="obj_announcement_summary">
 						<h4>
@@ -73,8 +54,30 @@
 					</article>
 				{/if}
 			{/foreach}
+			{*</div><!-- .more -->
 		</div>
-	{/if}*}
+	{/if}
+	*}
+
+	{* Latest issue *}
+	{if $issue}
+		<div class="current_issue">
+			{include file="frontend/objects/issue_toc_home.tpl"}>
+
+			<a href="{url router=$smarty.const.ROUTE_PAGE page="issue" op="archive"}" class="read_more">
+				{translate key="journal.viewAllIssues"}
+			</a>
+		</div>
+	{/if}
+
+	{* Additional Homepage Content *}
+	{if $additionalHomeContent}
+	<hr />
+		<div class="additional_content">
+			{$additionalHomeContent}
+		</div>
+	{/if}
+
 
 </div><!-- .page -->
 

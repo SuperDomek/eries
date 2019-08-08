@@ -3,8 +3,8 @@
 /**
  * @file pages/about/HelpHandler.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class HelpHandler
@@ -62,7 +62,7 @@ class HelpHandler extends Handler {
 		// Use a URL filter to prepend the current path to relative URLs.
 		$parser = new \Michelf\Markdown;
 		$parser->url_filter_func = function ($url) use ($filename) {
-			return dirname($filename) . '/' . $url;
+			return (empty(parse_url($url)['host']) ? dirname($filename) . '/' : '') . $url;
 		};
 		return new JSONMessage(
 			true,
@@ -75,4 +75,4 @@ class HelpHandler extends Handler {
 	}
 }
 
-?>
+

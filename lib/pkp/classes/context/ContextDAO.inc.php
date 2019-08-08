@@ -3,8 +3,8 @@
 /**
  * @file classes/context/ContextDAO.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class ContextDAO
@@ -169,6 +169,9 @@ abstract class ContextDAO extends DAO {
 
 	/**
 	 * Retrieve available contexts.
+	 * If user-based contexts, retrieve all contexts assigned by user group
+	 *   or all contexts for site admin
+	 * If not user-based, retrieve all enabled contexts.
 	 * @param $userId int Optional user ID to find available contexts for
 	 * @param $rangeInfo Object optional
 	 * @return DAOResultFactory containing matching Contexts
@@ -182,12 +185,12 @@ abstract class ContextDAO extends DAO {
 
 		$result = $this->retrieveRange(
 			'SELECT c.* FROM ' . $this->_getTableName() . ' c
-			WHERE	c.enabled = 1 ' .
+			WHERE	' .
 				($userId?
-					'OR c.' . $this->_getPrimaryKeyColumn() . ' IN (SELECT DISTINCT ug.context_id FROM user_groups ug JOIN user_user_groups uug ON (ug.user_group_id = uug.user_group_id) WHERE uug.user_id = ?)
-					OR ? IN (SELECT user_id FROM user_groups ug JOIN user_user_groups uug ON (ug.user_group_id = uug.user_group_id) WHERE ug.role_id = ?) '
-				:'') .
-			'ORDER BY seq',
+					'c.' . $this->_getPrimaryKeyColumn() . ' IN (SELECT DISTINCT ug.context_id FROM user_groups ug JOIN user_user_groups uug ON (ug.user_group_id = uug.user_group_id) WHERE uug.user_id = ?)
+					OR ? IN (SELECT user_id FROM user_groups ug JOIN user_user_groups uug ON (ug.user_group_id = uug.user_group_id) WHERE ug.role_id = ?)'
+				:'c.enabled = 1') .
+			' ORDER BY seq',
 			$params,
 			$rangeInfo
 		);
@@ -306,4 +309,4 @@ abstract class ContextDAO extends DAO {
 	abstract protected function _getPrimaryKeyColumn();
 }
 
-?>
+

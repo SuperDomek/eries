@@ -2,8 +2,8 @@
 /**
  * @file CitationStyleLanguageSettingsForm.inc.inc.php
  *
- * Copyright (c) 2017-2018 Simon Fraser University
- * Copyright (c) 2017-2018 John Willinsky
+ * Copyright (c) 2017-2019 Simon Fraser University
+ * Copyright (c) 2017-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class CitationStyleLanguageSettingsForm.inc
@@ -25,7 +25,7 @@ class CitationStyleLanguageSettingsForm extends Form {
 	 * @param $plugin object
 	 */
 	public function __construct($plugin) {
-		parent::__construct($plugin->getTemplatePath() . 'settings.tpl');
+		parent::__construct($plugin->getTemplateResource('settings.tpl'));
 		$this->plugin = $plugin;
 		$this->addCheck(new FormValidatorPost($this));
 		$this->addCheck(new FormValidatorCSRF($this));
@@ -34,7 +34,8 @@ class CitationStyleLanguageSettingsForm extends Form {
 	/**
 	* @copydoc Form::init
 	*/
-	public function initData($request) {
+	public function initData() {
+		$request = Application::getRequest();
 		$context = $request->getContext();
 		$contextId = $context ? $context->getId() : 0;
 		$this->setData('primaryCitationStyle', $this->plugin->getSetting($contextId, 'primaryCitationStyle'));
@@ -54,10 +55,9 @@ class CitationStyleLanguageSettingsForm extends Form {
 	}
 
 	/**
-	 * Fetch the form.
 	 * @copydoc Form::fetch()
 	 */
-	public function fetch($request) {
+	public function fetch($request, $template = null, $display = false) {
 		$context = $request->getContext();
 		$contextId = $context ? $context->getId() : 0;
 
@@ -96,13 +96,14 @@ class CitationStyleLanguageSettingsForm extends Form {
 			'citationDownloadsListData' => json_encode($citationDownloadsList->getConfig()),
 		));
 
-		return parent::fetch($request);
+		return parent::fetch($request, $template, $display);
 	}
 
 	/**
 	 * Save settings.
 	 */
-	public function execute($request) {
+	public function execute() {
+		$request = Application::getRequest();
 		$context = $request->getContext();
 		$contextId = $context ? $context->getId() : 0;
 		$this->plugin->updateSetting($contextId, 'primaryCitationStyle', $this->getData('primaryCitationStyle'));

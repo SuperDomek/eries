@@ -3,8 +3,8 @@
 /**
  * @file controllers/tab/settings/reviewStage/form/PKPReviewStageForm.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class ReviewStageForm
@@ -55,7 +55,7 @@ class PKPReviewStageForm extends ContextSettingsForm {
 	/**
 	 * @copydoc ContextSettingsForm::fetch()
 	 */
-	function fetch($request, $params = array()) {
+	function fetch($request, $template = null, $display = false, $params = array()) {
 		$templateMgr = TemplateManager::getManager($request);
 		$reviewAssignmentDao = DAORegistry::getDAO('ReviewAssignmentDAO');
 		$templateMgr->assign(array(
@@ -66,7 +66,7 @@ class PKPReviewStageForm extends ContextSettingsForm {
 
 		import('lib.pkp.classes.linkAction.request.ConfirmationModal');
 		import('lib.pkp.classes.linkAction.LinkAction');
-		return parent::fetch($request, array_merge($params, array(
+		return parent::fetch($request, $template, $display, array_merge($params, array(
 			'ensuringLink' => new LinkAction(
 				'showReviewPolicy',
 				new ConfirmationModal(
@@ -79,4 +79,4 @@ class PKPReviewStageForm extends ContextSettingsForm {
 	}
 }
 
-?>
+

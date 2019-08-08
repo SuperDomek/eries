@@ -4,8 +4,8 @@
 <!--
   * locale/fi_FI/user.xml
   *
-  * Copyright (c) 2014-2018 Simon Fraser University
-  * Copyright (c) 2000-2018 John Willinsky
+  * Copyright (c) 2014-2019 Simon Fraser University
+  * Copyright (c) 2000-2019 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   *
   * Localization strings.
@@ -35,14 +35,10 @@
 	<message key="user.dateRegistered">Rekisteröitymispäivämäärä</message>
 	<message key="user.editMyProfile">Muokkaa profiilia</message>
 	<message key="user.email">Sähköposti</message>
-	<message key="user.firstName">Etunimi</message>
-	<message key="user.initialsExample">Maija Liisa Meikäläinen = MLM</message>
-	<message key="user.initials">Nimikirjaimet</message>
 	<message key="user.interests">Kiinnostavat arviointiaiheet</message>
 	<message key="user.interests.description">(Erittele kiinnostavat aiheet enterillä tai pilkulla)</message>
 	<message key="user.gossip">Yksityiset muistiinpanot</message>
 	<message key="user.group">Käyttäjäryhmä</message>
-	<message key="user.lastName">Sukunimi</message>
 	<message key="user.profile.form.profileImageInvalid">Virheellinen profiilikuvan muoto tai liian suuri kuva. Hyväksytyt muodot ovat .gif, .jpg ja .png, ja kuvan maksimikoko on 150 x 150 pikseliä.</message>
 	<message key="user.login.accountDisabledWithReason">Tilisi on poistettu käytöstä seuraavasta syystä: {$reason}</message>
 	<message key="user.login.accountDisabled">Tilisi on poistettu käytöstä. Ota yhteyttä sivuston ylläpitäjään saadaksesi lisätietoja.</message>
@@ -52,7 +48,7 @@
 	<message key="user.login.changePasswordInstructions"><![CDATA[Sinun täytyy valita uusi salasana, ennen kuin voit kirjautua tälle sivustolle.<br><br />Anna käyttäjätunnuksesi sekä nykyinen ja uusi salasanasi alle vaihtaaksesi tilisi salasanan.]]></message>
 	<message key="user.login.forgotPassword">Unohditko salasanasi?</message>
 	<message key="user.login.loginError">Virheellinen käyttäjätunnus tai salasana. Yritä uudelleen.</message>
-	<message key="user.login">Kirjaudu</message>
+	<message key="user.login">Kirjautuminen</message>
 	<message key="user.login.lostPassword.confirmationSent">Sähköpostiisi on lähetetty vahvistus. Seuraa sähköpostissa olevia ohjeita vaihtaaksesi salasanan.</message>
 	<message key="user.login.lostPassword.invalidHash">Klikkaamasi linkki on vanhentunut tai se ei ole kelvollinen. Yritä vaihtaa salasana uudelleen.</message>
 	<message key="user.login.lostPassword.invalidUser">Määritetty sähköpostiosoite ei kuulu yhdellekään käyttäjälle.</message>
@@ -70,7 +66,6 @@
 	<message key="user.logOutAs">Kirjaudu ulos käyttäjänä</message>
 	<message key="user.hello">Hei, </message>
 	<message key="user.mailingAddress">Postiosoite</message>
-	<message key="user.middleName">Toinen nimi</message>
 	<message key="user.myAccount">Oma tilini</message>
 	<message key="user.name">Nimi</message>
 	<message key="user.password">Salasana</message>
@@ -81,8 +76,6 @@
 	<message key="user.profile.form.countryRequired">Maa vaaditaan.</message>
 	<message key="user.profile.form.emailRequired">Voimassa oleva sähköpostiosoite vaaditaan.</message>
 	<message key="user.profile.form.affiliationRequired">Affiliaatio vaaditaan.</message>
-	<message key="user.profile.form.firstNameRequired">Etunimi vaaditaan.</message>
-	<message key="user.profile.form.lastNameRequired">Sukunimi vaaditaan.</message>
 	<message key="user.profile.form.mailingAddressRequired">Postiosoite vaaditaan.</message>
 	<message key="user.profile.form.newPasswordRequired">Sinun on annettava uusi salasanasi.</message>
 	<message key="user.profile.form.oldPasswordInvalid">Antamasi nykyinen salasana on virheellinen.</message>
@@ -107,13 +100,13 @@
 	<message key="user.register.form.emailExists">Valittu sähköposti on jo toisen käyttäjän käytössä.</message>
 	<message key="user.register.form.passwordsDoNotMatch">Salasanat eivät täsmää.</message>
 	<message key="user.register.form.emailsDoNotMatch">Sähköpostin osoitekentät eivät täsmää.</message>
-	<message key="user.register.form.usernameAlphaNumeric">Käyttäjätunnus voi sisältää vain aakkosnumeerisia merkkejä, alaviivoja ja yhdysmerkkejä, ja sen täytyy alkaa ja päättyä aakkosnumeeriseen merkkiin.</message>
+	<message key="user.register.form.usernameAlphaNumeric">Käyttäjätunnus voi sisältää vain pieniä aakkosnumeerisia merkkejä, alaviivoja ja yhdysmerkkejä, ja sen täytyy alkaa ja päättyä aakkosnumeeriseen merkkiin. Suomenkielen kirjaimet ä, ö ja å sekä muut vastaavat erikoiskirjaimet eivät kelpaa.</message>
 	<message key="user.register.form.userGroupRequired">Vähintään yksi rooli on valittava.</message>
 	<message key="user.register.form.usernameExists">Valittu käyttäjätunnus on jo toisen käyttäjän käytössä.</message>
 	<message key="user.register.form.passwordLengthRestriction">Salasanan on oltava vähintään {$length} merkkiä pitkä.</message>
 	<message key="user.register.registerAs">Rekisteröidy kontekstiin {$contextName}...</message>
 	<message key="user.register">Rekisteröidy</message>
-	<message key="user.register.usernameRestriction">Käyttäjätunnus voi sisältää vain pieniä kirjaimia, numeroita ja yhdysmerkkejä/alaviivoja.</message>
+	<message key="user.register.usernameRestriction">Käyttäjätunnus voi sisältää vain pieniä kirjaimia, numeroita ja yhdysmerkkejä/alaviivoja. Suomenkielen kirjaimet ä, ö ja å sekä muut vastaavat erikoiskirjaimet eivät kelpaa.</message>
 	<message key="user.register.registrationCompleted"><![CDATA[Olet rekisteröitynyt onnistuneesti. <a href="{$profileUrl}">Klikkaa tästä</a> täydentääksesi käyttäjäprofiilisi tiedot.]]></message>
 	<message key="user.role.author">Kirjoittaja</message>
 	<message key="user.role.author_s">Kirjoittaja(t)</message>
@@ -133,18 +126,16 @@
 	<message key="user.role.layoutEditor">Taittaja</message>
 	<message key="user.role.layoutEditors">Taittajat</message>
 	<message key="user.roles">Roolit</message>
-	<message key="user.salutation">Titteli</message>
 	<message key="user.sendPassword">Vahvistus</message>
 	<message key="user.sendPassword.description">Lähetä minulle vahvistussähköposti, jossa on käyttäjätunnukseni ja salasanani</message>
 	<message key="user.signature">Allekirjoitus</message>
-	<message key="user.suffix">Pääte</message>
 	<message key="user.title">Titteli</message>
 	<message key="user.url">URL-osoite</message>
 	<message key="user.userHome">Käyttäjän etusivu</message>
 	<message key="user.username">Käyttäjätunnus</message>
 	<message key="user.workingLanguages">Työkielet</message>
 	<message key="user.orcid">ORCID-tunniste</message>
-	<message key="user.orcid.orcidInvalid">Määrittämäsi ORCID-tunniste on virheellinen. Liitä koko URI (esim. "http://orcid.org/0000-0002-1825-0097").</message>
+	<message key="user.orcid.orcidInvalid">Määrittämäsi ORCID-tunniste on virheellinen. Liitä koko URI (esim. "https://orcid.org/0000-0002-1825-0097").</message>
 	<message key="user.profile.identity">Henkilöllisyys</message>
 	<message key="user.profile.contact">Yhteystiedot</message>
 	<message key="user.profile.public">Julkinen</message>
@@ -155,4 +146,17 @@
 	<message key="user.apiKey.generate">Luo uusi API-avain</message>
 	<message key="user.gossip.description">Tähän annetut muistiinpanot näkyvät vain ylläpitäjille, julkaisun hallinnoijille, toimittajille ja osastotoimittajille.</message>
 	<message key="user.role.assistant">Avustaja</message>
+	<message key="user.authorization.assignedStageRoleBasedAccessDenied">Sinulla ei ole tähän toimintoon vaadittavaa roolia.</message>
+	<message key="user.authorization.invalidReviewAssignment">Sinulla ei ole oikeutta avata tätä arviointipyyntöä.</message>
+	<message key="user.authorization.submissionQuery">Sinulla ei ole oikeutta avata tätä keskustelua.</message>
+	<message key="user.profile.form.privacyConsentRequired">Sinun pitää hyväksyä tietosuojaselosteen ehdot.</message>
+	<message key="user.register.form.privacyConsent"><![CDATA[Kyllä, annan luvan tallentaa tietojani tietosuojaselosteen <a href="{$privacyUrl}" target="_blank">tietosuojaselosteen</a> kuvaamalla tavalla.]]></message>
+	<message key="user.register.form.emailConsent">Kyllä, haluan ilmoituksen uusista julkaisuista ja tiedotteista.</message>
+	<message key="user.privacyLink"><![CDATA[Tietojasi tallennetaan ja käytetään <a href="{$privacyUrl}" target="_blank">tietosuojaselosteen</a> mukaisesti.]]></message>
+	<message key="user.givenName">Etunimi</message>
+	<message key="user.familyName">Sukunimi</message>
+	<message key="user.preferredPublicName">Ensisijainen julkinen nimi</message>
+	<message key="user.preferredPublicName.description">Mitä nimeä toivot sinusta käytettävän? Tähän nimeen voi liittää esimerkiksi erilasia etu- ja takaliitteitä.</message>
+	<message key="user.profile.form.givenNameRequired">Etunimi vaaditaan.</message>
+	<message key="user.profile.form.givenNameRequired.locale">Olet antanut sukunimen, mutta saman kielen mukaisesta asetuksesta puuttuu etunimi. Ole hyvä ja annan kielen mukaiseen asetukseen myös etunimi.</message>
 </locale>

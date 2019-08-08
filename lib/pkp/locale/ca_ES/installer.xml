@@ -4,8 +4,8 @@
 <!--
   * locale/ca_ES/installer.xml
   *
-  * Copyright (c) 2014-2018 Simon Fraser University
-  * Copyright (c) 2000-2018 John Willinsky
+  * Copyright (c) 2014-2019 Simon Fraser University
+  * Copyright (c) 2000-2019 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   * Credits: https://pkp.sfu.ca/wiki/index.php?title=OMP:_Catalan_(ca_ES)
   * Localization strings.
@@ -62,7 +62,7 @@
 	<message key="installer.locale.maybeIncomplete">Les configuracions regionals marcades poden estar incompletes.</message>
 	<message key="installer.localeSettings">Paràmetres de configuració regional</message>
 	<message key="installer.oaiSettings">Configuració OAI</message>
-	<message key="installer.oaiRepositoryIdInstructions"><![CDATA[Identificador únic utilitzat per identificar els registres de metadades indexats des d'aquest lloc web mitjançant el Protocol for Metadata Harvesting (protocol per a la recopilació de metadades) de <a href="http://www.openarchives.org/" target="_blank">Open Archives Initiative</a>.]]></message>
+	<message key="installer.oaiRepositoryIdInstructions"><![CDATA[Identificador únic utilitzat per identificar els registres de metadades indexats des d'aquest lloc web mitjançant el Protocol for Metadata Harvesting (protocol per a la recopilació de metadades) de <a href="https://www.openarchives.org/" target="_blank">Open Archives Initiative</a>.]]></message>
 	<message key="installer.oaiRepositoryId">Identificador del dipòsit OAI</message>
 	<message key="installer.publicFilesDirError">El directori per als fitxers públics no existeix o no té permís d’escriptura.</message>
 	<message key="installer.releaseNotes">Notes de la versió</message>
@@ -84,4 +84,5 @@
 	<message key="installer.configureXSLMessage"><![CDATA[<p>Heu instal·lat el PHP amb el mòdul XSL desactivat. Activeu-lo o configureu el paràmetre xslt_command en el vostre fitxer config.inc.php .</p>]]></message>
 	<message key="installer.beacon">Beacon</message>
 	<message key="installer.beacon.enable">Aporteu un únic ID de lloc i una URL de base OAI a PKP només per a propòsits de seguretat i d'alertes de seguretat.</message>
+	<message key="installer.miscSettings">Paràmetres diversos</message>
 </locale>

@@ -4,8 +4,8 @@
 <!--
   * locale/ar_IQ/reader.xml
   *
-  * Copyright (c) 2013-2018 Simon Fraser University
-  * Copyright (c) 2000-2018 John Willinsky
+  * Copyright (c) 2013-2019 Simon Fraser University
+  * Copyright (c) 2000-2019 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   *
   * Localization strings for the ar_IQ (العربية) locale.
@@ -49,14 +49,14 @@
 
 	<message key="rt.admin.sharing">المشاركة</message>
 	<message key="rt.admin.sharing.enabled">المشاركة ممكَّنة</message>
-	<message key="rt.admin.sharing.description"><![CDATA[لتمكين قرائك من مشاركة المحتوى، سجل حساباً لدى <a href="http://www.addthis.com">addthis.com</a>، ثم استعمل نسخ/لصق للنص البرمجي الخاص بالمشاركة من الزر أدناه.]]></message>
+	<message key="rt.admin.sharing.description"><![CDATA[لتمكين قرائك من مشاركة المحتوى، سجل حساباً لدى <a href="https://www.addthis.com">addthis.com</a>، ثم استعمل نسخ/لصق للنص البرمجي الخاص بالمشاركة من الزر أدناه.]]></message>
 
 	<message key="rt.admin.sharing.basic">الإعدادات الأساسية</message>
 	<message key="rt.admin.sharing.userNameLabel">اسم المستخدم لدى AddThis.com</message>
 	<message key="rt.admin.sharing.buttonStyleLabel">نمط الزر</message>
 	<message key="rt.admin.sharing.dropDownMenuLabel">استعمل القائمة المنسدلة</message>
 	<message key="rt.admin.sharing.advanced">الإعدادات المتقدمة (إختيارية)</message>
-	<message key="rt.admin.sharing.customizationLink"><![CDATA[أنظر <a href="http://support.addthis.com/customer/portal/articles/381236-custom-buttons">أدبيات تخصيص AddThis.com</a> كمرجع.]]></message>
+	<message key="rt.admin.sharing.customizationLink"><![CDATA[أنظر <a href="https://www.addthis.com/academy/how-to-create-custom-buttons-with-addthis/">أدبيات تخصيص AddThis.com</a> كمرجع.]]></message>
 	<message key="rt.admin.sharing.brandLabel">العلامة</message>
 	<message key="rt.admin.sharing.dropDownLabel"><![CDATA[خيارات القائمة المنسدلة <br /> (قائمة تفصل مكوناتها الفارزة الإنجليزية)]]></message>
 	<message key="rt.admin.sharing.languageLabel">اللغة</message>

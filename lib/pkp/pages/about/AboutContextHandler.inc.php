@@ -3,8 +3,8 @@
 /**
  * @file pages/about/AboutContextHandler.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class AboutContextHandler
@@ -21,7 +21,7 @@ class AboutContextHandler extends Handler {
 	 */
 	function __construct() {
 		parent::__construct();
-		AppLocale::requireComponents(LOCALE_COMPONENT_APP_COMMON);
+		AppLocale::requireComponents([LOCALE_COMPONENT_APP_COMMON, LOCALE_COMPONENT_PKP_MANAGER]);
 	}
 
 	/**
@@ -79,6 +79,23 @@ class AboutContextHandler extends Handler {
 
 		$templateMgr->assign( 'submissionChecklist', $context->getLocalizedSetting('submissionChecklist') );
 
+		// Get sections for this context
+		$canSubmitAll = false;
+		$userRoles = $this->getAuthorizedContextObject(ASSOC_TYPE_USER_ROLES);
+		if ($userRoles && !empty(array_intersect([ROLE_ID_SITE_ADMIN, ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR], $userRoles))) {
+			$canSubmitAll = true;
+		}
+
+		$sectionDao = Application::getSectionDAO();
+		$sections = $sectionDao->getByContextId($context->getId(), null, !$canSubmitAll)->toArray();
+
+		// for author.submit.notAccepting
+		if (count($sections) == 0) {
+			AppLocale::requireComponents(LOCALE_COMPONENT_APP_AUTHOR);
+		}
+
+		$templateMgr->assign('sections', $sections);
+
 		$templateMgr->display('frontend/pages/submissions.tpl');
 	}
 
@@ -106,4 +123,4 @@ class AboutContextHandler extends Handler {
 	}
 }
 
-?>
+

@@ -4,8 +4,8 @@
 <!--
   * locale/hr_HR/editor.xml
   *
-  * Copyright (c) 2013-2018 Simon Fraser University
-  * Copyright (c) 2003-2018 John Willinsky
+  * Copyright (c) 2013-2019 Simon Fraser University
+  * Copyright (c) 2003-2019 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   *
   * Localization strings for the hr_HR (Hrvatski) locale.
@@ -131,4 +131,5 @@
 	<message key="editor.issues.backToIssueGalleys">Povratak na korekturne kopije izdanja</message>
 	<message key="editor.issues.confirmDeleteGalley">Da li ste sigurni da želite obrisati ove korekturne kpije izdanja?</message>
 	<message key="editor.reassign">Ponovo dodijeli</message>
+	<message key="editor.article.coverImage">Slika naslovne stranice</message>
 </locale>

@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/settings/roles/form/UserGroupForm.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class UserGroupForm
@@ -120,7 +120,7 @@ class UserGroupForm extends Form {
 	/**
 	 * @copydoc Form::fetch()
 	 */
-	function fetch($request) {
+	function fetch($request, $template = null, $display = false) {
 		$templateMgr = TemplateManager::getManager($request);
 
 		$roleDao = DAORegistry::getDAO('RoleDAO');
@@ -133,7 +133,7 @@ class UserGroupForm extends Form {
 		$templateMgr->assign('selfRegistrationRoleIds', $this->getPermitSelfRegistrationRoles());
 		$templateMgr->assign('recommendOnlyRoleIds', $this->getRecommendOnlyRoles());
 
-		return parent::fetch($request);
+		return parent::fetch($request, $template, $display);
 	}
 
 	/**
@@ -155,7 +155,8 @@ class UserGroupForm extends Form {
 	/**
 	 * @copydoc Form::execute()
 	 */
-	function execute($request) {
+	function execute() {
+		$request = Application::getRequest();
 		$userGroupId = $this->getUserGroupId();
 		$userGroupDao = DAORegistry::getDAO('UserGroupDAO');
 		$roleDao = DAORegistry::getDAO('RoleDAO');
@@ -257,4 +258,4 @@ class UserGroupForm extends Form {
 	}
 }
 
-?>
+

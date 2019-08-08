@@ -4,8 +4,8 @@
 <!--
   * locale/uk_UA/locale.xml
   *
-  * Copyright (c) 2013-2018 Simon Fraser University
-  * Copyright (c) 2003-2018 John Willinsky
+  * Copyright (c) 2013-2019 Simon Fraser University
+  * Copyright (c) 2003-2019 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   * Localization information: https://pkp.sfu.ca/wiki/index.php?title=OJS:_Ukrainian_(uk_UA)
   * Localization strings.
@@ -105,6 +105,8 @@
 	<!-- Common Article Terms -->
 	<message key="article.article">Стаття</message>
 	<message key="article.articles">Статті</message>
+	<message key="common.publishedSubmission">Стаття</message>
+	<message key="common.publishedSubmissions">Статті</message>
 	<message key="article.submissionId">ID подання</message>
 	<message key="article.title">Назва</message>
 	<message key="article.authors">Автор(и)</message>
@@ -136,6 +138,7 @@
 	<message key="article.fontSize.small.altText">Маленький</message>
 	<message key="article.fontSize.medium.altText">Середній</message>
 	<message key="article.fontSize.large.altText">Великий</message>
+	<message key="article.return">Повернутися до подробиць статті</message>
 
 	<!-- Submission Tracking - Common -->
 	<message key="submission.submissionEditing">Редагування подання</message>
@@ -196,6 +199,7 @@
 	<message key="user.registerForOtherJournals">Зареєструватися для інших журналів</message>
 	<message key="user.reviewerPrompt">Хотіли б Ви рецензувати рукописи для цього журналу?</message>
 	<message key="user.reviewerPrompt.userGroup">Так, запитати роль {$userGroup}.</message>
+	<message key="user.reviewerPrompt.optin">Так, я хочу, щоб до мене зверталися з запитами на рецензування матеріалів для даного журналу.</message>
 	<message key="user.register.contextsPrompt">У яких журналах на цьому сайті Ви хочете зареєструватися?</message>
 	<message key="user.register.otherContextRoles">Запитати наступні ролі.</message>
 	<message key="user.register.noContextReviewerInterests">Якщо Ви запитуєте в журналі роль рецензента, будь ласка, зазначте свої наукові інтереси.</message>
@@ -258,6 +262,7 @@
 	<message key="subscriptions.status.needsApproval">Необхідне підтвердження</message>
 	<message key="subscriptions.status.awaitingManualPayment">Очікують ручного платежу</message>
 	<message key="subscriptions.status.awaitingOnlinePayment">Очікують електронного платежу</message>
+	<message key="subscriptions.status.noSubscription">У вас немає жодної активної підписки.</message>
 	<message key="subscriptions.status.other">Інше, див. примітки</message>
 	<message key="subscriptions.individualDescription">Індивідуальні передплати передбачають доступ до передплаченого контенту за іменем користувача/паролем.</message>
 	<message key="subscriptions.institutionalDescription">Інституційні передплати не вимагають входу передплатників на сайт з іменами користувачів/паролями. Передплатники розпізнаються за доменами та/або IP-адресами.</message>
@@ -318,6 +323,7 @@
 	<message key="reader.openAccess">Відкритий доступ</message>
 	<message key="reader.subscriptionAccess">Доступ за передплатою</message>
 	<message key="reader.subscriptionOrFeeAccess">Передплата або плата за доступ</message>
+	<message key="reader.purchasePrice">({$price} {$currency})</message>
 
 	<!-- Reader Comments -->
 	<message key="comments.commentsOnArticle">Коментарі до цієї статті</message>
@@ -379,6 +385,8 @@
 	<message key="manager.setup.clockssDescription"><![CDATA[Open Journal Systems підтримує систему <a href="http://clockss.org/" target="_blank">CLOCKSS</a> (Controlled Lots of Copies Keep Stuff Safe), щоб впевнитись у постійній та безпечній архівації журналу.  CLOCKSS заснована на відкритому програмному забезпеченні LOCKSS, , розроблений Бібліотекою Стенфордського університету, який дозволяє бібліотекам забезпечувати збереження окремих веб-журналів, регулярно перевіряючи веб-сайти зареєстрованих журналів на наявність нового опублікованого контенту та архівуючи його. Кожен архів постійно перевіряється на відповідність з іншими; якщо контент виявляється пошкодженим або втраченим, інші архіви використовуються для його відновлення.
 <br /><br />
 Встановлення підтримки LOCKSS для Open Journal Systems не повинно здійснюватись до того часу, доки видавничий процес не розгорнутий повністю.]]></message>
+
+	<message key="manager.setup.porticoDescription"><![CDATA[Portico - це некомерційний сервіс, призначений для збереження цифрових публікацій, у тому числі електронних журналів, книг та оцифрованих історичних колекцій. Якщо ваш журнал підписав контракт з Portico, увімкніть тут необхідні налаштування:]]></message>
 
 	<!-- Setup Step 3 -->
 	<message key="manager.setup.authorCopyrightNotice.sample"><![CDATA[<h3>Запропоноване Положення про авторські права Creative Commons</h3>
@@ -567,6 +575,7 @@
 	<message key="reviewer.article.enterReviewA">Натисніть на зображенні, щоб ввести (або вставити) Вашу рецензію на це подання.</message>
 	<message key="reviewer.article.uploadFile">Додатково, Ви можете вивантажити файли, корисні для редактора та/або автора.</message>
 	<message key="reviewer.article.selectRecommendation">Для завершення процесу рецензування оберіть рекомендацію та надішліть рецензію. Перед тим, як обрати рекомендацію, Ви повинні внести рецензію або вивантажити файл.</message>
+	<message key="reviewer.article.selectRecommendation.byEditor">Задати, чи змінити рекомендацію рецензента.</message>
 	<message key="reviewer.article.mustSelectDecision">Рекомендація не обрана. Ви повинні обрати рекомендацію щодо подання.</message>
 	<message key="reviewer.article.confirmDecision">Після того, як Ваше рішення буде записане, Ви не матимете можливості вносити зміни до цієї рецензії. Ви впевнені, що хочете продовжити?</message>
 
@@ -675,6 +684,10 @@
 	<message key="user.register.reviewerDescriptionNoInterests">Дає свою згоду на рецензування рукописів для журналу.</message>
 	<message key="user.register.reviewerDescription">Дає свою згоду на рецензування рукописів для редакції.</message>
 	<message key="user.register.reviewerInterests">Вкажіть коло наукових інтересів (галузі та методологічні підходи):</message>
+	<message key="user.register.form.emailConsentAllContexts">Так, я хочу, щоб мене сповіщували про нові публікації та оновлення у всіх журналах, в яких я зареєстрований.</message>
+	<message key="user.register.form.privacyConsentThisContext"><![CDATA[Так, я даю згоду на збір та збереження моїх даних в межах <a href="{$privacyUrl}" target="_blank">політики конфіденційності</a> цього журналу.]]></message>
+	<message key="user.register.form.missingContextConsent">Ви повинні погодитися з політикою конфіденційності будь-якого журналу, в якому реєструєтеся.</message>
+	<message key="user.register.form.missingSiteConsent">Ви повинні погодитися з політикою конфіденційності даного сайту.</message>
 
 	<!-- Subscriptions -->
 	<message key="user.subscriptions.mySubscriptions">Мої передплати</message>
@@ -876,6 +889,7 @@
 	<message key="payment.authorFees">Платежі авторів</message>
 	<message key="payment.type.submission">Плата за подання статті</message>
 	<message key="payment.type.publication">Плата за публікацію статті</message>
+	<message key="payment.type.publication.required">Вартість публікації підлягає оплаті.</message>
 	<message key="payment.type.fastTrack">Плата за прискорене рецензування</message>
 	<message key="payment.type.membership">Плата за індивідуальне членство</message>
 	<message key="payment.type.purchaseArticle">Придбання статті</message>
@@ -884,6 +898,8 @@
 	<message key="payment.type.donation">Пожертви</message>
 	<message key="payment.type.gift">Подарунок</message>
 	<message key="payment.type.gift.subscription">Передплата</message>
+	<message key="payment.requestPublicationFee"> Зробити запит оплати публікації ({$feeAmount})</message>
+	<message key="payment.notFound">Отримано запит на оплату, але термін дії запиту минув. Зверніться до менеджера журналіу, щоб дізнатись більше.</message>
 
 	<message key="payment.donation.makeDonation">Зробити пожертву</message>
 
@@ -904,7 +920,7 @@
 	<message key="installer.ojsUpgrade">Оновлення OJS</message>
 	<message key="installer.installationInstructions"><![CDATA[<h4>Версія OJS {$version}</h4>
 
-<p>Дякуємо, що завантажили <strong>Open Journal Systems</strong> виробництва Public Knowledge Project. Перед тим, як продовжити, будь ласка, прочитайте файл <a href="{$baseUrl}/docs/README">README</a>, включений до цього дистрибутиву. Для того, щоб дізнатися більше про Public Knowledge Project та розроблені ним програмні пакети, будь ласка, завітайте на <a href="http://pkp.sfu.ca/" target="_blank">веб-сайт PKP</a>. Якщо Ви маєте звіти про помилки або запити до служби підтримки Open Journal Systems, дивіться <a href="http://forum.pkp.sfu.ca" target="_blank">форум підтримки</a> або завітайте до електронної служби PKP <a href="https://github.com/pkp/pkp-lib#issues" target="_blank">система звітування про помилки</a>. Хоча форум підтримки є пріоритетним методом контактів з розробниками, Ви можете також написати розробникам листа на адресу <a href="mailto:pkp.contact@gmail.com">pkp.contact@gmail.com</a>.</p>
+<p>Дякуємо, що завантажили <strong>Open Journal Systems</strong> виробництва Public Knowledge Project. Перед тим, як продовжити, будь ласка, прочитайте файл <a href="{$baseUrl}/docs/README.md">README</a>, включений до цього дистрибутиву. Для того, щоб дізнатися більше про Public Knowledge Project та розроблені ним програмні пакети, будь ласка, завітайте на <a href="http://pkp.sfu.ca/" target="_blank">веб-сайт PKP</a>. Якщо Ви маєте звіти про помилки або запити до служби підтримки Open Journal Systems, дивіться <a href="http://forum.pkp.sfu.ca" target="_blank">форум підтримки</a> або завітайте до електронної служби PKP <a href="https://github.com/pkp/pkp-lib#issues" target="_blank">система звітування про помилки</a>. Хоча форум підтримки є пріоритетним методом контактів з розробниками, Ви можете також написати розробникам листа на адресу <a href="mailto:pkp.contact@gmail.com">pkp.contact@gmail.com</a>.</p>
 
 <h4>Оновлення</h4>
 
@@ -926,8 +942,9 @@
 <h4>Системи управління базами даних, що підтримуються</h4>
 
 <p>Наразі OJS був протестований лише на MySQL та PostgreSQL, проте інші СУБД, що підтримуються через <a href="http://adodb.sourceforge.net/" target="_blank">ADOdb</a>, можуть також бути робочими (повністю або частково). Звіти про сумісність та/або патч-коди для альтернативних СУБД можуть бути надіслані працівникам OJS.</p>
-
-	<message key="installer.preInstallationInstructions"><![CDATA[<h4>Підготовка до інсталяції</h4>
+]]></message>
+<message key="installer.preInstallationInstructions"><![CDATA[
+<h4>Підготовка до інсталяції</h4>
 
 <p>1. Необхідно відкрити для запису наступні файли і теки (та їх зміст):</p>
 <ul>
@@ -943,7 +960,7 @@
 
 	<message key="installer.upgradeInstructions"><![CDATA[<h4>OJS версії {$version}</h4>
 
-<p>Дякуємо, що завантажили <strong>Open Journal Systems</strong> виробництва Public Knowledge Project. Перед тим, як продовжити, будь ласка, прочитайте файли <a href="{$baseUrl}/docs/README">README</a> та <a href="{$baseUrl}/docs/UPGRADE">UPGRADE</a>, включені до цього дистрибутиву. Для того, щоб дізнатися більше про Public Knowledge Project та розроблені ним програмні пакети, будь ласка, завітайте на <a href="http://pkp.sfu.ca/" target="_blank">веб-сайт PKP</a>. Якщо Ви маєте звіти про помилки або запити до служби підтримки Open Journal Systems, дивіться <a href="http://forum.pkp.sfu.ca" target="_blank">форум підтримки</a> або завітайте до онлайнової служби PKP <a href="https://github.com/pkp/pkp-lib#issues" target="_blank">система звітування про помилки</a>. Хоча форум підтримки є пріоритетним методом контакту з розробниками, Ви можете також написати розробникам листа на адресу <a href="mailto:pkp.contact@gmail.com">pkp.contact@gmail.com</a>.</p>
+<p>Дякуємо, що завантажили <strong>Open Journal Systems</strong> виробництва Public Knowledge Project. Перед тим, як продовжити, будь ласка, прочитайте файли <a href="{$baseUrl}/docs/README.md">README</a> та <a href="{$baseUrl}/docs/UPGRADE.md">UPGRADE</a>, включені до цього дистрибутиву. Для того, щоб дізнатися більше про Public Knowledge Project та розроблені ним програмні пакети, будь ласка, завітайте на <a href="http://pkp.sfu.ca/" target="_blank">веб-сайт PKP</a>. Якщо Ви маєте звіти про помилки або запити до служби підтримки Open Journal Systems, дивіться <a href="http://forum.pkp.sfu.ca" target="_blank">форум підтримки</a> або завітайте до онлайнової служби PKP <a href="https://github.com/pkp/pkp-lib#issues" target="_blank">система звітування про помилки</a>. Хоча форум підтримки є пріоритетним методом контакту з розробниками, Ви можете також написати розробникам листа на адресу <a href="mailto:pkp.contact@gmail.com">pkp.contact@gmail.com</a>.</p>
 <p>Перед тим, як продовжити, <strong>настійно рекомендуємо</strong> зробити резервну копію Вашої бази даних, файлових тек та теки інсталяції OJS.</p>
 <p>Якщо Ви працюєте у режимі <a href="http://www.php.net/features.safe-mode" target="_blank">PHP Safe Mode</a>, будь ласка, переконайтеся, що значення параметру max_execution_time у Вашому файлі конфігурації php.ini має найвище припустиме значення. Якщо цей або будь-який інший ліміт часу (наприклад, параметр "Timeout" налаштувань Apache) буде перевищений, процес оновлення буде перерваний і знадобиться ручне втручання.</p>]]></message>
 	<message key="installer.localeSettingsInstructions"><![CDATA[Для повної підтримки формату Unicode (UTF-8), оберіть UTF-8 у всіх налаштуваннях таблиць кодування. Зауважте, що повна підтримка наразі вимагає СУБД MySQL >= 4.1.1 або PostgreSQL >= 7.1. Крім того, будь ласка, зауважте, що повна підтримка Unicode також вимагає PHP >= 4.3.0 з підтримкою бібліотеки <a href="http://www.php.net/mbstring" target="_blank">mbstring</a> (у більшості сучасних інсталяцій PHP включена за замовчуванням). Якщо Ваш сервер не відповідає цим вимогам, Ви можете зустрітись з проблемами під час використання розширених таблиць кодування.
@@ -996,6 +1013,8 @@
 	<message key="log.review.reviewFileByProxy">Редактор {$userName} вивантажив файл рецензії для {$round} раунду рецензування подання {$submissionId} від імені рецензента {$reviewerName}.</message>
 	<message key="log.review.reviewerFile">Файл рецензента був вивантажений.</message>
 	<message key="log.editor.decision">Рішення редактора ({$decision}) щодо статті {$submissionId} було записане редактором {$editorName}.</message>
+	<message key="log.editor.recommendation">Рекомендація редактора ({$decision}) по статті {$submissionId} була введена редактором {$editorName}.</message>
+
 
 	<message key="log.copyedit.initiate">Літературне редагування подання {$submissionId} було розпочате редактором {$copyeditorName}.</message>
 	<message key="log.copyedit.copyeditFileSet">Файл базової редакційної версії був визначений.</message>
@@ -1061,11 +1080,9 @@
 
 
 	<!-- Notification Types -->
-	<message key="notification.mailListDescription">Вкажіть свою адресу email, щоб отримувати миттєві повідомлення про публікацію у цьому журналі нового контенту.</message>
-	<message key="notification.notificationsPublicDescription"><![CDATA[На цій сторінці відображаються важливі новини, пов'язані з цим журналом, наприклад, інформація про нові випуски або анонси. Ви можете отримувати ці сповіщення як стрічку RSS (натисніть на зображенні праворуч) або як <a href="{$emailUrl}">поштову підписку</a>.]]></message>
 
-	<message key="notification.type.articleSubmitted">Надіслана нова стаття: "{$title}".</message>
 	<message key="notification.type.editing">Події редакційного процесу</message>
+	<message key="notification.type.submissionSubmitted">Нова стаття, "{$title}," була подана.</message>
 	<message key="notification.type.editorDecisionComment">Залишений коментар на рішення редактора щодо статті"{$title}".</message>
 	<message key="notification.type.galleyModified">Змінена гранка статті "{$title}".</message>
 	<message key="notification.type.issuePublished">Опублікований випуск.</message>
@@ -1076,10 +1093,12 @@
 	<message key="notification.type.submissionComment">Редактор зробив коментар на подання "{$title}".</message>
 	<message key="notification.type.submissions">Події з рукописами</message>
 	<message key="notification.type.userComment">Читач залишив коментар на статтю "{$title}"</message>
+	<message key="notification.type.public">Публічні оголошення</message>
 	<message key="notification.savedIssueMetadata">Збережені метадані публікації випуску.</message>
 	<message key="notification.type.editorAssignmentTask">Подана нова стаття, якій необхідно призначити редактора.</message>
 	<message key="notification.type.assignProductionUser">Призначити користувача для створення гранок за допомогою посилання «Додати» в списку «Учасники».</message>
 	<message key="notification.type.awaitingRepresentations">Очікування гранок.</message>
+	<message key="notification.type.publicationScheduled">Подання заплановане для публікації.</message>
 
 	<!--
 	 *
@@ -1121,4 +1140,8 @@
 
 	<message key="editor.issues.backIssues">Попередні випуски</message>
 	<message key="editor.issues.futureIssues">Наступні випуски</message>
+	<message key="navigation.subscriptions">Підписки</message>
+
+	<!-- застарілі рядки з OJS 2, необхідні для оновлених з OJS 2 систем -->
+	<message key="log.editor.submissionExpedited">Редактор {$editorName} розпочав процес редагування статті {$submissionId}.</message>
 </locale>

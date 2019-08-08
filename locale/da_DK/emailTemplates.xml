@@ -4,8 +4,8 @@
 <!--
   * locale/da_DK/emailTemplates.xml
   *
-  * Copyright (c) 2014-2018 Simon Fraser University
-  * Copyright (c) 2003-2018 John Willinsky
+  * Copyright (c) 2014-2019 Simon Fraser University
+  * Copyright (c) 2003-2019 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   *
   * Localized email templates XML file.
@@ -558,38 +558,13 @@ Link: {$url}<br />
 {$principalContactSignature}]]></body>
 		<description>Denne e-mail er blevet sendt til registrerede brugere, som har valgt at få tilsendt denne type meddelelser.</description>
 	</email_text>
-	<email_text key="NOTIFICATION_MAILLIST">
-		<subject>Ny meddelelse fra {$siteTitle}</subject>
-		<body><![CDATA[Du har modtaget en ny meddelelse fra {$siteTitle}:<br />
---<br />
-{$notificationContents}<br />
-<br />
-Link: {$url}<br />
---<br />
-<br />
-Hvis du ikke længere ønsker at modtage e-mail-meddelelser, skal du gå ind på {$unsubscribeLink} og indtaste din e-mail-adresse og adgangskode.<br />
-<br />
-{$principalContactSignature}]]></body>
-		<description>Denne e-mail er blevet sendt til uregistrerede brugere på meddelelses-mailinglisten.</description>
-	</email_text>
-	<email_text key="NOTIFICATION_MAILLIST_WELCOME">
-		<subject>Velkommen til {$siteTitle}-mailinglisten!</subject>
-		<body><![CDATA[Du har bedt om at modtage meddelelser fra {$siteTitle}.<br />
-			<br />
-Klik på dette link for at bekræfte din anmodning og tilføje din e-mail-adresse til mailinglisten: {$confirmLink}<br />
-<br />
-Hvis du ikke længere ønsker at modtage e-mail-meddelelser, skal du gå ind på {$unsubscribeLink} og indtaste din e-mail-adresse og adgangskode.<br />
-<br />
-{$principalContactSignature}]]></body>
-		<description>Denne e-mail er blevet sendt til en uregistreret bruger, som har tilmeldt sig meddelelses-mailinglisten.</description>
-	</email_text>
-		<email_text key="EDITOR_DECISION_ACCEPT">
+	<email_text key="EDITOR_DECISION_ACCEPT">
 		<subject>Redaktørbeslutning</subject>
 		<body><![CDATA[{$authorName}:<br />
 <br />
 Vi er nået frem til en afgørelse vedrørende dit bidrag til {$contextName}, &quot;{$submissionTitle}&quot;.<br />
 <br />
-Vi har besluttet at: Godkende indsendelsen<br />
+Vi har besluttet at: Acceptere manuskript<br />
 <br />
 {$editorialContactSignature}]]></body>
 		<description>Denne e-mail fra redaktøren eller sektionsredaktøren til en forfatter er en meddelelse om den endelige afgørelse vedrørende deres bidrag.</description>
@@ -611,7 +586,7 @@ Vi har besluttet følgende: Rettelser er påkrævet<br />
 <br />
 Vi er nået frem til en afgørelse vedrørende dit bidrag til {$contextName}, &quot;{$submissionTitle}&quot;.<br />
 <br />
-Vi har besluttet følgende: Genindsendes til bedømmelse<br />
+Vi har besluttet følgende: Fremsend igen til bedømmelse<br />
 <br />
 {$editorialContactSignature}]]></body>
 		<description>Denne e-mail fra redaktøren eller sektionsredaktøren til en forfatter er en meddelelse om den endelige afgørelse vedrørende deres bidrag.</description>
@@ -622,7 +597,7 @@ Vi har besluttet følgende: Genindsendes til bedømmelse<br />
 <br />
 Vi er nået frem til en afgørelse vedrørende dit bidrag til {$contextName}, &quot;{$submissionTitle}&quot;.<br />
 <br />
-Vi har besluttet at: Afvise indsendelsen<br />
+Vi har besluttet at: Afvise manuskript<br />
 <br />
 {$editorialContactSignature}]]></body>
 		<description>Denne e-mail fra redaktøren eller sektionsredaktøren til en forfatter er en meddelelse om den endelige afgørelse vedrørende deres bidrag.</description>

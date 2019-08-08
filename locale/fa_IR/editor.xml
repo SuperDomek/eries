@@ -3,8 +3,8 @@
 <!--
   * locale/fa_IR/editor.xml
   *
-  * Copyright (c) 2013-2018 Simon Fraser University
-  * Copyright (c) 2003-2018 John Willinsky
+  * Copyright (c) 2013-2019 Simon Fraser University
+  * Copyright (c) 2003-2019 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   * Localization information: https://pkp.sfu.ca/wiki/index.php?title=Translating_OxS
   * Credits: https://pkp.sfu.ca/wiki/index.php?title=OJS:_Farsi_(fa_IR)
@@ -145,4 +145,5 @@
 	<message key="editor.submission.editorial.finalDraftDescription"><![CDATA[آخرین نسخه از فایل توسط ویراستیار به عنوان نسخه <span class="pkp_help_title">ویراستیاری شده</span> در سیستم آپلود شده است.]]></message>
 	<message key="editor.submission.proof.manageProofFilesDescription">هر فایلی که در مراحل ارسال مقاله در سامانه آپلود شده است را می‌توان با انتخاب گزینه زیر به لیست بازبینی نهایی اضافه کرد.</message>
 	<message key="editor.publicIdentificationExistsForTheSameType">شناسه عمومی «{$publicIdentifier}» برای موجودیت دیگری از همین نوع تعریف شده است. لطفاً برای تمامی موجودیت‌های داخل مجله یک شناسه عمومی منحصربه‌فرد انتخاب کنید.</message>
+	<message key="editor.article.coverImage">تصویر جلد</message>
 </locale>

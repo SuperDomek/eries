@@ -9,8 +9,8 @@
 /**
  * @file classes/article/Article.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class Article
@@ -50,7 +50,7 @@ class Article extends Submission {
 			case PERMISSIONS_FIELD_COPYRIGHT_HOLDER:
 				switch($context->getSetting('copyrightHolderType')) {
 					case 'author':
-						$fieldValue = array($context->getPrimaryLocale() => $this->getAuthorString());
+						$fieldValue = array($context->getPrimaryLocale() => $this->getAuthorString(false));
 						break;
 					case 'other':
 						$fieldValue = $context->getSetting('copyrightHolderOther');
@@ -199,7 +199,7 @@ class Article extends Submission {
 	/**
 	 * get cover page server-side file name
 	 * @param $locale string
-	 * @return string
+	 * @return string|array
 	 */
 	function getCoverImage($locale) {
 		return $this->getData('coverImage', $locale);
@@ -284,4 +284,4 @@ class Article extends Submission {
 	}
 }
 
-?>
+

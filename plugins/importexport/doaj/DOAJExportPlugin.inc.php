@@ -3,8 +3,8 @@
 /**
  * @file plugins/importexport/doaj/DOAJExportPlugin.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class DOAJExportPlugin
@@ -24,18 +24,6 @@ define('DOAJ_API_URL_DEV', 'https://testdoaj.cottagelabs.com/api/v1/');
 define('DOAJ_API_OPERATION', 'articles');
 
 class DOAJExportPlugin extends PubObjectsExportPlugin {
-
-	/**
-	 * @copydoc Plugin::register()
-	 */
-	public function register($category, $path, $mainContextId = null) {
-		$success = parent::register($category, $path, $mainContextId);
-		if (!Config::getVar('general', 'installed') || defined('RUNNING_UPGRADE')) return $success;
-		if ($success && $this->getEnabled()) {
-			$this->_registerTemplateResource();
-		}
-		return $success;
-	}
 
 	/**
 	 * @copydoc Plugin::getName()
@@ -59,13 +47,6 @@ class DOAJExportPlugin extends PubObjectsExportPlugin {
 	}
 
 	/**
-	 * @copydoc Plugin::getTemplatePath()
-	 */
-	function getTemplatePath($inCore = false) {
-		return $this->getTemplateResourceName() . ':templates/';
-	}
-
-	/**
 	 * @copydoc ImportExportPlugin::display()
 	 */
 	function display($args, $request) {
@@ -74,7 +55,7 @@ class DOAJExportPlugin extends PubObjectsExportPlugin {
 			case 'index':
 			case '':
 				$templateMgr = TemplateManager::getManager($request);
-				$templateMgr->display($this->getTemplatePath() . 'index.tpl');
+				$templateMgr->display($this->getTemplateResource('index.tpl'));
 				break;
 		}
 	}
@@ -240,4 +221,4 @@ class DOAJExportPlugin extends PubObjectsExportPlugin {
 
 }
 
-?>
+

@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/users/author/form/AuthorForm.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class AuthorForm
@@ -34,9 +34,21 @@ class AuthorForm extends Form {
 		$this->setAuthor($author);
 		$this->setSubmissionIdFieldName($submissionIdFieldName);
 
+		// the submission locale should be the default/required locale
+		$this->setDefaultFormLocale($submission->getLocale());
+
 		// Validation checks for this form
-		$this->addCheck(new FormValidator($this, 'firstName', 'required', 'submission.submit.form.authorRequiredFields'));
-		$this->addCheck(new FormValidator($this, 'lastName', 'required', 'submission.submit.form.authorRequiredFields'));
+		$form = $this;
+		$this->addCheck(new FormValidatorLocale($this, 'givenName', 'required', 'user.profile.form.givenNameRequired', $this->defaultLocale));
+		$this->addCheck(new FormValidatorCustom($this, 'familyName', 'optional', 'user.profile.form.givenNameRequired.locale', function($familyName) use ($form) {
+			$givenNames = $form->getData('givenName');
+			foreach ($familyName as $locale => $value) {
+				if (!empty($value) && empty($givenNames[$locale])) {
+					return false;
+				}
+			}
+			return true;
+		}));
 		$this->addCheck(new FormValidatorEmail($this, 'email', 'required', 'form.emailRequired'));
 		$this->addCheck(new FormValidatorUrl($this, 'userUrl', 'optional', 'user.profile.form.urlInvalid'));
 		$this->addCheck(new FormValidator($this, 'userGroupId', 'required', 'submission.submit.form.contributorRoleRequired'));
@@ -103,7 +115,6 @@ class AuthorForm extends Form {
 	//
 	/**
 	 * Initialize form data from the associated author.
-	 * @param $author Author
 	 */
 	function initData() {
 		$author = $this->getAuthor();
@@ -111,11 +122,10 @@ class AuthorForm extends Form {
 		if ($author) {
 			$this->_data = array(
 				'authorId' => $author->getId(),
-				'firstName' => $author->getFirstName(),
-				'middleName' => $author->getMiddleName(),
-				'lastName' => $author->getLastName(),
-				'suffix' => $author->getSuffix(),
-				'affiliation' => $author->getAffiliation(null), // Localized
+				'givenName' => $author->getGivenName(null),
+				'familyName' => $author->getFamilyName(null),
+				'preferredPublicName' => $author->getPreferredPublicName(null),
+				'affiliation' => $author->getAffiliation(null),
 				'country' => $author->getCountry(),
 				'email' => $author->getEmail(),
 				'userUrl' => $author->getUrl(),
@@ -134,10 +144,9 @@ class AuthorForm extends Form {
 	}
 
 	/**
-	 * Fetch the form.
-	 * @see Form::fetch()
+	 * @copydoc Form::fetch()
 	 */
-	function fetch($request) {
+	function fetch($request, $template = null, $display = false) {
 		$author = $this->getAuthor();
 
 		$templateMgr = TemplateManager::getManager($request);
@@ -156,7 +165,7 @@ class AuthorForm extends Form {
 		$templateMgr->assign('submissionIdFieldName', $this->getSubmissionIdFieldName());
 		$templateMgr->assign('submissionId', $submission->getId());
 
-		return parent::fetch($request);
+		return parent::fetch($request, $template, $display);
 	}
 
 	/**
@@ -166,10 +175,9 @@ class AuthorForm extends Form {
 	function readInputData() {
 		$this->readUserVars(array(
 			'authorId',
-			'firstName',
-			'middleName',
-			'lastName',
-			'suffix',
+			'givenName',
+			'familyName',
+			'preferredPublicName',
 			'affiliation',
 			'country',
 			'email',
@@ -185,7 +193,6 @@ class AuthorForm extends Form {
 	/**
 	 * Save author
 	 * @see Form::execute()
-	 * @see Form::execute()
 	 */
 	function execute() {
 		$authorDao = DAORegistry::getDAO('AuthorDAO');
@@ -194,7 +201,8 @@ class AuthorForm extends Form {
 		$author = $this->getAuthor();
 		if (!$author) {
 			// this is a new submission contributor
-			$author = new Author();
+			$this->_author = $authorDao->newDataObject();
+			$author = $this->getAuthor();
 			$author->setSubmissionId($submission->getId());
 			$existingAuthor = false;
 		} else {
@@ -202,10 +210,9 @@ class AuthorForm extends Form {
 			if ($submission->getId() !== $author->getSubmissionId()) fatalError('Invalid author!');
 		}
 
-		$author->setFirstName($this->getData('firstName'));
-		$author->setMiddleName($this->getData('middleName'));
-		$author->setLastName($this->getData('lastName'));
-		$author->setSuffix($this->getData('suffix'));
+		$author->setGivenName($this->getData('givenName'), null);
+		$author->setFamilyName($this->getData('familyName'), null);
+		$author->setPreferredPublicName($this->getData('preferredPublicName'), null);
 		$author->setAffiliation($this->getData('affiliation'), null); // localized
 		$author->setCountry($this->getData('country'));
 		$author->setEmail($this->getData('email'));
@@ -230,4 +237,4 @@ class AuthorForm extends Form {
 	}
 }
 
-?>
+

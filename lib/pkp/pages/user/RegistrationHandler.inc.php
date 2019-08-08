@@ -3,8 +3,8 @@
 /**
  * @file pages/user/RegistrationHandler.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class RegistrationHandler
@@ -21,9 +21,9 @@ class RegistrationHandler extends UserHandler {
 	/**
 	 * @see PKPHandler::initialize()
 	 */
-	function initialize($request, &$args) {
+	function initialize($request) {
 		AppLocale::requireComponents(LOCALE_COMPONENT_APP_COMMON);
-		parent::initialize($request, $args);
+		parent::initialize($request);
 	}
 
 	/**
@@ -54,7 +54,7 @@ class RegistrationHandler extends UserHandler {
 
 		// Initial GET request to register page
 		if (!$request->isPost()) {
-			$regForm->initData($request);
+			$regForm->initData();
 			return $regForm->display($request);
 		}
 
@@ -64,7 +64,7 @@ class RegistrationHandler extends UserHandler {
 			return $regForm->display($request);
 		}
 
-		$regForm->execute($request);
+		$regForm->execute();
 
 		// Inform the user of the email validation process. This must be run
 		// before the disabled account check to ensure new users don't see the
@@ -195,4 +195,4 @@ class RegistrationHandler extends UserHandler {
 	}
 }
 
-?>
+

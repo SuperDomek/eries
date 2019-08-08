@@ -3,8 +3,8 @@
 /**
  * @file classes/install/Upgrade.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class Upgrade
@@ -466,10 +466,9 @@ class Upgrade extends Installer {
 
 				// Copyeditors.  Pull from the signoffs for SIGNOFF_COPYEDITING_INITIAL.
 				// there should only be one (or no) copyeditor for each submission.
-				// 257 === 0x0000101 (the old assoc type for ASSOC_TYPE_ARTICLE)
 
 				$copyEditorResult = $stageAssignmentDao->retrieve('SELECT user_id FROM signoffs WHERE assoc_type = ? AND assoc_id = ? AND symbolic = ?',
-								array(257, $submissionId, 'SIGNOFF_COPYEDITING_INITIAL'));
+								array(ASSOC_TYPE_SUBMISSION, $submissionId, 'SIGNOFF_COPYEDITING_INITIAL'));
 
 				if ($copyEditorResult->NumRows() == 1) { // the signoff exists.
 					$copyEditorRow = $copyEditorResult->GetRowAssoc(false);
@@ -481,10 +480,9 @@ class Upgrade extends Installer {
 
 				// Layout editors.  Pull from the signoffs for SIGNOFF_LAYOUT.
 				// there should only be one (or no) layout editor for each submission.
-				// 257 === 0x0000101 (the old assoc type for ASSOC_TYPE_ARTICLE)
 
 				$layoutEditorResult = $stageAssignmentDao->retrieve('SELECT user_id FROM signoffs WHERE assoc_type = ? AND assoc_id = ? AND symbolic = ?',
-						array(257, $submissionId, 'SIGNOFF_LAYOUT'));
+						array(ASSOC_TYPE_SUBMISSION, $submissionId, 'SIGNOFF_LAYOUT'));
 
 				if ($layoutEditorResult->NumRows() == 1) { // the signoff exists.
 					$layoutEditorRow = $layoutEditorResult->GetRowAssoc(false);
@@ -496,10 +494,9 @@ class Upgrade extends Installer {
 
 				// Proofreaders.  Pull from the signoffs for SIGNOFF_PROOFREADING_PROOFREADER.
 				// there should only be one (or no) layout editor for each submission.
-				// 257 === 0x0000101 (the old assoc type for ASSOC_TYPE_ARTICLE)
 
 				$proofreaderResult = $stageAssignmentDao->retrieve('SELECT user_id FROM signoffs WHERE assoc_type = ? AND assoc_id = ? AND symbolic = ?',
-						array(257, $submissionId, 'SIGNOFF_PROOFREADING_PROOFREADER'));
+						array(ASSOC_TYPE_SUBMISSION, $submissionId, 'SIGNOFF_PROOFREADING_PROOFREADER'));
 
 				if ($proofreaderResult->NumRows() == 1) { // the signoff exists.
 					$proofreaderRow = $proofreaderResult->GetRowAssoc(false);
@@ -872,21 +869,6 @@ class Upgrade extends Installer {
 			$result->MoveNext();
 		}
 		$result->Close();
-
-		// Localize the email header and footer fields.
-		$contextDao = DAORegistry::getDAO('JournalDAO');
-		$settingsDao = DAORegistry::getDAO('JournalSettingsDAO');
-		$contexts = $contextDao->getAll();
-		while ($context = $contexts->next()) {
-			foreach (array('emailFooter', 'emailSignature') as $settingName) {
-				$settingsDao->updateSetting(
-					$context->getId(),
-					$settingName,
-					$context->getSetting('emailHeader'),
-					'string'
-				);
-			}
-		}
 
 		return true;
 	}
@@ -1366,7 +1348,8 @@ class Upgrade extends Installer {
 			foreach ((array) $submissionFiles as $submissionFile) {
 				$submissionFile->setGenreId($genre->getId());
 				$submissionFile->setUploaderUserId($creatorUserId);
-				$submissionFile->setFileStage(SUBMISSION_FILE_PROOF);
+				$fileStage = $article->getStatus() == STATUS_PUBLISHED ? SUBMISSION_FILE_PROOF : SUBMISSION_FILE_SUBMISSION;
+				$submissionFile->setFileStage($fileStage);
 				$submissionFileDao->updateObject($submissionFile);
 			}
 
@@ -1455,6 +1438,47 @@ class Upgrade extends Installer {
 								'string'
 							)
 						);
+					}
+				}
+			}
+		}
+		$suppFilesResult->Close();
+		return true;
+	}
+
+	/**
+	 * Provide supplementary files of active submissions for review.
+	 * @return boolean True indicates success.
+	 */
+	function provideSupplementaryFilesForReview() {
+		$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO');
+		$reviewRoundDao = DAORegistry::getDAO('ReviewRoundDAO');
+		$reviewAssignmentDao = DAORegistry::getDAO('ReviewAssignmentDAO');
+		$reviewFilesDao = DAORegistry::getDAO('ReviewFilesDAO');
+		import('lib.pkp.classes.file.SubmissionFileManager');
+		// Get supp files with show_reviewers = 1
+		// We cannot support/consider remote supp files
+		$suppFilesResult = $submissionFileDao->retrieve('SELECT a.context_id, sf.* FROM article_supplementary_files sf, submissions a WHERE a.submission_id = sf.article_id AND sf.file_id <> 0 AND sf.show_reviewers = 1 AND sf.remote_url IS NULL and sf.file_id in (select f.file_id from submission_files f)');
+		while (!$suppFilesResult->EOF) {
+			$suppFilesRow = $suppFilesResult->getRowAssoc(false);
+			$suppFilesResult->MoveNext();
+			$reviewRounds = $reviewRoundDao->getBySubmissionId($suppFilesRow['article_id'], WORKFLOW_STAGE_ID_EXTERNAL_REVIEW);
+			// If a review round exists
+			// copy the supp file to the submissin review stage, add it to each existing review round, and as a review round file
+			if ($reviewRounds->getCount() != 0) {
+				$submissionFileManager = new SubmissionFileManager($suppFilesRow['context_id'], $suppFilesRow['article_id']);
+				// Retrieve the supp file last revision number, although they probably only have revision 1.
+				$revisionNumber = $submissionFileDao->getLatestRevisionNumber($suppFilesRow['file_id']);
+				// copy the supp file to the submissin review stage
+				list($newFileId, $newRevision) = $submissionFileManager->copyFileToFileStage($suppFilesRow['file_id'], $revisionNumber, SUBMISSION_FILE_REVIEW_FILE, null, true);
+				while ($reviewRound = $reviewRounds->next()) {
+					// add it to the review round
+					$submissionFileDao->assignRevisionToReviewRound($newFileId, $newRevision, $reviewRound);
+					// Get all review assignments
+					$reviewAssignments = $reviewAssignmentDao->getBySubmissionId($suppFilesRow['article_id'], $reviewRound->getId(), WORKFLOW_STAGE_ID_EXTERNAL_REVIEW);
+					foreach ($reviewAssignments as $reviewAssignment) {
+						// add it to the review files
+						$reviewFilesDao->grant($reviewAssignment->getId(), $newFileId);
 					}
 				}
 			}
@@ -2174,7 +2198,8 @@ class Upgrade extends Installer {
 				$groupUsers = array();
 				$groupPrimaryLocaleTitles = array();
 				// get groups sorted by context -- that accords to the order they are displayed on the about page
-				$allGroupsResult = $roleDao->retrieve('SELECT * FROM groups WHERE assoc_type = ? AND assoc_id = ? AND about_displayed = 1 ORDER BY context, seq', array((int) ASSOC_TYPE_JOURNAL, (int) $journal->getId()));
+				$dataSource = $roleDao->getDataSource();
+				$allGroupsResult = $roleDao->retrieve('SELECT * FROM ' . $dataSource->nameQuote . 'groups' . $dataSource->nameQuote . ' WHERE assoc_type = ? AND assoc_id = ? AND about_displayed = 1 ORDER BY context, seq', array((int) ASSOC_TYPE_JOURNAL, (int) $journal->getId()));
 				while (!$allGroupsResult->EOF) {
 					$groupRow = $allGroupsResult->getRowAssoc(false);
 					$groupMembershipsResult = $roleDao->retrieve('SELECT * FROM group_memberships WHERE group_id = ? AND about_displayed = 1 ORDER BY seq', $groupRow['group_id']);
@@ -2527,34 +2552,34 @@ class Upgrade extends Installer {
 	function repairSuppFilesFilestage() {
 		$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO');
 
+		import('lib.pkp.classes.submission.SubmissionFile');
 		import('lib.pkp.classes.file.SubmissionFileManager');
 
 		// get reviewer file ids
 		$result = $submissionFileDao->retrieve(
 			'SELECT ssf.*, s.context_id
 			FROM submission_supplementary_files ssf, submission_files sf, submissions s
-			WHERE sf.file_id = ssf.file_id AND sf.revision = ssf.revision AND s.submission_id = sf.submission_id'
+			WHERE sf.file_id = ssf.file_id AND sf.file_stage = ? AND sf.assoc_type = ? AND sf.revision = ssf.revision AND s.submission_id = sf.submission_id',
+			array((int)SUBMISSION_FILE_SUBMISSION, (int)ASSOC_TYPE_REPRESENTATION)
 		);
 		while (!$result->EOF) {
 			$row = $result->GetRowAssoc(false);
 			$submissionFileRevision = $submissionFileDao->getRevision($row['file_id'], $row['revision']);
-			if ($submissionFileRevision->getFileStage() != SUBMISSION_FILE_PROOF) {
-				$submissionFileManager = new SubmissionFileManager($row['context_id'], $submissionFileRevision->getSubmissionId());
-				$basePath = $submissionFileManager->getBasePath() . '/';
-				$generatedOldFilename = $submissionFileRevision->getServerFileName();
-				$oldFileName = $basePath . $submissionFileRevision->_fileStageToPath($submissionFileRevision->getFileStage()) . '/' . $generatedOldFilename;
-				$submissionFileRevision->setFileStage(SUBMISSION_FILE_PROOF);
-				$generatedNewFilename = $submissionFileRevision->getServerFileName();
-				$newFileName = $basePath . $submissionFileRevision->_fileStageToPath($submissionFileRevision->getFileStage()) . '/' . $generatedNewFilename;
-				if (!file_exists($newFileName)) {
-					if (!file_exists($path = dirname($newFileName)) && !$submissionFileManager->mkdirtree($path)) {
-						error_log("Unable to make directory \"$path\"");
-					}
-					if (!rename($oldFileName, $newFileName)) {
-						error_log("Unable to move \"$oldFileName\" to \"$newFileName\".");
-					} else {
-						$submissionFileDao->updateObject($submissionFileRevision);
-					}
+			$submissionFileManager = new SubmissionFileManager($row['context_id'], $submissionFileRevision->getSubmissionId());
+			$basePath = $submissionFileManager->getBasePath() . '/';
+			$generatedOldFilename = $submissionFileRevision->getServerFileName();
+			$oldFileName = $basePath . $submissionFileRevision->_fileStageToPath($submissionFileRevision->getFileStage()) . '/' . $generatedOldFilename;
+			$submissionFileRevision->setFileStage(SUBMISSION_FILE_PROOF);
+			$generatedNewFilename = $submissionFileRevision->getServerFileName();
+			$newFileName = $basePath . $submissionFileRevision->_fileStageToPath($submissionFileRevision->getFileStage()) . '/' . $generatedNewFilename;
+			if (!file_exists($newFileName)) {
+				if (!file_exists($path = dirname($newFileName)) && !$submissionFileManager->mkdirtree($path)) {
+					error_log("Unable to make directory \"$path\"");
+				}
+				if (!rename($oldFileName, $newFileName)) {
+					error_log("Unable to move \"$oldFileName\" to \"$newFileName\".");
+				} else {
+					$submissionFileDao->updateObject($submissionFileRevision);
 				}
 			}
 			$result->MoveNext();
@@ -2675,7 +2700,7 @@ class Upgrade extends Installer {
 
 		// Consider issue cover images
 		// Note that the locale column values are already changed above
-		$settingValueResult = $journalSettingsDao->retrieve('SELECT a.*, b.journal_id FROM issue_settings a, issues b WHERE a.setting_name = \'coverImage\' AND a.locale = ? AND a.setting_value LIKE ? AND a.setting_type = \'string\' AND b.issue_id = a.issue_id', array($newLocale, '%' .$oldLocale .'%'));
+		$settingValueResult = $journalSettingsDao->retrieve('SELECT a.*, b.journal_id FROM issue_settings a, issues b WHERE a.setting_name = \'fileName\' AND a.locale = ? AND a.setting_value LIKE ? AND a.setting_type = \'string\' AND b.issue_id = a.issue_id', array($newLocale, '%' .$oldLocale .'%'));
 		while (!$settingValueResult->EOF) {
 			$row = $settingValueResult->getRowAssoc(false);
 			$oldCoverImage = $row['setting_value'];
@@ -2684,14 +2709,14 @@ class Upgrade extends Installer {
 				$publicFileManager->copyJournalFile($row['journal_id'], $publicFileManager->getContextFilesPath(ASSOC_TYPE_JOURNAL, $row['journal_id']) . '/' . $oldCoverImage, $newCoverImage);
 				$publicFileManager->removeJournalFile($row['journal_id'], $oldCoverImage);
 			}
-			$journalSettingsDao->update('UPDATE issue_settings SET setting_value = ? WHERE issue_id = ? AND setting_name = \'coverImage\' AND locale = ?', array($newCoverImage, (int) $row['issue_id'], $newLocale));
+			$journalSettingsDao->update('UPDATE issue_settings SET setting_value = ? WHERE issue_id = ? AND setting_name = \'fileName\' AND locale = ?', array($newCoverImage, (int) $row['issue_id'], $newLocale));
 			$settingValueResult->MoveNext();
 		}
 		$settingValueResult->Close();
 
 		// Consider article cover images
 		// Note that the locale column values are already changed above
-		$settingValueResult = $journalSettingsDao->retrieve('SELECT a.*, b.context_id FROM submission_settings a, submissions b WHERE a.setting_name = \'coverImage\' AND a.locale = ? AND a.setting_value LIKE ? AND a.setting_type = \'string\' AND b.submission_id = a.submission_id', array($newLocale, '%' .$oldLocale .'%'));
+		$settingValueResult = $journalSettingsDao->retrieve('SELECT a.*, b.context_id FROM submission_settings a, submissions b WHERE a.setting_name = \'fileName\' AND a.locale = ? AND a.setting_value LIKE ? AND a.setting_type = \'string\' AND b.submission_id = a.submission_id', array($newLocale, '%' .$oldLocale .'%'));
 		while (!$settingValueResult->EOF) {
 			$row = $settingValueResult->getRowAssoc(false);
 			$oldCoverImage = $row['setting_value'];
@@ -2700,7 +2725,7 @@ class Upgrade extends Installer {
 				$publicFileManager->copyJournalFile($row['context_id'], $publicFileManager->getContextFilesPath(ASSOC_TYPE_JOURNAL, $row['context_id']) . '/' . $oldCoverImage, $newCoverImage);
 				$publicFileManager->removeJournalFile($row['context_id'], $oldCoverImage);
 			}
-			$journalSettingsDao->update('UPDATE submission_settings SET setting_value = ? WHERE submission_id = ? AND setting_name = \'coverImage\' AND locale = ?', array($newCoverImage, (int) $row['submission_id'], $newLocale));
+			$journalSettingsDao->update('UPDATE submission_settings SET setting_value = ? WHERE submission_id = ? AND setting_name = \'fileName\' AND locale = ?', array($newCoverImage, (int) $row['submission_id'], $newLocale));
 			$settingValueResult->MoveNext();
 		}
 		$settingValueResult->Close();
@@ -2724,6 +2749,151 @@ class Upgrade extends Installer {
 		return true;
 	}
 
+	/**
+	 * Migrate first and last user names as multilingual into the DB table user_settings.
+	 * @return boolean
+	 */
+	function migrateUserAndAuthorNames() {
+		$userDao = DAORegistry::getDAO('UserDAO');
+		import('lib.pkp.classes.identity.Identity'); // IDENTITY_SETTING_...
+		// the user names will be saved in the site's primary locale
+		$userDao->update("INSERT INTO user_settings (user_id, locale, setting_name, setting_value, setting_type) SELECT DISTINCT u.user_id, s.primary_locale, ?, u.first_name, 'string' FROM users_tmp u, site s", array(IDENTITY_SETTING_GIVENNAME));
+		$userDao->update("INSERT INTO user_settings (user_id, locale, setting_name, setting_value, setting_type) SELECT DISTINCT u.user_id, s.primary_locale, ?, u.last_name, 'string' FROM users_tmp u, site s", array(IDENTITY_SETTING_FAMILYNAME));
+		// the author names will be saved in the submission's primary locale
+		$userDao->update("INSERT INTO author_settings (author_id, locale, setting_name, setting_value, setting_type) SELECT DISTINCT a.author_id, s.locale, ?, a.first_name, 'string' FROM authors_tmp a, submissions s WHERE s.submission_id = a.submission_id", array(IDENTITY_SETTING_GIVENNAME));
+		$userDao->update("INSERT INTO author_settings (author_id, locale, setting_name, setting_value, setting_type) SELECT DISTINCT a.author_id, s.locale, ?, a.last_name, 'string' FROM authors_tmp a, submissions s WHERE s.submission_id = a.submission_id", array(IDENTITY_SETTING_FAMILYNAME));
+
+		// middle name will be migrated to the given name
+		// note that given names are already migrated to the settings table
+		$driver = $userDao->getDriver();
+		switch ($driver) {
+			case 'mysql':
+			case 'mysqli':
+				// the alias for _settings table cannot be used for some reason -- syntax error
+				$userDao->update("UPDATE user_settings, users_tmp u SET user_settings.setting_value = CONCAT(user_settings.setting_value, ' ', u.middle_name) WHERE user_settings.setting_name = ? AND u.user_id = user_settings.user_id AND u.middle_name IS NOT NULL AND u.middle_name <> ''", array(IDENTITY_SETTING_GIVENNAME));
+				$userDao->update("UPDATE author_settings, authors_tmp a SET author_settings.setting_value = CONCAT(author_settings.setting_value, ' ', a.middle_name) WHERE author_settings.setting_name = ? AND a.author_id = author_settings.author_id AND a.middle_name IS NOT NULL AND a.middle_name <> ''", array(IDENTITY_SETTING_GIVENNAME));
+				break;
+			case 'postgres':
+				$userDao->update("UPDATE user_settings SET setting_value = CONCAT(setting_value, ' ', u.middle_name) FROM users_tmp u WHERE user_settings.setting_name = ? AND u.user_id = user_settings.user_id AND u.middle_name IS NOT NULL AND u.middle_name <> ''", array(IDENTITY_SETTING_GIVENNAME));
+				$userDao->update("UPDATE author_settings SET setting_value = CONCAT(setting_value, ' ', a.middle_name) FROM authors_tmp a WHERE author_settings.setting_name = ? AND a.author_id = author_settings.author_id AND a.middle_name IS NOT NULL AND a.middle_name <> ''", array(IDENTITY_SETTING_GIVENNAME));
+				break;
+			default: fatalError('Unknown database type!');
+		}
+
+		// salutation and suffix will be migrated to the preferred public name
+		// user preferred public names will be inserted for each supported site locales
+		$siteDao = DAORegistry::getDAO('SiteDAO');
+		$site = $siteDao->getSite();
+		$supportedLocales = $site->getSupportedLocales();
+		$userResult = $userDao->retrieve("
+			SELECT user_id, first_name, last_name, middle_name, salutation, suffix FROM users_tmp
+			WHERE (salutation IS NOT NULL AND salutation <> '') OR
+			(suffix IS NOT NULL AND suffix <> '')
+		");
+		while (!$userResult->EOF) {
+			$row = $userResult->GetRowAssoc(false);
+			$userId = $row['user_id'];
+			$firstName = $row['first_name'];
+			$lastName = $row['last_name'];
+			$middleName = $row['middle_name'];
+			$salutation = $row['salutation'];
+			$suffix = $row['suffix'];
+			foreach ($supportedLocales as $siteLocale) {
+				$preferredPublicName = ($salutation != '' ? "$salutation " : '') . "$firstName " . ($middleName != '' ? "$middleName " : '') . $lastName . ($suffix != '' ? ", $suffix" : '');
+				if (AppLocale::isLocaleWithFamilyFirst($siteLocale)) {
+					$preferredPublicName = "$lastName, " . ($salutation != '' ? "$salutation " : '') . $firstName . ($middleName != '' ? " $middleName" : '');
+				}
+				$params = array((int) $userId, $siteLocale, $preferredPublicName);
+				$userDao->update("INSERT INTO user_settings (user_id, locale, setting_name, setting_value, setting_type) VALUES (?, ?, 'preferredPublicName', ?, 'string')", $params);
+			}
+			$userResult->MoveNext();
+		}
+		$userResult->Close();
+
+		// author suffix will be migrated to the author preferred public name
+		// author preferred public names will be inserted for each journal supported locale
+		// get supported locales for all journals
+		$journalDao = DAORegistry::getDAO('JournalDAO');
+		$journals = $journalDao->getAll();
+		$journalsSupportedLocales = array();
+		while ($journal = $journals->next()) {
+			$journalsSupportedLocales[$journal->getId()] = $journal->getSupportedLocales();
+		}
+		// get all authors with a suffix
+		$authorResult = $userDao->retrieve("
+			SELECT a.author_id, a.first_name, a.last_name, a.middle_name, a.suffix, j.journal_id FROM authors_tmp a
+			LEFT JOIN submissions s ON (s.submission_id = a.submission_id)
+			LEFT JOIN journals j ON (j.journal_id = s.context_id)
+			WHERE suffix IS NOT NULL AND suffix <> ''
+		");
+		while (!$authorResult->EOF) {
+			$row = $authorResult->GetRowAssoc(false);
+			$authorId = $row['author_id'];
+			$firstName = $row['first_name'];
+			$lastName = $row['last_name'];
+			$middleName = $row['middle_name'];
+			$suffix = $row['suffix'];
+			$journalId = $row['journal_id'];
+			$supportedLocales = $journalsSupportedLocales[$journalId];
+			foreach ($supportedLocales as $locale) {
+				$preferredPublicName = "$firstName " . ($middleName != '' ? "$middleName " : '') . $lastName . ($suffix != '' ? ", $suffix" : '');
+				if (AppLocale::isLocaleWithFamilyFirst($locale)) {
+					$preferredPublicName = "$lastName, " . $firstName . ($middleName != '' ? " $middleName" : '');
+				}
+				$params = array((int) $authorId, $locale, $preferredPublicName);
+				$userDao->update("INSERT INTO author_settings (author_id, locale, setting_name, setting_value, setting_type) VALUES (?, ?, 'preferredPublicName', ?, 'string')", $params);
+			}
+			$authorResult->MoveNext();
+		}
+		$authorResult->Close();
+
+		// remove temporary table
+		$siteDao->update('DROP TABLE users_tmp');
+		$siteDao->update('DROP TABLE authors_tmp');
+		return true;
+	}
+
+	/**
+	* Update assoc_id for assoc_type ASSOC_TYPE_SUBMISSION_FILE_COUNTER_OTHER = 531
+	* @return boolean True indicates success.
+	*/
+	function updateSuppFileMetrics() {
+ 		$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO');
+		$metricsDao = DAORegistry::getDAO('MetricsDAO');
+ 		# Copy 531 assoc_type data to temp table
+		$result = $metricsDao->update(
+			'CREATE TABLE metrics_supp AS (SELECT * FROM metrics WHERE assoc_type = 531)'
+		);
+ 		# Fetch submission_file data with old-supp-id
+		$result = $submissionFileDao->retrieve(
+			'SELECT * FROM submission_file_settings WHERE setting_name =  ?',
+			'old-supp-id'
+		);	
+ 		# Loop through the data and save to temp table
+		while (!$result->EOF) {
+			$row = $result->GetRowAssoc(false);
+ 			# Use assoc_type 2531 to prevent collisions between old assoc_id and new assoc_id
+			$metricsDao->update(
+			'UPDATE metrics_supp SET assoc_id = ?, assoc_type = ? WHERE assoc_type = ? AND assoc_id = ?',
+			array((int) $row['file_id'], 2531, 531, (int) $row['setting_value'])
+			);
+			$result->MoveNext();
+		}
+		$result->Close();
+ 		# update temprorary 2531 values to 531 values
+		$metricsDao->update(
+			'UPDATE metrics_supp SET assoc_type = ? WHERE assoc_type = ?',
+			array(531, 2531)
+		);		
+ 		# delete all existing 531 values from the actual metrics table
+		$metricsDao->update('DELETE FROM metrics WHERE assoc_type = 531');
+ 		# copy updated 531 values from metrics_supp to metrics table
+		$metricsDao->update('INSERT metrics SELECT * FROM metrics_supp');
+ 		# Drop metrics_supp table
+		$metricsDao->update('DROP TABLE metrics_supp');
+ 		return true;
+	}	
+
 }
 
-?>
+

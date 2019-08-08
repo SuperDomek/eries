@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/settings/roles/UserGroupGridHandler.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class UserGroupGridHandler
@@ -87,7 +87,7 @@ class UserGroupGridHandler extends GridHandler {
 	}
 
 	/**
-	 * @copydoc PKPHandler::initialize()
+	 * @copydoc GridHandler::initialize()
 	 */
 	function initialize($request, $args = null) {
 		parent::initialize($request, $args);
@@ -192,7 +192,7 @@ class UserGroupGridHandler extends GridHandler {
 	/**
 	* @see GridHandler::renderFilter()
 	*/
-	function renderFilter($request) {
+	function renderFilter($request, $filterData = array()) {
 		// Get filter data.
 		$roleDao = DAORegistry::getDAO('RoleDAO');
 		$roleOptions = array(0 => 'grid.user.allPermissionLevels') + Application::getRoleNames(true);
@@ -278,7 +278,7 @@ class UserGroupGridHandler extends GridHandler {
 
 		$userGroupForm->readInputData();
 		if($userGroupForm->validate()) {
-			$userGroupForm->execute($request);
+			$userGroupForm->execute();
 			return DAO::getDataChangedEvent();
 		} else {
 			return new JSONMessage(true, $userGroupForm->fetch($request));
@@ -413,4 +413,4 @@ class UserGroupGridHandler extends GridHandler {
 	}
 }
 
-?>
+

@@ -1,8 +1,8 @@
 {**
  * templates/frontend/components/navigationMenu.tpl
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @brief Primary navigation menu list for OJS
@@ -17,7 +17,7 @@
 	<ul id="{$id|escape}" class="{$ulClass|escape} pkp_nav_list">
 		{foreach key=field item=navigationMenuItemAssignment from=$navigationMenu->menuTree}
 			{if !$navigationMenuItemAssignment->navigationMenuItem->getIsDisplayed()}
-				{php}continue;{/php}
+				{continue}
 			{/if}
 			<li class="{$liClass|escape}">
 				<a href="{$navigationMenuItemAssignment->navigationMenuItem->getUrl()}">

@@ -3,8 +3,8 @@
 /**
  * @file classes/reviewForm/ReviewFormDAO.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class ReviewFormDAO
@@ -38,7 +38,7 @@ class ReviewFormDAO extends DAO {
 				SUM(CASE WHEN ra.date_completed IS NOT NULL THEN 1 ELSE 0 END) AS complete_count,
 				SUM(CASE WHEN ra.review_id IS NOT NULL AND ra.date_completed IS NULL THEN 1 ELSE 0 END) AS incomplete_count
 			FROM	review_forms rf
-				LEFT JOIN review_assignments ra ON (ra.review_form_id = rf.review_form_id)
+				LEFT JOIN review_assignments ra ON (ra.review_form_id = rf.review_form_id AND ra.declined<>1)
 			WHERE	rf.review_form_id = ? AND rf.assoc_type = ? AND rf.assoc_id = ?
 			GROUP BY rf.review_form_id',
 			$params
@@ -216,7 +216,7 @@ class ReviewFormDAO extends DAO {
 				SUM(CASE WHEN ra.date_completed IS NOT NULL THEN 1 ELSE 0 END) AS complete_count,
 				SUM(CASE WHEN ra.review_id IS NOT NULL AND ra.date_completed IS NULL THEN 1 ELSE 0 END) AS incomplete_count
 			FROM	review_forms rf
-				LEFT JOIN review_assignments ra ON (ra.review_form_id = rf.review_form_id)
+				LEFT JOIN review_assignments ra ON (ra.review_form_id = rf.review_form_id AND ra.declined<>1)
 			WHERE   rf.assoc_type = ? AND rf.assoc_id = ?
 			GROUP BY rf.review_form_id
 			ORDER BY rf.seq',
@@ -239,7 +239,7 @@ class ReviewFormDAO extends DAO {
 				SUM(CASE WHEN ra.date_completed IS NOT NULL THEN 1 ELSE 0 END) AS complete_count,
 				SUM(CASE WHEN ra.review_id IS NOT NULL AND ra.date_completed IS NULL THEN 1 ELSE 0 END) AS incomplete_count
 			FROM	review_forms rf
-				LEFT JOIN review_assignments ra ON (ra.review_form_id = rf.review_form_id)
+				LEFT JOIN review_assignments ra ON (ra.review_form_id = rf.review_form_id AND ra.declined<>1)
 			WHERE	rf.assoc_type = ? AND rf.assoc_id = ? AND rf.is_active = 1
 			GROUP BY rf.review_form_id
 			ORDER BY rf.seq',
@@ -298,4 +298,4 @@ class ReviewFormDAO extends DAO {
 	}
 }
 
-?>
+

@@ -3,8 +3,8 @@
 /**
  * @file controllers/informationCenter/InformationCenterHandler.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class InformationCenterHandler
@@ -53,10 +53,9 @@ abstract class InformationCenterHandler extends Handler {
 	/**
 	 * Fetch and store away objects
 	 * @param $request PKPRequest
-	 * @param $args array optional
 	 */
-	function initialize($request, $args = null) {
-		parent::initialize($request, $args);
+	function initialize($request) {
+		parent::initialize($request);
 
 		// Fetch the submission and file to display information about
 		$this->_submission = $this->getAuthorizedContextObject(ASSOC_TYPE_SUBMISSION);
@@ -217,4 +216,4 @@ abstract class InformationCenterHandler extends Handler {
 	abstract function _getAssocType();
 }
 
-?>
+

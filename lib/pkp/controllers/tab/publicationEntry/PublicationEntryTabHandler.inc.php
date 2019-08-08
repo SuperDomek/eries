@@ -3,12 +3,12 @@
 /**
  * @file controllers/tab/publicationEntry/PublicationEntryTabHandler.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class PublicationEntryTabHandler
- * @ingroup controllers_tab_catalogEntry
+ * @ingroup controllers_tab_publicationEntry
  *
  * @brief Base handler for AJAX operations for tabs on the Publication Entry management pages.
  */
@@ -40,7 +40,7 @@ class PublicationEntryTabHandler extends Handler {
 	function __construct() {
 		parent::__construct();
 		$this->addRoleAssignment(
-			array(ROLE_ID_SUB_EDITOR, ROLE_ID_MANAGER),
+			array(ROLE_ID_SUB_EDITOR, ROLE_ID_MANAGER, ROLE_ID_ASSISTANT),
 			array(
 				'submissionMetadata',
 				'saveForm',
@@ -110,7 +110,7 @@ class PublicationEntryTabHandler extends Handler {
 
 		$publicationEntrySubmissionReviewForm = $this->_getPublicationEntrySubmissionReviewForm();
 
-		$publicationEntrySubmissionReviewForm->initData($args, $request);
+		$publicationEntrySubmissionReviewForm->initData();
 		return new JSONMessage(true, $publicationEntrySubmissionReviewForm->fetch($request));
 	}
 
@@ -153,8 +153,8 @@ class PublicationEntryTabHandler extends Handler {
 
 		if ($form) { // null if we didn't have a valid tab
 			$form->readInputData();
-			if($form->validate($request)) {
-				$form->execute($request);
+			if($form->validate()) {
+				$form->execute();
 				// Create trivial notification in place on the form
 				$notificationManager = new NotificationManager();
 				$user = $request->getUser();
@@ -169,6 +169,20 @@ class PublicationEntryTabHandler extends Handler {
 				}
 			} else {
 				// Could not validate; redisplay the form.
+				// Provide entered tagit fields values
+				$tagitKeywords = $form->getData('keywords');
+				if (is_array($tagitKeywords)) {
+					$tagitFieldNames = $form->_metadataFormImplem->getTagitFieldNames();
+					$locales = array_keys($form->supportedLocales);
+					$formTagitData = array();
+					foreach ($tagitFieldNames as $tagitFieldName) {
+						foreach ($locales as $locale) {
+							$formTagitData[$locale] = array_key_exists($locale . "-$tagitFieldName", $tagitKeywords) ? $tagitKeywords[$locale . "-$tagitFieldName"] : array();
+						}
+						$form->setData($tagitFieldName, $formTagitData);
+					}
+				}
+
 				$json->setStatus(true);
 				$json->setContent($form->fetch($request));
 			}
@@ -210,7 +224,7 @@ class PublicationEntryTabHandler extends Handler {
 		$stageId = $this->getStageId();
 		$citationsForm = new CitationsForm($submission, $stageId, $this->getTabPosition(), array('displayedInContainer' => true));
 		$citationsForm->readInputData();
-		if ($citationsForm->validate($request)) {
+		if ($citationsForm->validate()) {
 			$citationsForm->execute($request);
 		}
 		$json = new JSONMessage(true);
@@ -253,4 +267,4 @@ class PublicationEntryTabHandler extends Handler {
 	}
 }
 
-?>
+

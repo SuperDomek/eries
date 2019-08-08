@@ -8,8 +8,8 @@
 /**
  * @file classes/log/SubmissionLog.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class SubmissionLog
@@ -61,8 +61,13 @@ class SubmissionLog {
 
 		// Insert the resulting object
 		$submissionEventLogDao->insertObject($entry);
+
+		// Stamp the submission status modification date.
+		$submissionDao = Application::getSubmissionDAO();
+		$submissionDao->stampStatusModified($submission);
+
 		return $entry;
 	}
 }
 
-?>
+

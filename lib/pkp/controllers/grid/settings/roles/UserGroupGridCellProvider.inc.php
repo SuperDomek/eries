@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/settings/roles/UserGroupGridCellProvider.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class UserGroupGridCellProvider
@@ -36,7 +36,8 @@ class UserGroupGridCellProvider extends GridCellProvider {
 			case 'name':
 				return array('label' => $userGroup->getLocalizedName());
 			case 'roleId':
-				return array('label' => __(array_shift(Application::getRoleNames(false, array($userGroup->getRoleId())))));
+				$roleNames = Application::getRoleNames(false, array($userGroup->getRoleId()));
+				return array('label' => __(array_shift($roleNames)));
 			case in_array($columnId, $workflowStages):
 				// Set the state of the select element that will
 				// be used to assign the stage to the user group.
@@ -100,4 +101,4 @@ class UserGroupGridCellProvider extends GridCellProvider {
 	}
 }
 
-?>
+

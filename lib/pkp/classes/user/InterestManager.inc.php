@@ -3,8 +3,8 @@
 /**
  * @file classes/user/InterestManager.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class InterestManager
@@ -39,7 +39,7 @@ class InterestManager {
 
 	/**
 	 * Get user reviewing interests. (Cached in memory for batch fetches.)
-	 * @param $user PKPUser
+	 * @param $user User
 	 * @return array
 	 */
 	function getInterestsForUser($user) {
@@ -66,7 +66,7 @@ class InterestManager {
 
 	/**
 	 * Returns a comma separated string of a user's interests
-	 * @param $user PKPUser
+	 * @param $user User
 	 * @return string
 	 */
 	function getInterestsString($user) {
@@ -77,7 +77,7 @@ class InterestManager {
 
 	/**
 	 * Set a user's interests
-	 * @param $user PKPUser
+	 * @param $user User
 	 * @param $interests mixed
 	 */
 	function setInterestsForUser($user, $interests) {
@@ -87,4 +87,4 @@ class InterestManager {
 	}
 }
 
-?>
+

@@ -3,8 +3,8 @@
 /**
  * @file plugins/generic/googleAnalytics/GoogleAnalyticsPlugin.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class GoogleAnalyticsPlugin
@@ -25,7 +25,6 @@ class GoogleAnalyticsPlugin extends GenericPlugin {
 		if ($success && $this->getEnabled($mainContextId)) {
 			// Insert Google Analytics page tag to footer
 			HookRegistry::register('TemplateManager::display', array($this, 'registerScript'));
-			$this->_registerTemplateResource();
 		}
 		return $success;
 	}
@@ -76,7 +75,7 @@ class GoogleAnalyticsPlugin extends GenericPlugin {
 
 				AppLocale::requireComponents(LOCALE_COMPONENT_APP_COMMON,  LOCALE_COMPONENT_PKP_MANAGER);
 				$templateMgr = TemplateManager::getManager($request);
-				$templateMgr->register_function('plugin_url', array($this, 'smartyPluginUrl'));
+				$templateMgr->registerPlugin('function', 'plugin_url', array($this, 'smartyPluginUrl'));
 
 				$this->import('GoogleAnalyticsSettingsForm');
 				$form = new GoogleAnalyticsSettingsForm($this, $context->getId());
@@ -96,19 +95,12 @@ class GoogleAnalyticsPlugin extends GenericPlugin {
 	}
 
 	/**
-	 * @copydoc PKPPlugin::getTemplatePath
-	 */
-	function getTemplatePath($inCore = false) {
-		return $this->getTemplateResourceName() . ':templates/';
-	}
-
-	/**
 	 * Register the Google Analytics script tag
 	 * @param $hookName string
 	 * @param $params array
 	 */
 	function registerScript($hookName, $params) {
-		$request = $this->getRequest();
+		$request = Application::getRequest();
 		$context = $request->getContext();
 		if (!$context) return false;
 		$router = $request->getRouter();
@@ -141,4 +133,3 @@ ga('send', 'pageview');
 	}
 }
 
-?>

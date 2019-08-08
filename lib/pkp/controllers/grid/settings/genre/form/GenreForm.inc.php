@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/settings/genre/form/GenreForm.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class GenreForm
@@ -61,9 +61,9 @@ class GenreForm extends Form {
 	/**
 	 * Initialize form data from current settings.
 	 * @param $args array
-	 * @param $request PKPRequest
 	 */
-	function initData($args, $request) {
+	function initData($args) {
+		$request = Application::getRequest();
 		$context = $request->getContext();
 
 		$genreDao = DAORegistry::getDAO('GenreDAO');
@@ -94,11 +94,9 @@ class GenreForm extends Form {
 	}
 
 	/**
-	 * Fetch
-	 * @param $request PKPRequest
-	 * @see Form::fetch()
+	 * @copydoc Form::fetch()
 	 */
-	function fetch($request) {
+	function fetch($request, $template = null, $display = false) {
 		$templateMgr = TemplateManager::getManager($request);
 		$templateMgr->assign('submissionFileCategories', array(
 			GENRE_CATEGORY_DOCUMENT => __('submission.document'),
@@ -107,7 +105,7 @@ class GenreForm extends Form {
 		));
 
 		AppLocale::requireComponents(LOCALE_COMPONENT_APP_MANAGER);
-		return parent::fetch($request);
+		return parent::fetch($request, $template, $display);
 	}
 
 	/**
@@ -120,11 +118,10 @@ class GenreForm extends Form {
 
 	/**
 	 * Save email template.
-	 * @param $args array
-	 * @param $request PKPRequest
 	 */
-	function execute($args, $request) {
+	function execute() {
 		$genreDao = DAORegistry::getDAO('GenreDAO');
+		$request = Application::getRequest();
 		$context = $request->getContext();
 
 		// Update or insert genre
@@ -154,4 +151,4 @@ class GenreForm extends Form {
 	}
 }
 
-?>
+

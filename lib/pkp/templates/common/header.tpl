@@ -1,15 +1,15 @@
 {**
  * lib/pkp/templates/common/header.tpl
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * Common site header.
  *}
 <!DOCTYPE html>
 <html lang="{$currentLocale|replace:"_":"-"}" xml:lang="{$currentLocale|replace:"_":"-"}">
-{if !$pageTitleTranslated}{translate|assign:"pageTitleTranslated" key=$pageTitle}{/if}
+{if !$pageTitleTranslated}{capture assign=pageTitleTranslated}{translate key=$pageTitle}{/capture}{/if}
 {include file="core:common/headerHead.tpl"}
 <body class="pkp_page_{$requestedPage|escape|default:"index"} pkp_op_{$requestedOp|escape|default:"index"}" dir="{$currentLocaleLangDir|escape|default:"ltr"}">
 	<script type="text/javascript">
@@ -35,9 +35,9 @@
 				{* Logo or site title *}
 				<div class="pkp_site_name">
 					{if $currentContext && $multipleContexts}
-						{url|assign:"homeUrl" journal="index" router=$smarty.const.ROUTE_PAGE}
+						{capture assign=homeUrl}{url journal="index" router=$smarty.const.ROUTE_PAGE}{/capture}
 					{else}
-						{url|assign:"homeUrl" page="index" router=$smarty.const.ROUTE_PAGE}
+						{capture assign=homeUrl}{url page="index" router=$smarty.const.ROUTE_PAGE}{/capture}
 					{/if}
 					{if $displayPageHeaderLogo && is_array($displayPageHeaderLogo)}
 						<a href="{$homeUrl}" class="is_img">
@@ -60,6 +60,15 @@
 						{rdelim});
 					 </script>
 					<ul id="navigationPrimary" class="pkp_navigation_primary pkp_nav_list" role="navigation" aria-label="{translate|escape key="common.navigation.site"}">
+
+						{* Users with ONLY the reader role *}
+						{if (count((array) $userRoles) === 1 && in_array(ROLE_ID_READER, (array) $userRoles))}
+							<li>
+								<a href="{url router=$smarty.const.ROUTE_PAGE page="submission" op="wizard"}">
+									{translate key="author.submit"}
+								</a>
+							</li>
+						{/if}
 
 						{if array_intersect(array(ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR, ROLE_ID_ASSISTANT, ROLE_ID_REVIEWER, ROLE_ID_AUTHOR), (array)$userRoles)}
 							<li>
@@ -93,7 +102,14 @@
 								<a href="#">{translate key="navigation.tools"}</a>
 								<ul>
 									<li><a href="{url router=$smarty.const.ROUTE_PAGE page="management" op="tools" anchor="importexport"}">{translate key="navigation.tools.importExport"}</a></li>
-									<li><a href="{url router=$smarty.const.ROUTE_PAGE page="management" op="tools" anchor="statistics"}">{translate key="navigation.tools.statistics"}</a></li>
+									<li><a href="{url router=$smarty.const.ROUTE_PAGE page="management" op="tools" anchor="statistics"}">{translate key="manager.statistics.reports"}</a></li>
+								</ul>
+							</li>
+							<li aria-haspopup="true" aria-expanded="false">
+								<a href="#">{translate key="navigation.tools.statistics"}</a>
+								<ul>
+									<li><a href="{url router=$smarty.const.ROUTE_PAGE page="stats" op="publishedSubmissions"}">{translate key="common.publishedSubmissions"}</a></li>
+									<li><a href="{url router=$smarty.const.ROUTE_PAGE page="management" op="tools" anchor="statistics"}">{translate key="manager.statistics.reports"}</a></li>
 								</ul>
 							</li>
 						{/if}
@@ -114,7 +130,7 @@
 					</ul>
 				{/if}
 
-				{url|assign:fetchHeaderUrl router=$smarty.const.ROUTE_COMPONENT component="page.PageHandler" op="userNavBackend" escape=false}
+				{capture assign=fetchHeaderUrl}{url router=$smarty.const.ROUTE_COMPONENT component="page.PageHandler" op="userNavBackend" escape=false}{/capture}
 				{load_url_in_div class="pkp_navigation_user" id="navigationUserWrapper" url=$fetchHeaderUrl}
 			</div><!-- pkp_navigation -->
 		</header>

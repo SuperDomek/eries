@@ -1,8 +1,8 @@
 {**
  * templates/frontend/objects/galley_link.tpl
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @brief View of a galley object as a link to view or download the galley, to be used
@@ -50,7 +50,7 @@
 {/if}
 
 {* Don't be frightened. This is just a link *}
-<a class="{if $isSupplementary}obj_galley_link_supplementary{else}obj_galley_link{/if} {$type}{if $restricted} restricted{/if}" href="{url page=$page op="view" path=$parentId|to_array:$galley->getBestGalleyId()}">
+<a class="{if $isSupplementary}obj_galley_link_supplementary{else}obj_galley_link{/if} {$type|escape}{if $restricted} restricted{/if}" href="{url page=$page op="view" path=$parentId|to_array:$galley->getBestGalleyId()}">
 
 	{* Add some screen reader text to indicate if a galley is restricted *}
 	{if $restricted}

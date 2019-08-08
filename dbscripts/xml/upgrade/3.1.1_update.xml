@@ -4,8 +4,8 @@
 <!--
   * 3.1.1_update.xml
   *
-  * Copyright (c) 2014-2018 Simon Fraser University
-  * Copyright (c) 2003-2018 John Willinsky
+  * Copyright (c) 2014-2019 Simon Fraser University
+  * Copyright (c) 2003-2019 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   *
   * 3.1.1.0 general updates.
@@ -27,12 +27,6 @@
 		<!-- remove filter_groups -->
 		<query>DELETE FROM filter_groups WHERE symbolic IN ('citation=>nlm30', 'isbn=>nlm30-element-citation', 'nlm30-article-xml=>nlm23-article-xml', 'nlm30-element-citation=>isbn', 'nlm30-element-citation=>nlm30-element-citation', 'nlm30-element-citation=>nlm30-xml', 'nlm30-element-citation=>plaintext', 'nlm30=>citation', 'plaintext=>nlm30-element-citation', 'submission=>nlm23-article-xml', 'submission=>nlm30-article-xml', 'submission=>reference-list')</query>
 	</sql>
-	<!-- update the supp file ids to the new file ids, ASSOC_TYPE_SUBMISSION_FILE_COUNTER_OTHER = 531 -->
-	<sql>
-		<query driver="mysql">UPDATE metrics m, submission_file_settings sfs SET m.assoc_id = sfs.file_id WHERE m.assoc_type = 531 AND sfs.setting_name = 'old-supp-id' AND sfs.setting_value = m.assoc_id</query>
-		<query driver="mysqli">UPDATE metrics m, submission_file_settings sfs SET m.assoc_id = sfs.file_id WHERE m.assoc_type = 531 AND sfs.setting_name = 'old-supp-id' AND sfs.setting_value = m.assoc_id</query>
-		<query driver="postgres7">UPDATE metrics SET assoc_id = sfs.file_id FROM submission_file_settings sfs WHERE metrics.assoc_type = 531 AND sfs.setting_name = 'old-supp-id' AND CAST(nullif(sfs.setting_value, '') AS integer) = metrics.assoc_id</query>
-	</sql>
 	<sql><!-- pkp/pkp-lib#3311 rename subject(EnabledSubmission, EnabledWorkflow, Required) to subjects(EnabledSubmission, EnabledWorkflow, Required) in journal_settings -->
 		<query>UPDATE journal_settings SET setting_name = 'subjectsEnabledSubmission' WHERE setting_name = 'subjectEnabledSubmission'</query>
 		<query>UPDATE journal_settings SET setting_name = 'subjectsEnabledWorkflow' WHERE setting_name = 'subjectEnabledWorkflow'</query>
@@ -53,5 +47,19 @@
 		<query driver="mysql">DELETE n FROM notifications n LEFT JOIN announcements a ON (n.assoc_id = a.announcement_id) WHERE a.announcement_id IS NULL AND n.assoc_type = 522</query><!-- ASSOC_TYPE_ANNOUNCEMENT -->
 		<query driver="mysqli">DELETE n FROM notifications n LEFT JOIN announcements a ON (n.assoc_id = a.announcement_id) WHERE a.announcement_id IS NULL AND n.assoc_type = 522</query><!-- ASSOC_TYPE_ANNOUNCEMENT -->
 		<query driver="postgres7">DELETE FROM notifications USING notifications n LEFT JOIN announcements a ON (n.assoc_id = a.announcement_id) WHERE a.announcement_id IS NULL AND n.assoc_type = 522 AND notifications.notification_id = n.notification_id</query><!-- ASSOC_TYPE_ANNOUNCEMENT -->
+	</sql>
+	<sql><!-- pkp/pkp-lib#3694 migrate DataCite, mEDRA and DOAJ registered status -->
+		<!--  we cannot differentiate if the registration was done via API or manually in OJS 2, thus we will use status = registered (as the API was eused) and not markedRegistered -->
+		<!-- DataCite -->
+		<query>INSERT INTO issue_settings (issue_id, setting_name, setting_value, setting_type) SELECT issue_id, 'datacite::status', 'registered', 'string' FROM issue_settings WHERE setting_name = 'datacite::registeredDoi' AND (setting_value IS NOT NULL OR setting_value &lt;&gt; '') AND issue_id NOT IN (SELECT issue_id FROM issue_settings WHERE setting_name = 'datacite::status')</query>
+		<query>INSERT INTO submission_settings (submission_id, setting_name, setting_value, setting_type) SELECT submission_id, 'datacite::status', 'registered', 'string' FROM submission_settings WHERE setting_name = 'datacite::registeredDoi' AND (setting_value IS NOT NULL OR setting_value &lt;&gt; '') AND submission_id NOT IN (SELECT submission_id FROM submission_settings WHERE setting_name = 'datacite::status')</query>
+		<query>INSERT INTO submission_galley_settings (galley_id, setting_name, setting_value, setting_type) SELECT galley_id, 'datacite::status', 'registered', 'string' FROM submission_galley_settings WHERE setting_name = 'datacite::registeredDoi' AND (setting_value IS NOT NULL OR setting_value &lt;&gt; '') AND galley_id NOT IN (SELECT galley_id FROM submission_galley_settings WHERE setting_name = 'datacite::status')</query>
+		<!-- mEDRA -->
+		<query>INSERT INTO issue_settings (issue_id, setting_name, setting_value, setting_type) SELECT issue_id, 'medra::status', 'registered', 'string' FROM issue_settings WHERE setting_name = 'medra::registeredDoi' AND (setting_value IS NOT NULL OR setting_value &lt;&gt; '') AND issue_id NOT IN (SELECT issue_id FROM issue_settings WHERE setting_name = 'medra::status')</query>
+		<query>INSERT INTO submission_settings (submission_id, setting_name, setting_value, setting_type) SELECT submission_id, 'medra::status', 'registered', 'string' FROM submission_settings WHERE setting_name = 'medra::registeredDoi' AND (setting_value IS NOT NULL OR setting_value &lt;&gt; '') AND submission_id NOT IN (SELECT submission_id FROM submission_settings WHERE setting_name = 'medra::status')</query>
+		<query>INSERT INTO submission_galley_settings (galley_id, setting_name, setting_value, setting_type) SELECT galley_id, 'medra::status', 'registered', 'string' FROM submission_galley_settings WHERE setting_name = 'medra::registeredDoi' AND (setting_value IS NOT NULL OR setting_value &lt;&gt; '') AND galley_id NOT IN (SELECT galley_id FROM submission_galley_settings WHERE setting_name = 'medra::status')</query>
+		<!-- DOAJ -->
+		<!-- there was no DOAJ API integration in OJS 2, thus only the manuall registration was possible, so we will use status = markedRegistered -->
+		<query>INSERT INTO submission_settings (submission_id, setting_name, setting_value, setting_type) SELECT submission_id, 'doaj::status', 'markedRegistered', 'string' FROM submission_settings WHERE setting_name = 'doaj::registered' AND (setting_value IS NOT NULL OR setting_value &lt;&gt; '') AND submission_id NOT IN (SELECT submission_id FROM submission_settings WHERE setting_name = 'doaj::status')</query>
 	</sql>
 </data>

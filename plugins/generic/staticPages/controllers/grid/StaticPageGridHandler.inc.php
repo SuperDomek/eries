@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/StaticPageGridHandler.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class StaticPageGridHandler
@@ -44,6 +44,15 @@ class StaticPageGridHandler extends GridHandler {
 	//
 	// Overridden template methods
 	//
+	/**
+	 * @copydoc PKPHandler::authorize()
+	 */
+	function authorize($request, &$args, $roleAssignments) {
+		import('lib.pkp.classes.security.authorization.ContextAccessPolicy');
+		$this->addPolicy(new ContextAccessPolicy($request, $roleAssignments));
+		return parent::authorize($request, $args, $roleAssignments);
+	}
+
 	/**
 	 * @copydoc GridHandler::initialize()
 	 */
@@ -114,9 +123,8 @@ class StaticPageGridHandler extends GridHandler {
 	function index($args, $request) {
 		$context = $request->getContext();
 		import('lib.pkp.classes.form.Form');
-		$form = new Form(self::$plugin->getTemplatePath() . 'staticPages.tpl');
-		$json = new JSONMessage(true, $form->fetch($request));
-		return $json->getString();
+		$form = new Form(self::$plugin->getTemplateResource('staticPages.tpl'));
+		return new JSONMessage(true, $form->fetch($request));
 	}
 
 	/**
@@ -146,8 +154,7 @@ class StaticPageGridHandler extends GridHandler {
 		$staticPagesPlugin = self::$plugin;
 		$staticPageForm = new StaticPageForm(self::$plugin, $context->getId(), $staticPageId);
 		$staticPageForm->initData();
-		$json = new JSONMessage(true, $staticPageForm->fetch($request));
-		return $json->getString();
+		return new JSONMessage(true, $staticPageForm->fetch($request));
 	}
 
 	/**
@@ -174,8 +181,7 @@ class StaticPageGridHandler extends GridHandler {
  			return DAO::getDataChangedEvent();
 		} else {
 			// Present any errors
-			$json = new JSONMessage(true, $staticPageForm->fetch($request));
-			return $json->getString();
+			return new JSONMessage(true, $staticPageForm->fetch($request));
 		}
 	}
 
@@ -198,4 +204,3 @@ class StaticPageGridHandler extends GridHandler {
 	}
 }
 
-?>

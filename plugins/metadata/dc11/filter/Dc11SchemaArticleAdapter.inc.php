@@ -3,8 +3,8 @@
 /**
  * @file plugins/metadata/dc11/filter/Dc11SchemaArticleAdapter.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class Dc11SchemaArticleAdapter
@@ -85,13 +85,16 @@ class Dc11SchemaArticleAdapter extends MetadataDataObjectAdapter {
 		// Creator
 		$authors = $article->getAuthors();
 		foreach($authors as $author) {
-			$dc11Description->addStatement('dc:creator', $author->getFullName(true));
+			$dc11Description->addStatement('dc:creator', $author->getFullName(false, true));
 		}
 
 		// Subject
+		$submissionKeywordDao = DAORegistry::getDAO('SubmissionKeywordDAO');
+		$submissionSubjectDao = DAORegistry::getDAO('SubmissionSubjectDAO');
+		$supportedLocales = array_keys(AppLocale::getSupportedFormLocales());
 		$subjects = array_merge_recursive(
-			(array) $article->getDiscipline(null),
-			(array) $article->getSubject(null)
+			(array) $submissionKeywordDao->getKeywords($article->getId(), $supportedLocales),
+			(array) $submissionSubjectDao->getSubjects($article->getId(), $supportedLocales)
 		);
 		$this->_addLocalizedElements($dc11Description, 'dc:subject', $subjects);
 
@@ -145,8 +148,12 @@ class Dc11SchemaArticleAdapter extends MetadataDataObjectAdapter {
 		}
 
 		// Identifier: URL
-		if (is_a($article, 'PublishedArticle')) {
-			$dc11Description->addStatement('dc:identifier', Request::url($journal->getPath(), 'article', 'view', array($article->getBestArticleId())));
+		import('classes.issue.IssueAction');
+		$issueAction = new IssueAction();
+		$request = Application::getRequest();
+		$includeUrls = $journal->getSetting('publishingMode') != PUBLISHING_MODE_NONE || $issueAction->subscribedUser($request->getUser(), $journal, null, $article->getId());
+		if (is_a($article, 'PublishedArticle') && $includeUrls) {
+			$dc11Description->addStatement('dc:identifier', $request->url($journal->getPath(), 'article', 'view', array($article->getBestArticleId())));
 		}
 
 		// Source (journal title, issue id and pages)
@@ -192,8 +199,8 @@ class Dc11SchemaArticleAdapter extends MetadataDataObjectAdapter {
 
 		// Relation
 		// full text URLs
-		foreach ($galleys as $galley) {
-			$relation = Request::url($journal->getPath(), 'article', 'view', array($article->getBestArticleId(), $galley->getBestGalleyId()));
+		if ($includeUrls) foreach ($galleys as $galley) {
+			$relation = $request->url($journal->getPath(), 'article', 'view', array($article->getBestArticleId(), $galley->getBestGalleyId()));
 			$dc11Description->addStatement('dc:relation', $relation);
 			unset($relation);
 		}
@@ -264,4 +271,4 @@ class Dc11SchemaArticleAdapter extends MetadataDataObjectAdapter {
 		}
 	}
 }
-?>
+

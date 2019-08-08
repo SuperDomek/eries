@@ -4,8 +4,8 @@
 <!--
   * locale/pt_BR/editor.xml
   *
-  * Copyright (c) 2013-2018 Simon Fraser University
-  * Copyright (c) 2003-2018 John Willinsky
+  * Copyright (c) 2013-2019 Simon Fraser University
+  * Copyright (c) 2003-2019 John Willinsky
   * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
   * Localization information: https://pkp.sfu.ca/wiki/index.php?title=OJS:_Portuguese_(pt_BR)
   * Localization strings.
@@ -151,6 +151,7 @@
 	<message key="editor.article.schedulePublication">Agendar para Publicação</message>
 	<message key="editor.article.removeCoverImageFileNotFound">Não foi possível encontrar a imagem da capa que você solicitou para excluir. Ele já pode ter sido excluída. Tente recarregar a página.</message>
 	<message key="editor.publicIdentificationExistsForTheSameType">O identificador público '{$publicIdentifier}' já existe para outro objeto do mesmo tipo. Por favor, escolha identificadores únicos para os objetos do mesmo tipo dentro de sua revista.</message>
-  	<message key="editor.issues.confirmSetCurrentIssue">Tem certeza que deseja definir este número como o atual?</message>
-  	<message key="grid.action.setCurrentIssue">Definir Número Atual</message>
+	<message key="editor.issues.confirmSetCurrentIssue">Tem certeza que deseja definir este número como o atual?</message>
+	<message key="grid.action.setCurrentIssue">Definir Número Atual</message>
+	<message key="editor.article.coverImage">Imagem de Capa</message>
 </locale>

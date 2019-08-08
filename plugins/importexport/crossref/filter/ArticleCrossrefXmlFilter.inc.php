@@ -3,8 +3,8 @@
 /**
  * @file plugins/importexport/crossref/filter/ArticleCrossrefXmlFilter.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class ArticleCrossrefXmlFilter
@@ -107,12 +107,17 @@ class ArticleCrossrefXmlFilter extends IssueCrossrefXmlFilter {
 			} else {
 				$personNameNode->setAttribute('sequence', 'additional');
 			}
-			$personNameNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'given_name', htmlspecialchars(ucfirst($author->getFirstName()).(($author->getMiddleName())?' '.ucfirst($author->getMiddleName()):''), ENT_COMPAT, 'UTF-8')));
-			$personNameNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'surname', htmlspecialchars(ucfirst($author->getLastName()), ENT_COMPAT, 'UTF-8')));
+			if (empty($author->getLocalizedFamilyName())) {
+				$personNameNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'surname', htmlspecialchars(ucfirst($author->getFullName(false)), ENT_COMPAT, 'UTF-8')));
+			} else {
+				$personNameNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'given_name', htmlspecialchars(ucfirst($author->getLocalizedGivenName()), ENT_COMPAT, 'UTF-8')));
+				$personNameNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'surname', htmlspecialchars(ucfirst($author->getLocalizedFamilyName()), ENT_COMPAT, 'UTF-8')));
+			}
 			if ($author->getData('orcid')) {
 				$personNameNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'ORCID', $author->getData('orcid')));
 			}
 			$contributorsNode->appendChild($personNameNode);
+			$isFirst = false;
 		}
 		$journalArticleNode->appendChild($contributorsNode);
 
@@ -175,7 +180,7 @@ class ArticleCrossrefXmlFilter extends IssueCrossrefXmlFilter {
 		$galleys = $articleGalleyDao->getBySubmissionId($submission->getId());
 		// All full-texts, PDF full-texts and remote galleys for text-mining and as-crawled URL
 		$submissionGalleys = $pdfGalleys = $remoteGalleys = array();
-		// prefered PDF full-text for the as-crawled URL
+		// preferred PDF full-text for the as-crawled URL
 		$pdfGalleyInArticleLocale = null;
 		// get immediatelly also supplementary files for component list
 		$componentGalleys = array();
@@ -184,18 +189,20 @@ class ArticleCrossrefXmlFilter extends IssueCrossrefXmlFilter {
 			// filter supp files with DOI
 			if (!$galley->getRemoteURL()) {
 				$galleyFile = $galley->getFile();
-				$genre = $genreDao->getById($galleyFile->getGenreId());
-				if ($genre->getSupplementary()) {
-					if ($galley->getStoredPubid('doi')) {
-						// construct the array key with galley best ID and locale needed for the component node
-						$componentGalleys[] = $galley;
-					}
-				} else {
-					$submissionGalleys[] = $galley;
-					if ($galley->isPdfGalley()) {
-						$pdfGalleys[] = $galley;
-						if (!$pdfGalleyInArticleLocale && $galley->getLocale() == $submission->getLocale()) {
-							$pdfGalleyInArticleLocale = $galley;
+				if ($galleyFile) {
+					$genre = $genreDao->getById($galleyFile->getGenreId());
+					if ($genre->getSupplementary()) {
+						if ($galley->getStoredPubid('doi')) {
+							// construct the array key with galley best ID and locale needed for the component node
+							$componentGalleys[] = $galley;
+						}
+					} else {
+						$submissionGalleys[] = $galley;
+						if ($galley->isPdfGalley()) {
+							$pdfGalleys[] = $galley;
+							if (!$pdfGalleyInArticleLocale && $galley->getLocale() == $submission->getLocale()) {
+								$pdfGalleyInArticleLocale = $galley;
+							}
 						}
 					}
 				}
@@ -321,4 +328,4 @@ class ArticleCrossrefXmlFilter extends IssueCrossrefXmlFilter {
 
 }
 
-?>
+

@@ -3,8 +3,8 @@
 /**
  * @file plugins/importexport/datacite/filter/DataciteXmlFilter.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2000-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2000-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class DataciteXmlFilter
@@ -247,7 +247,7 @@ class DataciteXmlFilter extends NativeExportFilter {
 				$authors = $article->getAuthors();
 				assert(!empty($authors));
 				foreach ($authors as $author) { /* @var $author Author */
-					$creators[] = $author->getFullName(true);
+					$creators[] = $author->getFullName(false, true);
 				}
 				break;
 			case isset($issue):
@@ -809,4 +809,4 @@ class DataciteXmlFilter extends NativeExportFilter {
 	}
 }
 
-?>
+

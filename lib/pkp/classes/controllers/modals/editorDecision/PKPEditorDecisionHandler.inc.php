@@ -3,8 +3,8 @@
 /**
  * @file controllers/modals/editorDecision/EditorDecisionHandler.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class EditorDecisionHandler
@@ -310,7 +310,7 @@ class PKPEditorDecisionHandler extends Handler {
 		// Form handling
 		import('lib.pkp.controllers.modals.editorDecision.form.RecommendationForm');
 		$editorRecommendationForm = new RecommendationForm($submission, $stageId, $reviewRound);
-		$editorRecommendationForm->initData($request);
+		$editorRecommendationForm->initData();
 		return new JSONMessage(true, $editorRecommendationForm->fetch($request));
 	}
 
@@ -333,7 +333,7 @@ class PKPEditorDecisionHandler extends Handler {
 		$editorRecommendationForm = new RecommendationForm($submission, $stageId, $reviewRound);
 		$editorRecommendationForm->readInputData();
 		if ($editorRecommendationForm->validate()) {
-			$editorRecommendationForm->execute($request);
+			$editorRecommendationForm->execute();
 			$json = new JSONMessage(true);
 			$json->setGlobalEvent('decisionActionUpdated');
 			return $json;
@@ -418,7 +418,7 @@ class PKPEditorDecisionHandler extends Handler {
 
 		// Form handling
 		$editorDecisionForm = $this->_getEditorDecisionForm($formName, $decision);
-		$editorDecisionForm->initData($args, $request);
+		$editorDecisionForm->initData();
 
 		return new JSONMessage(true, $editorDecisionForm->fetch($request));
 	}
@@ -443,7 +443,7 @@ class PKPEditorDecisionHandler extends Handler {
 		$editorDecisionForm = $this->_getEditorDecisionForm($formName, $decision);
 		$editorDecisionForm->readInputData();
 		if ($editorDecisionForm->validate()) {
-			$editorDecisionForm->execute($args, $request);
+			$editorDecisionForm->execute();
 
 			// Get a list of author user IDs
 			$authorUserIds = array();
@@ -518,4 +518,4 @@ class PKPEditorDecisionHandler extends Handler {
 	}
 }
 
-?>
+

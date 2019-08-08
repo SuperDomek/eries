@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/users/reviewer/form/ReviewerForm.inc.php
  *
- * Copyright (c) 2014-2018 Simon Fraser University
- * Copyright (c) 2003-2018 John Willinsky
+ * Copyright (c) 2014-2019 Simon Fraser University
+ * Copyright (c) 2003-2019 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class ReviewerForm
@@ -128,11 +128,10 @@ class ReviewerForm extends Form {
 	// Overridden template methods
 	//
 	/**
-	 * Initialize form data from the associated author.
-	 * @param $args array
-	 * @param $request PKPRequest
+	 * @copydoc Form::initData
 	 */
-	function initData($args, $request) {
+	function initData() {
+		$request = Application::getRequest();
 		$reviewerId = (int) $request->getUserVar('reviewerId');
 		$context = $request->getContext();
 		$reviewRound = $this->getReviewRound();
@@ -222,7 +221,7 @@ class ReviewerForm extends Form {
 	/**
 	 * @copydoc Form::fetch()
 	 */
-	function fetch($request) {
+	function fetch($request, $template = null, $display = false) {
 		$context = $request->getContext();
 
 		// Get the review method options.
@@ -233,12 +232,14 @@ class ReviewerForm extends Form {
 		$templateMgr = TemplateManager::getManager($request);
 		$templateMgr->assign('reviewMethods', $reviewMethods);
 		$templateMgr->assign('reviewerActions', $this->getReviewerFormActions());
+
 		$reviewFormDao = DAORegistry::getDAO('ReviewFormDAO');
-		$reviewForms = array(0 => __('editor.article.selectReviewForm'));
 		$reviewFormsIterator = $reviewFormDao->getActiveByAssocId(Application::getContextAssocType(), $context->getId());
+		$reviewForms = array();
 		while ($reviewForm = $reviewFormsIterator->next()) {
 			$reviewForms[$reviewForm->getId()] = $reviewForm->getLocalizedTitle();
 		}
+
 		$templateMgr->assign('reviewForms', $reviewForms);
 		$templateMgr->assign('emailVariables', array(
 			'reviewerName' => __('user.name'),
@@ -266,9 +267,9 @@ class ReviewerForm extends Form {
 		}
 
 		foreach ($templateKeys as $templateKey) {
-			$template = new SubmissionMailTemplate($submission, $templateKey, null, null, null, false);
-			$template->assignParams(array());
-			$templates[$templateKey] = $template->getSubject();
+			$thisTemplate = new SubmissionMailTemplate($submission, $templateKey, null, null, null, false);
+			$thisTemplate->assignParams(array());
+			$templates[$templateKey] = $thisTemplate->getSubject();
 		}
 
 		$templateMgr->assign('templates', $templates);
@@ -284,7 +285,7 @@ class ReviewerForm extends Form {
 		}
 
 		$this->setData('userGroups', $userGroups);
-		return parent::fetch($request);
+		return parent::fetch($request, $template, $display);
 	}
 
 	/**
@@ -312,11 +313,10 @@ class ReviewerForm extends Form {
 
 	/**
 	 * Save review assignment
-	 * @param $args array
-	 * @param $request PKPRequest
 	 */
-	function execute($args, $request) {
+	function execute() {
 		$submission = $this->getSubmission();
+		$request = Application::getRequest();
 		$context = $request->getContext();
 
 		$currentReviewRound = $this->getReviewRound();
@@ -395,7 +395,11 @@ class ReviewerForm extends Form {
 				'submissionReviewUrl' => $dispatcher->url($request, ROUTE_PAGE, null, 'reviewer', 'submission', null, $reviewUrlArgs),
 				'reviewGuidelines' => $context->getLocalizedSetting('reviewGuidelines')
 			));
-			$mail->send($request);
+			if (!$mail->send($request)) {
+				import('classes.notification.NotificationManager');
+				$notificationMgr = new NotificationManager();
+				$notificationMgr->createTrivialNotification($request->getUser()->getId(), NOTIFICATION_TYPE_ERROR, array('contents' => __('email.compose.error')));
+			}
 		}
 
 		// Insert a trivial notification to indicate the reviewer was added successfully.
@@ -478,4 +482,4 @@ class ReviewerForm extends Form {
 	}
 }
 
-?>
+
