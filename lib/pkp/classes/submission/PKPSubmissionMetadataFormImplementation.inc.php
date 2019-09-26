@@ -52,7 +52,7 @@ class PKPSubmissionMetadataFormImplementation {
 		}
 		// EDIT add check for keywords and references
 		$this->_parentForm->addCheck(new FormValidator($this->_parentForm, 'keywords', 'required', 'submission.submit.form.keywordsRequired'));
-		$this->_parentForm->addCheck(new FormValidator($this->_parentForm, 'citations', 'required', 'submission.submit.form.referencesRequired'));
+		//$this->_parentForm->addCheck(new FormValidator($this->_parentForm, 'citations', 'required', 'submission.submit.form.referencesRequired'));
 
 		// Validates that at least one author has been added.
 		$this->_parentForm->addCheck(new FormValidatorCustom(

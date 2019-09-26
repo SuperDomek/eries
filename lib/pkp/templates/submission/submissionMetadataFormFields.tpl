@@ -72,7 +72,7 @@
 		{/if}
 		{if $citationsEnabled && !$metadataModal}
 			{* EDIT References mandatory field *}
-			{fbvFormSection label="submission.citations" for="citations" required=true}
+			{fbvFormSection label="submission.citations" for="citations" }
 				{fbvElement type="textarea" id="citations" value=$citations multilingual=false disabled=$readOnly required=$citationsRequired}
 			{/fbvFormSection}
 		{/if}
