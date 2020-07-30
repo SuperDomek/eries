@@ -3,9 +3,9 @@
 /**
  * @file classes/controllers/grid/users/reviewer/PKPReviewerGridHandler.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2000-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPReviewerGridHandler
  * @ingroup classes_controllers_grid_users_reviewer
@@ -157,7 +157,7 @@ class PKPReviewerGridHandler extends GridHandler {
 		} else {
 			$reviewAssignment = $this->getAuthorizedContextObject(ASSOC_TYPE_REVIEW_ASSIGNMENT);
 			$reviewRoundId = $reviewAssignment->getReviewRoundId();
-			$reviewRoundDao = DAORegistry::getDAO('ReviewRoundDAO');
+			$reviewRoundDao = DAORegistry::getDAO('ReviewRoundDAO'); /* @var $reviewRoundDao ReviewRoundDAO */
 			$reviewRound = $reviewRoundDao->getById($reviewRoundId);
 			return $reviewRound;
 		}
@@ -282,7 +282,7 @@ class PKPReviewerGridHandler extends GridHandler {
 	protected function loadData($request, $filter) {
 		// Get the existing review assignments for this submission
 		$reviewRound = $this->getReviewRound();
-		$reviewAssignmentDao = DAORegistry::getDAO('ReviewAssignmentDAO');
+		$reviewAssignmentDao = DAORegistry::getDAO('ReviewAssignmentDAO'); /* @var $reviewAssignmentDao ReviewAssignmentDAO */
 		return $reviewAssignmentDao->getByReviewRoundId($reviewRound->getId());
 	}
 
@@ -403,7 +403,8 @@ class PKPReviewerGridHandler extends GridHandler {
 
 		$userList = array();
 		while ($user = $users->next()) {
-			$userList[] = array('label' => $user->getFullName(), 'value' => $user->getId());
+			$label = $user->getFullName() . " (" . $user->getEmail() . ")";
+			$userList[] = array('label' => $label, 'value' => $user->getId());
 		}
 
 		if (count($userList) == 0) {
@@ -432,6 +433,48 @@ class PKPReviewerGridHandler extends GridHandler {
 	}
 
 	/**
+	 * Reinstate a reviewer
+	 * @param $args array
+	 * @param $request PKPRequest
+	 * @return JSONMessage JSON object
+	 */
+	public function reinstateReviewer($args, $request) {
+		$reviewAssignment = $this->getAuthorizedContextObject(ASSOC_TYPE_REVIEW_ASSIGNMENT);
+		$reviewRound = $this->getReviewRound();
+		$submission = $this->getSubmission();
+
+		import('lib.pkp.controllers.grid.users.reviewer.form.ReinstateReviewerForm');
+		$reinstateReviewerForm = new ReinstateReviewerForm($reviewAssignment, $reviewRound, $submission);
+		$reinstateReviewerForm->initData();
+
+		return new JSONMessage(true, $reinstateReviewerForm->fetch($request));
+	}
+
+	/**
+	 * Save the reviewer reinstatement
+	 * @param mixed $args
+	 * @param $request PKPRequest
+	 * @return JSONMessage JSON object
+	 */
+	public function updateReinstateReviewer($args, $request) {
+		$reviewAssignment = $this->getAuthorizedContextObject(ASSOC_TYPE_REVIEW_ASSIGNMENT);
+		$reviewRound = $this->getReviewRound();
+		$submission = $this->getSubmission();
+
+		import('lib.pkp.controllers.grid.users.reviewer.form.ReinstateReviewerForm');
+		$reinstateReviewerForm = new ReinstateReviewerForm($reviewAssignment, $reviewRound, $submission);
+		$reinstateReviewerForm->readInputData();
+
+		// Reinstate the reviewer and return status message
+		if (!$reinstateReviewerForm->validate()) {
+			return new JSONMessage(false, __('editor.review.errorReinstatingReviewer'));
+		}
+
+		$reinstateReviewerForm->execute();
+		return DAO::getDataChangedEvent($reviewAssignment->getId());
+	}
+
+	/**
 	 * Save the reviewer unassignment
 	 *
 	 * @param mixed $args
@@ -448,13 +491,12 @@ class PKPReviewerGridHandler extends GridHandler {
 		$unassignReviewerForm->readInputData();
 
 		// Unassign the reviewer and return status message
-		if ($unassignReviewerForm->validate()) {
-			if ($unassignReviewerForm->execute()) {
-				return DAO::getDataChangedEvent($reviewAssignment->getId());
-			} else {
-				return new JSONMessage(false, __('editor.review.errorDeletingReviewer'));
-			}
+		if (!$unassignReviewerForm->validate()) {
+			return new JSONMessage(false, __('editor.review.errorDeletingReviewer'));
 		}
+
+		$unassignReviewerForm->execute();
+		return DAO::getDataChangedEvent($reviewAssignment->getId());
 	}
 
 	/**
@@ -470,7 +512,7 @@ class PKPReviewerGridHandler extends GridHandler {
 		$submission = $this->getSubmission();
 		$user = $request->getUser();
 		$reviewAssignment = $this->getAuthorizedContextObject(ASSOC_TYPE_REVIEW_ASSIGNMENT);
-		$reviewAssignmentDao = DAORegistry::getDAO('ReviewAssignmentDAO');
+		$reviewAssignmentDao = DAORegistry::getDAO('ReviewAssignmentDAO'); /* @var $reviewAssignmentDao ReviewAssignmentDAO */
 
 		$reviewAssignment->setUnconsidered(REVIEW_ASSIGNMENT_UNCONSIDERED);
 		$reviewAssignmentDao->updateObject($reviewAssignment);
@@ -522,7 +564,7 @@ class PKPReviewerGridHandler extends GridHandler {
 
 		// Mark the latest read date of the review by the editor.
 		$user = $request->getUser();
-		$viewsDao = DAORegistry::getDAO('ViewsDAO');
+		$viewsDao = DAORegistry::getDAO('ViewsDAO'); /* @var $viewsDao ViewsDAO */
 		$viewsDao->recordView(ASSOC_TYPE_REVIEW_RESPONSE, $reviewAssignment->getId(), $user->getId());
 
 		// if the review assignment had been unconsidered, update the flag.
@@ -537,11 +579,32 @@ class PKPReviewerGridHandler extends GridHandler {
 		}
 
 		// Trigger an update of the review round status
-		$reviewAssignmentDao = DAORegistry::getDAO('ReviewAssignmentDAO');
+		$reviewAssignmentDao = DAORegistry::getDAO('ReviewAssignmentDAO'); /* @var $reviewAssignmentDao ReviewAssignmentDAO */
 		$reviewAssignmentDao->updateObject($reviewAssignment);
 
+		//if the review was read by an editor, log event
+		if ($reviewAssignment->isRead()) {
+			import('lib.pkp.classes.log.SubmissionLog');
+			import('classes.log.SubmissionEventLogEntry');
+
+			$submissionId = $reviewAssignment->getSubmissionId();
+			$submissionDao = DAORegistry::getDAO('SubmissionDAO'); /* @var $submissionDao SubmissionDAO */
+			$submission = $submissionDao->getById($submissionId);
+
+			SubmissionLog::logEvent(
+				$request,
+				$submission,
+				SUBMISSION_LOG_REVIEW_CONFIRMED,
+				'log.review.reviewConfirmed',
+				array(
+					'userName' => $user->getFullName(),
+					'submissionId' => $reviewAssignment->getSubmissionId(),
+					'round' => $reviewAssignment->getRound()
+				)
+			);
+		}
 		// Remove the reviewer task.
-		$notificationDao = DAORegistry::getDAO('NotificationDAO');
+		$notificationDao = DAORegistry::getDAO('NotificationDAO'); /* @var $notificationDao NotificationDAO */
 		$notificationDao->deleteByAssoc(
 			ASSOC_TYPE_REVIEW_ASSIGNMENT,
 			$reviewAssignment->getId(),
@@ -599,11 +662,11 @@ class PKPReviewerGridHandler extends GridHandler {
 		if ($reviewAssignment->getReviewFormId()) {
 			// Retrieve review form
 			$context = $request->getContext();
-			$reviewFormElementDao = DAORegistry::getDAO('ReviewFormElementDAO');
+			$reviewFormElementDao = DAORegistry::getDAO('ReviewFormElementDAO'); /* @var $reviewFormElementDao ReviewFormElementDAO */
 			$reviewFormElements = $reviewFormElementDao->getByReviewFormId($reviewAssignment->getReviewFormId());
-			$reviewFormResponseDao = DAORegistry::getDAO('ReviewFormResponseDAO');
+			$reviewFormResponseDao = DAORegistry::getDAO('ReviewFormResponseDAO'); /* @var $reviewFormResponseDao ReviewFormResponseDAO */
 			$reviewFormResponses = $reviewFormResponseDao->getReviewReviewFormResponseValues($reviewAssignment->getId());
-			$reviewFormDao = DAORegistry::getDAO('ReviewFormDAO');
+			$reviewFormDao = DAORegistry::getDAO('ReviewFormDAO'); /* @var $reviewFormDao ReviewFormDAO */
 			$reviewformid = $reviewAssignment->getReviewFormId();
 			$reviewForm = $reviewFormDao->getById($reviewAssignment->getReviewFormId(), Application::getContextAssocType(), $context->getId());
 			$templateMgr->assign(array(
@@ -614,7 +677,7 @@ class PKPReviewerGridHandler extends GridHandler {
 			));
 		} else {
 			// Retrieve reviewer comments.
-			$submissionCommentDao = DAORegistry::getDAO('SubmissionCommentDAO');
+			$submissionCommentDao = DAORegistry::getDAO('SubmissionCommentDAO'); /* @var $submissionCommentDao SubmissionCommentDAO */
 			$templateMgr->assign(array(
 				'comments' => $submissionCommentDao->getReviewerCommentsByReviewerId($reviewAssignment->getSubmissionId(), null, $reviewAssignment->getId(), true),
 				'commentsPrivate' => $submissionCommentDao->getReviewerCommentsByReviewerId($reviewAssignment->getSubmissionId(), null, $reviewAssignment->getId(), false),
@@ -763,15 +826,13 @@ class PKPReviewerGridHandler extends GridHandler {
 	 */
 	function gossip($args, $request) {
 		$reviewAssignment = $this->getAuthorizedContextObject(ASSOC_TYPE_REVIEW_ASSIGNMENT);
-		$userDao = DAORegistry::getDAO('UserDAO');
+		$userDao = DAORegistry::getDAO('UserDAO'); /* @var $userDao UserDAO */
 		$user = $userDao->getById($reviewAssignment->getReviewerId());
 
 		// Check that the current user is specifically allowed to access gossip for
 		// this user
-		import('classes.core.ServicesContainer');
-		$canCurrentUserGossip = ServicesContainer::instance()
-			->get('user')
-			->canCurrentUserGossip($user->getId());
+		import('classes.core.Services');
+		$canCurrentUserGossip = Services::get('user')->canCurrentUserGossip($user->getId());
 		if (!$canCurrentUserGossip) {
 			return new JSONMessage(false, __('user.authorization.roleBasedAccessDenied'));
 		}
@@ -872,7 +933,7 @@ class PKPReviewerGridHandler extends GridHandler {
 	 */
 	function _getReviewAssignmentOps() {
 		// Define operations that need a review assignment policy.
-		return array('readReview', 'reviewHistory', 'reviewRead', 'editThankReviewer', 'thankReviewer', 'editReminder', 'sendReminder', 'unassignReviewer', 'updateUnassignReviewer', 'sendEmail', 'unconsiderReview', 'editReview', 'updateReview', 'gossip');
+		return array('readReview', 'reviewHistory', 'reviewRead', 'editThankReviewer', 'thankReviewer', 'editReminder', 'sendReminder', 'unassignReviewer', 'updateUnassignReviewer', 'reinstateReviewer', 'updateReinstateReviewer', 'sendEmail', 'unconsiderReview', 'editReview', 'updateReview', 'gossip');
 
 	}
 
@@ -908,11 +969,10 @@ class PKPReviewerGridHandler extends GridHandler {
 			'thankReviewer',
 			'editReminder',
 			'sendReminder',
-			'unassignReviewer',
-			'updateUnassignReviewer',
+			'unassignReviewer', 'updateUnassignReviewer',
+			'reinstateReviewer', 'updateReinstateReviewer',
 			'unconsiderReview',
-			'editReview',
-			'updateReview',
+			'editReview', 'updateReview',
 		);
 	}
 
@@ -931,5 +991,3 @@ class PKPReviewerGridHandler extends GridHandler {
 		);
 	}
 }
-
-

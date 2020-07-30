@@ -7,6 +7,6 @@ $baseDir = dirname(dirname($vendorDir));
 
 return array(
     'Pimple' => array($vendorDir . '/pimple/pimple/src'),
-    'Less' => array($vendorDir . '/oyejorge/less.php/lib'),
+    'Less' => array($vendorDir . '/wikimedia/less.php/lib'),
     'HTMLPurifier' => array($vendorDir . '/ezyang/htmlpurifier/library'),
 );

@@ -3,9 +3,9 @@
 /**
  * @file plugins/reports/reviewReport/ReviewReportDAO.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ReviewReportDAO
  * @ingroup plugins_reports_review
@@ -39,7 +39,7 @@ class ReviewReportDAO extends DAO {
 		));
 
 		$userDao = DAORegistry::getDAO('UserDAO');
-		$site = Application::getRequest()->getSite();
+		$site = Application::get()->getRequest()->getSite();
 		$sitePrimaryLocale = $site->getPrimaryLocale();
 
 		$params = array_merge(
@@ -82,8 +82,9 @@ class ReviewReportDAO extends DAO {
 				r.recommendation AS recommendation
 			FROM	review_assignments r
 				LEFT JOIN submissions a ON r.submission_id = a.submission_id
+				LEFT JOIN publications p ON a.current_publication_id = p.publication_id
 				LEFT JOIN submission_settings asl ON (a.submission_id = asl.submission_id AND asl.locale = ? AND asl.setting_name = ?)
-				LEFT JOIN submission_settings aspl ON (a.submission_id = aspl.submission_id AND aspl.locale = a.locale AND aspl.setting_name = ?)
+				LEFT JOIN submission_settings aspl ON (a.submission_id = aspl.submission_id AND aspl.locale = p.locale AND aspl.setting_name = ?)
 				LEFT JOIN users u ON (u.user_id = r.reviewer_id)
 				' . $userDao->getFetchJoins() .'
 				LEFT JOIN user_settings uas ON (u.user_id = uas.user_id AND uas.setting_name = ? AND uas.locale = a.locale)

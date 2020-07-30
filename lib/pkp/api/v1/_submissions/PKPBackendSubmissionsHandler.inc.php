@@ -3,9 +3,9 @@
 /**
  * @file api/v1/_submissions/PKPBackendSubmissionsHandler.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPBackendSubmissionsHandler
  * @ingroup api_v1_backend
@@ -15,8 +15,8 @@
  */
 
 import('lib.pkp.classes.handler.APIHandler');
-import('lib.pkp.classes.submission.Submission');
-import('classes.core.ServicesContainer');
+import('lib.pkp.classes.submission.PKPSubmission');
+import('classes.core.Services');
 
 abstract class PKPBackendSubmissionsHandler extends APIHandler {
 
@@ -29,7 +29,7 @@ abstract class PKPBackendSubmissionsHandler extends APIHandler {
 			'GET' => array(
 				array(
 					'pattern' => "{$rootPattern}",
-					'handler' => array($this, 'getSubmissions'),
+					'handler' => array($this, 'getMany'),
 					'roles' => array(
 						ROLE_ID_SITE_ADMIN,
 						ROLE_ID_MANAGER,
@@ -43,7 +43,7 @@ abstract class PKPBackendSubmissionsHandler extends APIHandler {
 			'DELETE' => array(
 				array(
 					'pattern' => "{$rootPattern}/{submissionId}",
-					'handler' => array($this, 'deleteSubmission'),
+					'handler' => array($this, 'delete'),
 					'roles' => array(
 						ROLE_ID_SITE_ADMIN,
 						ROLE_ID_MANAGER,
@@ -72,7 +72,7 @@ abstract class PKPBackendSubmissionsHandler extends APIHandler {
 	 *
 	 * @return Response
 	 */
-	public function getSubmissions($slimRequest, $response, $args) {
+	public function getMany($slimRequest, $response, $args) {
 
 		$request = $this->getRequest();
 		$currentUser = $request->getUser();
@@ -110,6 +110,8 @@ abstract class PKPBackendSubmissionsHandler extends APIHandler {
 					break;
 
 				case 'assignedTo':
+				case 'daysInactive':
+				case 'offset':
 					$params[$param] = (int) $val;
 					break;
 
@@ -119,12 +121,8 @@ abstract class PKPBackendSubmissionsHandler extends APIHandler {
 					$params[$param] = min(100, (int) $val);
 					break;
 
-				case 'offset':
-					$params[$param] = (int) $val;
-					break;
-
 				case 'orderBy':
-					if (!in_array($val, array('dateSubmitted', 'lastModified', 'title'))) {
+					if (!in_array($val, array('dateSubmitted', 'dateLastActivity', 'lastModified', 'title'))) {
 						unset($params[$param]);
 					}
 					break;
@@ -139,6 +137,8 @@ abstract class PKPBackendSubmissionsHandler extends APIHandler {
 			}
 		}
 
+		$params['contextId'] = $context->getId();
+
 		\HookRegistry::call('API::_submissions::params', array(&$params, $slimRequest, $response));
 
 		// Prevent users from viewing submissions they're not assigned to,
@@ -147,21 +147,20 @@ abstract class PKPBackendSubmissionsHandler extends APIHandler {
 			return $response->withStatus(403)->withJsonError('api.submissions.403.requestedOthersUnpublishedSubmissions');
 		}
 
-		$submissionService = ServicesContainer::instance()->get('submission');
-		$submissions = $submissionService->getSubmissions($context->getId(), $params);
+		$submissionsIterator = Services::get('submission')->getMany($params);
 		$items = array();
-		if (!empty($submissions)) {
+		if (count($submissionsIterator)) {
 			$propertyArgs = array(
 				'request' => $request,
 				'slimRequest' => $slimRequest,
 			);
-			foreach ($submissions as $submission) {
-				$items[] = $submissionService->getBackendListProperties($submission, $propertyArgs);
+			foreach ($submissionsIterator as $submission) {
+				$items[] = Services::get('submission')->getBackendListProperties($submission, $propertyArgs);
 			}
 		}
 		$data = array(
 			'items' => $items,
-			'itemsMax' => $submissionService->getSubmissionsMaxCount($context->getId(), $params),
+			'itemsMax' => Services::get('submission')->getMax($params),
 		);
 
 		return $response->withJson($data);
@@ -175,34 +174,27 @@ abstract class PKPBackendSubmissionsHandler extends APIHandler {
 	 * @param array $args arguments
 	 * @return Response
 	 */
-	public function deleteSubmission($slimRequest, $response, $args) {
-
+	public function delete($slimRequest, $response, $args) {
 		$request = $this->getRequest();
-		$currentUser = $request->getUser();
 		$context = $request->getContext();
-
 		$submissionId = (int) $args['submissionId'];
-
-		$submissionDao = Application::getSubmissionDAO();
+		$submissionDao = DAORegistry::getDAO('SubmissionDAO'); /* @var $submissionDao SubmissionDAO */
 		$submission = $submissionDao->getById($submissionId);
 
 		if (!$submission) {
-			return $response->withStatus(404)->withJsonError('api.submissions.404.resourceNotFound');
+			return $response->withStatus(404)->withJsonError('api.404.resourceNotFound');
 		}
 
 		if ($context->getId() != $submission->getContextId()) {
 			return $response->withStatus(403)->withJsonError('api.submissions.403.deleteSubmissionOutOfContext');
 		}
 
-		import('classes.core.ServicesContainer');
-		$submissionService = ServicesContainer::instance()
-				->get('submission');
-
-		if (!$submissionService->canCurrentUserDelete($submission)) {
+		import('classes.core.Services');
+		if (!Services::get('submission')->canCurrentUserDelete($submission)) {
 			return $response->withStatus(403)->withJsonError('api.submissions.403.unauthorizedDeleteSubmission');
 		}
 
-		$submissionService->deleteSubmission($submissionId);
+		Services::get('submission')->delete($submission);
 
 		return $response->withJson(true);
 	}

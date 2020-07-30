@@ -3,9 +3,9 @@
 /**
  * @file classes/core/PKPString.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2000-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPString
  * @ingroup core
@@ -39,15 +39,6 @@ define('PCRE_URI', '(?:([a-z][-+.a-z0-9]*):)?' .						// Scheme
 		   '(?:\?([^#]*))?' .								// Query String
 		   '(?:\#((?:%[0-9a-f]{2}|[-a-z0-9_.!~*\'();/?:@\&=+$,])*))?');			// Fragment
 
-// RFC-2822 email addresses
-define('PCRE_EMAIL_ADDRESS',
-	'[-a-z0-9!#\$%&\'\*\+\/=\?\^_\`\{\|\}~]' . '+' . // One or more atom characters.
-	'(\.' . '[-a-z0-9!#\$%&\'\*\+\/=\?\^_\`\{\|\}~]' . '+)*'. // Followed by zero or more dot separated sets of one or more atom characters.
-	'@'. // Followed by an "at" character.
-	'(' . '([a-z0-9]([-a-z0-9]*[a-z0-9]+)?)' . '{1,63}\.)+'. // Followed by one or max 63 domain characters (dot separated).
-	'([a-z0-9]([-a-z0-9]*[a-z0-9]+)?)' . '{2,63}' // Must be followed by one set consisting a period of two or max 63 domain characters.
-	);
-
 // Two different types of camel case: one for class names and one for method names
 define ('CAMEL_CASE_HEAD_UP', 0x01);
 define ('CAMEL_CASE_HEAD_DOWN', 0x02);
@@ -61,7 +52,7 @@ class PKPString {
 		$clientCharset = strtolower_codesafe(Config::getVar('i18n', 'client_charset'));
 
 		// Check if mbstring is installed
-		if (self::hasMBString()) {
+		if (self::hasMBString() && !defined('ENABLE_MBSTRING')) {
 			// mbstring routines are available
 			define('ENABLE_MBSTRING', true);
 
@@ -73,10 +64,12 @@ class PKPString {
 
 		// Define modifier to be used in regexp_* routines
 		// FIXME Should non-UTF-8 encodings be supported with mbstring?
-		if ($clientCharset == 'utf-8' && self::hasPCREUTF8()) {
-			define('PCRE_UTF8', 'u');
-		} else {
-			define('PCRE_UTF8', '');
+		if (!defined('PCRE_UTF8')) {
+			if ($clientCharset == 'utf-8' && self::hasPCREUTF8()) {
+				define('PCRE_UTF8', 'u');
+			} else {
+				define('PCRE_UTF8', '');
+			}
 		}
 	}
 
@@ -356,6 +349,7 @@ class PKPString {
 		}
 		// SUGGESTED_EXTENSION:DETECTED_MIME_TYPE => OVERRIDE_MIME_TYPE
 		$ambiguities = array(
+			'html:text/xml' => 'text/html',
 			'css:text/x-c' => 'text/css',
 			'css:text/plain' => 'text/css',
 			'xlsx:application/zip' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
@@ -442,12 +436,11 @@ class PKPString {
 		assert($type == CAMEL_CASE_HEAD_UP || $type == CAMEL_CASE_HEAD_DOWN);
 
 		// Transform "handler-class" to "HandlerClass" and "my-op" to "MyOp"
-		$string = str_replace(' ', '', ucwords(str_replace('-', ' ', $string)));
+		$string = implode(array_map('ucfirst_codesafe', explode('-', $string)));
 
 		// Transform "MyOp" to "myOp"
 		if ($type == CAMEL_CASE_HEAD_DOWN) {
-			// lcfirst() is PHP>5.3, so use workaround
-			$string = strtolower(substr($string, 0, 1)).substr($string, 1);
+			$string = strtolower_codesafe(substr($string, 0, 1)).substr($string, 1);
 		}
 
 		return $string;
@@ -463,13 +456,13 @@ class PKPString {
 		assert(!empty($string));
 
 		// Transform "myOp" to "MyOp"
-		$string = ucfirst($string);
+		$string = ucfirst_codesafe($string);
 
 		// Insert hyphens between words and return the string in lowercase
 		$words = array();
 		self::regexp_match_all('/[A-Z][a-z0-9]*/', $string, $words);
 		assert(isset($words[0]) && !empty($words[0]) && strlen(implode('', $words[0])) == strlen($string));
-		return strtolower(implode('-', $words[0]));
+		return strtolower_codesafe(implode('-', $words[0]));
 	}
 
 	/**
@@ -499,7 +492,7 @@ class PKPString {
 
 	/**
 	 * Matches each symbol of PHP strftime format string
-	 * to jQuery Datepicker widget date format. 
+	 * to jQuery Datepicker widget date format.
 	 * @param $phpFormat string
 	 * @return string
 	 */

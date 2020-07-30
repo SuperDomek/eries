@@ -3,9 +3,9 @@
 /**
  * @file plugins/generic/usageStats/PKPUsageStatsReportPlugin.inc.php
  *
- * Copyright (c) 2013-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2013-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPUsageStatsReportPlugin
  * @ingroup plugins_generic_usageStats
@@ -67,11 +67,11 @@ abstract class PKPUsageStatsReportPlugin extends ReportPlugin {
 		$reportArgs = array(
 			'metricType' => $metricType,
 			'columns' => $columns,
-			'filters' => serialize(array(STATISTICS_DIMENSION_CONTEXT_ID => $context->getId())),
-			'orderBy' => serialize(array(STATISTICS_DIMENSION_MONTH => STATISTICS_ORDER_ASC))
+			'filters' => json_encode(array(STATISTICS_DIMENSION_CONTEXT_ID => $context->getId())),
+			'orderBy' => json_encode(array(STATISTICS_DIMENSION_MONTH => STATISTICS_ORDER_ASC))
 		);
 
-		Request::redirect(null, null, 'tools', 'generateReport', $reportArgs);
+		$request->redirect(null, null, 'tools', 'generateReport', $reportArgs);
 	}
 
 	/**

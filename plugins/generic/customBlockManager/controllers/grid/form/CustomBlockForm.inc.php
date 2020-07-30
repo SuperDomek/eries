@@ -3,9 +3,9 @@
 /**
  * @file plugins/generic/customBlockManager/controllers/grid/form/CustomBlockForm.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class CustomBlockForm
  * @ingroup controllers_grid_customBlockManager
@@ -69,9 +69,9 @@ class CustomBlockForm extends Form {
 	}
 
 	/**
-	 * Save form values into the database
+	 * @copydoc Form::execute()
 	 */
-	function execute() {
+	function execute(...$functionArgs) {
 		$plugin = $this->plugin;
 		$contextId = $this->contextId;
 		if (!$plugin) {
@@ -81,9 +81,6 @@ class CustomBlockForm extends Form {
 			$plugin = new CustomBlockPlugin($this->getData('blockName'), $customBlockManagerPlugin);
 			// Default the block to being enabled
 			$plugin->setEnabled(true);
-
-			// Default the block to the left sidebar
-			$plugin->setBlockContext(BLOCK_CONTEXT_SIDEBAR);
 
 			// Add the custom block to the list of the custom block plugins in the
 			// custom block manager plugin
@@ -96,6 +93,8 @@ class CustomBlockForm extends Form {
 
 		// update custom block plugin content
 		$plugin->updateSetting($contextId, 'blockContent', $this->getData('blockContent'));
+
+		parent::execute(...$functionArgs);
 	}
 }
 

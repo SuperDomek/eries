@@ -3,9 +3,9 @@
 /**
  * @file plugins/importexport/crossref/classes/form/CrossRefSettingsForm.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class CrossRefSettingsForm
  * @ingroup plugins_importexport_crossref
@@ -61,7 +61,7 @@ class CrossRefSettingsForm extends Form {
 		// DOI plugin settings action link
 		$pubIdPlugins = PluginRegistry::loadCategory('pubIds', true);
 		if (isset($pubIdPlugins['doipubidplugin'])) {
-			$application = Application::getApplication();
+			$application = Application::get();
 			$request = $application->getRequest();
 			$dispatcher = $application->getDispatcher();
 			import('lib.pkp.classes.linkAction.request.AjaxModal');
@@ -107,14 +107,15 @@ class CrossRefSettingsForm extends Form {
 	}
 
 	/**
-	 * Execute the form.
+	 * @copydoc Form::execute()
 	 */
-	function execute() {
+	function execute(...$functionArgs) {
 		$plugin = $this->_getPlugin();
 		$contextId = $this->_getContextId();
 		foreach($this->getFormFields() as $fieldName => $fieldType) {
 			$plugin->updateSetting($contextId, $fieldName, $this->getData($fieldName), $fieldType);
 		}
+		parent::execute(...$functionArgs);
 	}
 
 

@@ -3,9 +3,9 @@
 /**
  * @file pages/management/ToolsHandler.inc.php
  *
- * Copyright (c) 2013-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2013-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ToolsHandler
  * @ingroup pages_management
@@ -42,7 +42,7 @@ class ToolsHandler extends PKPToolsHandler {
 
 		switch ($assocType) {
 			case ASSOC_TYPE_ISSUE:
-				$issueDao = DAORegistry::getDAO('IssueDAO');
+				$issueDao = DAORegistry::getDAO('IssueDAO'); /* @var $issueDao IssueDAO */
 				$issue = $issueDao->getById($assocId);
 				if ($issue) {
 					$objectTitle = $issue->getIssueIdentification();

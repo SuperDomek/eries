@@ -1,13 +1,13 @@
 {**
  * templates/editor/issues/articleGalleyForm.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Form to add/edit an issue galley.
  *}
-{if $remoteURL}
+{if $urlRemote}
 	{assign var="remoteRepresentation" value=true}
 {else}
 	{assign var="remoteRepresentation" value=false}
@@ -22,7 +22,7 @@
 		);
 	{rdelim});
 </script>
-<form class="pkp_form" id="articleGalleyForm" method="post" action="{url op="updateGalley" submissionId=$submissionId representationId=$representationId}">
+<form class="pkp_form" id="articleGalleyForm" method="post" action="{url op="updateGalley" submissionId=$submissionId publicationId=$publicationId representationId=$representationId}">
 	{csrf}
 	{fbvFormArea id="galley"}
 		{fbvFormSection title="submission.layout.galleyLabel" required=true}
@@ -34,8 +34,11 @@
 		{fbvFormSection for="remotelyHostedContent" list=true}
 			{fbvElement type="checkbox" label="submission.layout.galley.remotelyHostedContent" id="remotelyHostedContent"}
 			<div id="remote" style="display:none">
-				{fbvElement type="text" id="remoteURL" label="submission.layout.galley.remoteURL" value=$remoteURL}
+				{fbvElement type="text" id="urlRemote" label="submission.layout.galley.remoteURL" value=$urlRemote}
 			</div>
+		{/fbvFormSection}
+		{fbvFormSection id="urlPathSection" title="publication.urlPath"}
+			{fbvElement type="text" label="publication.urlPath.description" value=$urlPath id="urlPath" size=$fbvStyles.size.MEDIUM inline=true}
 		{/fbvFormSection}
 	{/fbvFormArea}
 

@@ -3,9 +3,9 @@
 /**
  * @file includes/functions.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2000-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @ingroup index
  *
@@ -281,18 +281,33 @@ function strtolower_codesafe($str) {
 }
 
 /**
- * Convert a Windows path to a cygwin path.
- * @param string $path Windows path
- * @return string Cygwin path.
+ * Perform a code-safe strtoupper, i.e. one that doesn't behave differently
+ * based on different locales. (tr_TR, I'm looking at you.)
+ * @param $str string Input string
+ * @return string
  */
-function cygwinConversion($path) {
-	$path = str_replace('\\', '/', $path);
-	$matches = null;
-	PKPString::regexp_match_get('/^([A-Z]):/i', $path, $matches);
-	if (isset($matches[1]) && strlen($matches[1]) === 1) {
-		$path = PKPString::regexp_replace('/^[A-Z]:/i', '/cygdrive/' . strtolower($matches[1]), $path);
-	}
-	return $path;
+function strtoupper_codesafe($str) {
+	return strtr($str, 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ');
+}
+
+/**
+ * Perform a code-safe lcfirst, i.e. one that doesn't behave differently
+ * based on different locales. (tr_TR, I'm looking at you.)
+ * @param $str string Input string
+ * @return string
+ */
+function lcfirst_codesafe($str) {
+	return strtolower_codesafe(substr($str, 0, 1)) . substr($str, 1);
+}
+
+/**
+ * Perform a code-safe ucfirst, i.e. one that doesn't behave differently
+ * based on different locales. (tr_TR, I'm looking at you.)
+ * @param $str string Input string
+ * @return string
+ */
+function ucfirst_codesafe($str) {
+	return strtoupper_codesafe(substr($str, 0, 1)) . substr($str, 1);
 }
 
 /**
@@ -319,7 +334,9 @@ function customAutoload($rootPath, $prefix, $class) {
 
 	$className = Core::cleanFileVar(array_pop($parts));
 	$parts = array_map(function($part) {
-		return lcfirst(Core::cleanFileVar($part));
+		$part = Core::cleanFileVar($part);
+		if (strlen($part)>1) $part[0] = strtolower_codesafe($part[0]); // pkp/pkp-lib#5731
+		return $part;
 	}, $parts);
 
 	$subParts = join('/', $parts);

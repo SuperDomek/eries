@@ -1,9 +1,9 @@
 {**
  * templates/controllers/grid/plugins/uploadPluginForm.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Form to upload plugin files.
  *}
@@ -39,6 +39,6 @@
 		{/fbvFormSection}
 	{/fbvFormArea}
 
-	{fbvFormButtons id="mastheadFormSubmit" submitText="common.save"}
+	{fbvFormButtons id="uploadPluginFormSubmit" submitText="common.save"}
 </form>
 <p><span class="formRequired">{translate key="common.requiredField"}</span></p>

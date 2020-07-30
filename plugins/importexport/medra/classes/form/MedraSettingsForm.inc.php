@@ -3,9 +3,9 @@
 /**
  * @file plugins/importexport/medra/classes/form/MedraSettingsForm.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class MedraSettingsForm
  * @ingroup plugins_importexport_medra_classes_form
@@ -59,7 +59,7 @@ class MedraSettingsForm extends Form {
 		// DOI plugin settings action link
 		$pubIdPlugins = PluginRegistry::loadCategory('pubIds', true);
 		if (isset($pubIdPlugins['doipubidplugin'])) {
-			$application = Application::getApplication();
+			$application = Application::get();
 			$request = $application->getRequest();
 			$dispatcher = $application->getDispatcher();
 			import('lib.pkp.classes.linkAction.request.AjaxModal');
@@ -128,11 +128,12 @@ class MedraSettingsForm extends Form {
 	}
 
 	/**
-	 * Execute the form.
+	 * @copydoc Form::execute()
 	 */
-	function execute() {
+	function execute(...$functionArgs) {
 		$plugin = $this->_getPlugin();
 		$contextId = $this->_getContextId();
+		parent::execute(...$functionArgs);
 		foreach($this->getFormFields() as $fieldName => $fieldType) {
 			$plugin->updateSetting($contextId, $fieldName, $this->getData($fieldName), $fieldType);
 		}
@@ -179,8 +180,12 @@ class MedraSettingsForm extends Form {
 	 * @return array
 	 */
 	function _getCountries() {
-		$countryDao = DAORegistry::getDAO('CountryDAO'); /* @var $countryDao CountryDAO */
-		$countries = $countryDao->getCountries();
+		$isoCodes = new \Sokil\IsoCodes\IsoCodesFactory();
+		$countries = array();
+		foreach ($isoCodes->getCountries() as $country) {
+			$countries[$country->getAlpha2()] = $country->getLocalName();
+		}
+		asort($countries);
 		return $countries;
 	}
 }

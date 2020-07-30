@@ -1,9 +1,9 @@
 {**
  * templates/frontend/pages/indexSite.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Site index.
  *
@@ -20,21 +20,21 @@
 
 	<div class="journals">
 		<h2>
-			{translate key="journal.journals"}
+			{translate key="context.contexts"}
 		</h2>
-		{if !count($journals)}
+		{if $journals->wasEmpty()}
 			{translate key="site.noJournals"}
 		{else}
 			<ul>
 				{iterate from=journals item=journal}
 					{capture assign="url"}{url journal=$journal->getPath()}{/capture}
-					{assign var="thumb" value=$journal->getLocalizedSetting('journalThumbnail')}
+					{assign var="thumb" value=$journal->getLocalizedData('journalThumbnail')}
 					{assign var="description" value=$journal->getLocalizedDescription()}
 					<li{if $thumb} class="has_thumb"{/if}>
 						{if $thumb}
 							<div class="thumb">
 								<a href="{$url|escape}">
-									<img src="{$journalFilesPath}{$journal->getId()}/{$thumb.uploadName|escape:"url"}"{if $thumb.altText} alt="{$thumb.altText|escape}"{/if}>
+									<img src="{$journalFilesPath}{$journal->getId()}/{$thumb.uploadName|escape:"url"}"{if $thumb.altText} alt="{$thumb.altText|escape|default:''}"{/if}>
 								</a>
 							</div>
 						{/if}
@@ -66,13 +66,6 @@
 					</li>
 				{/iterate}
 			</ul>
-
-			{if $journals->getPageCount() > 0}
-				<div class="cmp_pagination">
-					{page_info iterator=$journals}
-					{page_links anchor="journals" name="journals" iterator=$journals}
-				</div>
-			{/if}
 		{/if}
 	</div>
 

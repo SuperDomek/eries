@@ -3,9 +3,9 @@
 /**
  * @file classes/submission/form/PKPSubmissionSubmitStep3Form.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPSubmissionSubmitStep3Form
  * @ingroup submission_form
@@ -14,9 +14,6 @@
  */
 
 import('lib.pkp.classes.submission.form.SubmissionSubmitForm');
-
-// This class contains a static method to describe metadata field settings
-import('lib.pkp.controllers.grid.settings.metadata.MetadataGridHandler');
 
 class PKPSubmissionSubmitStep3Form extends SubmissionSubmitForm {
 
@@ -53,12 +50,15 @@ class PKPSubmissionSubmitStep3Form extends SubmissionSubmitForm {
 		$context = $request->getContext();
 
 		// Tell the form what fields are enabled (and which of those are required)
-		foreach (array_keys(MetadataGridHandler::getNames()) as $field) {
+		$metadataFields = Application::getMetadataFields();
+		foreach ($metadataFields as $field) {
 			$templateMgr->assign(array(
-				$field . 'Enabled' => $context->getSetting($field . 'EnabledSubmission'),
-				$field . 'Required' => $context->getSetting($field . 'Required')
+				$field . 'Enabled' => $context->getData($field) === METADATA_REQUEST || $context->getData($field) === METADATA_REQUIRE,
+				$field . 'Required' => $context->getData($field) === METADATA_REQUIRE,
 			));
 		}
+
+		$templateMgr->assign('publicationId', $this->submission->getCurrentPublication()->getId());
 
 		return parent::fetch($request, $template, $display);
 	}
@@ -82,27 +82,26 @@ class PKPSubmissionSubmitStep3Form extends SubmissionSubmitForm {
 	 * Save changes to submission.
 	 * @return int the submission ID
 	 */
-	function execute() {
+	function execute(...$functionArgs) {
 		// Execute submission metadata related operations.
-		$this->_metadataFormImplem->execute($this->submission, Application::getRequest());
+		$this->_metadataFormImplem->execute($this->submission, Application::get()->getRequest());
 
 		// Get an updated version of the submission.
-		$submissionDao = Application::getSubmissionDAO();
-		$submission = $submissionDao->getById($this->submissionId);
+		$submissionDao = DAORegistry::getDAO('SubmissionDAO'); /* @var $submissionDao SubmissionDAO */
+		$this->submission = $submissionDao->getById($this->submissionId);
 
 		// Set other submission data.
-		if ($submission->getSubmissionProgress() <= $this->step) {
-			$submission->setSubmissionProgress($this->step + 1);
-			$submission->stampStatusModified();
+		if ($this->submission->getSubmissionProgress() <= $this->step) {
+			$this->submission->setSubmissionProgress($this->step + 1);
+			$this->submission->stampLastActivity();
+			$this->submission->stampModified();
 		}
 
-		parent::execute();
+		parent::execute(...$functionArgs);
 
 		// Save the submission.
-		$submissionDao->updateObject($submission);
+		$submissionDao->updateObject($this->submission);
 
 		return $this->submissionId;
 	}
 }
-
-

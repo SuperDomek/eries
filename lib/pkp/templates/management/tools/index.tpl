@@ -1,9 +1,9 @@
 {**
  * templates/management/tools/index.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Management index.
  *}
@@ -19,6 +19,7 @@
 	<ul>
 		<li><a name="importexport" href="{url op="importexport"}">{translate key="navigation.tools.importExport"}</a></li>
 		<li><a name="statistics" href="{url op="statistics"}">{translate key="manager.statistics.reports"}</a></li>
+		<li><a name="permissions" href="{url op="permissions"}">{translate key="settings.libraryFiles.category.permissions"}</a></li>
 		{call_hook name="Templates::Management::Settings::tools"}
 	</ul>
 </div>

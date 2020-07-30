@@ -3,9 +3,9 @@
 /**
  * @file plugins/generic/pdfJsViewer/PdfJsViewerPlugin.inc.php
  *
- * Copyright (c) 2013-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2013-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PdfJsViewerPlugin
  *
@@ -21,7 +21,10 @@ class PdfJsViewerPlugin extends GenericPlugin {
 	function register($category, $path, $mainContextId = null) {
 		if (parent::register($category, $path, $mainContextId)) {
 			if ($this->getEnabled($mainContextId)) {
-				HookRegistry::register('ArticleHandler::view::galley', array($this, 'articleCallback'), HOOK_SEQUENCE_LAST);
+				// For OPS
+				HookRegistry::register('PreprintHandler::view::galley', array($this, 'submissionCallback'), HOOK_SEQUENCE_LAST);
+				// For OJS
+				HookRegistry::register('ArticleHandler::view::galley', array($this, 'submissionCallback'), HOOK_SEQUENCE_LAST);
 				HookRegistry::register('IssueHandler::view::galley', array($this, 'issueCallback'), HOOK_SEQUENCE_LAST);
 				AppLocale::requireComponents(LOCALE_COMPONENT_APP_COMMON);
 			}
@@ -31,7 +34,7 @@ class PdfJsViewerPlugin extends GenericPlugin {
 	}
 
 	/**
-	 * Install default settings on journal creation.
+	 * Install default settings on context creation.
 	 * @return string
 	 */
 	function getContextSpecificPluginSettingsFile() {
@@ -53,31 +56,54 @@ class PdfJsViewerPlugin extends GenericPlugin {
 	}
 
 	/**
-	 * Callback that renders the article galley.
+	 * Callback that renders the submission galley.
 	 * @param $hookName string
 	 * @param $args array
 	 * @return boolean
 	 */
-	function articleCallback($hookName, $args) {
+	function submissionCallback($hookName, $args) {
 		$request =& $args[0];
-		$issue =& $args[1];
-		$galley =& $args[2];
-		$article =& $args[3];
+		$application = Application::get();
+		switch ($application->getName()) {
+			case 'ojs2':
+				$issue =& $args[1];
+				$galley =& $args[2];
+				$submission =& $args[3];
+				$submissionNoun = 'article';
+				break;
+			case 'ops':
+				$galley =& $args[1];
+				$submission =& $args[2];
+				$submissionNoun = 'preprint';
+				$issue = null;
+				break;
+			default: throw new Exception('Unknown application!');
+		}
 
-		$templateMgr = TemplateManager::getManager($request);
 		if ($galley && $galley->getFileType() == 'application/pdf') {
-			$application = Application::getApplication();
+			$galleyPublication = null;
+			foreach ($submission->getData('publications') as $publication) {
+				if ($publication->getId() === $galley->getData('publicationId')) {
+					$galleyPublication = $publication;
+					break;
+				}
+			}
+			$templateMgr = TemplateManager::getManager($request);
 			$templateMgr->assign(array(
 				'displayTemplateResource' => $this->getTemplateResource('display.tpl'),
 				'pluginUrl' => $request->getBaseUrl() . '/' . $this->getPluginPath(),
 				'galleyFile' => $galley->getFile(),
 				'issue' => $issue,
-				'article' => $article,
+				'submission' => $submission,
+				'submissionNoun' => $submissionNoun,
+				'bestId' => $submission->getBestId(),
 				'galley' => $galley,
 				'jQueryUrl' => $this->_getJQueryUrl($request),
 				'currentVersionString' => $application->getCurrentVersion()->getVersionString(false),
+				'isLatestPublication' => $submission->getData('currentPublicationId') === $galley->getData('publicationId'),
+				'galleyPublication' => $galleyPublication,
 			));
-			$templateMgr->display($this->getTemplateResource('articleGalley.tpl'));
+			$templateMgr->display($this->getTemplateResource('submissionGalley.tpl'));
 			return true;
 		}
 
@@ -97,7 +123,7 @@ class PdfJsViewerPlugin extends GenericPlugin {
 
 		$templateMgr = TemplateManager::getManager($request);
 		if ($galley && $galley->getFileType() == 'application/pdf') {
-			$application = Application::getApplication();
+			$application = Application::get();
 			$templateMgr->assign(array(
 				'displayTemplateResource' => $this->getTemplateResource('display.tpl'),
 				'pluginUrl' => $request->getBaseUrl() . '/' . $this->getPluginPath(),
@@ -106,6 +132,7 @@ class PdfJsViewerPlugin extends GenericPlugin {
 				'galley' => $galley,
 				'jQueryUrl' => $this->_getJQueryUrl($request),
 				'currentVersionString' => $application->getCurrentVersion()->getVersionString(false),
+				'isLatestPublication' => true,
 			));
 			$templateMgr->display($this->getTemplateResource('issueGalley.tpl'));
 			return true;
@@ -129,4 +156,3 @@ class PdfJsViewerPlugin extends GenericPlugin {
 	}
 }
 
-?>

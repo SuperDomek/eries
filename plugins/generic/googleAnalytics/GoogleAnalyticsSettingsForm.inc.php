@@ -3,9 +3,9 @@
 /**
  * @file plugins/generic/googleAnalytics/GoogleAnalyticsSettingsForm.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class GoogleAnalyticsSettingsForm
  * @ingroup plugins_generic_googleAnalytics
@@ -66,10 +66,11 @@ class GoogleAnalyticsSettingsForm extends Form {
 	}
 
 	/**
-	 * Save settings.
+	 * @copydoc Form::execute()
 	 */
-	function execute() {
+	function execute(...$functionArgs) {
 		$this->_plugin->updateSetting($this->_journalId, 'googleAnalyticsSiteId', trim($this->getData('googleAnalyticsSiteId'), "\"\';"), 'string');
+		parent::execute(...$functionArgs);
 	}
 }
 

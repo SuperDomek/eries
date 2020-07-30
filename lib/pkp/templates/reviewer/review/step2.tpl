@@ -1,9 +1,9 @@
 {**
  * templates/reviewer/review/step2.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Show the step 2 review page
  *
@@ -27,6 +27,6 @@
 	{/fbvFormSection}
 
 	{capture assign=cancelUrl}{url page="reviewer" op="submission" path=$submission->getId() step=1 escape=false}{/capture}
-	{fbvFormButtons submitText="reviewer.submission.continueToStepThree" cancelText="navigation.goBack" cancelUrl=$cancelUrl cancelUrlTarget="_self" submitDisabled=$reviewIsComplete}
+	{fbvFormButtons submitText="reviewer.submission.continueToStepThree" cancelText="navigation.goBack" cancelUrl=$cancelUrl cancelUrlTarget="_self" submitDisabled=$reviewIsClosed}
 {/fbvFormArea}
 </form>

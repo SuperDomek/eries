@@ -1,15 +1,15 @@
 {**
  * templates/workflow/submission.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Display submission details (metadata, file grid)
  *}
 
 {* Help Link *}
-{help file="editorial-workflow/submission.md" class="pkp_help_tab"}
+{help file="editorial-workflow/submission" class="pkp_help_tab"}
 
 <div class="pkp_context_sidebar">
 	{capture assign=submissionEditorDecisionsUrl}{url router=$smarty.const.ROUTE_PAGE page="workflow" op="editorDecisionActions" submissionId=$submission->getId() stageId=$stageId contextId="submission" escape=false}{/capture}

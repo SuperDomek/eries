@@ -6,9 +6,9 @@
 /**
  * @file controllers/confirmationModal/linkAction/ViewReviewGuidelinesLinkAction.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ViewReviewGuidelinesLinkAction
  * @ingroup controllers_confirmationModal_linkAction
@@ -51,7 +51,7 @@ class ViewReviewGuidelinesLinkAction extends LinkAction {
 	 * @return string?
 	 */
 	function getGuidelines() {
-		return $this->_context->getLocalizedSetting(
+		return $this->_context->getLocalizedData(
 			$this->_stageId==WORKFLOW_STAGE_ID_EXTERNAL_REVIEW?'reviewGuidelines':'internalReviewGuidelines'
 		);
 	}

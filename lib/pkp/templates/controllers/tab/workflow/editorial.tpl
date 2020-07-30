@@ -1,9 +1,9 @@
 {**
  * templates/workflow/editorial.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Editorial workflow stage
  *}
@@ -12,7 +12,7 @@
 	{include file="controllers/notification/inPlaceNotification.tpl" notificationId="editingNotification_"|concat:$submission->getId() requestOptions=$editingNotificationRequestOptions refreshOn="stageStatusUpdated"}
 
 	{* Help Link *}
-	{help file="editorial-workflow/copyediting.md" class="pkp_help_tab"}
+	{help file="editorial-workflow/copyediting" class="pkp_help_tab"}
 
 	<div class="pkp_context_sidebar">
 		{capture assign=copyeditingEditorDecisionsUrl}{url router=$smarty.const.ROUTE_PAGE page="workflow" op="editorDecisionActions" submissionId=$submission->getId() stageId=$stageId escape=false}{/capture}

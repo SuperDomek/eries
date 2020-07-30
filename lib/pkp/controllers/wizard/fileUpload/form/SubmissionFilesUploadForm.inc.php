@@ -3,9 +3,9 @@
 /**
  * @file controllers/wizard/fileUpload/form/SubmissionFilesUploadForm.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SubmissionFilesUploadForm
  * @ingroup controllers_wizard_fileUpload_form
@@ -90,7 +90,7 @@ class SubmissionFilesUploadForm extends PKPSubmissionFilesUploadBaseForm {
 		}
 
 		// Retrieve the request context.
-		$request = Application::getRequest();
+		$request = Application::get()->getRequest();
 		$router = $request->getRouter();
 		$context = $router->getContext($request);
 		if (
@@ -102,7 +102,7 @@ class SubmissionFilesUploadForm extends PKPSubmissionFilesUploadBaseForm {
 				$this, 'genreId', FORM_VALIDATOR_REQUIRED_VALUE,
 				'submission.upload.noGenre',
 				function($genreId) use ($context) {
-					$genreDao = DAORegistry::getDAO('GenreDAO');
+					$genreDao = DAORegistry::getDAO('GenreDAO'); /* @var $genreDao GenreDAO */
 					return is_a($genreDao->getById($genreId, $context->getId()), 'Genre');
 				}
 			));
@@ -127,7 +127,7 @@ class SubmissionFilesUploadForm extends PKPSubmissionFilesUploadBaseForm {
 	 * @see Form::execute()
 	 * @return SubmissionFile if successful, otherwise null
 	 */
-	function execute() {
+	function execute(...$functionParams) {
 		// Identify the file genre and category.
 		$revisedFileId = $this->getRevisedFileId();
 		if ($revisedFileId) {
@@ -139,7 +139,7 @@ class SubmissionFilesUploadForm extends PKPSubmissionFilesUploadBaseForm {
 		}
 
 		// Identify the uploading user.
-		$request = Application::getRequest();
+		$request = Application::get()->getRequest();
 		$user = $request->getUser();
 		assert(is_a($user, 'User'));
 
@@ -177,6 +177,11 @@ class SubmissionFilesUploadForm extends PKPSubmissionFilesUploadBaseForm {
 				'username' => $user->getUsername()
 			)
 		);
+		
+		$hookResult = parent::execute($submissionFile, ...$functionParams);
+		if ($hookResult) { 
+			return $hookResult;
+		}
 
 		return $submissionFile;
 	}

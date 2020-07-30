@@ -3,9 +3,9 @@
 /**
  * @file plugins/generic/customBlockManager/CustomBlockPlugin.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @package plugins.generic.customBlockManager
  * @class CustomBlockPlugin
@@ -109,29 +109,13 @@ class CustomBlockPlugin extends BlockPlugin {
 
 		$divCustomBlockId = 'customblock-'.preg_replace('/\W+/', '-', $this->getName());
 		$templateMgr->assign('customBlockId', $divCustomBlockId);
+		$templateMgr->assign('customBlockName', $customBlockName);
 
 		$content = $customBlockContent[$currentLocale] ? $customBlockContent[$currentLocale] : $customBlockContent[$contextPrimaryLocale];
 
 		$templateMgr->assign('customBlockContent', $content);
-		$templateMgr->assign('customBlockName', $customBlockName);
 		return parent::getContents($templateMgr, $request);
 
-	}
-
-	/**
-	 * @copydoc BlockPlugin::getBlockContext()
-	 */
-	function getBlockContext() {
-		if (!Config::getVar('general', 'installed')) return BLOCK_CONTEXT_SIDEBAR;
-		return parent::getBlockContext();
-	}
-
-	/**
-	 * @copydoc BlockPlugin::getSeq()
-	 */
-	function getSeq($contextId = null) {
-		if (!Config::getVar('general', 'installed')) return 1;
-		return parent::getSeq($contextId);
 	}
 }
 

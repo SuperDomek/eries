@@ -3,9 +3,9 @@
 /**
  * @file pages/stats/PKPStatsHandler.inc.php
  *
- * Copyright (c) 2013-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2013-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPStatsHandler
  * @ingroup pages_stats
@@ -14,6 +14,7 @@
  */
 
 import('classes.handler.Handler');
+import('classes.statistics.StatisticsHelper');
 
 class PKPStatsHandler extends Handler {
 	/**
@@ -23,7 +24,7 @@ class PKPStatsHandler extends Handler {
 		parent::__construct();
 		$this->addRoleAssignment(
 			[ROLE_ID_SITE_ADMIN, ROLE_ID_MANAGER],
-			array('publishedSubmissions')
+			['editorial', 'publications', 'users']
 		);
 	}
 
@@ -44,11 +45,163 @@ class PKPStatsHandler extends Handler {
 	// Public handler methods.
 	//
 	/**
+	 * Display editorial stats about the submission workflow process
+	 *
+	 * @param array $args
+	 * @param Request $request
+	 */
+	public function editorial($args, $request) {
+		$dispatcher = $request->getDispatcher();
+		$context = $request->getContext();
+
+		if (!$context) {
+			$dispatcher->handle404();
+		}
+
+		$templateMgr = TemplateManager::getManager($request);
+		$this->setupTemplate($request);
+
+		$dateStart = date('Y-m-d', strtotime('-91 days'));
+		$dateEnd = date('Y-m-d', strtotime('yesterday'));
+
+		$args = [
+			'contextIds' => [$context->getId()],
+		];
+
+		$totals = Services::get('editorialStats')->getOverview($args);
+		$averages = Services::get('editorialStats')->getAverages($args);
+		$dateRangeTotals = Services::get('editorialStats')->getOverview(
+			array_merge(
+				$args,
+				[
+					'dateStart' => $dateStart,
+					'dateEnd' => $dateEnd,
+				]
+			)
+		);
+
+		// Stats that should be converted to percentages
+		$percentageStats = [
+			'acceptanceRate',
+			'declineRate',
+			'declinedDeskRate',
+			'declinedReviewRate',
+		];
+
+		// Stats that should be indented in the table
+		$indentStats = [
+			'submissionsDeclinedDeskReject',
+			'submissionsDeclinedPostReview',
+			'daysToAccept',
+			'daysToReject',
+			'declinedDeskRate',
+			'declinedReviewRate',
+		];
+
+		// Compile table rows
+		$tableRows = [];
+		foreach ($totals as $i => $stat) {
+			$row = [
+				'key' => $stat['key'],
+				'name' => $stat['name'],
+				'total' => $stat['value'],
+				'dateRange' => $dateRangeTotals[$i]['value'],
+			];
+			if (in_array($stat['key'], $indentStats)) {
+				$row['name'] = ' ' . $row['name'];
+			}
+			if (in_array($stat['key'], $percentageStats)) {
+				$row['total'] = ($stat['value'] * 100) . '%';
+				$row['dateRange'] = ($dateRangeTotals[$i]['value'] * 100) . '%';
+			}
+			$description = $this->_getStatDescription($stat['key']);
+			if ($description) {
+				$row['description'] = $description;
+			}
+			if (array_key_exists($stat['key'], $averages)
+					&& $averages[$stat['key']] !== -1
+					&& $row['total'] > 0) {
+				$row['total'] = __('stats.countWithYearlyAverage', [
+					'count' => $stat['value'],
+					'average' => $averages[$stat['key']],
+				]);
+			}
+			$tableRows[] = $row;
+		}
+
+		// Get the worflow stage counts
+		$activeByStage = [];
+		foreach (Application::get()->getApplicationStages() as $stageId) {
+			$activeByStage[] = [
+				'name' => Application::get()->getWorkflowStageName($stageId),
+				'count' => Services::get('editorialStats')->countActiveByStages($stageId, $args),
+				'color' => Application::get()->getWorkflowStageColor($stageId),
+			];
+		}
+
+		$statsComponent = new \PKP\components\PKPStatsEditorialContainer(
+			$dispatcher->url($request, ROUTE_API, $context->getPath(), 'stats/editorial'),
+			[
+				'activeByStage' => $activeByStage,
+				'averagesApiUrl' => $dispatcher->url($request, ROUTE_API, $context->getPath(), 'stats/editorial/averages'),
+				'dateStart' => $dateStart,
+				'dateEnd' => $dateEnd,
+				'dateRangeOptions' => [
+					[
+						'dateStart' => date('Y-m-d', strtotime('-91 days')),
+						'dateEnd' => $dateEnd,
+						'label' => __('stats.dateRange.last90Days'),
+					],
+					[
+						'dateStart' => date('Y-m-d', strtotime(date('Y') . '-01-01')),
+						'dateEnd' => $dateEnd,
+						'label' => __('stats.dateRange.thisYear'),
+					],
+					[
+						'dateStart' => date('Y-m-d', strtotime((date('Y') - 1) . '-01-01')),
+						'dateEnd' => date('Y-m-d', strtotime((date('Y') - 1) . '-12-31')),
+						'label' => __('stats.dateRange.lastYear'),
+					],
+					[
+						'dateStart' => date('Y-m-d', strtotime((date('Y') - 2) . '-01-01')),
+						'dateEnd' => date('Y-m-d', strtotime((date('Y') - 1) . '-12-31')),
+						'label' => __('stats.dateRange.lastTwoYears'),
+					],
+				],
+				'percentageStats' => $percentageStats,
+				'tableColumns' => [
+					[
+						'name' => 'name',
+						'label' => __('common.name'),
+						'value' => 'name',
+					],
+					[
+						'name' => 'dateRange',
+						'label' => $dateStart . ' — ' . $dateEnd,
+						'value' => 'dateRange',
+					],
+					[
+						'name' => 'total',
+						'label' => __('stats.total'),
+						'value' => 'total',
+					],
+				],
+				'tableRows' => $tableRows,
+			]
+		);
+
+		$templateMgr->assign('statsComponent', $statsComponent);
+
+		$templateMgr->display('stats/editorial.tpl');
+	}
+
+	/**
 	 * Display published submissions statistics page
+   *
 	 * @param $request PKPRequest
 	 * @param $args array
 	 */
-	public function publishedSubmissions($args, $request) {
+	public function publications($args, $request) {
 		$dispatcher = $request->getDispatcher();
 		$context = $request->getContext();
 
@@ -64,49 +217,22 @@ class PKPStatsHandler extends Handler {
 
 		$dateStart = date('Y-m-d', strtotime('-31 days'));
 		$dateEnd = date('Y-m-d', strtotime('yesterday'));
-		$count = 20;
+		$count = 30;
 
-		$params = [
+		$timeline = Services::get('stats')->getTimeline(STATISTICS_DIMENSION_DAY, [
+			'assocTypes' => ASSOC_TYPE_SUBMISSION,
+			'contextIds' => $context->getId(),
 			'count' => $count,
 			'dateStart' => $dateStart,
 			'dateEnd' => $dateEnd,
-			'timeSegment' => 'day',
-		];
-
-		$statsService = ServicesContainer::instance()->get('stats');
-
-		// Get total stats
-		$totalStatsRecords = $statsService->getTotalSubmissionsStats($context->getId(), $params);
-		$totalStats = $statsService->getTotalStatsProperties($totalStatsRecords, [
-			'request' => $request,
-			'params' => $params
 		]);
 
-		// Get submission stats
-		$submissionsRecords = $statsService->getOrderedSubmissions($context->getId(), $params);
-
-		$items = [];
-		if (!empty($submissionsRecords)) {
-			$propertyArgs = array(
-				'request' => $request,
-				'params' => $params
-			);
-			$slicedSubmissionsRecords = array_slice($submissionsRecords, 0, $params['count']);
-			foreach ($slicedSubmissionsRecords as $submissionsRecord) {
-				$publishedSubmissionDao = Application::getPublishedSubmissionDAO();
-				$submission = $publishedSubmissionDao->getById($submissionsRecord['submission_id']);
-				$items[] = $statsService->getSummaryProperties($submission, $propertyArgs);
-			}
-		}
-
-		import('lib.pkp.controllers.stats.StatsComponentHandler');
-		$statsHandler = new StatsComponentHandler(
-			$dispatcher->url($request, ROUTE_API, $context->getPath(), 'stats/publishedSubmissions'),
+		$statsComponent = new \PKP\components\PKPStatsPublicationContainer(
+			$dispatcher->url($request, ROUTE_API, $context->getPath(), 'stats/publications'),
 			[
-				'timeSegment' => 'day',
-				'timeSegments' => $totalStats['timeSegments'],
-				'items' => $items,
-				'itemsMax' => count($submissionsRecords),
+				'timeline' => $timeline,
+				'timelineInterval' => STATISTICS_DIMENSION_DAY,
+				'timelineType' => 'abstract',
 				'tableColumns' => [
 					[
 						'name' => 'title',
@@ -118,24 +244,24 @@ class PKPStatsHandler extends Handler {
 						'value' => 'abstractViews',
 					],
 					[
-						'name' => 'totalFileViews',
+						'name' => 'galleyViews',
 						'label' => __('stats.fileViews'),
-						'value' => 'totalFileViews',
+						'value' => 'galleyViews',
 					],
 					[
 						'name' => 'pdf',
 						'label' => __('stats.pdf'),
-						'value' => 'pdf',
+						'value' => 'pdfViews',
 					],
 					[
 						'name' => 'html',
 						'label' => __('stats.html'),
-						'value' => 'html',
+						'value' => 'htmlViews',
 					],
 					[
 						'name' => 'other',
 						'label' => __('common.other'),
-						'value' => 'other',
+						'value' => 'otherViews',
 					],
 					[
 						'name' => 'total',
@@ -175,13 +301,43 @@ class PKPStatsHandler extends Handler {
 			]
 		);
 
-		$data = array(
-			'itemsMax' => count($submissionsRecords),
-			'items' => $items,
-		);
+		$templateMgr->assign('statsComponent', $statsComponent);
 
-		$templateMgr->assign('statsComponent', $statsHandler);
+		$templateMgr->display('stats/publications.tpl');
+	}
 
-		$templateMgr->display('stats/publishedSubmissions.tpl');
+	/**
+	 * Display users stats
+	 *
+	 * @param array $args
+	 * @param Request $request
+	 */
+	public function users($args, $request) {
+		$dispatcher = $request->getDispatcher();
+		$context = $request->getContext();
+
+		if (!$context) {
+			$dispatcher->handle404();
+		}
+
+		$templateMgr = TemplateManager::getManager($request);
+		$this->setupTemplate($request);
+		$templateMgr->assign('userStats', Services::get('user')->getRolesOverview(['contextId' => $context->getId()]));
+		$templateMgr->display('stats/users.tpl');
+	}
+
+	/**
+	 * Get a description for stats that require one
+	 *
+	 * @param string $key
+	 * @return void
+	 */
+	protected function _getStatDescription($key) {
+		switch ($key) {
+			case 'daysToDecision': return __('stats.description.daysToDecision');
+			case 'acceptanceRate': return __('stats.description.acceptRejectRate');
+			case 'declineRate': return __('stats.description.acceptRejectRate');
+		}
+		return '';
 	}
 }

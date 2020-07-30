@@ -1,9 +1,9 @@
 {**
  * lib/pkp/templates/controllers/grid/settings/category/form/categoryForm.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Form to edit or create a category
  *}
@@ -71,6 +71,21 @@
 			{fbvFormSection}
 				{capture assign="altTitle"}{translate key="submission.currentCoverImage"}{/capture}
 				<img class="pkp_helpers_container_center" height="{$image.thumbnailHeight}" width="{$image.thumbnailWidth}" src="{url router=$smarty.const.ROUTE_PAGE page="catalog" op="thumbnail" type="category" id=$categoryId}" alt="{$altTitle|escape}" />
+			{/fbvFormSection}
+		{/if}
+
+		{if $hasSubEditors}
+			{fbvFormSection}
+				{assign var="uuid" value=""|uniqid|escape}
+				<div id="subeditors-{$uuid}">
+					<list-panel
+						v-bind="components.subeditors"
+						@set="set"
+					/>
+				</div>
+				<script type="text/javascript">
+					pkp.registry.init('subeditors-{$uuid}', 'Container', {$subEditorsListData|json_encode});
+				</script>
 			{/fbvFormSection}
 		{/if}
 

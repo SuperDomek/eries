@@ -3,9 +3,9 @@
 /**
  * @file pages/reviewer/ReviewerHandler.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ReviewerHandler
  * @ingroup pages_reviewer
@@ -34,7 +34,7 @@ class ReviewerHandler extends PKPReviewerHandler {
 	 */
 	function authorize($request, &$args, $roleAssignments) {
 		$context = $request->getContext();
-		if ($context->getSetting('reviewerAccessKeysEnabled')) {
+		if ($context->getData('reviewerAccessKeysEnabled')) {
 			$this->_validateAccessKey($request);
 		}
 
@@ -68,7 +68,7 @@ class ReviewerHandler extends PKPReviewerHandler {
 		if ($session->getUserId()) { return false; }
 
 		import('lib.pkp.classes.security.AccessKeyManager');
-		$reviewerSubmissionDao = DAORegistry::getDAO('ReviewerSubmissionDAO');
+		$reviewerSubmissionDao = DAORegistry::getDAO('ReviewerSubmissionDAO'); /* @var $reviewerSubmissionDao ReviewerSubmissionDAO */
 		$reviewerSubmission = $reviewerSubmissionDao->getReviewerSubmission($reviewId);
 
 		// Validate the access key
@@ -83,7 +83,7 @@ class ReviewerHandler extends PKPReviewerHandler {
 		if (!$accessKey) { return false; }
 
 		// Get the reviewer user object
-		$userDao = DAORegistry::getDAO('UserDAO');
+		$userDao = DAORegistry::getDAO('UserDAO'); /* @var $userDao UserDAO */
 		$user = $userDao->getById($accessKey->getUserId());
 		if (!$user) { return false; }
 
@@ -95,6 +95,19 @@ class ReviewerHandler extends PKPReviewerHandler {
 			$this->user = $user;
 		}
 	}
+
+	/**
+	 * @copydoc PKPReviewerHandler::getReviewForm()
+	 */
+	public function getReviewForm($step, $request, $reviewerSubmission, $reviewAssignment) {
+	    switch ($step) {
+	        case 3: 
+	        	import("classes.submission.reviewer.form.ReviewerReviewStep3Form");
+	        	return new ReviewerReviewStep3Form($request, $reviewerSubmission, $reviewAssignment);
+	    }
+	    return parent::getReviewForm($step, $request, $reviewerSubmission, $reviewAssignment);
+	}
+
 }
 
 

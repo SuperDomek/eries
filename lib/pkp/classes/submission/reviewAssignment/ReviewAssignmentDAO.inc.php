@@ -3,9 +3,9 @@
 /**
  * @file classes/submission/reviewAssignment/ReviewAssignmentDAO.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ReviewAssignmentDAO
  * @ingroup submission
@@ -180,7 +180,8 @@ class ReviewAssignmentDAO extends DAO {
 	function getIncompleteReviewAssignmentsWhereString() {
 		return ' r.date_notified IS NOT NULL AND
 		r.date_completed IS NULL AND
-		r.declined <> 1';
+		r.declined <> 1 AND
+		r.cancelled <> 1';
 	}
 
 	/**
@@ -250,7 +251,7 @@ class ReviewAssignmentDAO extends DAO {
 	}
 
 	/**
-	 * Check if a reviewer is assigned to a specified submisssion.
+	 * Check if a reviewer is assigned to a specified submission.
 	 * @param $reviewRoundId int
 	 * @param $reviewerId int
 	 * @return boolean
@@ -344,6 +345,7 @@ class ReviewAssignmentDAO extends DAO {
 				competing_interests,
 				recommendation,
 				declined,
+				cancelled,
 				date_assigned, date_notified, date_confirmed,
 				date_completed, date_acknowledged, date_due, date_response_due,
 				quality, date_rated,
@@ -353,7 +355,7 @@ class ReviewAssignmentDAO extends DAO {
 				review_round_id,
 				unconsidered
 				) VALUES (
-				?, ?, ?, ?, ?, ?, ?, ?, %s, %s, %s, %s, %s, %s, %s, ?, %s, %s, %s, ?, ?, ?, ?
+				?, ?, ?, ?, ?, ?, ?, ?, ?, %s, %s, %s, %s, %s, %s, %s, ?, %s, %s, %s, ?, ?, ?, ?
 				)',
 				$this->datetimeToDB($reviewAssignment->getDateAssigned()),
 				$this->datetimeToDB($reviewAssignment->getDateNotified()),
@@ -374,6 +376,7 @@ class ReviewAssignmentDAO extends DAO {
 				$reviewAssignment->getCompetingInterests(),
 				$reviewAssignment->getRecommendation(),
 				(int) $reviewAssignment->getDeclined(),
+				(int) $reviewAssignment->getCancelled(),
 				$reviewAssignment->getQuality(),
 				(int) $reviewAssignment->getReminderWasAutomatic(),
 				$reviewAssignment->getReviewFormId(),
@@ -403,6 +406,7 @@ class ReviewAssignmentDAO extends DAO {
 					competing_interests = ?,
 					recommendation = ?,
 					declined = ?,
+					cancelled = ?,
 					date_assigned = %s,
 					date_notified = %s,
 					date_confirmed = %s,
@@ -429,6 +433,7 @@ class ReviewAssignmentDAO extends DAO {
 				$reviewAssignment->getCompetingInterests(),
 				$reviewAssignment->getRecommendation(),
 				(int) $reviewAssignment->getDeclined(),
+				(int) $reviewAssignment->getCancelled(),
 				$reviewAssignment->getQuality(),
 				$reviewAssignment->getReminderWasAutomatic(),
 				$reviewAssignment->getReviewFormId(),
@@ -450,7 +455,7 @@ class ReviewAssignmentDAO extends DAO {
 	 */
 	public function updateReviewRoundStatus($reviewAssignment) {
 		import('lib.pkp.classes.submission.reviewRound/ReviewRoundDAO');
-		$reviewRoundDao = DAORegistry::getDAO('ReviewRoundDAO');
+		$reviewRoundDao = DAORegistry::getDAO('ReviewRoundDAO'); /* @var $reviewRoundDao ReviewRoundDAO */
 		$reviewRound = $reviewRoundDao->getReviewRound(
 			$reviewAssignment->getSubmissionId(),
 			$reviewAssignment->getStageId(),
@@ -474,9 +479,9 @@ class ReviewAssignmentDAO extends DAO {
 		$reviewAssignment = $this->newDataObject();
 		$user = $this->userDao->getById($row['reviewer_id']);
 
-		$reviewAssignment->setId($row['review_id']);
-		$reviewAssignment->setSubmissionId($row['submission_id']);
-		$reviewAssignment->setReviewerId($row['reviewer_id']);
+		$reviewAssignment->setId((int) $row['review_id']);
+		$reviewAssignment->setSubmissionId((int) $row['submission_id']);
+		$reviewAssignment->setReviewerId((int) $row['reviewer_id']);
 		$reviewAssignment->setReviewerFullName($user->getFullName());
 		$reviewAssignment->setCompetingInterests($row['competing_interests']);
 		$reviewAssignment->setRecommendation($row['recommendation']);
@@ -488,17 +493,18 @@ class ReviewAssignmentDAO extends DAO {
 		$reviewAssignment->setDateDue($this->datetimeFromDB($row['date_due']));
 		$reviewAssignment->setDateResponseDue($this->datetimeFromDB($row['date_response_due']));
 		$reviewAssignment->setLastModified($this->datetimeFromDB($row['last_modified']));
-		$reviewAssignment->setDeclined($row['declined']);
+		$reviewAssignment->setDeclined((int) $row['declined']);
+		$reviewAssignment->setCancelled((int) $row['cancelled']);
 		$reviewAssignment->setQuality($row['quality']);
 		$reviewAssignment->setDateRated($this->datetimeFromDB($row['date_rated']));
 		$reviewAssignment->setDateReminded($this->datetimeFromDB($row['date_reminded']));
-		$reviewAssignment->setReminderWasAutomatic($row['reminder_was_automatic']);
-		$reviewAssignment->setRound($row['round']);
-		$reviewAssignment->setReviewFormId($row['review_form_id']);
-		$reviewAssignment->setReviewRoundId($row['review_round_id']);
-		$reviewAssignment->setReviewMethod($row['review_method']);
-		$reviewAssignment->setStageId($row['stage_id']);
-		$reviewAssignment->setUnconsidered($row['unconsidered']);
+		$reviewAssignment->setReminderWasAutomatic((int) $row['reminder_was_automatic']);
+		$reviewAssignment->setRound((int) $row['round']);
+		$reviewAssignment->setReviewFormId((int) $row['review_form_id']);
+		$reviewAssignment->setReviewRoundId((int) $row['review_round_id']);
+		$reviewAssignment->setReviewMethod((int) $row['review_method']);
+		$reviewAssignment->setStageId((int) $row['stage_id']);
+		$reviewAssignment->setUnconsidered((int) $row['unconsidered']);
 
 		return $reviewAssignment;
 	}
@@ -516,13 +522,13 @@ class ReviewAssignmentDAO extends DAO {
 	 * @param $reviewId int
 	 */
 	function deleteById($reviewId) {
-		$reviewFormResponseDao = DAORegistry::getDAO('ReviewFormResponseDAO');
+		$reviewFormResponseDao = DAORegistry::getDAO('ReviewFormResponseDAO'); /* @var $reviewFormResponseDao ReviewFormResponseDAO */
 		$reviewFormResponseDao->deleteByReviewId($reviewId);
 
-		$reviewFilesDao = DAORegistry::getDAO('ReviewFilesDAO');
+		$reviewFilesDao = DAORegistry::getDAO('ReviewFilesDAO'); /* @var $reviewFilesDao ReviewFilesDAO */
 		$reviewFilesDao->revokeByReviewId($reviewId);
 
-		$notificationDao = DAORegistry::getDAO('NotificationDAO');
+		$notificationDao = DAORegistry::getDAO('NotificationDAO'); /* @var $notificationDao NotificationDAO */
 		$notificationDao->deleteByAssoc(ASSOC_TYPE_REVIEW_ASSIGNMENT, $reviewId);
 
 		// Retrieve the review assignment before it's deleted, so it can be

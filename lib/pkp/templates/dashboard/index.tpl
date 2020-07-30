@@ -1,75 +1,51 @@
 {**
  * templates/dashboard/index.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Dashboard index.
  *}
 {include file="common/header.tpl" pageTitle="navigation.submissions"}
 
-<script type="text/javascript">
-	// Attach the JS file tab handler.
-	$(function() {ldelim}
-		$('#dashboardTabs').pkpHandler('$.pkp.controllers.TabHandler');
-	{rdelim});
-</script>
-<div id="dashboardTabs" class="pkp_controllers_tab">
-	<ul>
-		<li><a name="myQueue" href="#myQueue">{translate key="dashboard.myQueue"}</a></li>
+{assign var="uuid" value=""|uniqid|escape}
+<div id="dashboard-{$uuid}">
+	<tabs>
+		<tab id="myQueue" label="{translate key="dashboard.myQueue"}" :badge="components.{$smarty.const.SUBMISSIONS_LIST_MY_QUEUE}.itemsMax">
+			{help file="submissions" class="pkp_help_tab"}
+			<submissions-list-panel
+				v-bind="components.{$smarty.const.SUBMISSIONS_LIST_MY_QUEUE}"
+				@set="set"
+			/>
+		</tab>
 		{if array_intersect(array(ROLE_ID_SITE_ADMIN, ROLE_ID_MANAGER), (array)$userRoles)}
-			<li><a name="unassigned" href="#unassigned">{translate key="common.queue.long.submissionsUnassigned"}</a></li>
-			<li><a name="active" href="#active">{translate key="common.queue.long.active"}</a></li>
+			<tab id="unassigned" label="{translate key="common.queue.long.submissionsUnassigned"}" :badge="components.{$smarty.const.SUBMISSIONS_LIST_UNASSIGNED}.itemsMax">
+				{help file="submissions" section="unassigned" class="pkp_help_tab"}
+				<submissions-list-panel
+					v-bind="components.{$smarty.const.SUBMISSIONS_LIST_UNASSIGNED}"
+					@set="set"
+				/>
+			</tab>
+			<tab id="active" label="{translate key="common.queue.long.active"}" :badge="components.{$smarty.const.SUBMISSIONS_LIST_ACTIVE}.itemsMax">
+				{help file="submissions" section="active" class="pkp_help_tab"}
+				<submissions-list-panel
+					v-bind="components.{$smarty.const.SUBMISSIONS_LIST_ACTIVE}"
+					@set="set"
+				/>
+			</tab>
 		{/if}
-		<li><a name="archives" href="#archived">{translate key="navigation.archives"}</a></li>
-	</ul>
-	<div id="myQueue">
-		{help file="submissions.md" class="pkp_help_tab"}
-		<div class="pkp_content_panel">
-			{assign var="uuid" value=""|uniqid|escape}
-			<div id="my-submission-list-handler-{$uuid}">
-				<script type="text/javascript">
-					pkp.registry.init('my-submission-list-handler-{$uuid}', 'SubmissionsListPanel', {$myQueueListData});
-				</script>
-			</div>
-		</div>
-	</div>
-	{if array_intersect(array(ROLE_ID_SITE_ADMIN, ROLE_ID_MANAGER), (array)$userRoles)}
-		<div id="unassigned">
-			{help file="submissions.md" section="unassigned" class="pkp_help_tab"}
-			<div class="pkp_content_panel">
-				{assign var="uuid" value=""|uniqid|escape}
-				<div id="unassigned-list-handler-{$uuid}">
-					<script type="text/javascript">
-						pkp.registry.init('unassigned-list-handler-{$uuid}', 'SubmissionsListPanel', {$unassignedListData});
-					</script>
-				</div>
-			</div>
-		</div>
-		<div id="active">
-			{help file="submissions.md" section="active" class="pkp_help_tab"}
-			<div class="pkp_content_panel">
-				{assign var="uuid" value=""|uniqid|escape}
-				<div id="active-list-handler-{$uuid}">
-					<script type="text/javascript">
-						pkp.registry.init('active-list-handler-{$uuid}', 'SubmissionsListPanel', {$activeListData});
-					</script>
-				</div>
-			</div>
-		</div>
-	{/if}
-	<div id="archived">
-		{help file="submissions.md" section="archives" class="pkp_help_tab"}
-		<div class="pkp_content_panel">
-			{assign var="uuid" value=""|uniqid|escape}
-			<div id="archived-list-handler-{$uuid}">
-				<script type="text/javascript">
-					pkp.registry.init('archived-list-handler-{$uuid}', 'SubmissionsListPanel', {$archivedListData});
-				</script>
-			</div>
-		</div>
-	</div>
+		<tab id="archive" label="{translate key="navigation.archives"}" :badge="components.{$smarty.const.SUBMISSIONS_LIST_ARCHIVE}.itemsMax">
+			{help file="submissions" section="archives" class="pkp_help_tab"}
+			<submissions-list-panel
+				v-bind="components.{$smarty.const.SUBMISSIONS_LIST_ARCHIVE}"
+				@set="set"
+			/>
+		</tab>
+	</tabs>
 </div>
+<script type="text/javascript">
+	pkp.registry.init('dashboard-{$uuid}', 'Container', {$containerData|json_encode});
+</script>
 
 {include file="common/footer.tpl"}

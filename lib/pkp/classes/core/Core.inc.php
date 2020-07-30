@@ -8,9 +8,9 @@
 /**
  * @file classes/core/Core.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2000-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class Core
  * @ingroup core
@@ -21,7 +21,6 @@
 
 define('PKP_LIB_PATH', 'lib' . DIRECTORY_SEPARATOR . 'pkp');
 define('COUNTER_USER_AGENTS_FILE', Core::getBaseDir() . DIRECTORY_SEPARATOR . PKP_LIB_PATH . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'counterBots' .  DIRECTORY_SEPARATOR . 'generated' . DIRECTORY_SEPARATOR . 'COUNTER_Robots_list.txt');
-
 
 class Core {
 
@@ -134,7 +133,7 @@ class Core {
 	 */
 	static function getContextPaths($urlInfo, $isPathInfo, $contextList = null, $contextDepth = null, $userVars = array()) {
 		$contextPaths = array();
-		$application = Application::getApplication();
+		$application = Application::get();
 
 		if (!$contextList) {
 			$contextList = $application->getContextList();
@@ -450,7 +449,7 @@ class Core {
 			$isArrayComponent = true;
 		}
 		if ($isPathInfo) {
-			$application = Application::getApplication();
+			$application = Application::get();
 			$contextDepth = $application->getContextDepth();
 
 			$vars = explode('/', trim($urlInfo, '/'));

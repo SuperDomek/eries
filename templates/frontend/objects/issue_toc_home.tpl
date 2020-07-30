@@ -3,7 +3,7 @@
  *
  * Copyright (c) 2014-2017 Simon Fraser University
  * Copyright (c) 2003-2017 John Willinsky
- * Copyright (c) 2019 Dominik Bláha
+ * Copyright (c) 2017 Dominik Bláha
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @brief View of an Issue which displays a full table of contents for homepage.
@@ -35,7 +35,7 @@
           </div>
 
           {* Description *}
-          
+
           {if $issue->hasDescription()}
             <div class="description">
               <a href="{url op="view" page="issue" path=$issue->getBestIssueId()}">
@@ -43,7 +43,7 @@
               </a>
             </div>
           {/if}
-          
+
           {* Published date *}
           {if $issue->getDatePublished()}
             <div class="published">
@@ -73,8 +73,8 @@
       </div>
 		{/if}
 
-		
-		
+
+
 
 		{* PUb IDs (eg - DOI) *}
 		{foreach from=$pubIdPlugins item=pubIdPlugin}
@@ -102,10 +102,10 @@
 			{/if}
 		{/foreach}
 
-		
+
 	</div>
 
-	
+
 
 	{* Articles *}
 	<div class="sections">

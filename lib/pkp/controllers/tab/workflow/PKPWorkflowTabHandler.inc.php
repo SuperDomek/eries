@@ -3,9 +3,9 @@
 /**
  * @file controllers/tab/workflow/PKPWorkflowTabHandler.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPWorkflowTabHandler
  * @ingroup controllers_tab_workflow
@@ -63,7 +63,7 @@ abstract class PKPWorkflowTabHandler extends Handler {
 		$stageId = $this->getAuthorizedContextObject(ASSOC_TYPE_WORKFLOW_STAGE);
 		$templateMgr->assign('stageId', $stageId);
 
-		$submission = $this->getAuthorizedContextObject(ASSOC_TYPE_SUBMISSION);
+		$submission = $this->getAuthorizedContextObject(ASSOC_TYPE_SUBMISSION); /** @var $submission Submission */
 		$templateMgr->assign('submission', $submission);
 
 		switch ($stageId) {
@@ -75,7 +75,7 @@ abstract class PKPWorkflowTabHandler extends Handler {
 				$selectedStageId = $this->getAuthorizedContextObject(ASSOC_TYPE_WORKFLOW_STAGE);
 
 				// Get all review rounds for this submission, on the current stage.
-				$reviewRoundDao = DAORegistry::getDAO('ReviewRoundDAO');
+				$reviewRoundDao = DAORegistry::getDAO('ReviewRoundDAO'); /* @var $reviewRoundDao ReviewRoundDAO */
 				$reviewRoundsFactory = $reviewRoundDao->getBySubmissionId($submission->getId(), $selectedStageId);
 				$reviewRoundsArray = $reviewRoundsFactory->toAssociativeArray();
 				$lastReviewRound = $reviewRoundDao->getLastReviewRoundBySubmissionId($submission->getId(), $selectedStageId);
@@ -106,7 +106,7 @@ abstract class PKPWorkflowTabHandler extends Handler {
 								'modals.editorDecision.EditorDecisionHandler',
 								'newReviewRound', null, array(
 									'submissionId' => $submission->getId(),
-									'decision' => SUBMISSION_EDITOR_DECISION_RESUBMIT,
+									'decision' => SUBMISSION_EDITOR_DECISION_NEW_ROUND,
 									'stageId' => $selectedStageId,
 									'reviewRoundId' => $lastReviewRoundId
 								)
@@ -135,11 +135,9 @@ abstract class PKPWorkflowTabHandler extends Handler {
 			case WORKFLOW_STAGE_ID_PRODUCTION:
 				$templateMgr = TemplateManager::getManager($request);
 				$notificationRequestOptions = $this->getProductionNotificationOptions($submission->getId());
-				$representationDao = Application::getRepresentationDAO();
-				$representations = $representationDao->getBySubmissionId($submission->getId());
-				$templateMgr->assign('representations', $representations->toAssociativeArray());
-
+				$selectedStageId = $this->getAuthorizedContextObject(ASSOC_TYPE_WORKFLOW_STAGE);
 				$templateMgr->assign('productionNotificationRequestOptions', $notificationRequestOptions);
+
 				return $templateMgr->fetchJson('controllers/tab/workflow/production.tpl');
 		}
 	}
@@ -232,5 +230,3 @@ abstract class PKPWorkflowTabHandler extends Handler {
 		}
 	}
 }
-
-

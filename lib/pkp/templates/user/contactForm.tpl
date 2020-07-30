@@ -1,17 +1,13 @@
 {**
  * templates/user/contactForm.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * User profile form.
  *}
-
-{* Help Link *}
-{help file="user-profile.md" class="pkp_help_tab"}
-
-<script type="text/javascript">
+<script>
 	$(function() {ldelim}
 		// Attach the form handler.
 		$('#contactForm').pkpHandler('$.pkp.controllers.form.AjaxFormHandler');
@@ -19,12 +15,15 @@
 </script>
 
 <form class="pkp_form" id="contactForm" method="post" action="{url op="saveContact"}">
+	{* Help Link *}
+	{help file="user-profile" class="pkp_help_tab"}
+
 	{csrf}
 
 	{include file="controllers/notification/inPlaceNotification.tpl" notificationId="contactFormNotification"}
 
 	{fbvFormSection}
-		{fbvElement type="text" label="user.email" id="email" value=$email size=$fbvStyles.size.MEDIUM required=true}
+		{fbvElement type="email" label="user.email" id="email" value=$email size=$fbvStyles.size.MEDIUM required=true}
 		{fbvElement type="textarea" label="user.signature" multilingual="true" name="signature" id="signature" value=$signature rich=true size=$fbvStyles.size.MEDIUM}
 		{fbvElement type="text" label="user.phone" name="phone" id="phone" value=$phone maxlength="24" size=$fbvStyles.size.SMALL}
 		{fbvElement type="text" label="user.affiliation" multilingual="true" name="affiliation" id="affiliation" value=$affiliation size=$fbvStyles.size.MEDIUM}

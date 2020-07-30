@@ -3,9 +3,9 @@
 /**
  * @file classes/task/ReviewReminder.inc.php
  *
- * Copyright (c) 2013-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2013-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ReviewReminder
  * @ingroup tasks
@@ -37,8 +37,8 @@ class ReviewReminder extends ScheduledTask {
 	 * 	REVIEW_REMIND_AUTO, REVIEW_REQUEST_REMIND_AUTO
 	 */
 	function sendReminder ($reviewAssignment, $submission, $context, $reminderType = REVIEW_REMIND_AUTO) {
-		$reviewAssignmentDao = DAORegistry::getDAO('ReviewAssignmentDAO');
-		$userDao = DAORegistry::getDAO('UserDAO');
+		$reviewAssignmentDao = DAORegistry::getDAO('ReviewAssignmentDAO'); /* @var $reviewAssignmentDao ReviewAssignmentDAO */
+		$userDao = DAORegistry::getDAO('UserDAO'); /* @var $userDao UserDAO */
 		$reviewId = $reviewAssignment->getId();
 
 		$reviewer = $userDao->getById($reviewAssignment->getReviewerId());
@@ -46,7 +46,7 @@ class ReviewReminder extends ScheduledTask {
 
 		import('lib.pkp.classes.mail.SubmissionMailTemplate');
 		$emailKey = $reminderType;
-		$reviewerAccessKeysEnabled = $context->getSetting('reviewerAccessKeysEnabled');
+		$reviewerAccessKeysEnabled = $context->getData('reviewerAccessKeysEnabled');
 		switch (true) {
 			case $reviewerAccessKeysEnabled && ($reminderType == REVIEW_REMIND_AUTO):
 				$emailKey = 'REVIEW_REMIND_AUTO_ONECLICK';
@@ -61,7 +61,7 @@ class ReviewReminder extends ScheduledTask {
 		$email->addRecipient($reviewer->getEmail(), $reviewer->getFullName());
 		$email->setSubject($email->getSubject($context->getPrimaryLocale()));
 		$email->setBody($email->getBody($context->getPrimaryLocale()));
-		$email->setFrom($context->getSetting('contactEmail'), $context->getSetting('contactName'));
+		$email->setFrom($context->getData('contactEmail'), $context->getData('contactName'));
 
 		$reviewUrlArgs = array('submissionId' => $reviewAssignment->getSubmissionId());
 		if ($reviewerAccessKeysEnabled) {
@@ -69,12 +69,12 @@ class ReviewReminder extends ScheduledTask {
 			$accessKeyManager = new AccessKeyManager();
 
 			// Key lifetime is the typical review period plus four weeks
-			$keyLifetime = ($context->getSetting('numWeeksPerReview') + 4) * 7;
+			$keyLifetime = ($context->getData('numWeeksPerReview') + 4) * 7;
 			$accessKey = $accessKeyManager->createKey($context->getId(), $reviewer->getId(), $reviewId, $keyLifetime);
 			$reviewUrlArgs = array_merge($reviewUrlArgs, array('reviewId' => $reviewId, 'key' => $accessKey));
 		}
 
-		$application = Application::getApplication();
+		$application = Application::get();
 		$request = $application->getRequest();
 		$dispatcher = $application->getDispatcher();
 		$submissionReviewUrl = $dispatcher->url($request, ROUTE_PAGE, $context->getPath(), 'reviewer', 'submission', null, $reviewUrlArgs);
@@ -104,7 +104,7 @@ class ReviewReminder extends ScheduledTask {
 			'reviewerUserName' => $reviewer->getUsername(),
 			'reviewDueDate' => $reviewDueDate,
 			'responseDueDate' => $responseDueDate,
-			'editorialContactSignature' => $context->getSetting('contactName') . "\n" . $context->getLocalizedName(),
+			'editorialContactSignature' => $context->getData('contactName') . "\n" . $context->getLocalizedName(),
 			'passwordResetUrl' => $dispatcher->url($request, ROUTE_PAGE, $context->getPath(), 'login', 'resetPassword', $reviewer->getUsername(), array('confirm' => Validation::generatePasswordResetHash($reviewer->getId()))),
 			'submissionReviewUrl' => $submissionReviewUrl,
 			'messageToReviewer' => __('reviewer.step1.requestBoilerplate'),
@@ -127,8 +127,8 @@ class ReviewReminder extends ScheduledTask {
 		$submission = null;
 		$context = null;
 
-		$reviewAssignmentDao = DAORegistry::getDAO('ReviewAssignmentDAO');
-		$submissionDao = Application::getSubmissionDAO();
+		$reviewAssignmentDao = DAORegistry::getDAO('ReviewAssignmentDAO'); /* @var $reviewAssignmentDao ReviewAssignmentDAO */
+		$submissionDao = DAORegistry::getDAO('SubmissionDAO'); /* @var $submissionDao SubmissionDAO */
 		$contextDao = Application::getContextDAO();
 
 		$incompleteAssignments = $reviewAssignmentDao->getIncompleteReviewAssignments();
@@ -153,8 +153,8 @@ class ReviewReminder extends ScheduledTask {
 				unset($context);
 				$context = $contextDao->getById($submission->getContextId());
 
-				$inviteReminderDays = $context->getSetting('numDaysBeforeInviteReminder');
-				$submitReminderDays = $context->getSetting('numDaysBeforeSubmitReminder');
+				$inviteReminderDays = $context->getData('numDaysBeforeInviteReminder');
+				$submitReminderDays = $context->getData('numDaysBeforeSubmitReminder');
 			}
 
 			$reminderType = false;

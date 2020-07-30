@@ -3,9 +3,9 @@
 /**
  * @file classes/user/UserDAO.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2000-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class UserDAO
  * @ingroup user
@@ -201,7 +201,7 @@ class UserDAO extends DAO {
 	 * @return array matching Users
 	 */
 	function getReviewersNotAssignedToSubmission($contextId, $submissionId, &$reviewRound, $name = '') {
-		$reviewAssignmentDao = DAORegistry::getDAO('ReviewAssignmentDAO');
+		$reviewAssignmentDao = DAORegistry::getDAO('ReviewAssignmentDAO'); /* @var $reviewAssignmentDao ReviewAssignmentDAO */
 
 		$params = array(
 			(int) $contextId,
@@ -248,6 +248,7 @@ class UserDAO extends DAO {
 		$user->setData('incompleteCount', (int) $row['incomplete_count']);
 		$user->setData('completeCount', (int) $row['complete_count']);
 		$user->setData('declinedCount', (int) $row['declined_count']);
+		$user->setData('cancelledCount', (int) $row['cancelled_count']);
 		$user->setData('averageTime', (int) $row['average_time']);
 
 		// 0 values should return null. They represent a reviewer with no ratings
@@ -636,7 +637,7 @@ class UserDAO extends DAO {
 		$locale = AppLocale::getLocale();
 		// the users register for the site, thus
 		// the site primary locale should be the default locale
-		$site = Application::getRequest()->getSite();
+		$site = Application::get()->getRequest()->getSite();
 		$primaryLocale = $site->getPrimaryLocale();
 		return array(
 			IDENTITY_SETTING_GIVENNAME, $locale,

@@ -3,9 +3,9 @@
 /**
  * @file controllers/grid/settings/sections/form/PKPSectionForm.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPSectionForm
  * @ingroup controllers_grid_settings_section_form
@@ -80,23 +80,12 @@ class PKPSectionForm extends Form {
 	 * @return array
 	 */
 	public function _getAssignedSubEditorIds($sectionId, $contextId) {
-		import('classes.core.ServicesContainer');
-		$subEditors = ServicesContainer::instance()
-			->get('user')
-			->getUsers($contextId, array(
-				'roleIds' => ROLE_ID_SUB_EDITOR,
-				'assignedToSection' => $sectionId,
-			));
-
-		if (empty($subEditors)) {
-			return array();
-		}
-
-		$subEditorIds = array_map(function($subEditor) {
-			return (int) $subEditor->getId();
-		}, $subEditors);
-
-		return $subEditorIds;
+		import('classes.core.Services');
+		return Services::get('user')->getIds(array(
+			'contextId' => $contextId,
+			'roleIds' => ROLE_ID_SUB_EDITOR,
+			'assignedToSection' => $sectionId,
+		));
 	}
 
 	/**
@@ -104,20 +93,37 @@ class PKPSectionForm extends Form {
 	 *
 	 * @param $contextId int
 	 * @param $request Request
-	 * @return array
+	 * @return \PKP\components\listPanels\ListPanel
 	 */
-	public function _getSubEditorsListPanelData($contextId, $request) {
-		import('lib.pkp.controllers.list.users.SelectUserListHandler');
-		$data = new SelectUserListHandler(array(
-			'title' => 'user.role.subEditors',
-			'inputName' => 'subEditors[]',
-			'selected' => $this->getData('subEditors'),
-			'getParams' => array(
-				'roleIds' => ROLE_ID_SUB_EDITOR,
-			),
-		));
+	public function _getSubEditorsListPanel($contextId, $request) {
 
-		return $data->getConfig();
+		$params = [
+			'contextId' => $contextId,
+			'roleIds' => ROLE_ID_SUB_EDITOR,
+		];
+
+		import('classes.core.Services');
+		$usersIterator = Services::get('user')->getMany($params);
+		$items = [];
+		foreach ($usersIterator as $user) {
+			$items[] = [
+				'id' => (int) $user->getId(),
+				'title' => $user->getFullName()
+			];
+		}
+
+		return new \PKP\components\listPanels\ListPanel(
+			'subeditors',
+			__('submissionGroup.assignedSubEditors'),
+			[
+				'canSelect' => true,
+				'getParams' => $params,
+				'items' => $items,
+				'itemsmax' => Services::get('user')->getMax($params),
+				'selected' => (array) $this->getData('subEditors'),
+				'selectorName' => 'subEditors[]',
+			]
+		);
 	}
 
 	/**
@@ -126,19 +132,17 @@ class PKPSectionForm extends Form {
 	 * @param $contextId int
 	 */
 	public function _saveSubEditors($contextId) {
-		$subEditorsDao = DAORegistry::getDAO('SubEditorsDAO');
-		$subEditorsDao->deleteBySectionId($this->getSectionId(), $contextId);
+		$subEditorsDao = DAORegistry::getDAO('SubEditorsDAO'); /* @var $subEditorsDao SubEditorsDAO */
+		$subEditorsDao->deleteBySubmissionGroupId($this->getSectionId(), ASSOC_TYPE_SECTION, $contextId);
 		$subEditors = $this->getData('subEditors');
 		if (!empty($subEditors)) {
-			$roleDao = DAORegistry::getDAO('RoleDAO');
+			$roleDao = DAORegistry::getDAO('RoleDAO'); /* @var $roleDao RoleDAO */
 			foreach ($subEditors as $subEditor) {
 				if ($roleDao->userHasRole($contextId, $subEditor, ROLE_ID_SUB_EDITOR)) {
-					$subEditorsDao->insertEditor($contextId, $this->getSectionId(), $subEditor);
+					$subEditorsDao->insertEditor($contextId, $this->getSectionId(), $subEditor, ASSOC_TYPE_SECTION);
 				}
 			}
 		}
 	}
 
 }
-
-

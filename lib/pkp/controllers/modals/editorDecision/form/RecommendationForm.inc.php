@@ -3,9 +3,9 @@
 /**
  * @file controllers/modals/editorDecision/form/RecommendationForm.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class RecommendationForm
  * @ingroup controllers_modals_editorDecision_form
@@ -82,8 +82,8 @@ class RecommendationForm extends Form {
 		$submission = $this->getSubmission();
 
 		// Get the decision making editors, the e-mail about the recommendation will be send to
-		$stageAssignmentDao = DAORegistry::getDAO('StageAssignmentDAO');
-		$userDao = DAORegistry::getDAO('UserDAO');
+		$stageAssignmentDao = DAORegistry::getDAO('StageAssignmentDAO'); /* @var $stageAssignmentDao StageAssignmentDAO */
+		$userDao = DAORegistry::getDAO('UserDAO'); /* @var $userDao UserDAO */
 		$editorsStageAssignments = $stageAssignmentDao->getEditorsAssignedToStage($submission->getId(), $this->getStageId());
 		$editorsStr = '';
 		$i = 0;
@@ -97,25 +97,24 @@ class RecommendationForm extends Form {
 		// Get the editor recommendation e-mail template
 		import('lib.pkp.classes.mail.SubmissionMailTemplate');
 		$email = new SubmissionMailTemplate($submission, 'EDITOR_RECOMMENDATION');
-		$request = Application::getRequest();
+		$request = Application::get()->getRequest();
 		$router = $request->getRouter();
 		$dispatcher = $router->getDispatcher();
 		$user = $request->getUser();
 		$submissionUrl = $dispatcher->url($request, ROUTE_PAGE, null, 'workflow', 'index', array($submission->getId(), $this->getStageId()));
 		$emailParams = array(
 			'editors' => $editorsStr,
-			'editorialContactSignature' => $user->getContactSignature(),
 			'submissionUrl' => $submissionUrl,
 		);
 		$email->assignParams($emailParams);
 		$email->replaceParams();
 
 		// Get the recorded recommendations
-		$editDecisionDao = DAORegistry::getDAO('EditDecisionDAO');
+		$editDecisionDao = DAORegistry::getDAO('EditDecisionDAO'); /* @var $editDecisionDao EditDecisionDAO */
 		$editorRecommendations = $editDecisionDao->getEditorDecisions($submission->getId(), $this->getStageId(), null, $user->getId());
 
 		// Set form data
-		$recommendationOptions = EditorDecisionActionsManager::getRecommendationOptions($this->getStageId());
+		$recommendationOptions = (new EditorDecisionActionsManager())->getRecommendationOptions($this->getStageId());
 		$data = array(
 			'submissionId' => $submission->getId(),
 			'stageId' => $this->getStageId(),
@@ -142,9 +141,11 @@ class RecommendationForm extends Form {
 	/**
 	 * @copydoc Form::execute()
 	 */
-	function execute() {
+	function execute(...$functionParams) {
+		parent::execute(...$functionParams);
+
 		// Record the recommendation.
-		$request = Application::getRequest();
+		$request = Application::get()->getRequest();
 		$submission = $this->getSubmission();
 		$reviewRound = $this->getReviewRound();
 		$recommendation = $this->getData('recommendation');
@@ -153,7 +154,7 @@ class RecommendationForm extends Form {
 		import('lib.pkp.classes.submission.action.EditorAction');
 		$editorAction = new EditorAction();
 		// Get editor action labels needed for the recording
-		$recommendationOptions = EditorDecisionActionsManager::getRecommendationOptions($this->getStageId());
+		$recommendationOptions = (new EditorDecisionActionsManager())->getRecommendationOptions($this->getStageId());
 		$actionLabels = array($recommendation => $recommendationOptions[$recommendation]);
 		$editorAction->recordDecision($request, $submission, $recommendation, $actionLabels, $reviewRound, $this->getStageId(), true);
 
@@ -166,8 +167,8 @@ class RecommendationForm extends Form {
 			$email = new SubmissionMailTemplate($submission, 'EDITOR_RECOMMENDATION', null, null, null, false);
 			$email->setBody($this->getData('personalMessage'));
 
-			$stageAssignmentDao = DAORegistry::getDAO('StageAssignmentDAO');
-			$userDao = DAORegistry::getDAO('UserDAO');
+			$stageAssignmentDao = DAORegistry::getDAO('StageAssignmentDAO'); /* @var $stageAssignmentDao StageAssignmentDAO */
+			$userDao = DAORegistry::getDAO('UserDAO'); /* @var $userDao UserDAO */
 			$editorsStageAssignments = $stageAssignmentDao->getEditorsAssignedToStage($submission->getId(), $this->getStageId());
 			foreach ($editorsStageAssignments as $editorsStageAssignment) {
 				if (!$editorsStageAssignment->getRecommendOnly()) {
@@ -198,7 +199,7 @@ class RecommendationForm extends Form {
 
 			if (!$this->getData('skipDiscussion')) {
 				// Create a discussion
-				$queryDao = DAORegistry::getDAO('QueryDAO');
+				$queryDao = DAORegistry::getDAO('QueryDAO'); /* @var $queryDao QueryDAO */
 				$query = $queryDao->newDataObject();
 				$query->setAssocType(ASSOC_TYPE_SUBMISSION);
 				$query->setAssocId($submission->getId());
@@ -208,8 +209,8 @@ class RecommendationForm extends Form {
 				$queryDao->resequence(ASSOC_TYPE_SUBMISSION, $submission->getId());
 
 				// Add the decision making editors as discussion participants
-				$stageAssignmentDao = DAORegistry::getDAO('StageAssignmentDAO');
-				$userDao = DAORegistry::getDAO('UserDAO');
+				$stageAssignmentDao = DAORegistry::getDAO('StageAssignmentDAO'); /* @var $stageAssignmentDao StageAssignmentDAO */
+				$userDao = DAORegistry::getDAO('UserDAO'); /* @var $userDao UserDAO */
 				$discussionParticipantsIds = array();
 				$editorsStageAssignments = $stageAssignmentDao->getEditorsAssignedToStage($submission->getId(), $this->getStageId());
 				foreach ($editorsStageAssignments as $editorsStageAssignment) {
@@ -221,7 +222,7 @@ class RecommendationForm extends Form {
 					}
 				}
 
-				$noteDao = DAORegistry::getDAO('NoteDAO');
+				$noteDao = DAORegistry::getDAO('NoteDAO'); /* @var $noteDao NoteDAO */
 				$note = $noteDao->newDataObject();
 				$note->setAssocType(ASSOC_TYPE_QUERY);
 				$note->setAssocId($query->getId());

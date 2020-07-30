@@ -3,9 +3,9 @@
 /**
  * @file classes/plugins/PubObjectsExportPlugin.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PubObjectsExportPlugin
  * @ingroup plugins
@@ -51,12 +51,20 @@ abstract class PubObjectsExportPlugin extends ImportExportPlugin {
 	 * @copydoc Plugin::register()
 	 */
 	function register($category, $path, $mainContextId = null) {
-		$success = parent::register($category, $path, $mainContextId);
-		if ($success) {
-			$this->addLocaleData();
-			HookRegistry::register('AcronPlugin::parseCronTab', array($this, 'callbackParseCronTab'));
+		if (!parent::register($category, $path, $mainContextId)) return false;
+
+		AppLocale::requireComponents(LOCALE_COMPONENT_APP_MANAGER);
+		$this->addLocaleData();
+		
+		HookRegistry::register('AcronPlugin::parseCronTab', array($this, 'callbackParseCronTab'));
+		foreach ($this->_getDAOs() as $dao) {
+			if ($dao instanceof SchemaDAO) {
+				HookRegistry::register('Schema::get::' . $dao->schemaName, array($this, 'addToSchema'));
+			} else {
+				HookRegistry::register(strtolower_codesafe(get_class($dao)) . '::getAdditionalFieldNames', array(&$this, 'getAdditionalFieldNames'));
+			}
 		}
-		return $success;
+		return true;
 	}
 
 	/**
@@ -75,7 +83,7 @@ abstract class PubObjectsExportPlugin extends ImportExportPlugin {
 				if ($form->validate()) {
 					$form->execute();
 					$notificationManager->createTrivialNotification($user->getId(), NOTIFICATION_TYPE_SUCCESS);
-					return new JSONMessage();
+					return new JSONMessage(true);
 				} else {
 					return new JSONMessage(true, $form->fetch($request));
 				}
@@ -146,7 +154,7 @@ abstract class PubObjectsExportPlugin extends ImportExportPlugin {
 					fatalError(__('plugins.importexport.common.error.noObjectsSelected'));
 				}
 				if (!empty($selectedSubmissions)) {
-					$objects = $this->getPublishedArticles($selectedSubmissions, $context);
+					$objects = $this->getPublishedSubmissions($selectedSubmissions, $context);
 					$filter = $this->getSubmissionFilter();
 					$objectsFileNamePart = 'articles';
 				} elseif (!empty($selectedIssues)) {
@@ -154,7 +162,7 @@ abstract class PubObjectsExportPlugin extends ImportExportPlugin {
 					$filter = $this->getIssueFilter();
 					$objectsFileNamePart = 'issues';
 				} elseif (!empty($selectedRepresentations)) {
-					$objects = $this->getArticleGalleys($selectedRepresentations, $context);
+					$objects = $this->getArticleGalleys($selectedRepresentations);
 					$filter = $this->getRepresentationFilter();
 					$objectsFileNamePart = 'galleys';
 				}
@@ -243,7 +251,7 @@ abstract class PubObjectsExportPlugin extends ImportExportPlugin {
 	/**
 	 * Deposit XML document.
 	 * This must be implemented in the subclasses, if the action is supported.
-	 * @param $objects mixed Array of or single published article, issue or galley
+	 * @param $objects mixed Array of or single published submission, issue or galley
 	 * @param $context Context
 	 * @param $filename Export XML filename
 	 * @return boolean Whether the XML document has been registered
@@ -340,15 +348,14 @@ abstract class PubObjectsExportPlugin extends ImportExportPlugin {
 
 	/**
 	 * Get the XML for selected objects.
-	 * @param $objects mixed Array of or single published article, issue or galley
+	 * @param $objects mixed Array of or single published submission, issue or galley
 	 * @param $filter string
 	 * @param $context Context
 	 * @return string XML document.
 	 * @param $noValidation boolean If set to true no XML validation will be done
 	 */
 	function exportXML($objects, $filter, $context, $noValidation = null) {
-		$xml = '';
-		$filterDao = DAORegistry::getDAO('FilterDAO');
+		$filterDao = DAORegistry::getDAO('FilterDAO'); /* @var $filterDao FilterDAO */
 		$exportFilters = $filterDao->getObjectsByGroup($filter);
 		assert(count($exportFilters) == 1); // Assert only a single serialization filter
 		$exportFilter = array_shift($exportFilters);
@@ -370,7 +377,7 @@ abstract class PubObjectsExportPlugin extends ImportExportPlugin {
 	/**
 	 * Mark selected submissions or issues as registered.
 	 * @param $context Context
-	 * @param $objects array Array of published articles, issues or galleys
+	 * @param $objects array Array of published submissions, issues or galleys
 	 */
 	function markRegistered($context, $objects) {
 		foreach ($objects as $object) {
@@ -381,40 +388,64 @@ abstract class PubObjectsExportPlugin extends ImportExportPlugin {
 
 	/**
 	 * Update the given object.
-	 * @param $object Issue|PublishedArticle|ArticleGAlley
+	 * @param $object Issue|Submission|ArticleGalley
 	 */
-	function updateObject($object) {
+	protected function updateObject($object) {
 		// Register a hook for the required additional
 		// object fields. We do this on a temporary
 		// basis as the hook adds a performance overhead
 		// and the field will "stealthily" survive even
 		// when the DAO does not know about it.
 		$dao = $object->getDAO();
-		$this->registerDaoHook(get_class($dao));
 		$dao->updateObject($object);
 	}
 
 	/**
-	 * Register the hook that adds an
-	 * additional field name to objects.
-	 * @param $daoName string
-	 */
-	function registerDaoHook($daoName) {
-		HookRegistry::register(strtolower_codesafe($daoName) . '::getAdditionalFieldNames', array(&$this, 'getAdditionalFieldNames'));
-	}
-
-	/**
-	 * Hook callback that returns the setting's name prefixed with
-	 * the plug-in's id to avoid name collisions.
-	 * @see DAO::getAdditionalFieldNames()
+	 * Add properties for this type of public identifier to the entity's list for
+	 * storage in the database.
+	 * This is used for non-SchemaDAO-backed entities only.
+	 * @see PubObjectsExportPlugin::addToSchema()
 	 * @param $hookName string
-	 * @param $args array
+	 * @param $params array
 	 */
 	function getAdditionalFieldNames($hookName, $args) {
 		assert(count($args) == 2);
 		$additionalFields =& $args[1];
 		assert(is_array($additionalFields));
-		$additionalFields[] = $this->getDepositStatusSettingName();
+		foreach ($this->_getObjectAdditionalSettings() as $fieldName) {
+			$additionalFields[] = $fieldName;
+		}
+		
+		return false;
+	}
+
+	/**
+	 * Add properties for this type of public identifier to the entity's list for
+	 * storage in the database.
+	 * This is used for SchemaDAO-backed entities only.
+	 * @see PKPPubIdPlugin::getAdditionalFieldNames()
+	 * @param $hookName string `Schema::get::publication`
+	 * @param $params array
+	 */
+	public function addToSchema($hookName, $params) {
+		$schema =& $params[0];
+		foreach ($this->_getObjectAdditionalSettings() as $fieldName) {
+			$schema->properties->{$fieldName} = (object) [
+				'type' => 'string',
+				'apiSummary' => true,
+				'validation' => ['nullable'],
+			];
+		}
+
+		return false;
+	}
+
+	/**
+	 * Get a list of additional setting names that should be stored with the objects.
+	 * @return array
+	 */
+	protected function _getObjectAdditionalSettings() {
+		return array($this->getDepositStatusSettingName());
 	}
 
 	/**
@@ -432,9 +463,9 @@ abstract class PubObjectsExportPlugin extends ImportExportPlugin {
 	 * @return array
 	 */
 	function getUnregisteredArticles($context) {
-		// Retrieve all published articles that have not yet been registered.
-		$publishedArticleDao = DAORegistry::getDAO('PublishedArticleDAO'); /* @var $publishedArticleDao PublishedArticleDAO */
-		$articles = $publishedArticleDao->getExportable(
+		// Retrieve all published submissions that have not yet been registered.
+		$submissionDao = DAORegistry::getDAO('SubmissionDAO'); /* @var $submissionDao SubmissionDAO */
+		$articles = $submissionDao->getExportable(
 			$context->getId(),
 			null,
 			null,
@@ -494,7 +525,7 @@ abstract class PubObjectsExportPlugin extends ImportExportPlugin {
 		$contextPath = array_shift($args);
 		$objectType = array_shift($args);
 
-		$contextDao = DAORegistry::getDAO('JournalDAO');
+		$contextDao = DAORegistry::getDAO('JournalDAO'); /* @var $contextDao JournalDAO */
 		$context = $contextDao->getByPath($contextPath);
 		if (!$context) {
 			if ($contextPath != '') {
@@ -520,7 +551,7 @@ abstract class PubObjectsExportPlugin extends ImportExportPlugin {
 
 		switch ($objectType) {
 			case 'articles':
-				$objects = $this->getPublishedArticles($args, $context);
+				$objects = $this->getPublishedSubmissions($args, $context);
 				$filter = $this->getSubmissionFilter();
 				$objectsFileNamePart = 'articles';
 				break;
@@ -530,7 +561,7 @@ abstract class PubObjectsExportPlugin extends ImportExportPlugin {
 				$objectsFileNamePart = 'issues';
 				break;
 			case 'galleys':
-				$objects = $this->getArticleGalleys($args, $context);
+				$objects = $this->getArticleGalleys($args);
 				$filter = $this->getRepresentationFilter();
 				$objectsFileNamePart = 'galleys';
 				break;
@@ -595,19 +626,18 @@ abstract class PubObjectsExportPlugin extends ImportExportPlugin {
 	}
 
 	/**
-	 * Get published articles from submission IDs.
+	 * Get published submissions from submission IDs.
 	 * @param $submissionIds array
 	 * @param $context Context
 	 * @return array
 	 */
-	function getPublishedArticles($submissionIds, $context) {
-		$publishedArticles = array();
-		$publishedArticleDao = DAORegistry::getDAO('PublishedArticleDAO');
-		foreach ($submissionIds as $submissionId) {
-			$publishedArticle = $publishedArticleDao->getByArticleId($submissionId, $context->getId());
-			if ($publishedArticle) $publishedArticles[] = $publishedArticle;
-		}
-		return $publishedArticles;
+	function getPublishedSubmissions($submissionIds, $context) {
+		$submissions = array_map(function($submissionId) {
+			return Services::get('submission')->get($submissionId);
+		}, $submissionIds);
+		return array_filter($submissions, function($submission) {
+			return $submission->getData('status') === STATUS_PUBLISHED;
+		});
 	}
 
 	/**
@@ -618,7 +648,7 @@ abstract class PubObjectsExportPlugin extends ImportExportPlugin {
 	 */
 	function getPublishedIssues($issueIds, $context) {
 		$publishedIssues = array();
-		$issueDao = DAORegistry::getDAO('IssueDAO');
+		$issueDao = DAORegistry::getDAO('IssueDAO'); /* @var $issueDao IssueDAO */
 		foreach ($issueIds as $issueId) {
 			$publishedIssue = $issueDao->getById($issueId, $context->getId());
 			if ($publishedIssue) $publishedIssues[] = $publishedIssue;
@@ -629,14 +659,13 @@ abstract class PubObjectsExportPlugin extends ImportExportPlugin {
 	/**
 	 * Get article galleys from gallley IDs.
 	 * @param $galleyIds array
-	 * @param $context Context
 	 * @return array
 	 */
-	function getArticleGalleys($galleyIds, $context) {
+	function getArticleGalleys($galleyIds) {
 		$galleys = array();
-		$articleGalleyDao = DAORegistry::getDAO('ArticleGalleyDAO');
+		$articleGalleyDao = DAORegistry::getDAO('ArticleGalleyDAO'); /* @var $articleGalleyDao ArticleGalleyDAO */
 		foreach ($galleyIds as $galleyId) {
-			$articleGalley = $articleGalleyDao->getById($galleyId, null, $context->getId());
+			$articleGalley = $articleGalleyDao->getById($galleyId);
 			if ($articleGalley) $galleys[] = $articleGalley;
 		}
 		return $galleys;
@@ -691,6 +720,19 @@ abstract class PubObjectsExportPlugin extends ImportExportPlugin {
 		return $settingsForm;
 	}
 
+	/**
+	 * Get the DAOs for objects that need to be augmented with additional settings.
+	 * @return array
+	 */
+	protected function _getDAOs() {
+		return array(
+			DAORegistry::getDAO('PublicationDAO'),
+			DAORegistry::getDAO('SubmissionDAO'),
+			Application::getRepresentationDAO(),
+			DAORegistry::getDAO('SubmissionFileDAO'),
+			DAORegistry::getDAO('IssueDAO'),
+		);
+	}
 }
 
 

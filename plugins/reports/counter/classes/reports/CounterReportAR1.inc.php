@@ -15,15 +15,6 @@
 import('plugins.reports.counter.classes.CounterReport');
 
 class CounterReportAR1 extends CounterReport {
-
-	/**
-	 * Constructor
-	 * @param string $release
-	 */
-	function CounterReportAR1($release) {
-		parent::CounterReport($release);
-	}
-
 	/**
 	 * Get the report title
 	 * @return $string
@@ -42,7 +33,7 @@ class CounterReportAR1 extends CounterReport {
 	 * @return array COUNTER\ReportItem
 	 */
 	function getReportItems($columns = array(), $filters = array(), $orderBy = array(), $range = null) {
-		$metricsDao = DAORegistry::getDAO('MetricsDAO');
+		$metricsDao = DAORegistry::getDAO('MetricsDAO'); /* @var $metricsDao MetricsDAO */
 
 		// Columns are fixed for this report
 		$defaultColumns = array(STATISTICS_DIMENSION_MONTH, STATISTICS_DIMENSION_SUBMISSION_ID);
@@ -85,7 +76,7 @@ class CounterReportAR1 extends CounterReport {
 			$this->setError(new Exception(__('plugins.reports.counter.exception.filter'), COUNTER_EXCEPTION_WARNING | COUNTER_EXCEPTION_BAD_FILTERS));
 		}
 		// Metric type is ojs::counter
-		$metricType = OJS_METRIC_TYPE_COUNTER;
+		$metricType = METRIC_TYPE_COUNTER;
 		// Ordering must be by Journal (ReportItem), and by Month (ItemPerformance) for JR1
 		$validOrder = array(STATISTICS_DIMENSION_SUBMISSION_ID => STATISTICS_ORDER_DESC, STATISTICS_DIMENSION_MONTH => STATISTICS_ORDER_ASC);
 		// TODO: range
@@ -133,14 +124,14 @@ class CounterReportAR1 extends CounterReport {
 	 * @return mixed COUNTER\ReportItems or false
 	 */
 	private function _createReportItem($submissionId, $metrics) {
-		$articleDao = DAORegistry::getDAO('ArticleDAO');
-		$article = $articleDao->getById($submissionId);
+		$submissionDao = DAORegistry::getDAO('SubmissionDAO'); /* @var $submissionDao SubmissionDAO */
+		$article = $submissionDao->getById($submissionId);
 		if (!$article) {
 			return false;
 		}
 		$title = $article->getLocalizedTitle();
 		$journalId = $article->getContextId();
-		$journalDao = DAORegistry::getDAO('JournalDAO');
+		$journalDao = DAORegistry::getDAO('JournalDAO'); /* @var $journalDao JournalDAO */
 		$journal = $journalDao->getById($journalId);
 		if (!$journal) {
 			return false;
@@ -148,9 +139,9 @@ class CounterReportAR1 extends CounterReport {
 		$journalName = $journal->getLocalizedName();
 		$journalPubIds = array();
 		foreach (array('print', 'online') as $issnType) {
-			if ($journal->getSetting($issnType.'Issn')) {
+			if ($journal->getData($issnType.'Issn')) {
 				try {
-					$journalPubIds[] = new COUNTER\Identifier(ucfirst($issnType).'_ISSN', $journal->getSetting($issnType.'Issn'));
+					$journalPubIds[] = new COUNTER\Identifier(ucfirst($issnType).'_ISSN', $journal->getData($issnType.'Issn'));
 				} catch (Exception $ex) {
 					// Just ignore it
 				}
@@ -160,27 +151,25 @@ class CounterReportAR1 extends CounterReport {
 		$pubIdPlugins = PluginRegistry::loadCategory('pubIds', true, $journalId);
 		$articlePubIds = array();
 		$articlePubIds[] = new COUNTER\Identifier(COUNTER_LITERAL_PROPRIETARY, $submissionId);
-		if ($pubIdPlugins) {
-			foreach ($pubIdPlugins as $pubIdPlugin) {
-				$pubId = $article->getStoredPubId($pubIdPlugin->getPubIdType(), true);
-				if ($pubId) {
-					switch ($pubIdPlugin->getPubIdType()) {
-						case 'doi':
-							try {
-								$articlePubIds[] = new COUNTER\Identifier(strtoupper($pubIdPlugin->getPubIdType()), $pubId);
-							} catch (Exception $ex) {
-								// Just ignore it
-							}
-							break;
-						default:
-					}
+		foreach ($pubIdPlugins as $pubIdPlugin) {
+			$pubId = $article->getStoredPubId($pubIdPlugin->getPubIdType(), true);
+			if ($pubId) {
+				switch ($pubIdPlugin->getPubIdType()) {
+					case 'doi':
+						try {
+							$articlePubIds[] = new COUNTER\Identifier(strtoupper($pubIdPlugin->getPubIdType()), $pubId);
+						} catch (Exception $ex) {
+							// Just ignore it
+						}
+						break;
+					default:
 				}
 			}
 		}
 		$reportItem = array();
 		try {
 			$reportItem = new COUNTER\ReportItems(
-				__('common.openJournalSystems'),
+				__('common.software'),
 				$title,
 				COUNTER_LITERAL_ARTICLE,
 				$metrics,

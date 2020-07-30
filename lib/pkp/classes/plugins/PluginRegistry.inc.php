@@ -3,9 +3,9 @@
 /**
  * @file classes/plugins/PluginRegistry.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2000-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PluginRegistry
  * @ingroup plugins
@@ -26,10 +26,14 @@ class PluginRegistry {
 	 * category is not specified, all plugins in an associative array of
 	 * arrays by category.
 	 * @param $category String the name of the category to retrieve
+	 * @return array
 	 */
 	static function &getPlugins($category = null) {
 		$plugins =& Registry::get('plugins', true, array());
-		if ($category !== null) return $plugins[$category];
+		if ($category !== null) {
+			if (!isset($plugins[$category])) $plugins[$category] = array();
+			return $plugins[$category];
+		}
 		return $plugins;
 	}
 
@@ -39,7 +43,7 @@ class PluginRegistry {
 	static function &getAllPlugins() {
 		$plugins =& PluginRegistry::getPlugins();
 		$allPlugins = array();
-		if (is_array($plugins)) foreach ($plugins as $list) {
+		if (!empty($plugins)) foreach ($plugins as $list) {
 			if (is_array($list)) $allPlugins += $list;
 		}
 		return $allPlugins;
@@ -94,6 +98,7 @@ class PluginRegistry {
 	 *  request but sometimes there is no context in the request
 	 *  (e.g. when executing CLI commands). Then the main context
 	 *  can be given as an explicit ID.
+	 * @return array Set of plugins, sorted in sequence.
 	 */
 	static function loadCategory ($category, $enabledOnly = false, $mainContextId = null) {
 		$plugins = array();
@@ -102,7 +107,7 @@ class PluginRegistry {
 
 		if ($enabledOnly && Config::getVar('general', 'installed')) {
 			// Get enabled plug-ins from the database.
-			$application = Application::getApplication();
+			$application = Application::get();
 			$products = $application->getEnabledProducts('plugins.'.$category, $mainContextId);
 			foreach ($products as $product) {
 				$file = $product->getProduct();
@@ -128,7 +133,8 @@ class PluginRegistry {
 			closedir($handle);
 		}
 
-		// If anyone else wants to jump category, here is the chance.
+		// Fire a hook prior to registering plugins for a category
+		// n.b.: this should not be used from a PKPPlugin::register() call to "jump categories"
 		HookRegistry::call('PluginRegistry::loadCategory', array(&$category, &$plugins));
 
 		// Register the plugins in sequence.
@@ -146,6 +152,11 @@ class PluginRegistry {
 		// Fire a hook after all plugins of a category have been loaded, so they
 		// are able to interact if required
 		HookRegistry::call('PluginRegistry::categoryLoaded::' . $category, array(&$plugins));
+
+		// Sort the plugins by priority before returning.
+		uasort($plugins, function($a, $b) {
+			return $a->getSeq() - $b->getSeq();
+		});
 
 		return $plugins;
 	}
@@ -186,7 +197,7 @@ class PluginRegistry {
 	 * @return array
 	 */
 	static function getCategories() {
-		$application = Application::getApplication();
+		$application = Application::get();
 		$categories = $application->getPluginCategories();
 		HookRegistry::call('PluginRegistry::getCategories', array(&$categories));
 		return $categories;

@@ -1,9 +1,9 @@
 {**
  * lib/pkp/templates/common/header.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Common site header.
  *}
@@ -24,7 +24,7 @@
 					toggleHelpUrl: {url|json_encode page="user" op="toggleHelp" escape=false},
 					toggleHelpOnText: {$toggleHelpOnText|json_encode},
 					toggleHelpOffText: {$toggleHelpOffText|json_encode},
-					{include file="core:controllers/notification/notificationOptions.tpl"}
+					{include file="controllers/notification/notificationOptions.tpl"}
 				{rdelim});
 		{rdelim});
 	</script>
@@ -41,7 +41,7 @@
 					{/if}
 					{if $displayPageHeaderLogo && is_array($displayPageHeaderLogo)}
 						<a href="{$homeUrl}" class="is_img">
-							<img src="{$publicFilesDir}/{$displayPageHeaderLogo.uploadName|escape:"url"}" {if $displayPageHeaderLogo.altText != ''}alt="{$displayPageHeaderLogo.altText|escape}"{else}alt="{translate key="common.pageHeaderLogo.altText"}"{/if}>
+							<img src="{$publicFilesDir}/{$displayPageHeaderLogo.uploadName|escape:"url"}" {if $displayPageHeaderLogo.altText != ''}alt="{$displayPageHeaderLogo.altText|escape}"{/if}>
 						</a>
 					{else}
 						<a href="{$homeUrl}" class="is_img">
@@ -80,13 +80,21 @@
 
 						{$appSpecificMenuItems}
 
+						{if array_intersect(array(ROLE_ID_MANAGER), (array)$userRoles) && $currentContext && $currentContext->getData('enableAnnouncements')}
+							<li>
+								<a href="{url router=$smarty.const.ROUTE_PAGE page="management" op="settings" path="announcements"}">
+									{translate key="announcement.announcements"}
+								</a>
+							</li>
+						{/if}
+
 						{if array_intersect(array(ROLE_ID_MANAGER), (array)$userRoles)}
 							<li aria-haspopup="true" aria-expanded="false">
 								<a href="#">{translate key="navigation.settings"}</a>
 								<ul>
 									<li><a href="{$contextSettingsUrl}">{translate key="context.context"}</a></li>
 									<li><a href="{url router=$smarty.const.ROUTE_PAGE page="management" op="settings" path="website"}">{translate key="manager.website"}</a></li>
-									<li><a href="{url router=$smarty.const.ROUTE_PAGE page="management" op="settings" path="publication"}">{translate key="manager.workflow"}</a></li>
+									<li><a href="{url router=$smarty.const.ROUTE_PAGE page="management" op="settings" path="workflow"}">{translate key="manager.workflow"}</a></li>
 									<li><a href="{url router=$smarty.const.ROUTE_PAGE page="management" op="settings" path="distribution"}">{translate key="manager.distribution"}</a></li>
 								</ul>
 							</li>
@@ -95,7 +103,7 @@
 								<ul>
 									<li><a href="{url router=$smarty.const.ROUTE_PAGE page="management" op="settings" path="access" anchor="users"}">{translate key="manager.users"}</a></li>
 									<li><a href="{url router=$smarty.const.ROUTE_PAGE page="management" op="settings" path="access" anchor="roles"}">{translate key="manager.roles"}</a></li>
-									<li><a href="{url router=$smarty.const.ROUTE_PAGE page="management" op="settings" path="access" anchor="siteAccessOptions"}">{translate key="manager.siteAccessOptions.siteAccessOptions"}</a></li>
+									<li><a href="{url router=$smarty.const.ROUTE_PAGE page="management" op="settings" path="access" anchor="access"}">{translate key="manager.siteAccessOptions.siteAccessOptions"}</a></li>
 								</ul>
 							</li>
 							<li aria-haspopup="true" aria-expanded="false">
@@ -103,12 +111,15 @@
 								<ul>
 									<li><a href="{url router=$smarty.const.ROUTE_PAGE page="management" op="tools" anchor="importexport"}">{translate key="navigation.tools.importExport"}</a></li>
 									<li><a href="{url router=$smarty.const.ROUTE_PAGE page="management" op="tools" anchor="statistics"}">{translate key="manager.statistics.reports"}</a></li>
+									<li><a href="{url router=$smarty.const.ROUTE_PAGE page="management" op="tools" anchor="permissions"}">{translate key="settings.libraryFiles.category.permissions"}</a></li>
 								</ul>
 							</li>
 							<li aria-haspopup="true" aria-expanded="false">
 								<a href="#">{translate key="navigation.tools.statistics"}</a>
 								<ul>
-									<li><a href="{url router=$smarty.const.ROUTE_PAGE page="stats" op="publishedSubmissions"}">{translate key="common.publishedSubmissions"}</a></li>
+									<li><a href="{url router=$smarty.const.ROUTE_PAGE page="stats" op="publications"}">{translate key="common.publications"}</a></li>
+									<li><a href="{url router=$smarty.const.ROUTE_PAGE page="stats" op="editorial"}">{translate key="stats.editorialActivity"}</a></li>
+									<li><a href="{url router=$smarty.const.ROUTE_PAGE page="stats" op="users"}">{translate key="manager.users"}</a></li>
 									<li><a href="{url router=$smarty.const.ROUTE_PAGE page="management" op="tools" anchor="statistics"}">{translate key="manager.statistics.reports"}</a></li>
 								</ul>
 							</li>

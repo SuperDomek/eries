@@ -1,9 +1,9 @@
 {**
  * templates/frontend/components/registrationFormContexts.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @brief Display role selection for all of the journals/presses on this site
  *
@@ -66,7 +66,7 @@
 								{/foreach}
 							</fieldset>
 							{* Require the user to agree to the terms of the context's privacy policy *}
-							{if !$enableSiteWidePrivacyStatement && $context->getSetting('privacyStatement')}
+							{if !$enableSiteWidePrivacyStatement && $context->getData('privacyStatement')}
 								<div class="context_privacy {if $isSelected}context_privacy_visible{/if}">
 									<label>
 										<input type="checkbox" name="privacyConsent[{$contextId}]" id="privacyConsent[{$contextId}]" value="1"{if $privacyConsent[$contextId]} checked="checked"{/if}>

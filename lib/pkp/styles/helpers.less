@@ -1,9 +1,9 @@
 /**
  * @file styles/helpers.less
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @brief Helper classes
  *
@@ -257,6 +257,21 @@
 	line-height: @line-tiny;
 	font-weight: @bold;
 	text-decoration: none;
+	border: none;
+	box-shadow: none;
+	color: @primary;
+	z-index: 3;
+
+	&:hover,
+	&:focus {
+		color: @primary-lift;
+	}
+
+	&:focus {
+		outline: 0;
+		box-shadow: 0 0 0 @radius @primary;
+		border-radius: @radius;
+	}
 }
 
 // A small help link that attaches to a tab

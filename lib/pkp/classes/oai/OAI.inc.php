@@ -9,9 +9,9 @@
 /**
  * @file classes/oai/OAI.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2000-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class OAI
  * @ingroup oai
@@ -157,16 +157,17 @@ abstract class OAI {
 	/**
 	 * Return set of OAI sets.
 	 * @param $offset int current set offset
+	 * @param $limit int Maximum number of sets to return
 	 * @param $total int output parameter, set to total number of sets
 	 */
-	function sets($offset, &$total) {
+	function sets($offset, $limit, &$total) {
 		return array();
 	}
 
 	/**
 	 * Retrieve a resumption token.
 	 * @param $tokenId string
-	 * @return OAIResumptionToken (or false, if token invalid)
+	 * @return OAIResumptionToken|false
 	 */
 	abstract function resumptionToken($tokenId);
 
@@ -663,10 +664,11 @@ abstract class OAI {
 	 * @param $printParams boolean display request parameters
 	 */
 	function response($response, $printParams = true) {
+		$request = Application::get()->getRequest();
 		header('Content-Type: text/xml');
 
 		echo	"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" .
-			"<?xml-stylesheet type=\"text/xsl\" href=\"" . PKPRequest::getBaseUrl() . "/lib/pkp/xml/oai2.xsl\" ?>\n" .
+			"<?xml-stylesheet type=\"text/xsl\" href=\"" . $request->getBaseUrl() . "/lib/pkp/xml/oai2.xsl\" ?>\n" .
 			"<OAI-PMH xmlns=\"http://www.openarchives.org/OAI/2.0/\"\n" .
 			"\txmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" .
 			"\txsi:schemaLocation=\"http://www.openarchives.org/OAI/2.0/\n" .
@@ -761,10 +763,11 @@ abstract class OAI {
 		}
 
 		// Check for illegal parameters
+		$request = Application::get()->getRequest();
 		foreach ($this->params as $k => $v) {
 			if (!in_array($k, $validParams)) {
 				// Ignore the "path" and "context" parameters if path_info is disabled.
-				if (Request::isPathInfoEnabled() || !in_array($k, $this->getNonPathInfoParams())) {
+				if ($request->isPathInfoEnabled() || !in_array($k, $this->getNonPathInfoParams())) {
 					$this->error('badArgument', "$k is an illegal parameter");
 					return false;
 				}

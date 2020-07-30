@@ -3,9 +3,9 @@
 /**
  * @file plugins/generic/webFeed/WebFeedGatewayPlugin.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class WebFeedGatewayPlugin
  * @ingroup plugins_generic_webFeed
@@ -83,12 +83,12 @@ class WebFeedGatewayPlugin extends GatewayPlugin {
 	 */
 	public function fetch($args, $request) {
 		// Make sure we're within a Journal context
-		$request = Application::getRequest();
+		$request = Application::get()->getRequest();
 		$journal = $request->getJournal();
 		if (!$journal) return false;
 
 		// Make sure there's a current issue for this journal
-		$issueDao = DAORegistry::getDAO('IssueDAO');
+		$issueDao = DAORegistry::getDAO('IssueDAO'); /* @var $issueDao IssueDAO */
 		$issue = $issueDao->getCurrent($journal->getId(), true);
 		if (!$issue) return false;
 
@@ -112,26 +112,23 @@ class WebFeedGatewayPlugin extends GatewayPlugin {
 		$displayItems = $this->_parentPlugin->getSetting($journal->getId(), 'displayItems');
 		$recentItems = (int) $this->_parentPlugin->getSetting($journal->getId(), 'recentItems');
 
-		$publishedArticleDao = DAORegistry::getDAO('PublishedArticleDAO');
 		if ($displayItems == 'recent' && $recentItems > 0) {
-			import('lib.pkp.classes.db.DBResultRange');
-			$rangeInfo = new DBResultRange($recentItems, 1);
-			$publishedArticleObjects = $publishedArticleDao->getPublishedArticlesByJournalId($journal->getId(), $rangeInfo, true);
-			$publishedArticles = array();
-			while ($publishedArticle = $publishedArticleObjects->next()) {
-				$publishedArticles[]['articles'][] = $publishedArticle;
+			$submissionsIterator = Services::get('submission')->getMany(['contextId' => $journal->getId(), 'count' => $recentItems]);
+			$submissionsInSections = [];
+			foreach ($submissionsIterator as $submission) {
+				$submissionsInSections[]['articles'][] = $submission;
 			}
 		} else {
-			$publishedArticles = $publishedArticleDao->getPublishedArticlesInSections($issue->getId(), true);
+			$submissionsInSections = Services::get('submission')->getInSections($issue->getId(), $journal->getId());
 		}
 
-		$versionDao = DAORegistry::getDAO('VersionDAO');
+		$versionDao = DAORegistry::getDAO('VersionDAO'); /* @var $versionDao VersionDAO */
 		$version = $versionDao->getCurrentVersion();
 
 		$templateMgr = TemplateManager::getManager($request);
 		$templateMgr->assign(array(
 			'ojsVersion' => $version->getVersionString(),
-			'publishedArticles' => $publishedArticles,
+			'publishedSubmissions' => $submissionsInSections,
 			'journal' => $journal,
 			'issue' => $issue,
 			'showToc' => true,

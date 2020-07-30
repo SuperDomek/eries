@@ -1,9 +1,9 @@
 {**
  * templates/header/usernav.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Site-Wide Navigation Bar
  *}
@@ -32,11 +32,11 @@
 
 		<a href="{if $multipleContexts}#{else}{url router=$smarty.const.ROUTE_PAGE page="submissions"}{/if}" class="pkp_current_context">
 			{if $displayPageHeaderTitle && is_string($displayPageHeaderTitle)}
-				{$displayPageHeaderTitle}
+				{$displayPageHeaderTitle|escape}
 			{elseif $currentContextName}
-				{$currentContextName}
+				{$currentContextName|escape}
 			{else}
-				{$applicationName}
+				{$applicationName|escape}
 			{/if}
 		</a>
 
@@ -49,7 +49,7 @@
 					{if $currentContextName == $name}{continue}{/if}
 					<li>
 						<a href="{$url}">
-							{$name}
+							{$name|escape}
 						</a>
 					</li>
 				{/foreach}
@@ -86,7 +86,7 @@
 	{rdelim});
 </script>
 <ul id="navigationUser" class="pkp_nav_user pkp_nav_list" role="navigation" aria-label="{translate|escape key="common.navigation.user"}">
-	{if $supportedLocales|@count}
+	{if isset($supportedLocales) && $supportedLocales|@count}
 		<li class="languages" aria-haspopup="true" aria-expanded="false">
 			<a href="#">
 				<span class="fa fa-globe"></span>

@@ -3,9 +3,9 @@
 /**
  * @file plugins/importexport/crossref/CrossRefExportPlugin.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class CrossRefExportPlugin
  * @ingroup plugins_importexport_crossref
@@ -78,7 +78,7 @@ class CrossRefExportPlugin extends DOIPubIdExportPlugin {
 	 * @copydoc PubObjectsExportPlugin::getStatusActions()
 	 */
 	function getStatusActions($pubObject) {
-		$request = Application::getRequest();
+		$request = Application::get()->getRequest();
 		$dispatcher = $request->getDispatcher();
 		return array(
 			CROSSREF_STATUS_FAILED =>
@@ -106,22 +106,18 @@ class CrossRefExportPlugin extends DOIPubIdExportPlugin {
 		// if the failure occured on request and the message was saved
 		// return that message
 		$articleId = $request->getUserVar('articleId');
-		$articleDao = DAORegistry::getDAO('ArticleDAO');
-		$article = $articleDao->getByid($articleId);
+		$submissionDao = DAORegistry::getDAO('SubmissionDAO'); /* @var $submissionDao SubmissionDAO */
+		$article = $submissionDao->getByid($articleId);
 		$failedMsg = $article->getData($this->getFailedMsgSettingName());
 		if (!empty($failedMsg)) {
 			return $failedMsg;
 		}
 		// else check the failure message with Crossref, using the API
 		$context = $request->getContext();
-		$curlCh = curl_init();
-		if ($httpProxyHost = Config::getVar('proxy', 'http_host')) {
-			curl_setopt($curlCh, CURLOPT_PROXY, $httpProxyHost);
-			curl_setopt($curlCh, CURLOPT_PROXYPORT, Config::getVar('proxy', 'http_port', '80'));
-			if ($username = Config::getVar('proxy', 'username')) {
-				curl_setopt($curlCh, CURLOPT_PROXYUSERPWD, $username . ':' . Config::getVar('proxy', 'password'));
-			}
-		}
+
+		import('lib.pkp.classes.helpers.PKPCurlHelper');
+		$curlCh = PKPCurlHelper::getCurlObject();
+		
 		curl_setopt($curlCh, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($curlCh, CURLOPT_POST, true);
 		curl_setopt($curlCh, CURLOPT_HEADER, 0);
@@ -135,7 +131,7 @@ class CrossRefExportPlugin extends DOIPubIdExportPlugin {
 		$batchId = $request->getUserVar('batchId');
 		$data = array('doi_batch_id' => $batchId, 'type' => 'result', 'usr' => $username, 'pwd' => $password);
 		curl_setopt($curlCh, CURLOPT_POSTFIELDS, $data);
-		curl_setopt($curlCh, CURLOPT_SSL_VERIFYPEER, false);
+
 		$response = curl_exec($curlCh);
 
 		if ($response === false) {
@@ -159,17 +155,14 @@ class CrossRefExportPlugin extends DOIPubIdExportPlugin {
 	}
 
 	/**
-	 * Hook callback that returns the deposit setting's names,
-	 * to consider them by article or issue update.
-	 *
-	 * @copydoc PubObjectsExportPlugin::getAdditionalFieldNames()
+	 * Get a list of additional setting names that should be stored with the objects.
+	 * @return array
 	 */
-	function getAdditionalFieldNames($hookName, $args) {
-		parent::getAdditionalFieldNames($hookName, $args);
-		$additionalFields =& $args[1];
-		assert(is_array($additionalFields));
-		$additionalFields[] = $this->getDepositBatchIdSettingName();
-		$additionalFields[] = $this->getFailedMsgSettingName();
+	protected function _getObjectAdditionalSettings() {
+		return array_merge(parent::_getObjectAdditionalSettings(), array(
+			$this->getDepositBatchIdSettingName(),
+			$this->getFailedMsgSettingName(),
+		));
 	}
 
 	/**
@@ -274,21 +267,16 @@ class CrossRefExportPlugin extends DOIPubIdExportPlugin {
 	/**
 	 * @see PubObjectsExportPlugin::depositXML()
 	 *
-	 * @param $objects PublishedArticle
+	 * @param $objects Submission
 	 * @param $context Context
-	 * @param $filename Export XML filename
+	 * @param $filename string Export XML filename
 	 */
 	function depositXML($objects, $context, $filename) {
 		$status = null;
 
-		$curlCh = curl_init();
-		if ($httpProxyHost = Config::getVar('proxy', 'http_host')) {
-			curl_setopt($curlCh, CURLOPT_PROXY, $httpProxyHost);
-			curl_setopt($curlCh, CURLOPT_PROXYPORT, Config::getVar('proxy', 'http_port', '80'));
-			if ($username = Config::getVar('proxy', 'username')) {
-				curl_setopt($curlCh, CURLOPT_PROXYUSERPWD, $username . ':' . Config::getVar('proxy', 'password'));
-			}
-		}
+		import('lib.pkp.classes.helpers.PKPCurlHelper');
+		$curlCh = PKPCurlHelper::getCurlObject();
+
 		curl_setopt($curlCh, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($curlCh, CURLOPT_POST, true);
 		curl_setopt($curlCh, CURLOPT_HEADER, 0);
@@ -308,7 +296,6 @@ class CrossRefExportPlugin extends DOIPubIdExportPlugin {
 		}
 		$data = array('operation' => 'doMDUpload', 'usr' => $username, 'pwd' => $password, 'mdFile' => $cfile);
 		curl_setopt($curlCh, CURLOPT_POSTFIELDS, $data);
-		curl_setopt($curlCh, CURLOPT_SSL_VERIFYPEER, false);
 		$response = curl_exec($curlCh);
 
 		$msg = null;
@@ -372,7 +359,7 @@ class CrossRefExportPlugin extends DOIPubIdExportPlugin {
 	 * @param $failedMsg string (opitonal)
 	 */
 	function updateDepositStatus($context, $object, $status, $batchId, $failedMsg = null) {
-		assert(is_a($object, 'PublishedArticle') or is_a($object, 'Issue'));
+		assert(is_a($object, 'Submission') or is_a($object, 'Issue'));
 		// remove the old failure message, if exists
 		$object->setData($this->getFailedMsgSettingName(), null);
 		$object->setData($this->getDepositStatusSettingName(), $status);
@@ -452,8 +439,8 @@ class CrossRefExportPlugin extends DOIPubIdExportPlugin {
 					$exportXml = $this->exportXML(array($object), $filter, $context);
 					// Write the XML to a file.
 					// export file name example: crossref-20160723-160036-articles-1-1.xml
-					$objectsFileNamePart = $objectsFileNamePart . '-' . $object->getId();
-					$exportFileName = $this->getExportFileName($this->getExportPath(), $objectsFileNamePart, $context, '.xml');
+					$objectsFileNamePartId = $objectsFileNamePart . '-' . $object->getId();
+					$exportFileName = $this->getExportFileName($this->getExportPath(), $objectsFileNamePartId, $context, '.xml');
 					$fileManager->writeFile($exportFileName, $exportXml);
 					// Deposit the XML file.
 					$result = $this->depositXML($object, $context, $exportFileName);

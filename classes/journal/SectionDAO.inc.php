@@ -3,9 +3,9 @@
 /**
  * @file classes/journal/SectionDAO.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SectionDAO
  * @ingroup journal
@@ -293,17 +293,12 @@ class SectionDAO extends PKPSectionDAO {
 	 * @param $contextId int optional
 	 */
 	function deleteById($sectionId, $contextId = null) {
-		$subEditorsDao = DAORegistry::getDAO('SubEditorsDAO');
-		$subEditorsDao->deleteBySectionId($sectionId, $contextId);
+		$subEditorsDao = DAORegistry::getDAO('SubEditorsDAO'); /* @var $subEditorsDao SubEditorsDAO */
+		$subEditorsDao->deleteBySubmissionGroupId($sectionId, ASSOC_TYPE_SECTION, $contextId);
 
 		// Remove articles from this section
-		$articleDao = DAORegistry::getDAO('ArticleDAO');
-		$articleDao->removeArticlesFromSection($sectionId);
-
-		// Delete published article entries from this section -- they must
-		// be re-published.
-		$publishedArticleDao = DAORegistry::getDAO('PublishedArticleDAO');
-		$publishedArticleDao->deletePublishedArticlesBySectionId($sectionId);
+		$submissionDao = DAORegistry::getDAO('SubmissionDAO'); /* @var $submissionDao SubmissionDAO */
+		$submissionDao->removeSubmissionsFromSection($sectionId);
 
 		if (isset($contextId) && !$this->sectionExists($sectionId, $contextId)) return false;
 		$this->update('DELETE FROM section_settings WHERE section_id = ?', (int) $sectionId);
@@ -312,7 +307,7 @@ class SectionDAO extends PKPSectionDAO {
 
 	/**
 	 * Delete sections by journal ID
-	 * NOTE: This does not delete dependent entries EXCEPT from section_editors. It is intended
+	 * NOTE: This does not delete dependent entries EXCEPT from subeditor_submission_group. It is intended
 	 * to be called only when deleting a journal.
 	 * @param $journalId int Journal ID
 	 */
@@ -330,7 +325,8 @@ class SectionDAO extends PKPSectionDAO {
 		$returner = array();
 
 		$result = $this->retrieve(
-			'SELECT s.*, se.user_id AS editor_id FROM section_editors se, sections s WHERE se.section_id = s.section_id AND s.journal_id = se.context_id AND s.journal_id = ?',
+			'SELECT s.*, se.user_id AS editor_id FROM subeditor_submission_group ssg, sections s WHERE ssg.assoc_id = s.section_id AND ssg.assoc_type = ? AND s.journal_id = ssg.context_id AND s.journal_id = ?',
+			(int) ASSOC_TYPE_SECTION,
 			(int) $journalId
 		);
 
@@ -356,9 +352,32 @@ class SectionDAO extends PKPSectionDAO {
 	 * @return array
 	 */
 	function getByIssueId($issueId) {
+		import ('classes.submission.Submission'); // import STATUS_* constants
+		$issue = Services::get('issue')->get($issueId);
+		$allowedStatuses = [STATUS_PUBLISHED];
+		if (!$issue->getPublished()) {
+			$allowedStatuses[] = STATUS_SCHEDULED;
+		}
+		$submissionsIterator = Services::get('submission')->getMany([
+			'contextId' => $issue->getJournalId(),
+			'issueIds' => $issueId,
+			'status' => $allowedStatuses,
+		]);
+		$sectionIds = [];
+		foreach ($submissionsIterator as $submission) {
+			$sectionIds[] = $submission->getCurrentPublication()->getData('sectionId');
+		}
+		if (empty($sectionIds)) {
+			return [];
+		}
+		$sectionIds = array_unique($sectionIds);
 		$result = $this->retrieve(
-			'SELECT DISTINCT s.*, COALESCE(o.seq, s.seq) AS section_seq FROM sections s, published_submissions pa, submissions a LEFT JOIN custom_section_orders o ON (a.section_id = o.section_id AND o.issue_id = ?) WHERE s.section_id = a.section_id AND pa.submission_id = a.submission_id AND pa.issue_id = ? ORDER BY section_seq',
-			array((int) $issueId, (int) $issueId)
+			'SELECT s.*, COALESCE(o.seq, s.seq) AS section_seq
+				FROM sections s
+				LEFT JOIN custom_section_orders o ON (s.section_id = o.section_id AND o.issue_id = ?)
+				WHERE s.section_id IN (' . substr(str_repeat('?,', count($sectionIds)), 0, -1) . ')
+				ORDER BY section_seq',
+			array_merge([(int) $issueId], $sectionIds)
 		);
 
 		$returner = array();

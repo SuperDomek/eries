@@ -7,9 +7,9 @@
 /**
  * @file lib/pkp/pages/admin/index.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @ingroup pages_admin
  * @brief Handle requests for site administration functions.
@@ -17,13 +17,6 @@
  */
 
 switch ($op) {
-	//
-	// Context Management
-	//
-	case 'contexts':
-		define('HANDLER_CLASS', 'AdminContextHandler');
-		import('lib.pkp.pages.admin.AdminContextHandler');
-		break;
 	//
 	// Administrative functions
 	//
@@ -38,14 +31,14 @@ switch ($op) {
 		import('lib.pkp.pages.admin.AdminFunctionsHandler');
 		break;
 	//
-	// Main administration page
+	// Main administration pages
 	//
 	case 'index':
+	case 'contexts':
 	case 'settings':
 	case 'saveSettings':
+	case 'wizard':
 		define('HANDLER_CLASS', 'AdminHandler');
 		import('lib.pkp.pages.admin.AdminHandler');
 		break;
 }
-
-

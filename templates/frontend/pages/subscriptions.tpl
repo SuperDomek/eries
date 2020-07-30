@@ -1,9 +1,9 @@
 {**
  * templates/frontend/pages/subscriptions.tpl
  *
- * Copyright (c) 2013-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2013-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * About the Journal Subscriptions.
  *
@@ -12,6 +12,9 @@
 
 <div class="page page_subscriptions">
 	{include file="frontend/components/breadcrumbs.tpl" currentTitleKey="about.subscriptions"}
+	<h1>
+		{translate key="about.subscriptions"}
+	</h1>
 	{include file="frontend/components/subscriptionContact.tpl"}
 
 	<a name="subscriptionTypes"></a>

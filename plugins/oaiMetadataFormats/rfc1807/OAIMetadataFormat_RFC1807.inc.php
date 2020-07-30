@@ -3,9 +3,9 @@
 /**
  * @file plugins/oaiMetadataFormats/rfc1807/OAIMetadataFormat_RFC1807.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class OAIMetadataFormat_RFC1807
  * @ingroup oai_format
@@ -27,7 +27,7 @@ class OAIMetadataFormat_RFC1807 extends OAIMetadataFormat {
 
 		// Publisher
 		$publisher = $journal->getLocalizedName(); // Default
-		$publisherInstitution = $journal->getLocalizedSetting('publisherInstitution');
+		$publisherInstitution = $journal->getLocalizedData('publisherInstitution');
 		if (!empty($publisherInstitution)) {
 			$publisher = $publisherInstitution;
 		}
@@ -61,8 +61,8 @@ class OAIMetadataFormat_RFC1807 extends OAIMetadataFormat {
 
 		import('classes.issue.IssueAction');
 		$issueAction = new IssueAction();
-		$request = Application::getRequest();
-		$url = $request->url($journal->getPath(), 'article', 'view', array($article->getBestArticleId()));
+		$request = Application::get()->getRequest();
+		$url = $request->url($journal->getPath(), 'article', 'view', array($article->getBestId()));
 		$includeUrls = $journal->getSetting('publishingMode') != PUBLISHING_MODE_NONE || $issueAction->subscribedUser($request->getUser(), $journal, null, $article->getId());
 		$response = "<rfc1807\n" .
 			"\txmlns=\"http://info.internet.isi.edu:80/in-notes/rfc/files/rfc1807.txt\"\n" .
@@ -79,7 +79,7 @@ class OAIMetadataFormat_RFC1807 extends OAIMetadataFormat {
 
 			$this->formatElement('author', $creators) .
 			($article->getDatePublished()?$this->formatElement('date', $article->getDatePublished()):'') .
-			$this->formatElement('copyright', strip_tags($journal->getLocalizedSetting('copyrightNotice'))) .
+			$this->formatElement('copyright', strip_tags($journal->getLocalizedData('licenseTerms'))) .
 			($includeUrls?$this->formatElement('other_access', "url:$url"):'') .
 			$this->formatElement('keyword', $subject) .
 			$this->formatElement('period', $coverage) .
@@ -108,5 +108,3 @@ class OAIMetadataFormat_RFC1807 extends OAIMetadataFormat {
 		return $response;
 	}
 }
-
-

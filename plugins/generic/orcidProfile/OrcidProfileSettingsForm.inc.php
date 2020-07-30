@@ -1,12 +1,12 @@
 <?php
 
 /**
- * @file plugins/generic/googleAnalytics/OrcidProfileSettingsForm.inc.php
+ * @file OrcidProfileSettingsForm.inc.php
  *
  * Copyright (c) 2015-2019 University of Pittsburgh
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class OrcidProfileSettingsForm
  * @ingroup plugins_generic_orcidProfile
@@ -22,9 +22,11 @@ class OrcidProfileSettingsForm extends Form {
 	const CONFIG_VARS = array(
 		'orcidProfileAPIPath' => 'string',
 		'orcidClientId' => 'string',
-		'orcidClientSecret' => 'string',		
+		'orcidClientSecret' => 'string',
 		'sendMailToAuthorsOnPublication' => 'bool',
-		'logLevel' => 'string');
+		'logLevel' => 'string',
+		'isSandBox' => 'bool'
+	);
 	/** @var $contextId int */
 	var $contextId;
 
@@ -81,9 +83,9 @@ class OrcidProfileSettingsForm extends Form {
 	}
 
 	/**
-	 * Save settings.
+	 * @copydoc Form::execute()
 	 */
-	function execute() {
+	function execute(...$functionArgs) {
 		$plugin =& $this->plugin;
 		$contextId = $this->contextId;
 		foreach (self::CONFIG_VARS as $configVar => $type) {
@@ -94,6 +96,11 @@ class OrcidProfileSettingsForm extends Form {
 				$plugin->updateSetting($contextId, $configVar, $this->getData($configVar), $type);
 			}
 		}
+		if (strpos($this->getData("orcidProfileAPIPath"), "sandbox.orcid.org") == true) {
+			$plugin->updateSetting($contextId, "isSandBox", true, "bool");
+		}
+
+		parent::execute(...$functionArgs);
 	}
 }
 

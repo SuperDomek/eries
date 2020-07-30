@@ -3,9 +3,9 @@
 /**
  * @file plugins/importexport/crossref/CrossrefInfoSender.php
  *
- * Copyright (c) 2013-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2013-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class CrossrefInfoSender
  * @ingroup plugins_importexport_crossref
@@ -58,7 +58,7 @@ class CrossrefInfoSender extends ScheduledTask {
 			$pubIdPlugins = PluginRegistry::loadCategory('pubIds', true, $journal->getId());
 			$doiPubIdPlugin = $pubIdPlugins['doipubidplugin'];
 
-			if ($doiPubIdPlugin->getSetting($journal->getId(), 'enableSubmissionDoi')) {
+			if ($doiPubIdPlugin->getSetting($journal->getId(), 'enablePublicationDoi')) {
 				// Get unregistered articles
 				$unregisteredArticles = $plugin->getUnregisteredArticles($journal);
 				// If there are articles to be deposited
@@ -124,8 +124,8 @@ class CrossrefInfoSender extends ScheduledTask {
 			$exportXml = $plugin->exportXML(array($object), $filter, $journal);
 			// Write the XML to a file.
 			// export file name example: crossref-20160723-160036-articles-1-1.xml
-			$objectsFileNamePart = $objectsFileNamePart . '-' . $object->getId();
-			$exportFileName = $plugin->getExportFileName($plugin->getExportPath(), $objectsFileNamePart, $journal, '.xml');
+			$objectsFileNamePartId = $objectsFileNamePart . '-' . $object->getId();
+			$exportFileName = $plugin->getExportFileName($plugin->getExportPath(), $objectsFileNamePartId, $journal, '.xml');
 			$fileManager->writeFile($exportFileName, $exportXml);
 			// Deposit the XML file.
 			$result = $plugin->depositXML($object, $journal, $exportFileName);

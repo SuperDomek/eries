@@ -3,9 +3,9 @@
 /**
  * @file plugins/importexport/native/filter/RepresentationNativeXmlFilter.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2000-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class RepresentationNativeXmlFilter
  * @ingroup plugins_importexport_native
@@ -75,17 +75,20 @@ class RepresentationNativeXmlFilter extends NativeExportFilter {
 		// Create the representation node
 		$representationNode = $doc->createElementNS($deployment->getNamespace(), $deployment->getRepresentationNodeName());
 
+		$representationNode->setAttribute('locale', $representation->getData('locale'));
+
 		$this->addIdentifiers($doc, $representationNode, $representation);
+
 		// Add metadata
 		$this->createLocalizedNodes($doc, $representationNode, 'name', $representation->getName(null));
 		$sequenceNode = $doc->createElementNS($deployment->getNamespace(), 'seq');
-		$sequenceNode->appendChild($doc->createTextNode($representation->getSequence()));
+		$sequenceNode->appendChild($doc->createTextNode((int) $representation->getSequence()));
 		$representationNode->appendChild($sequenceNode);
 
-		$remoteURL = $representation->getRemoteURL();
-		if ($remoteURL) {
+		$urlRemote = $representation->getData('urlRemote');
+		if ($urlRemote) {
 			$remoteNode = $doc->createElementNS($deployment->getNamespace(), 'remote');
-			$remoteNode->setAttribute('src', $remoteURL);
+			$remoteNode->setAttribute('src', $urlRemote);
 			$representationNode->appendChild($remoteNode);
 		} else {
 			// Add files
@@ -123,7 +126,7 @@ class RepresentationNativeXmlFilter extends NativeExportFilter {
 
 		// Add pub IDs by plugin
 		$pubIdPlugins = PluginRegistry::loadCategory('pubIds', true, $deployment->getContext()->getId());
-		foreach ((array) $pubIdPlugins as $pubIdPlugin) {
+		foreach ($pubIdPlugins as $pubIdPlugin) {
 			$this->addPubIdentifier($doc, $representationNode, $representation, $pubIdPlugin);
 		}
 	}

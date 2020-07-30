@@ -3,9 +3,9 @@
 /**
  * @file pages/submission/PKPSubmissionHandler.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPSubmissionHandler
  * @ingroup pages_submission
@@ -129,8 +129,8 @@ abstract class PKPSubmissionHandler extends Handler {
 			$templateMgr->assign('context', $context);
 
 			// Retrieve the correct url for author review his submission.
-			import('classes.core.ServicesContainer');
-			$reviewSubmissionUrl = ServicesContainer::instance()->get('submission')->getWorkflowUrlByUserRoles($submission);
+			import('classes.core.Services');
+			$reviewSubmissionUrl = Services::get('submission')->getWorkflowUrlByUserRoles($submission);
 			$router = $request->getRouter();
 			$dispatcher = $router->getDispatcher();
 

@@ -4,9 +4,9 @@
 <!--
   * xml/schema/log.xml
   *
-  * Copyright (c) 2014-2019 Simon Fraser University
-  * Copyright (c) 2000-2019 John Willinsky
-  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+  * Copyright (c) 2014-2020 Simon Fraser University
+  * Copyright (c) 2000-2020 John Willinsky
+  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
   *
   * Event and email log schema in XML.
   -->
@@ -32,9 +32,6 @@
 			<NOTNULL/>
 		</field>
 		<field name="date_logged" type="T">
-			<NOTNULL/>
-		</field>
-		<field name="ip_address" type="C2" size="39">
 			<NOTNULL/>
 		</field>
 		<field name="event_type" type="I8"/>
@@ -70,7 +67,6 @@
 		</index>
 		<index name="event_log_settings_pkey">
 			<col>log_id</col>
-			<col>locale</col>
 			<col>setting_name</col>
 			<UNIQUE/>
 		</index>
@@ -98,7 +94,6 @@
 		<field name="date_sent" type="T">
 			<NOTNULL/>
 		</field>
-		<field name="ip_address" type="C2" size="39"/>
 		<field name="event_type" type="I8"/>
 		<field name="from_address" type="C2" size="255"/>
 		<field name="recipients" type="X"/>

@@ -1,9 +1,9 @@
 {**
  * templates/frontend/pages/userLogin.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2000-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * User login form.
  *
@@ -12,6 +12,9 @@
 
 <div class="page page_login">
 	{include file="frontend/components/breadcrumbs.tpl" currentTitleKey="user.login"}
+	<h1>
+		{translate key="user.login"}
+	</h1>
 
 	{* A login message may be displayed if the user was redireceted to the
 	   login page from another request. Examples include if login is required
@@ -31,31 +34,31 @@
 			</div>
 		{/if}
 
-		<input type="hidden" name="source" value="{$source|strip_unsafe_html|escape}" />
+		<input type="hidden" name="source" value="{$source|escape}" />
 
 		<fieldset class="fields">
 			<div class="username">
 				<label>
 					<span class="label">
 						{translate key="user.username"}
-						<span class="required">*</span>
+						<span class="required" aria-hidden="true">*</span>
 						<span class="pkp_screen_reader">
 							{translate key="common.required"}
 						</span>
 					</span>
-					<input type="text" name="username" id="username" value="{$username|escape}" maxlength="32" required>
+					<input type="text" name="username" id="username" value="{$username|escape}" maxlength="32" required aria-required="true">
 				</label>
 			</div>
 			<div class="password">
 				<label>
 					<span class="label">
 						{translate key="user.password"}
-						<span class="required">*</span>
+						<span class="required" aria-hidden="true">*</span>
 						<span class="pkp_screen_reader">
 							{translate key="common.required"}
 						</span>
 					</span>
-					<input type="password" name="password" id="password" value="{$password|escape}" password="true" maxlength="32" required>
+					<input type="password" name="password" id="password" value="{$password|escape}" password="true" maxlength="32" required aria-required="true">
 					<a href="{url page="login" op="lostPassword"}">
 						{translate key="user.login.forgotPassword"}
 					</a>

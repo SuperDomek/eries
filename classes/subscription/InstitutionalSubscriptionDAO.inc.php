@@ -3,9 +3,9 @@
 /**
  * @file classes/subscription/InstitutionalSubscriptionDAO.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class InstitutionalSubscriptionDAO
  * @ingroup subscription
@@ -430,7 +430,7 @@ class InstitutionalSubscriptionDAO extends SubscriptionDAO {
 	 * @return object DAOResultFactory containing matching Subscriptions
 	 */
 	function getByJournalId($journalId, $status = null, $searchField = null, $searchMatch = null, $search = null, $dateField = null, $dateFrom = null, $dateTo = null, $rangeInfo = null) {
-		$userDao = DAORegistry::getDAO('UserDAO');
+		$userDao = DAORegistry::getDAO('UserDAO'); /* @var $userDao UserDAO */
 		$params = array_merge($userDao->getFetchParameters(), array((int) $journalId));
 		$ipRangeSql1 = $ipRangeSql2 = '';
 		$searchSql = $this->_generateSearchSQL($status, $searchField, $searchMatch, $search, $dateField, $dateFrom, $dateTo, $params);

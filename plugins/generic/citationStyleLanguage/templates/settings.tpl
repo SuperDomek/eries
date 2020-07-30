@@ -1,9 +1,9 @@
 {**
  * plugins/generic/citationStyleLanguage/templates/settings.tpl
  *
- * Copyright (c) 2017-2019 Simon Fraser University
- * Copyright (c) 2017-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2017-2020 Simon Fraser University
+ * Copyright (c) 2017-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Form to enable/disable CSL citation styles and define a primary citation style.
  *
@@ -20,30 +20,31 @@
 
 	{fbvFormArea id="citationStyleLanguagePluginSettings"}
 		{fbvFormSection}
-			{assign var="uuid" value=""|uniqid|escape}
-			<div id="primary-citation-styles-{$uuid}">
-				<script type="text/javascript">
-					pkp.registry.init('primary-citation-styles-{$uuid}', 'SelectListPanel', {$primaryCitationStyleListData});
-				</script>
-			</div>
+			<list-panel
+				v-bind="components.primaryCitationStyles"
+				@set="set"
+			/>
 		{/fbvFormSection}
 		{fbvFormSection}
-			{assign var="uuid" value=""|uniqid|escape}
-			<div id="citation-styles-{$uuid}">
-				<script type="text/javascript">
-					pkp.registry.init('citation-styles-{$uuid}', 'SelectListPanel', {$citationStylesListData});
-				</script>
-			</div>
+			<list-panel
+				v-bind="components.citationStyles"
+				@set="set"
+			/>
 		{/fbvFormSection}
 		{fbvFormSection}
-			{assign var="uuid" value=""|uniqid|escape}
-			<div id="citation-downloads-{$uuid}">
-				<script type="text/javascript">
-					pkp.registry.init('citation-downloads-{$uuid}', 'SelectListPanel', {$citationDownloadsListData});
-				</script>
-			</div>
+			<list-panel
+				v-bind="components.citationDownloads"
+				@set="set"
+			/>
+		{/fbvFormSection}
+		{fbvFormSection}
+			<div id="description">{translate key="plugins.generic.citationStyleLanguage.settings.publisherLocation.description"}</div>
+			{fbvElement type="text" id="publisherLocation" value=$publisherLocation label="plugins.generic.citationStyleLanguage.settings.publisherLocation"}
 		{/fbvFormSection}
 	{/fbvFormArea}
+	<script type="text/javascript">
+		pkp.registry.init('citationStyleLanguagePluginSettings', 'Container', {$settingsData|json_encode});
+	</script>
 
 	{fbvFormButtons}
 </form>

@@ -3,9 +3,9 @@
 /**
  * @file plugins/generic/usageStats/UsageStatsLoader.php
  *
- * Copyright (c) 2013-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2013-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class UsageStatsLoader
  * @ingroup plugins_generic_usageStats
@@ -245,7 +245,7 @@ class UsageStatsLoader extends FileLoader {
 	 * Get metric type on which this loader process statistics.
 	 */
 	protected function getMetricType() {
-		$application = Application::getApplication();
+		$application = Application::get();
 		$applicationName = $application->getName();
 		switch ($applicationName) {
 			case 'ojs2':
@@ -253,6 +253,9 @@ class UsageStatsLoader extends FileLoader {
 				break;
 			case 'omp':
 				return OMP_METRIC_TYPE_COUNTER;
+				break;
+			case 'ops':
+				return OPS_METRIC_TYPE_COUNTER;
 				break;
 			default:
 				assert(false);
@@ -318,7 +321,7 @@ class UsageStatsLoader extends FileLoader {
 		if ($file) $type = $this->getFileTypeFromFile($file);
 
 		if (!$type) {
-			$application = Application::getApplication();
+			$application = Application::get();
 			$applicationName = $application->getName();
 			switch ($applicationName) {
 				case 'ojs2':
@@ -411,7 +414,7 @@ class UsageStatsLoader extends FileLoader {
 			case ASSOC_TYPE_SUBMISSION:
 				if (!isset($args[0])) break;
 				$submissionId = $args[0];
-				$submissionDao = Application::getSubmissionDAO(); /* @var $submissionDao SubmissionDAO */
+				$submissionDao = DAORegistry::getDAO('SubmissionDAO'); /* @var $submissionDao SubmissionDAO */
 				$submission = $submissionDao->getById($submissionId);
 				if ($submission) {
 					$assocId = $submission->getId();
@@ -431,7 +434,7 @@ class UsageStatsLoader extends FileLoader {
 		if (!$assocId) $assocTypeToReturn = null;
 
 		if (!$assocId && !$assocTypeToReturn) {
-			$application = Application::getApplication();
+			$application = Application::get();
 			$applicationName = $application->getName();
 			switch ($applicationName) {
 				case 'ojs2':
@@ -439,6 +442,9 @@ class UsageStatsLoader extends FileLoader {
 					break;
 				case 'omp':
 					list($assocId, $assocTypeToReturn) = $this->getOMPAssoc($assocType, $contextPaths, $page, $op, $args);
+					break;
+				case 'ops':
+					list($assocId, $assocTypeToReturn) = $this->getOPSAssoc($assocType, $contextPaths, $page, $op, $args);
 					break;
 			}
 		}
@@ -461,7 +467,7 @@ class UsageStatsLoader extends FileLoader {
 			case ASSOC_TYPE_SUBMISSION_FILE:
 				if (!isset($args[0])) break;
 				$submissionId = $args[0];
-				$submissionDao = DAORegistry::getDAO('ArticleDAO');
+				$submissionDao = DAORegistry::getDAO('SubmissionDAO'); /* @var $submissionDao SubmissionDAO */
 				$article = $submissionDao->getById($submissionId);
 				if (!$article) break;
 
@@ -531,7 +537,7 @@ class UsageStatsLoader extends FileLoader {
 			case ASSOC_TYPE_SUBMISSION_FILE:
 				if (!isset($args[0])) break;
 				$submissionId = $args[0];
-				$submissionDao = DAORegistry::getDAO('MonographDAO');
+				$submissionDao = DAORegistry::getDAO('SubmissionDAO'); /* @var $submissionDao SubmissionDAO */
 				$monograph = $submissionDao->getById($submissionId);
 				if (!$monograph) break;
 
@@ -569,6 +575,47 @@ class UsageStatsLoader extends FileLoader {
 	}
 
 	/**
+	 * Get assoc type and id from the passed page, operation and
+	 * arguments specific to OPS.
+	 * @param $assocType ASSOC_TYPE_...
+	 * @param $contextPaths array
+	 * @param $page string
+	 * @param $op string
+	 * @param $args array
+	 * @return array (assocId, assocType)
+	 */
+	protected function getOPSAssoc($assocType, $contextPaths, $page, $op, $args) {
+		$assocId = $assocTypeToReturn = null;
+		switch ($assocType) {
+			case ASSOC_TYPE_SUBMISSION_FILE:
+				if (!isset($args[0])) break;
+				$submissionId = $args[0];
+				$submissionDao = DAORegistry::getDAO('SubmissionDAO');
+				$article = $submissionDao->getById($submissionId);
+				if (!$article) break;
+
+				if (!isset($args[2])) break;
+				$fileId = $args[2];
+				$articleFileDao = DAORegistry::getDAO('SubmissionFileDAO');
+				$articleFile = $articleFileDao->getLatestRevision($fileId);
+				if (!$articleFile) break;
+
+				$assocId = $articleFile->getFileId();
+
+				// is the file article full text
+				$genreDao = DAORegistry::getDAO('GenreDAO');
+				$genre = $genreDao->getById($articleFile->getGenreId());
+				if ($genre->getCategory() != GENRE_CATEGORY_DOCUMENT || $genre->getSupplementary() || $genre->getDependent()) {
+					$assocTypeToReturn = ASSOC_TYPE_SUBMISSION_FILE_COUNTER_OTHER;
+				} else {
+					$assocTypeToReturn = $assocType;
+				}
+				break;
+		}
+		return array($assocId, $assocTypeToReturn);
+	}
+
+	/**
 	 * Get the context object based on the context path
 	 * array that's returned by Core::getContextPaths()
 	 * @param $contextPaths array
@@ -576,7 +623,7 @@ class UsageStatsLoader extends FileLoader {
 	 * @see Core::getContextPaths()
 	 */
 	protected function getContextByPath($contextPaths) {
-		$application = Application::getApplication();
+		$application = Application::get();
 		$deepestContextDepthIndex = $application->getContextDepth() - 1;
 		$contextPath = $contextPaths[$deepestContextDepthIndex];
 
@@ -600,14 +647,14 @@ class UsageStatsLoader extends FileLoader {
 				'index/index'
 			)
 		);
-		$application = Application::getApplication();
+		$application = Application::get();
 		$applicationName = $application->getName();
 		switch ($applicationName) {
 			case 'ojs2':
 				$pageAndOp = $pageAndOp + array(
 					ASSOC_TYPE_SUBMISSION_FILE => array(
 						'article/download'),
-					ASSOC_TYPE_ARTICLE => array(
+					ASSOC_TYPE_SUBMISSION => array(
 						'article/view'),
 					ASSOC_TYPE_ISSUE => array(
 						'issue/view'),
@@ -626,6 +673,15 @@ class UsageStatsLoader extends FileLoader {
 						'catalog/series')
 				);
 				$pageAndOp[Application::getContextAssocType()][] = 'catalog/index';
+				break;
+			case 'ops':
+				$pageAndOp = $pageAndOp + array(
+					ASSOC_TYPE_SUBMISSION_FILE => array(
+						'preprint/download'),
+					ASSOC_TYPE_SUBMISSION => array(
+						'preprint/view')
+				);
+				$pageAndOp[Application::getContextAssocType()][] = 'index';
 				break;
 		}
 		return $pageAndOp;

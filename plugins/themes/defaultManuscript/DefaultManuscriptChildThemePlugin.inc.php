@@ -3,8 +3,8 @@
 /**
  * @file plugins/themes/default/DefaultManuscriptChildThemePlugin.inc.php
  *
- * Copyright (c) 2014-2017 Simon Fraser University Library
- * Copyright (c) 2003-2017 John Willinsky
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @class DefaultManuscriptChildThemePlugin
@@ -36,11 +36,11 @@ class DefaultManuscriptChildThemePlugin extends ThemePlugin {
 		}
 
 		// Add the option for an accent color
-		$this->addOption('accentColour', 'colour', array(
-			'label' => 'plugins.themes.defaultManuscript.option.accentColour.label',
-			'description' => 'plugins.themes.default.option.colour.description',
+		$this->addOption('accentColour', 'FieldColor', [
+			'label' => __('plugins.themes.defaultManuscript.option.accentColour.label'),
+			'description' => __('plugins.themes.default.option.colour.description'),
 			'default' => '#F7BC4A',
-		));
+		]);
 
 		// Load the Montserrat and Open Sans fonts
 		$this->addStyle(

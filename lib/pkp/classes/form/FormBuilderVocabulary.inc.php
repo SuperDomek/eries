@@ -8,9 +8,9 @@
 /**
  * @file classes/form/FormBuilderVocabulary.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2000-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class Fbv
  * @ingroup core
@@ -213,6 +213,8 @@ class FormBuilderVocabulary {
 			'FBV_cancelUrl' => isset($params['cancelUrl']) ? $params['cancelUrl'] : null,
 			'FBV_cancelUrlTarget' => isset($params['cancelUrlTarget']) ? $params['cancelUrlTarget'] : '',
 			'FBV_translate' => isset($params['translate']) ? $params['translate'] : true,
+			'FBV_saveText' => isset($params['saveText']) ? $params['saveText'] : null,
+			'FBV_saveValue' => isset($params['saveValue']) ? (boolean)$params['saveValue'] : null,
 		));
 		return $smarty->fetch('form/formButtons.tpl');
 	}
@@ -263,6 +265,9 @@ class FormBuilderVocabulary {
 				$content = $this->_smartyFBVCheckboxGroup($params, $smarty);
 				unset($params['label']);
 				break;
+			case 'email':
+				$content = $this->_smartyFBVTextInput($params, $smarty);
+				break;
 			case 'file':
 				$content = $this->_smartyFBVFileInput($params, $smarty);
 				break;
@@ -279,6 +284,10 @@ class FormBuilderVocabulary {
 				$content = $this->_smartyFBVRadioButton($params, $smarty);
 				unset($params['label']);
 				break;
+			case 'search':
+			case 'text':
+				$content = $this->_smartyFBVTextInput($params, $smarty);
+				break;
 			case 'select':
 				$content = $this->_smartyFBVSelect($params, $smarty);
 				break;
@@ -290,9 +299,6 @@ class FormBuilderVocabulary {
 				break;
 			case 'textarea':
 				$content = $this->_smartyFBVTextArea($params, $smarty);
-				break;
-			case 'colour':
-				$content = $this->_smartyFBVColour($params, $smarty);
 				break;
 			default: assert(false);
 		}
@@ -384,6 +390,7 @@ class FormBuilderVocabulary {
 		$smarty->assign(array(
 			'FBV_isPassword' => isset($params['password']) ? true : false,
 			'FBV_isTypeURL' => $params['type'] === 'url' ? true : false,
+			'FBV_isTypeSearch' => $params['type'] === 'search' ? true : false,
 			'FBV_disabled' => false,
 			'FBV_readonly' => false,
 			'FBV_multilingual' => false,
@@ -493,46 +500,6 @@ class FormBuilderVocabulary {
 		$smarty->assign('FBV_textAreaParams', $textAreaParams);
 
 		return $smarty->fetch('form/textarea.tpl');
-	}
-
-	/**
-	 * Form colour input.
-	 * parameters: disabled (optional), name (optional - assigned value of 'id' by default)
-	 * @param $params array
-	 * @param $smarty object
-	 */
-	function _smartyFBVColour($params, $smarty) {
-		$params['name'] = isset($params['name']) ? $params['name'] : $params['id'];
-		$params['subLabelTranslate'] = isset($params['subLabelTranslate']) ? (boolean) $params['subLabelTranslate'] : true;
-		$params['uniqId'] = uniqid();
-		$smarty->assign('FBV_isPassword', isset($params['password']) ? true : false);
-
-		$colourParams = '';
-		$smarty->clearAssign(array('FBV_disabled', 'FBV_readonly', 'FBV_multilingual', 'FBV_name', 'FBV_value', 'FBV_label_content', 'FBV_uniqId', 'FBV_default'));
-		foreach ($params as $key => $value) {
-			switch ($key) {
-				case 'label': $smarty->assign('FBV_label_content', $this->_smartyFBVSubLabel($params, $smarty)); break;
-				case 'type': break;
-				case 'size': break;
-				case 'inline': break;
-				case 'subLabelTranslate': break;
-				case 'disabled':
-				case 'readonly':
-				case 'name':
-				case 'id':
-				case 'value':
-				case 'uniqId':
-				case 'default':
-					$smarty->assign('FBV_' . $key, $value); break;
-					break;
-				case 'required': if ($value != 'true') $colourParams .= 'required="' + htmlspecialchars($value, ENT_QUOTES, LOCALE_ENCODING) +'"'; break;
-				default: $colourParams .= htmlspecialchars($key, ENT_QUOTES, LOCALE_ENCODING) . '="' . htmlspecialchars($value, ENT_QUOTES, LOCALE_ENCODING). '" ';
-			}
-		}
-
-		$smarty->assign('FBV_textInputParams', $colourParams);
-
-		return $smarty->fetch('form/colour.tpl');
 	}
 
 	/**
@@ -816,13 +783,6 @@ class FormBuilderVocabulary {
 
 		$returner = '';
 
-		$form = $this->getForm();
-		if (isset($form) && isset($form->errorFields[$params['name']])) {
-			$smarty->assign('FBV_error', true);
-		} else {
-			$smarty->assign('FBV_error', false);
-		}
-
 		$smarty->assign(array('FBV_suppressId' => null, 'FBV_label' => null, 'FBV_required' => false, 'FBV_uniqId' => null, 'FBV_multilingual' => false, 'FBV_required' => false));
 		foreach ($params as $key => $value) {
 			switch ($key) {
@@ -835,6 +795,16 @@ class FormBuilderVocabulary {
 					$smarty->assign('FBV_' . $key, $value);
 					break;
 			}
+		}
+
+		$form = $this->getForm();
+		if (isset($form) && isset($form->errorFields[$params['name']])) {
+			$smarty->assign('FBV_error', true);
+			$errors = $form->getErrorsArray();
+			$smarty->assign('FBV_subLabelTranslate', false);
+			$smarty->assign('FBV_label', $errors[$params['name']]);
+		} else {
+			$smarty->assign('FBV_error', false);
 		}
 
 		$returner = $smarty->fetch('form/subLabel.tpl');

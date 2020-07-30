@@ -3,9 +3,9 @@
 /**
  * @file plugins/generic/usageStats/UsageStatsPlugin.inc.php
  *
- * Copyright (c) 2013-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2013-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class UsageStatsPlugin
  * @ingroup plugins_generic_usageStats
@@ -37,7 +37,7 @@ class UsageStatsPlugin extends GenericPlugin {
 
 		// The upgrade and install processes will need access
 		// to constants defined in that report plugin.
-		$application = Application::getApplication();
+		$application = Application::get();
 		$applicationName = $application->getName();
 		switch ($applicationName) {
 			case 'ojs2':
@@ -45,6 +45,9 @@ class UsageStatsPlugin extends GenericPlugin {
 				break;
 			case 'omp':
 				import('plugins.generic.usageStats.OMPUsageStatsReportPlugin');
+				break;
+			case 'ops':
+				import('plugins.generic.usageStats.OPSUsageStatsReportPlugin');
 				break;
 		}
 	}
@@ -59,7 +62,7 @@ class UsageStatsPlugin extends GenericPlugin {
 	 * @return UsageStatsReportPlugin
 	 */
 	function getReportPlugin() {
-		$application = Application::getApplication();
+		$application = Application::get();
 		$applicationName = $application->getName();
 		switch ($applicationName) {
 			case 'ojs2':
@@ -68,6 +71,9 @@ class UsageStatsPlugin extends GenericPlugin {
 			case 'omp':
 				$this->import('OMPUsageStatsReportPlugin');
 				return new OMPUsageStatsReportPlugin();
+			case 'ops':
+				$this->import('OPSUsageStatsReportPlugin');
+				return new OPSUsageStatsReportPlugin();
 			default:
 				assert(false);
 		}
@@ -91,7 +97,7 @@ class UsageStatsPlugin extends GenericPlugin {
 			$this->_saltpath = $this->getSetting(CONTEXT_ID_NONE, 'saltFilepath');
 			// Check config for backward compatibility.
 			if (!$this->_saltpath) $this->_saltpath = Config::getVar('usageStats', 'salt_filepath');
-			$request = Application::getRequest();
+			$request = Application::get()->getRequest();
 			$this->_optedOut = $request->getCookieVar('usageStats-opt-out');
 			if ($this->_optedOut) {
 				// Renew the Opt-Out cookie if present.
@@ -129,7 +135,7 @@ class UsageStatsPlugin extends GenericPlugin {
 	 * @return null
 	 */
 	function displayReaderStatistics() {
-		$application = Application::getApplication();
+		$application = Application::get();
 		$applicationName = $application->getName();
 		switch($applicationName) {
 			case 'ojs2':
@@ -139,6 +145,10 @@ class UsageStatsPlugin extends GenericPlugin {
 			case 'omp':
 				// Add chart to book view page
 				HookRegistry::register('Templates::Catalog::Book::Main', array($this, 'displayReaderMonographGraph'));
+				break;
+			case 'ops':
+				// Add chart to preprint view page
+				HookRegistry::register('Templates::Preprint::Main', array($this, 'displayReaderPreprintGraph'));
 				break;
 			default:
 				assert(false);
@@ -309,7 +319,7 @@ class UsageStatsPlugin extends GenericPlugin {
 	 */
 	protected function getDownloadFinishedEventHooks() {
 		$hooks = array('FileManager::downloadFileFinished');
-		$application = Application::getApplication();
+		$application = Application::get();
 		$applicationName = $application->getName();
 		switch ($applicationName) {
 			case 'ojs2':
@@ -317,6 +327,9 @@ class UsageStatsPlugin extends GenericPlugin {
 				break;
 			case 'omp':
 				$hooks[] = 'HtmlMonographFilePlugin::monographDownloadFinished';
+				break;
+			case 'ops':
+				$hooks[] = 'HtmlArticleGalleyPlugin::articleDownloadFinished';
 				break;
 		}
 		return $hooks;
@@ -419,7 +432,7 @@ class UsageStatsPlugin extends GenericPlugin {
 	 */
 	function loadJavascript($contexts) {
 
-		$request = Application::getRequest();
+		$request = Application::get()->getRequest();
 		$templateMgr = TemplateManager::getManager($request);
 
 		// Register Chart.js on the frontend article view
@@ -478,7 +491,7 @@ class UsageStatsPlugin extends GenericPlugin {
 		$script_data .= 'pkpUsageStats.data.' . $namespace . ' = ' . json_encode($data) .';';
 
 		// Register the data
-		$request = Application::getRequest();
+		$request = Application::get()->getRequest();
 		$templateMgr = TemplateManager::getManager($request);
 		$templateMgr->addJavaScript(
 			'pkpUsageStatsData',
@@ -526,9 +539,9 @@ class UsageStatsPlugin extends GenericPlugin {
 			(!$contextDisplaySettingExists && $siteDisplaySetting)) {
 
 				$pubObject = $smarty->getTemplateVars('article');
-				assert(is_a($pubObject, 'PublishedArticle'));
-				$pubObjectId = $pubObject->getID();
-				$pubObjectType = 'PublishedArticle';
+				assert(is_a($pubObject, 'Submission'));
+				$pubObjectId = $pubObject->getId();
+				$pubObjectType = 'Submission';
 
 				$output .= $this->getTemplate(
 					array(
@@ -567,10 +580,10 @@ class UsageStatsPlugin extends GenericPlugin {
 		if (($contextDisplaySettingExists && $contextDisplaySetting) ||
 			(!$contextDisplaySettingExists && $siteDisplaySetting)) {
 
-				$pubObject = $smarty->getTemplateVars('publishedMonograph');
-				assert(is_a($pubObject, 'PublishedMonograph'));
-				$pubObjectId = $pubObject->getID();
-				$pubObjectType = 'PublishedMonograph';
+				$pubObject = $smarty->getTemplateVars('publication');
+				assert(is_a($pubObject, 'Publication'));
+				$pubObjectId = $pubObject->getId();
+				$pubObjectType = 'Publication';
 
 				$output .= $this->getTemplate(
 					array(
@@ -583,6 +596,48 @@ class UsageStatsPlugin extends GenericPlugin {
 
 				$this->addJavascriptData($this->getAllDownloadsStats($pubObjectId), $pubObjectType, $pubObjectId, 'frontend-catalog-book');
 				$this->loadJavascript('frontend-catalog-book' );
+		}
+		return false;
+	}
+
+	/**
+	 * Add chart to preprint view page
+	 *
+	 * Hooked to `Templates::Preprint::Main`
+	 * @param $hookName string
+	 * @param $params array [
+	 *  @option Smarty
+	 *  @option string HTML output to return
+	 * ]
+	 */
+	function displayReaderPreprintGraph($hookName, $params) {
+		$smarty =& $params[1];
+		$output =& $params[2];
+
+		$context = $smarty->getTemplateVars('currentContext');
+		$pluginSettingsDao = DAORegistry::getDAO('PluginSettingsDAO');
+		$contextDisplaySettingExists = $pluginSettingsDao->settingExists($context->getId(), $this->getName(), 'displayStatistics');
+		$contextDisplaySetting = $this->getSetting($context->getId(), 'displayStatistics');
+		$siteDisplaySetting = $this->getSetting(CONTEXT_ID_NONE, 'displayStatistics');
+		if (($contextDisplaySettingExists && $contextDisplaySetting) ||
+			(!$contextDisplaySettingExists && $siteDisplaySetting)) {
+
+				$pubObject = $smarty->getTemplateVars('preprint');
+				assert(is_a($pubObject, 'Submission'));
+				$pubObjectId = $pubObject->getId();
+				$pubObjectType = 'Submission';
+
+				$output .= $this->getTemplate(
+					array(
+						'pubObjectType' => $pubObjectType,
+						'pubObjectId'   => $pubObjectId,
+					),
+					'outputFrontend.tpl',
+					$smarty
+				);
+
+				$this->addJavascriptData($this->getAllDownloadsStats($pubObjectId), $pubObjectType, $pubObjectId, 'frontend-preprint-view');
+				$this->loadJavascript('frontend-preprint-view' );
 		}
 		return false;
 	}
@@ -820,7 +875,7 @@ class UsageStatsPlugin extends GenericPlugin {
 		$orderBy = array(STATISTICS_DIMENSION_MONTH => STATISTICS_ORDER_ASC);
 		$reportPlugin = $this->getReportPlugin();
 
-		$application = Application::getApplication();
+		$application = Application::get();
 
 		$statsReports = $application->getMetrics(current($reportPlugin->getMetricTypes()), array(STATISTICS_DIMENSION_MONTH, STATISTICS_DIMENSION_REPRESENTATION_ID), $filter, $orderBy);
 		$cache->setEntireCache(array($pubObjectId => $statsReports));

@@ -4,9 +4,9 @@
 <!--
   * xml/schema/common.xml
   *
-  * Copyright (c) 2014-2019 Simon Fraser University
-  * Copyright (c) 2000-2019 John Willinsky
-  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+  * Copyright (c) 2014-2020 Simon Fraser University
+  * Copyright (c) 2000-2020 John Willinsky
+  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
   *
   * Common elements of the PKP database schema in XML.
   -->
@@ -96,12 +96,12 @@
 			<NOTNULL/>
 			<DEFAULT VALUE="6"/>
 		</field>
-		<field name="installed_locales" type="C2" size="255">
+		<field name="installed_locales" type="C2" size="1024">
 			<NOTNULL/>
 			<DEFAULT VALUE="en_US"/>
 			<descr>Locales for which support has been installed.</descr>
 		</field>
-		<field name="supported_locales" type="C2" size="255">
+		<field name="supported_locales" type="C2" size="1024">
 			<descr>Locales supported by the site (for hosted journals/conferences/...).</descr>
 		</field>
 		<field name="original_style_file_name" type="C2" size="255"/>
@@ -122,10 +122,6 @@
 			<DEFAULT VALUE=""/>
 		</field>
 		<field name="setting_value" type="X"/>
-		<field name="setting_type" type="C2" size="6">
-			<NOTNULL />
-			<descr>(bool|int|float|string|object)</descr>
-		</field>
 		<descr>Site settings.</descr>
 		<index name="site_settings_pkey">
 			<col>setting_name</col>
@@ -252,6 +248,10 @@
 			<col>assoc_id</col>
 			<UNIQUE />
 		</index>
+		<index name="user_settings_locale_setting_name_index">
+			<col>setting_name</col>
+			<col>locale</col>
+		</index>
 	</table>
 
 	<!--
@@ -369,6 +369,10 @@
 		<index name="notifications_assoc">
 			<col>assoc_type</col>
 			<col>assoc_id</col>
+		</index>
+		<index name="notifications_user_id_level">
+			<col>user_id</col>
+			<col>level</col>
 		</index>
 	</table>
 
@@ -535,11 +539,7 @@
 			<NOTNULL/>
 			<descr>Unique identifier for this email.</descr>
 		</field>
-		<field name="assoc_type" type="I8">
-			<!-- Not null not specified for sake of upgrade. -->
-			<DEFAULT VALUE="0"/>
-		</field>
-		<field name="assoc_id" type="I8">
+		<field name="context_id" type="I8">
 			<!-- Not null not specified for sake of upgrade. -->
 			<DEFAULT VALUE="0"/>
 		</field>
@@ -550,49 +550,36 @@
 		<descr>Templates for emails.</descr>
 		<index name="email_templates_email_key">
 			<col>email_key</col>
-			<col>assoc_type</col>
-			<col>assoc_id</col>
+			<col>context_id</col>
 			<UNIQUE/>
-		</index>
-		<index name="email_templates_assoc">
-			<col>assoc_type</col>
-			<col>assoc_id</col>
 		</index>
 	</table>
 
 	<!--
 	  *
-	  * TABLE email_templates_data
+	  * TABLE email_templates_settings
 	  *
 	  -->
-	<table name="email_templates_data">
-		<field name="email_key" type="C2" size="64">
+	<table name="email_templates_settings">
+		<field name="email_id" type="I8">
 			<NOTNULL />
-			<descr>Unique identifier for this email.</descr>
 		</field>
 		<field name="locale" type="C2" size="14">
 			<NOTNULL />
-			<DEFAULT VALUE="en_US"/>
+			<DEFAULT VALUE=""/>
 		</field>
-		<field name="assoc_type" type="I8">
-			<!-- Not null not specified for sake of upgrade. -->
-			<DEFAULT VALUE="0"/>
+		<field name="setting_name" type="C2" size="255">
+			<NOTNULL />
 		</field>
-		<field name="assoc_id" type="I8">
-			<!-- Not null not specified for sake of upgrade. -->
-			<DEFAULT VALUE="0"/>
-		</field>
-		<field name="subject" type="C2" size="120">
-			<NOTNULL/>
-		</field>
-		<field name="body" type="X"/>
-		<descr>Data for email templates.</descr>
-		<index name="email_templates_data_pkey">
-			<col>email_key</col>
+		<field name="setting_value" type="X" />
+		<index name="email_settings_email_id">
+			<col>email_id</col>
+		</index>
+		<index name="email_settings_pkey">
+			<col>email_id</col>
 			<col>locale</col>
-			<col>assoc_type</col>
-			<col>assoc_id</col>
-			<UNIQUE/>
+			<col>setting_name</col>
+			<UNIQUE />
 		</index>
 	</table>
 

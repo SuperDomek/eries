@@ -3,9 +3,9 @@
 /**
  * @file classes/article/ArticleGalley.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ArticleGalley
  * @ingroup article
@@ -29,7 +29,7 @@ class ArticleGalley extends Representation {
 	 * @return int
 	 */
 	function getViews() {
-		$application = Application::getApplication();
+		$application = Application::get();
 		$fileId = $this->getFileId();
 		if ($fileId) {
 			return $application->getPrimaryMetricByAssoc(ASSOC_TYPE_SUBMISSION_FILE, $fileId);
@@ -76,9 +76,9 @@ class ArticleGalley extends Representation {
 	 * @return string
 	 */
 	function getBestGalleyId() {
-		$publicGalleyId = $this->getStoredPubId('publisher-id');
-		if (!empty($publicGalleyId)) return $publicGalleyId;
-		return $this->getId();
+		return $this->getData('urlPath')
+			? $this->getData('urlPath')
+			: $this->getId();
 	}
 
 	/**
@@ -103,7 +103,7 @@ class ArticleGalley extends Representation {
 	 */
 	function getFile() {
 		if (!isset($this->_submissionFile)) {
-			$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO');
+			$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO'); /* @var $submissionFileDao SubmissionFileDAO */
 			$this->_submissionFile = $submissionFileDao->getLatestRevision($this->getFileId());
 		}
 		return $this->_submissionFile;

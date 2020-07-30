@@ -1,13 +1,13 @@
 <?php
 
 /**
- * @file pages/catalog/CatalogHandler.inc.php
+ * @file pages/catalog/PKPCatalogHandler.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
- * @class CatalogHandler
+ * @class PKPCatalogHandler
  * @ingroup pages_catalog
  *
  * @brief Handle requests for the public-facing catalog.
@@ -47,23 +47,22 @@ class PKPCatalogHandler extends Handler {
 		$context = $request->getContext();
 
 		// Get the category
-		$categoryDao = DAORegistry::getDAO('CategoryDAO');
+		$categoryDao = DAORegistry::getDAO('CategoryDAO'); /* @var $categoryDao CategoryDAO */
 		$category = $categoryDao->getByPath($args[0], $context->getId());
 		if (!$category) $this->getDispatcher()->handle404();
 
 		$this->setupTemplate($request);
-		import('lib.pkp.classes.submission.Submission'); // STATUS_ constants
+		import('lib.pkp.classes.submission.PKPSubmission'); // STATUS_ constants
 
 		$orderOption = $category->getSortOption() ? $category->getSortOption() : ORDERBY_DATE_PUBLISHED . '-' . SORT_DIRECTION_DESC;
 		list($orderBy, $orderDir) = explode('-', $orderOption);
 
-		$count = $context->getSetting('itemsPerPage') ? $context->getSetting('itemsPerPage') : Config::getVar('interface', 'items_per_page');
+		$count = $context->getData('itemsPerPage') ? $context->getData('itemsPerPage') : Config::getVar('interface', 'items_per_page');
 		$offset = $page > 1 ? ($page - 1) * $count : 0;
 
-		import('classes.core.ServicesContainer');
-		$submissionService = ServicesContainer::instance()->get('submission');
-
+		import('classes.core.Services');
 		$params = array(
+			'contextId' => $context->getId(),
 			'categoryIds' => $category->getId(),
 			'orderByFeatured' => true,
 			'orderBy' => $orderBy,
@@ -71,22 +70,21 @@ class PKPCatalogHandler extends Handler {
 			'count' => $count,
 			'offset' => $offset,
 			'status' => STATUS_PUBLISHED,
-			'returnObject' => SUBMISSION_RETURN_PUBLISHED,
 		);
-		$publishedSubmissions = $submissionService->getSubmissions($context->getId(), $params);
-		$total = $submissionService->getSubmissionsMaxCount($context->getId(), $params);
+		$submissionsIterator = Services::get('submission')->getMany($params);
+		$total = Services::get('submission')->getMax($params);
 
 		// Provide the parent category and a list of subcategories
 		$parentCategory = $categoryDao->getById($category->getParentId());
 		$subcategories = $categoryDao->getByParentId($category->getId());
 
-		$this->_setupPaginationTemplate($request, $publishedSubmissions, $page, $count, $offset, $total);
+		$this->_setupPaginationTemplate($request, count($submissionsIterator), $page, $count, $offset, $total);
 
 		$templateMgr->assign(array(
 			'category' => $category,
 			'parentCategory' => $parentCategory,
 			'subcategories' => $subcategories,
-			'publishedSubmissions' => $publishedSubmissions,
+			'publishedSubmissions' => iterator_to_array($submissionsIterator),
 		));
 
 		return $templateMgr->display('frontend/pages/catalogCategory.tpl');
@@ -101,7 +99,7 @@ class PKPCatalogHandler extends Handler {
 		switch ($request->getUserVar('type')) {
 			case 'category':
 				$context = $request->getContext();
-				$categoryDao = DAORegistry::getDAO('CategoryDAO');
+				$categoryDao = DAORegistry::getDAO('CategoryDAO'); /* @var $categoryDao CategoryDAO */
 				$category = $categoryDao->getById($request->getUserVar('id'), $context->getId());
 				if (!$category) $this->getDispatcher()->handle404();
 				$imageInfo = $category->getImage();
@@ -123,7 +121,7 @@ class PKPCatalogHandler extends Handler {
 		switch ($request->getUserVar('type')) {
 			case 'category':
 				$context = $request->getContext();
-				$categoryDao = DAORegistry::getDAO('CategoryDAO');
+				$categoryDao = DAORegistry::getDAO('CategoryDAO'); /* @var $categoryDao CategoryDAO */
 				$category = $categoryDao->getById($request->getUserVar('id'), $context->getId());
 				if (!$category) $this->getDispatcher()->handle404();
 				$imageInfo = $category->getImage();
@@ -147,15 +145,15 @@ class PKPCatalogHandler extends Handler {
 	/**
 	 * Assign the pagination template variables
 	 * @param $request PKPRequest
-	 * @param $publishedMonographs array Monographs being shown
+	 * @param $submissionsCount int Number of monographs being shown
 	 * @param $page int Page number being shown
 	 * @param $count int Max number of monographs being shown
 	 * @param $offset int Starting position of monographs
 	 * @param $total int Total number of monographs available
 	 */
-	protected function _setupPaginationTemplate($request, $publishedMonographs, $page, $count, $offset, $total) {
+	protected function _setupPaginationTemplate($request, $submissionsCount, $page, $count, $offset, $total) {
 		$showingStart = $offset + 1;
-		$showingEnd = min($offset + $count, $offset + count($publishedMonographs));
+		$showingEnd = min($offset + $count, $offset + $submissionsCount);
 		$nextPage = $total > $showingEnd ? $page + 1 : null;
 		$prevPage = $showingStart > 1 ? $page - 1 : null;
 

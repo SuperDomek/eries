@@ -1,9 +1,9 @@
 {**
  * templates/common/userDetails.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Common user details form.
  *
@@ -20,7 +20,6 @@
  *   $disableSignatureSection: Disable Signature section
  *
  *   $countryRequired: Whether or not the country select is a required field
- *   $affiliationRequired: Whether or not the affiliation is a required field
  *   $extraContentSectionUnfolded: Whether or not the extra content section is unfolded by default
  *}
 
@@ -50,7 +49,7 @@
 
 	{if !$disableEmailSection}
 		{fbvFormSection title="about.contact"}
-			{fbvElement type="text" label="user.email" id="email" required="true" value=$email maxlength="90" size=$fbvStyles.size.MEDIUM}
+			{fbvElement type="email" label="user.email" id="email" required="true" value=$email maxlength="90" size=$fbvStyles.size.MEDIUM}
 		{/fbvFormSection}
 	{/if}
 
@@ -139,14 +138,8 @@
 			{/fbvFormSection}
 		{/if}
 
-		{if $affiliationRequired}
-			{assign var="affiliationRequired" value=true}
-		{else}
-			{assign var="affiliationRequired" value=false}
-		{/if}
-		
 		{fbvFormSection for="affiliation"}
-			{fbvElement type="text" label="user.affiliation" multilingual="true" name="affiliation" id="affiliation" required=$affiliationRequired value=$affiliation inline=true size=$fbvStyles.size.LARGE}
+			{fbvElement type="text" label="user.affiliation" multilingual="true" name="affiliation" id="affiliation" value=$affiliation inline=true size=$fbvStyles.size.LARGE}
 		{/fbvFormSection}
 
 		{fbvFormSection}

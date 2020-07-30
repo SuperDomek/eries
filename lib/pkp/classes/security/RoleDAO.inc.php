@@ -3,9 +3,9 @@
 /**
  * @file classes/security/RoleDAO.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class RoleDAO
  * @ingroup security
@@ -102,7 +102,7 @@ class RoleDAO extends DAO {
 			LEFT JOIN controlled_vocab_entries cve ON (cve.controlled_vocab_id = cv.controlled_vocab_id)
 			LEFT JOIN controlled_vocab_entry_settings cves ON (cves.controlled_vocab_entry_id = cve.controlled_vocab_entry_id)
 			' . $this->userDao->getFetchJoins() . '
-			WHERE ' . (isset($roleId) ? 'ug.role_id = ?' : '') . (isset($contextId) ? ' AND ug.context_id = ?' : '') . ' ' . $searchSql,
+			WHERE 1=1' . (isset($roleId) ? ' AND ug.role_id = ?' : '') . (isset($contextId) ? ' AND ug.context_id = ?' : '') . ' ' . $searchSql,
 			$paramArray,
 			$dbResultRange
 		);
@@ -167,8 +167,8 @@ class RoleDAO extends DAO {
 	 * @return array
 	 */
 	function getByUserIdGroupedByContext($userId) {
-		$userGroupDao = DAORegistry::getDAO('UserGroupDAO');
-		$roleDao = DAORegistry::getDAO('RoleDAO');
+		$userGroupDao = DAORegistry::getDAO('UserGroupDAO'); /* @var $userGroupDao UserGroupDAO */
+		$roleDao = DAORegistry::getDAO('RoleDAO'); /* @var $roleDao RoleDAO */
 		$userGroupsFactory = $userGroupDao->getByUserId($userId);
 
 		$roles = array();

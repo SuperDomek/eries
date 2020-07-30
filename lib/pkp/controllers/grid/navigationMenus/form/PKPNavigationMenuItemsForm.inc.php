@@ -3,9 +3,9 @@
 /**
  * @file controllers/grid/navigationMenus/form/PKPNavigationMenuItemsForm.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2000-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPNavigationMenuItemsForm
  * @ingroup controllers_grid_navigationMenus
@@ -67,16 +67,14 @@ class PKPNavigationMenuItemsForm extends Form {
 
 		$context = $request->getContext();
 		if ($context) $templateMgr->assign('allowedVariables', array(
-			'contactName' => __('plugins.generic.tinymce.variables.principalContactName', array('value' => $context->getSetting('contactName'))),
-			'contactEmail' => __('plugins.generic.tinymce.variables.principalContactEmail', array('value' => $context->getSetting('contactEmail'))),
-			'supportName' => __('plugins.generic.tinymce.variables.supportContactName', array('value' => $context->getSetting('supportName'))),
-			'supportPhone' => __('plugins.generic.tinymce.variables.supportContactPhone', array('value' => $context->getSetting('supportPhone'))),
-			'supportEmail' => __('plugins.generic.tinymce.variables.supportContactEmail', array('value' => $context->getSetting('supportEmail'))),
+			'contactName' => __('plugins.generic.tinymce.variables.principalContactName', array('value' => $context->getData('contactName'))),
+			'contactEmail' => __('plugins.generic.tinymce.variables.principalContactEmail', array('value' => $context->getData('contactEmail'))),
+			'supportName' => __('plugins.generic.tinymce.variables.supportContactName', array('value' => $context->getData('supportName'))),
+			'supportPhone' => __('plugins.generic.tinymce.variables.supportContactPhone', array('value' => $context->getData('supportPhone'))),
+			'supportEmail' => __('plugins.generic.tinymce.variables.supportContactEmail', array('value' => $context->getData('supportEmail'))),
 		));
-		import('classes.core.ServicesContainer');
-		$types = ServicesContainer::instance()
-			->get('navigationMenu')
-			->getMenuItemTypes();
+		import('classes.core.Services');
+		$types = Services::get('navigationMenu')->getMenuItemTypes();
 
 		$typeTitles = array(0 => __('grid.navigationMenus.navigationMenu.selectType'));
 		foreach ($types as $type => $settings) {
@@ -95,9 +93,7 @@ class PKPNavigationMenuItemsForm extends Form {
 			}
 		}
 
-		$customTemplates = ServicesContainer::instance()
-			->get('navigationMenu')
-			->getMenuItemCustomEditTemplates();
+		$customTemplates = Services::get('navigationMenu')->getMenuItemCustomEditTemplates();
 
 		$templateArray = array(
 			'navigationMenuItemTypeTitles' => $typeTitles,
@@ -115,13 +111,11 @@ class PKPNavigationMenuItemsForm extends Form {
 	 * Initialize form data from current navigation menu item.
 	 */
 	function initData() {
-		$navigationMenuItemDao = DAORegistry::getDAO('NavigationMenuItemDAO');
+		$navigationMenuItemDao = DAORegistry::getDAO('NavigationMenuItemDAO'); /* @var $navigationMenuItemDao NavigationMenuItemDAO */
 		$navigationMenuItem = $navigationMenuItemDao->getById($this->navigationMenuItemId);
 
 		if ($navigationMenuItem) {
-			import('classes.core.ServicesContainer');
-			ServicesContainer::instance()
-				->get('navigationMenu')
+			Services::get('navigationMenu')
 				->setAllNMILocalisedTitles($navigationMenuItem);
 			
 			$formData = array(
@@ -148,15 +142,17 @@ class PKPNavigationMenuItemsForm extends Form {
 	 * @copydoc Form::getLocaleFieldNames()
 	 */
 	function getLocaleFieldNames() {
-		$navigationMenuItemDao = DAORegistry::getDAO('NavigationMenuItemDAO');
+		$navigationMenuItemDao = DAORegistry::getDAO('NavigationMenuItemDAO'); /* @var $navigationMenuItemDao NavigationMenuItemDAO */
 		return $navigationMenuItemDao->getLocaleFieldNames();
 	}
 
 	/**
 	 * Save NavigationMenuItem.
 	 */
-	function execute() {
-		$navigationMenuItemDao = DAORegistry::getDAO('NavigationMenuItemDAO');
+	function execute(...$functionParams) {
+		parent::execute(...$functionParams);
+
+		$navigationMenuItemDao = DAORegistry::getDAO('NavigationMenuItemDAO'); /* @var $navigationMenuItemDao NavigationMenuItemDAO */
 
 		$navigationMenuItem = $navigationMenuItemDao->getById($this->navigationMenuItemId);
 		if (!$navigationMenuItem) {
@@ -165,9 +161,7 @@ class PKPNavigationMenuItemsForm extends Form {
 		} else {
 			$localizedTitlesFromDB = $navigationMenuItem->getTitle(null);
 
-			import('classes.core.ServicesContainer');
-			ServicesContainer::instance()
-				->get('navigationMenu')
+			Services::get('navigationMenu')
 				->setAllNMILocalisedTitles($navigationMenuItem);
 			
 			$localizedTitles = $navigationMenuItem->getTitle(null);
@@ -175,10 +169,10 @@ class PKPNavigationMenuItemsForm extends Form {
 			foreach ($localizedTitles as $locale => $title) {
 				if ($inputLocalisedTitles[$locale] != $title) {
 					if (!isset($inputLocalisedTitles[$locale]) || trim($inputLocalisedTitles[$locale]) == '') {
-                        $navigationMenuItem->setTitle(null, $locale);
-                    } else {
-                        $navigationMenuItem->setTitle($inputLocalisedTitles[$locale], $locale);
-                    }
+						$navigationMenuItem->setTitle(null, $locale);
+					} else {
+						$navigationMenuItem->setTitle($inputLocalisedTitles[$locale], $locale);
+					}
 				} else {
 					if (!$localizedTitlesFromDB 
 						|| !array_key_exists($locale, $localizedTitlesFromDB)) {
@@ -218,7 +212,7 @@ class PKPNavigationMenuItemsForm extends Form {
 					$this->addError('path', __('manager.navigationMenus.form.pathRegEx'));
 				}
 
-				$navigationMenuItemDao = DAORegistry::getDAO('NavigationMenuItemDAO');
+				$navigationMenuItemDao = DAORegistry::getDAO('NavigationMenuItemDAO'); /* @var $navigationMenuItemDao NavigationMenuItemDAO */
 
 				$navigationMenuItem = $navigationMenuItemDao->getByPath($this->_contextId, $this->getData('path'));
 				if (isset($navigationMenuItem) && $navigationMenuItem->getId() != $this->navigationMenuItemId) {
@@ -237,5 +231,3 @@ class PKPNavigationMenuItemsForm extends Form {
 	}
 
 }
-
-

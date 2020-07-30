@@ -3,9 +3,9 @@
 /**
  * @file plugins/importexport/native/filter/NativeXmlArticleGalleyFilter.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2000-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class NativeXmlArticleGalleyFilter
  * @ingroup plugins_importexport_native
@@ -93,7 +93,7 @@ class NativeXmlArticleGalleyFilter extends NativeXmlRepresentationFilter {
 
 		if ($addSubmissionFile) {
 			// Update the submission file.
-			$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO');
+			$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO'); /* @var $submissionFileDao SubmissionFileDAO */
 			$submissionFile = $submissionFileDao->getRevision($dbFileId, $revisionId);
 			$submissionFile->setAssocType(ASSOC_TYPE_REPRESENTATION);
 			$submissionFile->setAssocId($representation->getId());

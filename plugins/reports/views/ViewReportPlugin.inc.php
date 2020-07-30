@@ -3,9 +3,9 @@
 /**
  * @file plugins/reports/views/ViewReportPlugin.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ViewReportPlugin
  * @ingroup plugins_reports_views
@@ -47,7 +47,7 @@ class ViewReportPlugin extends ReportPlugin {
 	 * @copydoc ReportPlugin::display()
 	 */
 	function display($args, $request) {
-		$journal = $request->getJournal();
+		$context = $request->getContext();
 
 		$columns = array(
 			__('plugins.reports.views.articleId'),
@@ -66,17 +66,19 @@ class ViewReportPlugin extends ReportPlugin {
 		$articleTitles = array();
 		$articleIssueIdentificationMap = array();
 
-		$issueDao = DAORegistry::getDAO('IssueDAO');
-		$publishedArticleDao = DAORegistry::getDAO('PublishedArticleDAO');
-
-		$publishedArticles =& $publishedArticleDao->getPublishedArticlesByJournalId($journal->getId());
-		while ($publishedArticle = $publishedArticles->next()) {
-			$articleId = $publishedArticle->getId();
-			$issueId = $publishedArticle->getIssueId();
-			$articleTitles[$articleId] = PKPString::regexp_replace( "/\r|\n/", "", $publishedArticle->getLocalizedTitle() );
+		import('lib.pkp.classes.submission.PKPSubmission'); // STATUS_PUBLISHED
+		$issueDao = DAORegistry::getDAO('IssueDAO'); /* @var $issueDao IssueDAO */
+		$submissionsIterator = Services::get('submission')->getMany([
+			'contextId' => $context->getId(),
+			'status' => STATUS_PUBLISHED,
+		]);
+		foreach ($submissionsIterator as $submission) {
+			$articleId = $submission->getId();
+			$issueId = $submission->getCurrentPublication()->getData('issueId');
+			$articleTitles[$articleId] = PKPString::regexp_replace( "/\r|\n/", "", $submission->getLocalizedTitle() );
 
 			// Store the abstract view count
-			$abstractViewCounts[$articleId] = $publishedArticle->getViews();
+			$abstractViewCounts[$articleId] = $submission->getViews();
 			// Make sure we get the issue identification
 			$articleIssueIdentificationMap[$articleId] = $issueId;
 			if (!isset($issueIdentifications[$issueId])) {
@@ -87,7 +89,7 @@ class ViewReportPlugin extends ReportPlugin {
 			}
 
 			// For each galley, store the label and the count
-			$galleys = $publishedArticle->getGalleys();
+			$galleys = $submission->getGalleys();
 			$galleyViews[$articleId] = array();
 			$galleyViewTotals[$articleId] = 0;
 			foreach ($galleys as $galley) {
