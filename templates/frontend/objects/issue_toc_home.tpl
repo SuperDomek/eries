@@ -16,6 +16,19 @@
  * @uses $publishedArticles array Lists of articles published in this issue
  *   sorted by section.
  *}
+
+{if !$heading}
+	{assign var="heading" value="h2"}
+{/if}
+{assign var="articleHeading" value="h3"}
+{if $heading == "h3"}
+	{assign var="articleHeading" value="h4"}
+{elseif $heading == "h4"}
+	{assign var="articleHeading" value="h5"}
+{elseif $heading == "h5"}
+	{assign var="articleHeading" value="h6"}
+{/if}
+
 <div class="obj_issue_toc">
 
 	{* Issue introduction area *}
@@ -109,18 +122,18 @@
 
 	{* Articles *}
 	<div class="sections">
-	{foreach name=sections from=$publishedArticles item=section}
+	{foreach name=sections from=$publishedSubmissions item=section}
 		<div class="section">
 		{if $section.articles}
 			{if $section.title}
-				<h2>
+				<{$heading}>
 					{$section.title|escape}
-				</h2>
+				</{$heading}>
 			{/if}
-			<ul class="articles">
+			<ul class="cmp_article_list articles">
 				{foreach from=$section.articles item=article}
 					<li>
-						{include file="frontend/objects/article_summary.tpl"}
+						{include file="frontend/objects/article_summary.tpl" heading=$articleHeading}
 					</li>
 				{/foreach}
 			</ul>
