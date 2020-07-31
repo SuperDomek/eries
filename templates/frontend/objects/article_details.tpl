@@ -211,10 +211,11 @@
 					<div class="value">
 						{if $parsedCitations}
 							{foreach from=$parsedCitations item="parsedCitation"}
-								<p>{$parsedCitation->getCitationWithLinks()|strip_unsafe_html} {call_hook name="Templates::Article::Details::Reference" citation=$parsedCitation}</p>
+								{$parsedCitation->getCitationWithLinks()|strip_unsafe_html} {call_hook name="Templates::Article::Details::Reference" citation=$parsedCitation}
 							{/foreach}
 						{else}
-							{$publication->getData('citationsRaw')|escape|nl2br}
+							{*$publication->getData('citationsRaw')|escape|nl2br*}
+							{$publication->getData('citationsRaw')}
 						{/if}
 					</div>
 				</section>
