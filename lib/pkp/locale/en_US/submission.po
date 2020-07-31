@@ -440,6 +440,9 @@ msgstr "Change File"
 msgid "submission.citations"
 msgstr "References"
 
+msgid "submission.citations.preview"
+msgstr "References preview (reload page after changes)"
+
 msgid "submission.citations.description"
 msgstr "Enter each reference on a new line so that they can be extracted and recorded separately."
 
