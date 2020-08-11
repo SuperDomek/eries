@@ -246,6 +246,7 @@ class ReviewerForm extends Form {
 			'reviewDueDate' => __('reviewer.submission.reviewDueDate'),
 			'submissionReviewUrl' => __('common.url'),
 			'reviewerUserName' => __('user.username'),
+			'reviewGuidelines' => __('reviewer.article.reviewerGuidelines'),
 		));
 		// Allow the default template
 		$templateKeys[] = $this->_getMailTemplateKey($request->getContext());
@@ -399,7 +400,8 @@ class ReviewerForm extends Form {
 				'responseDueDate' => $responseDueDate,
 				'reviewDueDate' => $reviewDueDate,
 				'reviewerUserName' => $reviewer->getUsername(),
-				'submissionReviewUrl' => $dispatcher->url($request, ROUTE_PAGE, null, 'reviewer', 'submission', null, $reviewUrlArgs)
+				'submissionReviewUrl' => $dispatcher->url($request, ROUTE_PAGE, null, 'reviewer', 'submission', null, $reviewUrlArgs),
+				'reviewGuidelines' => $context->getLocalizedData('reviewGuidelines'),
 			));
 			if (!$mail->send($request)) {
 				import('classes.notification.NotificationManager');
