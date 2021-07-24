@@ -3,9 +3,9 @@
 /**
  * @file plugins/importexport/doaj/DOAJExportPlugin.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class DOAJExportPlugin
  * @ingroup plugins_importexport_doaj
@@ -24,7 +24,6 @@ define('DOAJ_API_URL_DEV', 'https://testdoaj.cottagelabs.com/api/v1/');
 define('DOAJ_API_OPERATION', 'articles');
 
 class DOAJExportPlugin extends PubObjectsExportPlugin {
-
 	/**
 	 * @copydoc Plugin::getName()
 	 */
@@ -101,21 +100,15 @@ class DOAJExportPlugin extends PubObjectsExportPlugin {
 
 	/**
 	 * @see PubObjectsExportPlugin::depositXML()
-	 * @param $objects PublishedArticle
+	 * @param $objects Submission
 	 * @param $context Context
 	 * @param $jsonString string Export JSON string
 	 * @return boolean Whether the JSON string has been registered
 	 */
 	function depositXML($objects, $context, $jsonString) {
 
-		$curlCh = curl_init();
-		if ($httpProxyHost = Config::getVar('proxy', 'http_host')) {
-			curl_setopt($curlCh, CURLOPT_PROXY, $httpProxyHost);
-			curl_setopt($curlCh, CURLOPT_PROXYPORT, Config::getVar('proxy', 'http_port', '80'));
-			if ($username = Config::getVar('proxy', 'username')) {
-				curl_setopt($curlCh, CURLOPT_PROXYUSERPWD, $username . ':' . Config::getVar('proxy', 'password'));
-			}
-		}
+		import('lib.pkp.classes.helpers.PKPCurlHelper');
+		$curlCh = PKPCurlHelper::getCurlObject();
 
 		curl_setopt($curlCh, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($curlCh, CURLOPT_POST, true);
@@ -149,7 +142,6 @@ class DOAJExportPlugin extends PubObjectsExportPlugin {
 		}
 		curl_close($curlCh);
 		return $result;
-
 	}
 
 	/**
@@ -201,24 +193,19 @@ class DOAJExportPlugin extends PubObjectsExportPlugin {
 
 	/**
 	 * Get the JSON for selected objects.
-	 * @param $object PublishedArticle
+	 * @param $object Submission
 	 * @param $filter string
 	 * @param $context Context
 	 * @return string JSON variable.
 	 */
 	function exportJSON($object, $filter, $context) {
-		$json = '';
-		$filterDao = DAORegistry::getDAO('FilterDAO');
+		$filterDao = DAORegistry::getDAO('FilterDAO'); /* @var $filterDao FilterDAO */
 		$exportFilters = $filterDao->getObjectsByGroup($filter);
 		assert(count($exportFilters) == 1); // Assert only a single serialization filter
 		$exportFilter = array_shift($exportFilters);
 		$exportDeployment = $this->_instantiateExportDeployment($context);
 		$exportFilter->setDeployment($exportDeployment);
-		$json = $exportFilter->execute($object, true);
-		return $json;
+		return $exportFilter->execute($object, true);
 	}
-
-
 }
-
 

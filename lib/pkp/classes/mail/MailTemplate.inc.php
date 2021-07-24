@@ -3,9 +3,9 @@
 /**
  * @file classes/mail/MailTemplate.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2000-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class MailTemplate
  * @ingroup mail
@@ -57,7 +57,7 @@ class MailTemplate extends Mail {
 		$this->emailKey = isset($emailKey) ? $emailKey : null;
 
 		// If a context wasn't specified, use the current request.
-		$request = Application::getRequest();
+		$request = Application::get()->getRequest();
 		if ($context === null) $context = $request->getContext();
 
 		$this->includeSignature = $includeSignature;
@@ -70,8 +70,7 @@ class MailTemplate extends Mail {
 		$this->addressFieldsEnabled = true;
 
 		if (isset($this->emailKey)) {
-			$emailTemplateDao = DAORegistry::getDAO('EmailTemplateDAO');
-			$emailTemplate = $emailTemplateDao->getEmailTemplate($this->emailKey, $this->locale, $context == null ? 0 : $context->getId());
+			$emailTemplate = Services::get('emailTemplate')->getByKey($context ? $context->getId() : CONTEXT_SITE, $this->emailKey);
 		}
 
 		$userSig = '';
@@ -82,9 +81,9 @@ class MailTemplate extends Mail {
 		}
 
 		if (isset($emailTemplate)) {
-			$this->setSubject($emailTemplate->getSubject());
-			$this->setBody($emailTemplate->getBody() . $userSig);
-			$this->enabled = $emailTemplate->getEnabled();
+			$this->setSubject($emailTemplate->getData('subject', $this->locale));
+			$this->setBody($emailTemplate->getData('body', $this->locale) . $userSig);
+			$this->enabled = $emailTemplate->getData('enabled');
 		} else {
 			$this->setBody($userSig);
 			$this->enabled = true;
@@ -93,11 +92,11 @@ class MailTemplate extends Mail {
 		// Default "From" to user if available, otherwise site/context principal contact
 		if ($user) {
 			$this->setFrom($user->getEmail(), $user->getFullName());
-		} elseif (is_null($context) || is_null($context->getSetting('contactEmail'))) {
+		} elseif (is_null($context) || is_null($context->getData('contactEmail'))) {
 			$site = $request->getSite();
 			$this->setFrom($site->getLocalizedContactEmail(), $site->getLocalizedContactName());
 		} else {
-			$this->setFrom($context->getSetting('contactEmail'), $context->getSetting('contactName'));
+			$this->setFrom($context->getData('contactEmail'), $context->getData('contactName'));
 		}
 
 		if ($context) {
@@ -140,7 +139,7 @@ class MailTemplate extends Mail {
 	 * @param $params array Associative array of variables to supply to the email template
 	 */
 	function assignParams($params = array()) {
-		$application = Application::getApplication();
+		$application = Application::get();
 		$request = $application->getRequest();
 		$site = $request->getSite();
 
@@ -148,7 +147,7 @@ class MailTemplate extends Mail {
 			// Add context-specific variables
 			$dispatcher = $application->getDispatcher();
 			$params = array_merge(array(
-				'principalContactSignature' => $this->context->getSetting('contactName'),
+				'principalContactSignature' => $this->context->getData('contactName'),
 				'contextName' => $this->context->getLocalizedName(),
 				'contextUrl' => $dispatcher->url($request, ROUTE_PAGE, $this->context->getPath()),
 			), $params);
@@ -184,46 +183,24 @@ class MailTemplate extends Mail {
 	}
 
 	/**
-	 * Processes form-submitted addresses for inclusion in
-	 * the recipient list
-	 * @param $currentList array Current recipient/cc/bcc list
-	 * @param $newAddresses array "Raw" form parameter for additional addresses
-	 */
-	function &processAddresses($currentList, &$newAddresses) {
-		foreach ($newAddresses as $newAddress) {
-			$regs = array();
-			// Match the form "My Name <my_email@my.domain.com>"
-			if (PKPString::regexp_match_get('/^([^<>' . "\n" . ']*[^<> ' . "\n" . '])[ ]*<(?P<email>' . PCRE_EMAIL_ADDRESS . ')>$/i', $newAddress, $regs)) {
-				$currentList[] = array('name' => $regs[1], 'email' => $regs['email']);
-
-			} elseif (PKPString::regexp_match_get('/^<?(?P<email>' . PCRE_EMAIL_ADDRESS . ')>?$/i', $newAddress, $regs)) {
-				$currentList[] = array('name' => '', 'email' => $regs['email']);
-
-			} elseif ($newAddress != '') {
-				$this->errorMessages[] = array('type' => MAIL_ERROR_INVALID_EMAIL, 'address' => $newAddress);
-			}
-		}
-		return $currentList;
-	}
-
-	/**
 	 * Send the email.
 	 * @return boolean false if there was a problem sending the email
 	 */
 	function send() {
 		if (isset($this->context)) {
-			$signature = $this->context->getSetting('emailSignature');
+			$signature = $this->context->getData('emailSignature');
 			if (strstr($this->getBody(), '{$templateSignature}') === false) {
 				$this->setBody($this->getBody() . "<br/>" . $signature);
 			} else {
 				$this->setBody(str_replace('{$templateSignature}', $signature, $this->getBody()));
 			}
 
-			$envelopeSender = $this->context->getSetting('envelopeSender');
+			$envelopeSender = $this->context->getData('envelopeSender');
 			if (!empty($envelopeSender) && Config::getVar('email', 'allow_envelope_sender')) $this->setEnvelopeSender($envelopeSender);
 		}
 
-		$user = defined('SESSION_DISABLE_INIT')?null:Request::getUser();
+		$request = Application::get()->getRequest();
+		$user = defined('SESSION_DISABLE_INIT')?null:$request->getUser();
 
 		if ($user && $this->bccSender) {
 			$this->addBcc($user->getEmail(), $user->getFullName());

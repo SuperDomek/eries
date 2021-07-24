@@ -3,9 +3,9 @@
 /**
  * @file tools/parseCitations.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class CitationsParsingTool
  * @ingroup tools
@@ -47,7 +47,7 @@ class CitationsParsingTool extends CommandLineTool {
 	 * Parse citations
 	 */
 	function execute() {
-		$submissionDao = Application::getSubmissionDAO();
+		$submissionDao = DAORegistry::getDAO('SubmissionDAO'); /* @var $submissionDao SubmissionDAO */
 		$citationDao = DAORegistry::getDAO('CitationDAO');
 		$contextDao = Application::getContextDAO();
 
@@ -57,8 +57,7 @@ class CitationsParsingTool extends CommandLineTool {
 				while ($context = $contexts->next()) {
 					$submissions = $submissionDao->getByContextId($context->getId());
 					while ($submission = $submissions->next()) {
-						$rawCitationList = $submission->getCitations();
-						$citationDao->importCitations($submission->getId(), $rawCitationList);
+						$this->_parseSubmission($submission);
 					}
 				}
 				break;
@@ -71,8 +70,7 @@ class CitationsParsingTool extends CommandLineTool {
 					}
 					$submissions = $submissionDao->getByContextId($contextId);
 					while ($submission = $submissions->next()) {
-						$rawCitationList = $submission->getCitations();
-						$citationDao->importCitations($submission->getId(), $rawCitationList);
+						$this->_parseSubmission($submission);
 					}
 				}
 				break;
@@ -83,13 +81,24 @@ class CitationsParsingTool extends CommandLineTool {
 						printf("Error: Skipping $submissionId. Unknown submission.\n");
 						continue;
 					}
-					$rawCitationList = $submission->getCitations();
-					$citationDao->importCitations($submission->getId(), $rawCitationList);
+					$this->_parseSubmission($submission);
 				}
 				break;
 			default:
 				$this->usage();
 				break;
+		}
+	}
+
+	/**
+	 * Parse the citations of one submission
+	 * @param Submission $submission
+	 */
+	private function _parseSubmission($submission) {
+		foreach ((array) $submission->getData('publications') as $publication) {
+			if (!empty($publication->getData('citationsRaw'))) {
+				DAORegistry::getDAO('CitationDAO')->importCitations($publication->getId(), $publication->getData('citationsRaw'));
+			}
 		}
 	}
 }

@@ -1,9 +1,9 @@
 {**
  * templates/frontend/pages/catalogCategory.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @brief Display the page to view a category of the catalog.
  *
@@ -23,6 +23,9 @@
 
 	{* Breadcrumb *}
 	{include file="frontend/components/breadcrumbs_catalog.tpl" type="category" parent=$parentCategory currentTitle=$category->getLocalizedTitle()}
+	<h1>
+		{$category->getLocalizedTitle()|escape}
+	</h1>
 
 	{* Count of articles in this category *}
 	<div class="article_count">
@@ -35,7 +38,7 @@
 	<div class="about_section{if $image} has_image{/if}{if $description} has_description{/if}">
 		{if $image}
 			<div class="cover" href="{url router=$smarty.const.ROUTE_PAGE page="catalog" op="fullSize" type="category" id=$category->getId()}">
-				<img src="{url router=$smarty.const.ROUTE_PAGE page="catalog" op="thumbnail" type="category" id=$category->getId()}" alt="{$category->getLocalizedTitle()|escape}" />
+				<img src="{url router=$smarty.const.ROUTE_PAGE page="catalog" op="thumbnail" type="category" id=$category->getId()}" alt="null" />
 			</div>
 		{/if}
 		<div class="description">
@@ -71,7 +74,7 @@
 		<ul class="cmp_article_list articles">
 			{foreach from=$publishedSubmissions item=article}
 				<li>
-					{include file="frontend/objects/article_summary.tpl"}
+					{include file="frontend/objects/article_summary.tpl" article=$article hideGalleys=true}
 				</li>
 			{/foreach}
 		</ul>

@@ -3,9 +3,9 @@
 /**
  * @file plugins/importexport/medra/classes/MedraWebservice.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class MedraWebservice
  * @ingroup plugins_importexport_medra_classes
@@ -19,7 +19,7 @@
 
 import('lib.pkp.classes.xml.XMLNode');
 
-define('MEDRA_WS_ENDPOINT_DEV', 'https://medra.dev.cineca.it/servlet/ws/medraWS');
+define('MEDRA_WS_ENDPOINT_DEV', 'https://www-medra-dev.medra.org/servlet/ws/medraWS');
 define('MEDRA_WS_ENDPOINT', 'https://www.medra.org/servlet/ws/medraWS');
 define('MEDRA_WS_RESPONSE_OK', 200);
 
@@ -105,16 +105,15 @@ class MedraWebservice {
 		}
 
 		// Prepare HTTP session.
-		$curlCh = curl_init ();
+		import('lib.pkp.classes.helpers.PKPCurlHelper');
+		$curlCh = PKPCurlHelper::getCurlObject();
+
 		curl_setopt($curlCh, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($curlCh, CURLOPT_POST, true);
 
 		// Set up basic authentication.
 		curl_setopt($curlCh, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
 		curl_setopt($curlCh, CURLOPT_USERPWD, $this->_auth);
-
-		// Set up SSL.
-		curl_setopt($curlCh, CURLOPT_SSL_VERIFYPEER, false);
 
 		// Make SOAP request.
 		curl_setopt($curlCh, CURLOPT_URL, $this->_endpoint);

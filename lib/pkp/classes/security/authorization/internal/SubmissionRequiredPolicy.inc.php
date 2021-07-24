@@ -2,9 +2,9 @@
 /**
  * @file classes/security/authorization/internal/SubmissionRequiredPolicy.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2000-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SubmissionRequiredPolicy
  * @ingroup security_authorization_internal
@@ -44,13 +44,13 @@ class SubmissionRequiredPolicy extends DataObjectRequiredPolicy {
 		if ($submissionId === false) return AUTHORIZATION_DENY;
 
 		// Validate the submission id.
-		$submissionDao = Application::getSubmissionDAO();
+		$submissionDao = DAORegistry::getDAO('SubmissionDAO'); /* @var $submissionDao SubmissionDAO */
 		$submission = $submissionDao->getById($submissionId);
 		if (!is_a($submission, 'Submission')) return AUTHORIZATION_DENY;
 
 		// Validate that this submission belongs to the current context.
 		$context = $this->_request->getContext();
-		if ($context->getId() !== $submission->getContextId()) return AUTHORIZATION_DENY;
+		if ($context->getId() != $submission->getData('contextId')) return AUTHORIZATION_DENY;
 
 		// Save the submission to the authorization context.
 		$this->addAuthorizedContextObject(ASSOC_TYPE_SUBMISSION, $submission);

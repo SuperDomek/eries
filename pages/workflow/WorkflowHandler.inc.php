@@ -3,9 +3,9 @@
 /**
  * @file pages/workflow/WorkflowHandler.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class WorkflowHandler
  * @ingroup pages_reviewer
@@ -39,6 +39,92 @@ class WorkflowHandler extends PKPWorkflowHandler {
 		);
 	}
 
+	/**
+	 * Setup variables for the template
+	 * @param $request Request
+	 */
+	function setupIndex($request) {
+		parent::setupIndex($request);
+
+		$templateMgr = TemplateManager::getManager($request);
+		$submission = $this->getAuthorizedContextObject(ASSOC_TYPE_SUBMISSION);
+
+		$submissionContext = $request->getContext();
+		if ($submission->getContextId() !== $submissionContext->getId()) {
+			$submissionContext = Services::get('context')->get($submission->getContextId());
+		}
+
+		$supportedSubmissionLocales = $submissionContext->getSupportedSubmissionLocales();
+		$localeNames = AppLocale::getAllLocales();
+		$locales = array_map(function($localeKey) use ($localeNames) {
+			return ['key' => $localeKey, 'label' => $localeNames[$localeKey]];
+		}, $supportedSubmissionLocales);
+
+		$latestPublication = $submission->getLatestPublication();
+
+		$latestPublicationApiUrl = $request->getDispatcher()->url($request, ROUTE_API, $submissionContext->getPath(), 'submissions/' . $submission->getId() . '/publications/' . $latestPublication->getId());
+		$temporaryFileApiUrl = $request->getDispatcher()->url($request, ROUTE_API, $submissionContext->getPath(), 'temporaryFiles');
+		$issueApiUrl = $request->getDispatcher()->url($request, ROUTE_API, $submissionContext->getData('urlPath'), 'issues/__issueId__');
+
+		import('classes.file.PublicFileManager');
+		$publicFileManager = new PublicFileManager();
+		$baseUrl = $request->getBaseUrl() . '/' . $publicFileManager->getContextFilesPath($submissionContext->getId());
+
+		$issueEntryForm = new APP\components\forms\publication\IssueEntryForm($latestPublicationApiUrl, $locales, $latestPublication, $submissionContext, $baseUrl, $temporaryFileApiUrl);
+
+		$sectionWordLimits = [];
+		$sectionDao = DAORegistry::getDAO('SectionDAO'); /* @var $sectionDao SectionDAO */
+		$sectionIterator = $sectionDao->getByContextId($submissionContext->getId());
+		while ($section = $sectionIterator->next()) {
+			$sectionWordLimits[$section->getId()] = (int) $section->getAbstractWordCount() ?? 0;
+		}
+
+		import('classes.components.forms.publication.AssignToIssueForm');
+		import('classes.components.forms.publication.PublishForm');
+		$templateMgr->setConstants([
+			'FORM_ASSIGN_TO_ISSUE',
+			'FORM_ISSUE_ENTRY',
+			'FORM_PUBLISH',
+		]);
+
+		$workflowData = $templateMgr->getTemplateVars('workflowData');
+
+		// Add the word limit to the existing title/abstract form
+		if (!empty($workflowData['components'][FORM_TITLE_ABSTRACT]) &&
+				array_key_exists($submission->getLatestPublication()->getData('sectionId'), $sectionWordLimits)) {
+			$limit = (int) $sectionWordLimits[$submission->getLatestPublication()->getData('sectionId')];
+			foreach ($workflowData['components'][FORM_TITLE_ABSTRACT]['fields'] as $key => $field) {
+				if ($field['name'] === 'abstract') {
+					$workflowData['components'][FORM_TITLE_ABSTRACT]['fields'][$key]['wordLimit'] = $limit;
+					break;
+				}
+			}
+		}
+
+		$assignToIssueUrl = $request->getDispatcher()->url(
+			$request,
+			ROUTE_COMPONENT,
+			null,
+			'modals.publish.AssignToIssueHandler',
+			'assign',
+			null,
+			[
+				'submissionId' => $submission->getId(),
+				'publicationId' => '__publicationId__',
+			]
+		);
+
+		$workflowData['components'][FORM_ISSUE_ENTRY] = $issueEntryForm->getConfig();
+		$workflowData['publicationFormIds'][] = FORM_ISSUE_ENTRY;
+		$workflowData['assignToIssueUrl'] = $assignToIssueUrl;
+		$workflowData['issueApiUrl'] = $issueApiUrl;
+		$workflowData['sectionWordLimits'] = $sectionWordLimits;
+		$workflowData['i18n']['schedulePublication'] = __('editor.submission.schedulePublication');
+		$workflowData['selectIssueLabel'] = __('publication.selectIssue');
+
+		$templateMgr->assign('workflowData', $workflowData);
+	}
+
 
 	//
 	// Protected helper methods
@@ -63,11 +149,21 @@ class WorkflowHandler extends PKPWorkflowHandler {
 	}
 
 	/**
-	 * @see PKPWorkflowHandler::isSubmissionReady()
+	 * @copydoc PKPWorkflowHandler::_getRepresentationsGridUrl()
 	 */
-	protected function isSubmissionReady($submission) {
-		$publishedArticleDao = DAORegistry::getDAO('PublishedArticleDAO');
-		return $publishedArticleDao->getByArticleId($submission->getId())?true:false;
+	protected function _getRepresentationsGridUrl($request, $submission) {
+		return $request->getDispatcher()->url(
+			$request,
+			ROUTE_COMPONENT,
+			null,
+			'grid.articleGalleys.ArticleGalleyGridHandler',
+			'fetchGrid',
+			null,
+			[
+				'submissionId' => $submission->getId(),
+				'publicationId' => '__publicationId__',
+			]
+		);
 	}
 }
 

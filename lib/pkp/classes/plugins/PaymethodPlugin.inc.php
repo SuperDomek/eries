@@ -3,9 +3,9 @@
 /**
  * @file classes/plugins/GenericPlugin.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class GenericPlugin
  * @ingroup plugins
@@ -16,13 +16,6 @@
 import('lib.pkp.classes.plugins.LazyLoadPlugin');
 
 abstract class PaymethodPlugin extends LazyLoadPlugin {
-	/**
-	 * Get the settings form for this plugin.
-	 * @param $context Context
-	 * @return Form
-	 */
-	abstract function getSettingsForm($context);
-
 	/**
 	 * Get the payment form for this plugin.
 	 * @param $context Context
@@ -38,6 +31,18 @@ abstract class PaymethodPlugin extends LazyLoadPlugin {
 	 */
 	function isConfigured($context) {
 		return true;
+	}
+
+	/**
+	 * Save settings for this payment method
+	 *
+	 * @param $params array Params that have already been
+	 * @param $slimRequest Request Slim request object
+	 * @param $request Request
+	 * @return array List of errors
+	 */
+	public function saveSettings($params, $slimRequest, $request) {
+		assert(false); // implement in child classes
 	}
 }
 

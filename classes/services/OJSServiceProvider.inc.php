@@ -3,9 +3,9 @@
 /**
  * @file classes/services/OJSServiceProvider.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2000-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class OJSServiceProvider
  * @ingroup services
@@ -13,33 +13,39 @@
  * @brief Utility class to package all OJS services
  */
 
-namespace OJS\Services;
+namespace APP\Services;
 
 use \Pimple\Container;
-use \PKP\Services\AuthorService;
-use \PKP\Services\UserService;
-use \OJS\Services\SubmissionService;
-use \OJS\Services\SectionService;
-use \OJS\Services\NavigationMenuService;
-use \OJS\Services\IssueService;
-use \OJS\Services\GalleyService;
+use \APP\Services\PublicationService;
+use \APP\Services\StatsEditorialService;
+use \APP\Services\StatsService;
+use \PKP\Services\PKPUserService;
+use \PKP\Services\PKPAuthorService;
+use \PKP\Services\PKPEmailTemplateService;
+use \PKP\Services\PKPSchemaService;
+use \PKP\Services\PKPSiteService;
 
 class OJSServiceProvider implements \Pimple\ServiceProviderInterface {
 
 	/**
 	 * Registers services
-	 * @param Pimple\Container $pimple
+	 * @param \Pimple\Container $pimple
 	 */
 	public function register(Container $pimple) {
 
 		// Author service
 		$pimple['author'] = function() {
-			return new AuthorService();
+			return new PKPAuthorService();
 		};
 
 		// Submission service
 		$pimple['submission'] = function() {
 			return new SubmissionService();
+		};
+
+		// Publication service
+		$pimple['publication'] = function() {
+			return new PublicationService();
 		};
 
 		// Issue service
@@ -64,12 +70,37 @@ class OJSServiceProvider implements \Pimple\ServiceProviderInterface {
 
 		// User service
 		$pimple['user'] = function() {
-			return new UserService();
+			return new PKPUserService();
 		};
 
-		// Statistics service
+		// Context service
+		$pimple['context'] = function() {
+			return new ContextService();
+		};
+
+		// Site service
+		$pimple['site'] = function() {
+			return new PKPSiteService();
+		};
+
+		// Email Templates service
+		$pimple['emailTemplate'] = function() {
+			return new PKPEmailTemplateService();
+		};
+
+		// Schema service
+		$pimple['schema'] = function() {
+			return new PKPSchemaService();
+		};
+
+		// Publication statistics service
 		$pimple['stats'] = function() {
-			return new \PKP\Services\PKPStatsService();
+			return new StatsService();
+		};
+
+		// Editorial statistics service
+		$pimple['editorialStats'] = function() {
+			return new StatsEditorialService();
 		};
 	}
 }

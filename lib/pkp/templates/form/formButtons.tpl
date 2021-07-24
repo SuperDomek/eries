@@ -1,9 +1,9 @@
 {**
  * templates/form/formButtons.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2000-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Form button bar
  * Parameters:
@@ -23,12 +23,18 @@
 
 	{* IF we have confirmation dialog text specified, load buttonConfirmationLinkAction for the submit button *}
 	{if $FBV_confirmSubmit}
-		{include file="core:linkAction/buttonConfirmationLinkAction.tpl"
+		{include file="linkAction/buttonConfirmationLinkAction.tpl"
 				buttonSelector="#"|concat:$submitButtonId
 				dialogText="$FBV_confirmSubmit"}
 	{/if}
 
-	{fbvElement type="submit" class="submitFormButton" id=$submitButtonId label=$FBV_submitText translate=$FBV_translate disabled=$FBV_submitDisabled}
+	{fbvElement type="submit" class="{if $FBV_saveText}pkp_button_primary{/if} submitFormButton" id=$submitButtonId label=$FBV_submitText translate=$FBV_translate disabled=$FBV_submitDisabled}
+
+	{* Save button *}
+	{if $FBV_saveText}
+		{assign var=saveButtonId value="saveFormButton"|concat:"-"|uniqid}
+		{fbvElement type="submit" class="saveFormButton" name="saveFormButton" id=$saveButtonId value=$FBV_saveValue label=$FBV_saveText disabled=$FBV_submitDisabled}
+	{/if}
 
 	{* Loading indicator *}
 	<span class="pkp_spinner"></span>

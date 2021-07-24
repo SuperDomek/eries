@@ -3,9 +3,9 @@
 /**
  * @file controllers/grid/issueGalleys/IssueGalleyGridHandler.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2000-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class IssueGalleyGridHandler
  * @ingroup issue_galley
@@ -150,7 +150,7 @@ class IssueGalleyGridHandler extends GridHandler {
 		$this->addColumn(
 			new GridColumn(
 				'publicGalleyId',
-				'submission.layout.publicGalleyId',
+				'submission.publisherId',
 				null,
 				null,
 				$issueGalleyGridCellProvider
@@ -262,7 +262,7 @@ class IssueGalleyGridHandler extends GridHandler {
 	 * @param $request PKPRequest
 	 */
 	function delete($args, $request) {
-		$issueGalleyDao = DAORegistry::getDAO('IssueGalleyDAO');
+		$issueGalleyDao = DAORegistry::getDAO('IssueGalleyDAO'); /* @var $issueGalleyDao IssueGalleyDAO */
 		$issueGalley = $this->getAuthorizedContextObject(ASSOC_TYPE_ISSUE_GALLEY);
 		if ($issueGalley && $request->checkCSRF()) {
 			$issueGalleyDao->deleteObject($issueGalley);
@@ -276,7 +276,7 @@ class IssueGalleyGridHandler extends GridHandler {
 	 */
 	protected function loadData($request, $filter) {
 		$issue = $this->getAuthorizedContextObject(ASSOC_TYPE_ISSUE);
-		$issueGalleyDao = DAORegistry::getDAO('IssueGalleyDAO');
+		$issueGalleyDao = DAORegistry::getDAO('IssueGalleyDAO'); /* @var $issueGalleyDao IssueGalleyDAO */
 		return $issueGalleyDao->getByIssueId($issue->getId());
 	}
 }

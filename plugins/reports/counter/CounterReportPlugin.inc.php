@@ -3,9 +3,9 @@
 /**
  * @file plugins/reports/counter/CounterReportPlugin.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class CounterReportPlugin
  * @ingroup plugins_reports_counter
@@ -150,7 +150,7 @@ class CounterReportPlugin extends ReportPlugin {
 						Validation::redirectLogin();
 					}
 					import('plugins.reports.counter.classes.LegacyJR1');
-					$r3jr1 = new LegacyJR1($this->getTemplatePath());
+					$r3jr1 = new LegacyJR1($this);
 					$r3jr1->display($request);
 					return;
 				case 'fetch':
@@ -220,7 +220,7 @@ class CounterReportPlugin extends ReportPlugin {
 			$metricType = OJS_METRIC_TYPE_LEGACY_COUNTER;
 			$filter = array();
 		} else {
-			$metricType = OJS_METRIC_TYPE_COUNTER;
+			$metricType = METRIC_TYPE_COUNTER;
 			$filter = array(STATISTICS_DIMENSION_ASSOC_TYPE => ASSOC_TYPE_SUBMISSION_FILE);
 		}
 		$metricsDao = DAORegistry::getDAO('MetricsDAO'); /* @var $metricsDao MetricsDAO */

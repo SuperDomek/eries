@@ -3,9 +3,9 @@
 /**
  * @file classes/issue/IssueAction.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class IssueAction
  * @ingroup issue
@@ -15,13 +15,6 @@
  */
 
 class IssueAction {
-
-	/**
-	 * Constructor.
-	 */
-	function __construct() {
-	}
-
 	/**
 	 * Actions.
 	 */
@@ -38,7 +31,7 @@ class IssueAction {
 		assert($journal->getId() == $issue->getJournalId());
 
 		// Check subscription state.
-		$result = $journal->getSetting('publishingMode') == PUBLISHING_MODE_SUBSCRIPTION &&
+		$result = $journal->getData('publishingMode') == PUBLISHING_MODE_SUBSCRIPTION &&
 			$issue->getAccessStatus() != ISSUE_ACCESS_OPEN && (
 				is_null($issue->getOpenAccessDate()) ||
 				strtotime($issue->getOpenAccessDate()) > time()
@@ -51,19 +44,19 @@ class IssueAction {
 	 * Checks if this user is granted reader access to pre-publication articles
 	 * based on their roles in the journal (i.e. Manager, Editor, etc).
 	 * @param $journal Journal
-	 * @param $article Article
+	 * @param $submission Submission
 	 * @param $user User
 	 * @return bool
 	 */
-	function allowedPrePublicationAccess($journal, $article, $user) {
+	function allowedPrePublicationAccess($journal, $submission, $user) {
 		if ($this->_roleAllowedPrePublicationAccess($journal, $user)) return true;
 
 		if ($user && $journal) {
 			$journalId = $journal->getId();
 			$userId = $user->getId();
 
-			$stageAssignmentDao = DAORegistry::getDAO('StageAssignmentDAO');
-			$stageAssignments = $stageAssignmentDao->getBySubmissionAndRoleId($article->getId(), ROLE_ID_AUTHOR, null, $userId);
+			$stageAssignmentDao = DAORegistry::getDAO('StageAssignmentDAO'); /* @var $stageAssignmentDao StageAssignmentDAO */
+			$stageAssignments = $stageAssignmentDao->getBySubmissionAndRoleId($submission->getId(), ROLE_ID_AUTHOR, null, $userId);
 			$stageAssignment = $stageAssignments->next();
 			if ($stageAssignment) return true;
 		}
@@ -90,27 +83,31 @@ class IssueAction {
 	 * @return bool
 	 */
 	function subscribedUser($user, $journal, $issueId = null, $articleId = null) {
-		$subscriptionDao = DAORegistry::getDAO('IndividualSubscriptionDAO');
-		$publishedArticleDao = DAORegistry::getDAO('PublishedArticleDAO');
-		$publishedArticle = $publishedArticleDao->getByArticleId($articleId, null, true);
+		$subscriptionDao = DAORegistry::getDAO('IndividualSubscriptionDAO'); /* @var $subscriptionDao IndividualSubscriptionDAO */
+		$submissionDao = DAORegistry::getDAO('SubmissionDAO'); /* @var $submissionDao SubmissionDAO */
+		$submission = $submissionDao->getById($articleId);
 		$result = false;
 		if (isset($user) && isset($journal)) {
-			if ($publishedArticle && $this->allowedPrePublicationAccess($journal, $publishedArticle, $user)) {
+			if ($submission && $this->allowedPrePublicationAccess($journal, $submission, $user)) {
 				 $result = true;
 			} else {
 				$result = $subscriptionDao->isValidIndividualSubscription($user->getId(), $journal->getId());
 			}
 
 			// If no valid subscription, check if there is an expired subscription
-			// that was valid during publication date of requested content
-			if (!$result && $journal->getSetting('subscriptionExpiryPartial')) {
-				if (isset($articleId)) {
-					if (isset($publishedArticle)) {
-						import('classes.subscription.SubscriptionDAO');
-						$result = $subscriptionDao->isValidIndividualSubscription($user->getId(), $journal->getId(), SUBSCRIPTION_DATE_END, $publishedArticle->getDatePublished());
+			// that was valid during publication date of any one of the submission's
+			// publications
+			if (!$result && $journal->getData('subscriptionExpiryPartial')) {
+				if (isset($submission) && !empty($submission->getData('publications'))) {
+					import('classes.subscription.SubscriptionDAO');
+					foreach ($submission->getData('publications') as $publication) {
+						if ($subscriptionDao->isValidIndividualSubscription($user->getId(), $journal->getId(), SUBSCRIPTION_DATE_END, $publication->getData('datePublished'))) {
+							$result = true;
+							break;
+						}
 					}
 				} else if (isset($issueId)) {
-					$issueDao = DAORegistry::getDAO('IssueDAO');
+					$issueDao = DAORegistry::getDAO('IssueDAO'); /* @var $issueDao IssueDAO */
 					$issue = $issueDao->getById($issueId);
 					if (isset($issue) && $issue->getPublished()) {
 						import('classes.subscription.SubscriptionDAO');
@@ -132,23 +129,22 @@ class IssueAction {
 	 * @return bool
 	 */
 	function subscribedDomain($request, $journal, $issueId = null, $articleId = null) {
-		$subscriptionDao = DAORegistry::getDAO('InstitutionalSubscriptionDAO');
+		$subscriptionDao = DAORegistry::getDAO('InstitutionalSubscriptionDAO'); /* @var $subscriptionDao InstitutionalSubscriptionDAO */
 		$result = false;
 		if (isset($journal)) {
 			$result = $subscriptionDao->isValidInstitutionalSubscription($request->getRemoteDomain(), $request->getRemoteAddr(), $journal->getId());
 
 			// If no valid subscription, check if there is an expired subscription
 			// that was valid during publication date of requested content
-			if (!$result && $journal->getSetting('subscriptionExpiryPartial')) {
+			if (!$result && $journal->getData('subscriptionExpiryPartial')) {
 				if (isset($articleId)) {
-					$publishedArticleDao = DAORegistry::getDAO('PublishedArticleDAO');
-					$publishedArticle = $publishedArticleDao->getByArticleId($articleId, null, true);
-					if (isset($publishedArticle)) {
+					$submission = Services::get('submission')->get($articleId);
+					if ($submission->getData('status') === STATUS_PUBLISHED) {
 						import('classes.subscription.SubscriptionDAO');
-						$result = $subscriptionDao->isValidInstitutionalSubscription($request->getRemoteDomain(), $request->getRemoteAddr(), $journal->getId(), SUBSCRIPTION_DATE_END, $publishedArticle->getDatePublished());
+						$result = $subscriptionDao->isValidInstitutionalSubscription($request->getRemoteDomain(), $request->getRemoteAddr(), $journal->getId(), SUBSCRIPTION_DATE_END, $submission->getDatePublished());
 					}
 				} else if (isset($issueId)) {
-					$issueDao = DAORegistry::getDAO('IssueDAO');
+					$issueDao = DAORegistry::getDAO('IssueDAO'); /* @var $issueDao IssueDAO */
 					$issue = $issueDao->getById($issueId);
 					if (isset($issue) && $issue->getPublished()) {
 						import('classes.subscription.SubscriptionDAO');
@@ -158,7 +154,7 @@ class IssueAction {
 			}
 		}
 		HookRegistry::call('IssueAction::subscribedDomain', array(&$request, &$journal, &$issueId, &$articleId, &$result));
-		return $result;
+		return (boolean) $result;
 	}
 
 	/**
@@ -169,7 +165,7 @@ class IssueAction {
 	 * @return bool
 	 */
 	function _roleAllowedPrePublicationAccess($journal, $user) {
-		$roleDao = DAORegistry::getDAO('RoleDAO');
+		$roleDao = DAORegistry::getDAO('RoleDAO'); /* @var $roleDao RoleDAO */
 		if ($user && $journal) {
 			$journalId = $journal->getId();
 			$userId = $user->getId();

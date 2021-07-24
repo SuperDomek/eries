@@ -3,9 +3,9 @@
 /**
  * @file controllers/grid/articleGalleys/ArticleGalleyGridRow.inc.php
  *
- * Copyright (c) 2016-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2016-2020 Simon Fraser University
+ * Copyright (c) 2000-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ArticleGalleyGridRow
  * @ingroup controllers_grid_articleGalleys
@@ -19,17 +19,22 @@ class ArticleGalleyGridRow extends GridRow {
 	/** @var Submission **/
 	var $_submission;
 
-	/** @var array */
-	var $_userRoles;
+	/** @var Publication **/
+	var $_publication;
+
+	/** @var boolean */
+	var $_isEditable;
 
 	/**
 	 * Constructor
 	 * @param $submission Submission
-	 * @param $userRoles array
+	 * @param $isEditable boolean
 	 */
-	function __construct($submission, $userRoles) {
+	function __construct($submission, $publication, $isEditable) {
 		$this->_submission = $submission;
-		$this->_userRoles = $userRoles;
+		$this->_publication = $publication;
+		$this->_isEditable = $isEditable;
+
 		parent::__construct();
 	}
 
@@ -51,8 +56,7 @@ class ArticleGalleyGridRow extends GridRow {
 			$actionArgs = $this->getRequestArgs();
 			$actionArgs['representationId'] = $rowId;
 
-			// Authors should not see these links
-			if (array_intersect(array(ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR, ROLE_ID_ASSISTANT), $this->_userRoles)) {
+			if ($this->_isEditable) {
 				// Add row-level actions
 				import('lib.pkp.classes.linkAction.request.AjaxModal');
 				$this->addAction(new LinkAction(
@@ -74,7 +78,7 @@ class ArticleGalleyGridRow extends GridRow {
 						$request, $this->getSubmission()->getId(), WORKFLOW_STAGE_ID_PRODUCTION,
 						array(ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR, ROLE_ID_ASSISTANT),
 						SUBMISSION_FILE_PROOF, ASSOC_TYPE_REPRESENTATION, $rowId,
-						null, $galley->getFileId()
+						null
 					));
 				}
 
@@ -102,12 +106,21 @@ class ArticleGalleyGridRow extends GridRow {
 	}
 
 	/**
+	 * Get the publication for this row (already authorized)
+	 * @return Publication
+	 */
+	function getPublication() {
+		return $this->_publication;
+	}
+
+	/**
 	 * Get the base arguments that will identify the data in the grid.
 	 * @return array
 	 */
 	function getRequestArgs() {
 		return array(
 			'submissionId' => $this->getSubmission()->getId(),
+			'publicationId' => $this->getPublication()->getId(),
 		);
 	}
 }

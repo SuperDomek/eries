@@ -3,7 +3,7 @@
  *
  * Copyright (c) 2014-2017 Simon Fraser University
  * Copyright (c) 2003-2017 John Willinsky
- * Copyright (c) 2019 Dominik Bláha
+ * Copyright (c) 2017 Dominik Bláha
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @brief View of an Issue which displays a full table of contents for homepage.
@@ -16,6 +16,19 @@
  * @uses $publishedArticles array Lists of articles published in this issue
  *   sorted by section.
  *}
+
+{if !$heading}
+	{assign var="heading" value="h2"}
+{/if}
+{assign var="articleHeading" value="h3"}
+{if $heading == "h3"}
+	{assign var="articleHeading" value="h4"}
+{elseif $heading == "h4"}
+	{assign var="articleHeading" value="h5"}
+{elseif $heading == "h5"}
+	{assign var="articleHeading" value="h6"}
+{/if}
+
 <div class="obj_issue_toc">
 
 	{* Issue introduction area *}
@@ -35,7 +48,7 @@
           </div>
 
           {* Description *}
-          
+
           {if $issue->hasDescription()}
             <div class="description">
               <a href="{url op="view" page="issue" path=$issue->getBestIssueId()}">
@@ -43,7 +56,7 @@
               </a>
             </div>
           {/if}
-          
+
           {* Published date *}
           {if $issue->getDatePublished()}
             <div class="published">
@@ -73,8 +86,8 @@
       </div>
 		{/if}
 
-		
-		
+
+
 
 		{* PUb IDs (eg - DOI) *}
 		{foreach from=$pubIdPlugins item=pubIdPlugin}
@@ -102,25 +115,25 @@
 			{/if}
 		{/foreach}
 
-		
+
 	</div>
 
-	
+
 
 	{* Articles *}
 	<div class="sections">
-	{foreach name=sections from=$publishedArticles item=section}
+	{foreach name=sections from=$publishedSubmissions item=section}
 		<div class="section">
 		{if $section.articles}
 			{if $section.title}
-				<h2>
+				<{$heading}>
 					{$section.title|escape}
-				</h2>
+				</{$heading}>
 			{/if}
-			<ul class="articles">
+			<ul class="cmp_article_list articles">
 				{foreach from=$section.articles item=article}
 					<li>
-						{include file="frontend/objects/article_summary.tpl"}
+						{include file="frontend/objects/article_summary.tpl" heading=$articleHeading}
 					</li>
 				{/foreach}
 			</ul>

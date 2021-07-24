@@ -3,9 +3,9 @@
 /**
  * @file classes/payment/ojs/OJSCompletedPaymentDAO.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class OJSCompletedPaymentDAO
  * @ingroup payment
@@ -19,7 +19,7 @@ import('lib.pkp.classes.payment.CompletedPayment');
 
 class OJSCompletedPaymentDAO extends DAO {
 	/**
-	 * Retrieve a ComplatedPayment by its ID.
+	 * Retrieve a CompletedPayment by its ID.
 	 * @param $completedPaymentId int
 	 * @param $contextId int optional
 	 * @return CompletedPayment
@@ -35,7 +35,7 @@ class OJSCompletedPaymentDAO extends DAO {
 
 		$returner = null;
 		if ($result->RecordCount() != 0) {
-			$returner = $this->_returnPaymentFromRow($result->GetRowAssoc(false));
+			$returner = $this->_fromRow($result->GetRowAssoc(false));
 		}
 
 		$result->Close();

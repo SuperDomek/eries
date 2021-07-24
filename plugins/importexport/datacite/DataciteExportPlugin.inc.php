@@ -3,9 +3,9 @@
 /**
  * @file plugins/importexport/datacite/DataciteExportPlugin.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class DataciteExportPlugin
  * @ingroup plugins_importexport_datacite
@@ -197,7 +197,7 @@ class DataciteExportPlugin extends DOIPubIdExportPlugin {
 	 * @copydoc PubObjectsExportPlugin::depositXML()
 	 */
 	function depositXML($object, $context, $filename) {
-		$request = Application::getRequest();
+		$request = Application::get()->getRequest();
 		// Get the DOI and the URL for the object.
 		$doi = $object->getStoredPubId('doi');
 		assert(!empty($doi));
@@ -206,15 +206,11 @@ class DataciteExportPlugin extends DOIPubIdExportPlugin {
 		}
 		$url = $this->_getObjectUrl($request, $context, $object);
 		assert(!empty($url));
+
 		// Prepare HTTP session.
-		$curlCh = curl_init();
-		if ($httpProxyHost = Config::getVar('proxy', 'http_host')) {
-			curl_setopt($curlCh, CURLOPT_PROXY, $httpProxyHost);
-			curl_setopt($curlCh, CURLOPT_PROXYPORT, Config::getVar('proxy', 'http_port', '80'));
-			if ($username = Config::getVar('proxy', 'username')) {
-				curl_setopt($curlCh, CURLOPT_PROXYUSERPWD, $username . ':' . Config::getVar('proxy', 'password'));
-			}
-		}
+		import('lib.pkp.classes.helpers.PKPCurlHelper');
+		$curlCh = PKPCurlHelper::getCurlObject();
+
 		curl_setopt($curlCh, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($curlCh, CURLOPT_POST, true);
 		// Set up basic authentication.
@@ -222,8 +218,6 @@ class DataciteExportPlugin extends DOIPubIdExportPlugin {
 		$password = $this->getSetting($context->getId(), 'password');
 		curl_setopt($curlCh, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
 		curl_setopt($curlCh, CURLOPT_USERPWD, "$username:$password");
-		// Set up SSL.
-		curl_setopt($curlCh, CURLOPT_SSL_VERIFYPEER, false);
 		// Transmit meta-data.
 		assert(is_readable($filename));
 		$payload = file_get_contents($filename);
@@ -395,7 +389,7 @@ class DataciteExportPlugin extends DOIPubIdExportPlugin {
 	 * Get the canonical URL of an object.
 	 * @param $request Request
 	 * @param $context Context
-	 * @param $object Issue|PublishedArticle|ArticleGalley
+	 * @param $object Issue|Submission|ArticleGalley
 	 */
 	function _getObjectUrl($request, $context, $object) {
 		$router = $request->getRouter();
@@ -406,21 +400,20 @@ class DataciteExportPlugin extends DOIPubIdExportPlugin {
 			if ($cache->isCached('articles', $articleId)) {
 				$article = $cache->get('articles', $articleId);
 			} else {
-				$articleDao = DAORegistry::getDAO('PublishedArticleDAO'); /* @var $articleDao PublishedArticleDAO */
-				$article = $articleDao->getByArticleId($articleId, $context->getId(), true);
+				$article = Services::get('submission')->get($articleId);
 			}
-			assert(is_a($article, 'PublishedArticle'));
+			assert(is_a($article, 'Submission'));
 		}
 		$url = null;
 		switch (true) {
 			case is_a($object, 'Issue'):
 				$url = $router->url($request, $context->getPath(), 'issue', 'view', $object->getBestIssueId(), null, null, true);
 				break;
-			case is_a($object, 'PublishedArticle'):
-				$url = $router->url($request, $context->getPath(), 'article', 'view', $object->getBestArticleId(), null, null, true);
+			case is_a($object, 'Submission'):
+				$url = $router->url($request, $context->getPath(), 'article', 'view', $object->getBestId(), null, null, true);
 				break;
 			case is_a($object, 'ArticleGalley'):
-				$url = $router->url($request, $context->getPath(), 'article', 'view', array($article->getBestArticleId(), $object->getBestGalleyId()), null, null, true);
+				$url = $router->url($request, $context->getPath(), 'article', 'view', array($article->getBestId(), $object->getBestGalleyId()), null, null, true);
 				break;
 		}
 		if ($this->isTestMode($context)) {

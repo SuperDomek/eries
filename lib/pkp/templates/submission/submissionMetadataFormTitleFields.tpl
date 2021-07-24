@@ -1,13 +1,19 @@
 {**
  * templates/submission/submissionMetadataFormTitleFields.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Submission's metadata form title fields. To be included in any form that wants to handle
  * submission metadata.
  *}
+{if $formParams.submissionVersion && ($formParams.submissionVersion < $currentSubmissionVersion)}
+  {assign var=readOnly value=1}
+{else}
+	{assign var=readOnly value=0}
+{/if}
+{fbvElement type="hidden" name="submissionVersion" id="submissionVersion" value=$formParams.submissionVersion}
 <div class="pkp_helpers_clear">
 	{* EDIT removed field prefix*}
 	{fbvElement type="hidden" name="prefix" id="prefix" value=$prefix}

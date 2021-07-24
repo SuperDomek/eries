@@ -3,9 +3,9 @@
 /**
  * @file classes/user/form/IdentityForm.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPProfileForm
  * @ingroup user_form
@@ -27,7 +27,7 @@ class IdentityForm extends BaseProfileForm {
 
 		// the users register for the site, thus
 		// the site primary locale is the required default locale
-		$site = Application::getRequest()->getSite();
+		$site = Application::get()->getRequest()->getSite();
 		$this->addSupportedFormLocale($site->getPrimaryLocale());
 
 		// Validation checks for this form
@@ -51,7 +51,7 @@ class IdentityForm extends BaseProfileForm {
 		$templateMgr = TemplateManager::getManager($request);
 
 		$user = $this->getUser();
-		$userDao = DAORegistry::getDAO('UserDAO');
+		$userDao = DAORegistry::getDAO('UserDAO'); /* @var $userDao UserDAO */
 		$templateMgr->assign(array(
 			'username' => $user->getUsername(),
 		));
@@ -84,17 +84,17 @@ class IdentityForm extends BaseProfileForm {
 	}
 
 	/**
-	 * Save identity settings.
+	 * @copydoc Form::execute()
 	 */
-	function execute() {
-		$request = Application::getRequest();
+	function execute(...$functionArgs) {
+		$request = Application::get()->getRequest();
 		$user = $request->getUser();
 
 		$user->setGivenName($this->getData('givenName'), null);
 		$user->setFamilyName($this->getData('familyName'), null);
 		$user->setPreferredPublicName($this->getData('preferredPublicName'), null);
 
-		parent::execute();
+		parent::execute(...$functionArgs);
 	}
 }
 

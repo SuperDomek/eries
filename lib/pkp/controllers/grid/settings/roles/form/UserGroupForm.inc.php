@@ -3,9 +3,9 @@
 /**
  * @file controllers/grid/settings/roles/form/UserGroupForm.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class UserGroupForm
  * @ingroup controllers_grid_settings_roles_form
@@ -79,7 +79,7 @@ class UserGroupForm extends Form {
 	 * @copydoc Form::initData()
 	 */
 	function initData() {
-		$userGroupDao = DAORegistry::getDAO('UserGroupDAO');
+		$userGroupDao = DAORegistry::getDAO('UserGroupDAO'); /* @var $userGroupDao UserGroupDAO */
 		$userGroup = $userGroupDao->getById($this->getUserGroupId());
 		$stages = WorkflowStageDAO::getWorkflowStageTranslationKeys();
 		$this->setData('stages', $stages);
@@ -102,8 +102,10 @@ class UserGroupForm extends Form {
 				'assignedStages' => array_keys($assignedStages),
 				'showTitle' => $userGroup->getShowTitle(),
 				'permitSelfRegistration' => $userGroup->getPermitSelfRegistration(),
+				'permitMetadataEdit' => $userGroup->getPermitMetadataEdit(),
 				'recommendOnly' => $userGroup->getRecommendOnly(),
 			);
+
 			foreach ($data as $field => $value) {
 				$this->setData($field, $value);
 			}
@@ -114,7 +116,7 @@ class UserGroupForm extends Form {
 	 * @copydoc Form::readInputData()
 	 */
 	function readInputData() {
-		$this->readUserVars(array('roleId', 'name', 'abbrev', 'assignedStages', 'showTitle', 'permitSelfRegistration', 'recommendOnly'));
+		$this->readUserVars(array('roleId', 'name', 'abbrev', 'assignedStages', 'showTitle', 'permitSelfRegistration', 'recommendOnly', 'permitMetadataEdit'));
 	}
 
 	/**
@@ -123,7 +125,7 @@ class UserGroupForm extends Form {
 	function fetch($request, $template = null, $display = false) {
 		$templateMgr = TemplateManager::getManager($request);
 
-		$roleDao = DAORegistry::getDAO('RoleDAO');
+		$roleDao = DAORegistry::getDAO('RoleDAO'); /* @var $roleDao RoleDAO */
 		$templateMgr->assign('roleOptions', Application::getRoleNames(true));
 
 		// Users can't edit the role once user group is created.
@@ -132,6 +134,7 @@ class UserGroupForm extends Form {
 		$templateMgr->assign('disableRoleSelect', $disableRoleSelect);
 		$templateMgr->assign('selfRegistrationRoleIds', $this->getPermitSelfRegistrationRoles());
 		$templateMgr->assign('recommendOnlyRoleIds', $this->getRecommendOnlyRoles());
+		$templateMgr->assign('notChangeMetadataEditPermissionRoles', UserGroupDAO::getNotChangeMetadataEditPermissionRoles());
 
 		return parent::fetch($request, $template, $display);
 	}
@@ -155,11 +158,13 @@ class UserGroupForm extends Form {
 	/**
 	 * @copydoc Form::execute()
 	 */
-	function execute() {
-		$request = Application::getRequest();
+	function execute(...$functionParams) {
+		parent::execute(...$functionParams);
+
+		$request = Application::get()->getRequest();
 		$userGroupId = $this->getUserGroupId();
-		$userGroupDao = DAORegistry::getDAO('UserGroupDAO');
-		$roleDao = DAORegistry::getDAO('RoleDAO');
+		$userGroupDao = DAORegistry::getDAO('UserGroupDAO'); /* @var $userGroupDao UserGroupDAO */
+		$roleDao = DAORegistry::getDAO('RoleDAO'); /* @var $roleDao RoleDAO */
 
 		// Check if we are editing an existing user group or creating another one.
 		if ($userGroupId == null) {
@@ -169,15 +174,37 @@ class UserGroupForm extends Form {
 			$userGroup->setDefault(false);
 			$userGroup->setShowTitle($this->getData('showTitle'));
 			$userGroup->setPermitSelfRegistration($this->getData('permitSelfRegistration') && in_array($userGroup->getRoleId(), $this->getPermitSelfRegistrationRoles()));
+			$userGroup->setPermitMetadataEdit($this->getData('permitMetadataEdit') && !in_array($this->getData('roleId'), UserGroupDAO::getNotChangeMetadataEditPermissionRoles()));
+			if (in_array($this->getData('roleId'), UserGroupDAO::getNotChangeMetadataEditPermissionRoles())) {
+				$userGroup->setPermitMetadataEdit(true);
+			}
+
 			$userGroup->setRecommendOnly($this->getData('recommendOnly') && in_array($userGroup->getRoleId(), $this->getRecommendOnlyRoles()));
 			$userGroup = $this->_setUserGroupLocaleFields($userGroup, $request);
+
 			$userGroupId = $userGroupDao->insertObject($userGroup);
 		} else {
 			$userGroup = $userGroupDao->getById($userGroupId);
 			$userGroup = $this->_setUserGroupLocaleFields($userGroup, $request);
 			$userGroup->setShowTitle($this->getData('showTitle'));
 			$userGroup->setPermitSelfRegistration($this->getData('permitSelfRegistration') && in_array($userGroup->getRoleId(), $this->getPermitSelfRegistrationRoles()));
+			$userGroup->setPermitMetadataEdit($this->getData('permitMetadataEdit') && !in_array($userGroup->getRoleId(), UserGroupDAO::getNotChangeMetadataEditPermissionRoles()));
+			if (in_array($userGroup->getRoleId(), UserGroupDAO::getNotChangeMetadataEditPermissionRoles())) {
+				$userGroup->setPermitMetadataEdit(true);
+			} else {
+				$stageAssignmentDao = DAORegistry::getDAO('StageAssignmentDAO'); /** @var stageAssignmentDao StageAssignmentDAO */
+				$allUserAssignments = $stageAssignmentDao
+					->getByUserGroupId($userGroupId, $this->getContextId())
+					->toAssociativeArray();
+
+				foreach($allUserAssignments as $userAssignment) {
+					$userAssignment->setCanChangeMetadata($userGroup->getPermitMetadataEdit());
+					$stageAssignmentDao->updateObject($userAssignment);
+				}
+			}
+			
 			$userGroup->setRecommendOnly($this->getData('recommendOnly') && in_array($userGroup->getRoleId(), $this->getRecommendOnlyRoles()));
+
 			$userGroupDao->updateObject($userGroup);
 		}
 
@@ -201,7 +228,7 @@ class UserGroupForm extends Form {
 	 */
 	function _assignStagesToUserGroup($userGroupId, $userAssignedStages) {
 		$contextId = $this->getContextId();
-		$userGroupDao = DAORegistry::getDAO('UserGroupDAO');
+		$userGroupDao = DAORegistry::getDAO('UserGroupDAO'); /* @var $userGroupDao UserGroupDAO */
 
 		// Current existing workflow stages.
 		$stages = WorkflowStageDAO::getWorkflowStageTranslationKeys();

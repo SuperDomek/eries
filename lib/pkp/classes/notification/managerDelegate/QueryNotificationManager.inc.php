@@ -3,9 +3,9 @@
 /**
  * @file classes/notification/managerDelegate/QueryNotificationManager.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class QueryNotificationManager
  * @ingroup managerDelegate
@@ -45,7 +45,7 @@ class QueryNotificationManager extends NotificationManagerDelegate {
 	 */
 	public function getNotificationMessage($request, $notification) {
 		assert($notification->getAssocType() == ASSOC_TYPE_QUERY);
-		$queryDao = DAORegistry::getDAO('QueryDAO');
+		$queryDao = DAORegistry::getDAO('QueryDAO'); /* @var $queryDao QueryDAO */
 		$query = $queryDao->getById($notification->getAssocId());
 
 		$headNote = $query->getHeadNote();
@@ -79,14 +79,15 @@ class QueryNotificationManager extends NotificationManagerDelegate {
 	 * @return Submission
 	 */
 	protected function getQuerySubmission($query) {
-		$submissionDao = Application::getSubmissionDAO();
+		$submissionDao = DAORegistry::getDAO('SubmissionDAO'); /* @var $submissionDao SubmissionDAO */
 		switch ($query->getAssocType()) {
 			case ASSOC_TYPE_SUBMISSION:
 				return $submissionDao->getById($query->getAssocId());
 			case ASSOC_TYPE_REPRESENTATION:
 				$representationDao = Application::getRepresentationDAO();
 				$representation = $representationDao->getById($query->getAssocId());
-				return $submissionDao->getById($representation->getSubmissionId());
+				$publication = Services::get('publication')->get($representation->getData('publicationId'));
+				return Services::get('submission')->get($publication->getData('submissionId'));
 		}
 		assert(false);
 	}
@@ -96,13 +97,13 @@ class QueryNotificationManager extends NotificationManagerDelegate {
 	 */
 	public function getNotificationUrl($request, $notification) {
 		assert($notification->getAssocType() == ASSOC_TYPE_QUERY);
-		$queryDao = DAORegistry::getDAO('QueryDAO');
+		$queryDao = DAORegistry::getDAO('QueryDAO'); /* @var $queryDao QueryDAO */
 		$query = $queryDao->getById($notification->getAssocId());
 		assert(is_a($query, 'Query'));
 		$submission = $this->getQuerySubmission($query);
 
-		import('classes.core.ServicesContainer');
-		return ServicesContainer::instance()->get('submission')->getWorkflowUrlByUserRoles($submission, $notification->getUserId());
+		import('classes.core.Services');
+		return Services::get('submission')->getWorkflowUrlByUserRoles($submission, $notification->getUserId());
 	}
 
 	/**
@@ -110,7 +111,7 @@ class QueryNotificationManager extends NotificationManagerDelegate {
 	 */
 	public function getNotificationContents($request, $notification) {
 		assert($notification->getAssocType() == ASSOC_TYPE_QUERY);
-		$queryDao = DAORegistry::getDAO('QueryDAO');
+		$queryDao = DAORegistry::getDAO('QueryDAO'); /* @var $queryDao QueryDAO */
 		$query = $queryDao->getById($notification->getAssocId());
 		assert(is_a($query, 'Query'));
 

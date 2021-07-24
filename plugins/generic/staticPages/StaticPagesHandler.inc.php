@@ -3,9 +3,9 @@
 /**
  * @file StaticPagesHandler.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @package plugins.generic.staticPages
  * @class StaticPagesHandler
@@ -72,11 +72,11 @@ class StaticPagesHandler extends Handler {
 
 		$vars = array();
 		if ($context) $vars = array(
-			'{$contactName}' => $context->getSetting('contactName'),
-			'{$contactEmail}' => $context->getSetting('contactEmail'),
-			'{$supportName}' => $context->getSetting('supportName'),
-			'{$supportPhone}' => $context->getSetting('supportPhone'),
-			'{$supportEmail}' => $context->getSetting('supportEmail'),
+			'{$contactName}' => $context->getData('contactName'),
+			'{$contactEmail}' => $context->getData('contactEmail'),
+			'{$supportName}' => $context->getData('supportName'),
+			'{$supportPhone}' => $context->getData('supportPhone'),
+			'{$supportEmail}' => $context->getData('supportEmail'),
 		);
 		$templateMgr->assign('content', strtr(self::$staticPage->getLocalizedContent(), $vars));
 

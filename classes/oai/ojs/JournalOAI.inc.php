@@ -3,9 +3,9 @@
 /**
  * @file classes/oai/ojs/JournalOAI.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class JournalOAI
  * @ingroup oai
@@ -39,8 +39,9 @@ class JournalOAI extends OAI {
 	function __construct($config) {
 		parent::__construct($config);
 
-		$this->site = Request::getSite();
-		$this->journal = Request::getJournal();
+		$request = Application::get()->getRequest();
+		$this->site = $request->getSite();
+		$this->journal = $request->getJournal();
 		$this->journalId = isset($this->journal) ? $this->journal->getId() : null;
 		$this->dao = DAORegistry::getDAO('OAIDAO');
 		$this->dao->setOAI($this);
@@ -66,7 +67,7 @@ class JournalOAI extends OAI {
 	/**
 	 * Convert OAI identifier to article ID.
 	 * @param $identifier string
-	 * @return int
+	 * @return int|false
 	 */
 	function identifierToArticleId($identifier) {
 		$prefix = 'oai:' . $this->config->repositoryId . ':' . 'article/';
@@ -79,7 +80,7 @@ class JournalOAI extends OAI {
 
 	/**
 	 * Get the journal ID and section ID corresponding to a set specifier.
-	 * @return int
+	 * @return array
 	 */
 	function setSpecToSectionId($setSpec, $journalId = null) {
 		$tmpArray = preg_split('/:/', $setSpec);
@@ -110,7 +111,7 @@ class JournalOAI extends OAI {
 
 		if (isset($this->journal)) {
 			$info->repositoryName = $this->journal->getLocalizedName();
-			$info->adminEmail = $this->journal->getSetting('contactEmail');
+			$info->adminEmail = $this->journal->getData('contactEmail');
 
 		} else {
 			$info->repositoryName = $this->site->getLocalizedTitle();
@@ -121,7 +122,7 @@ class JournalOAI extends OAI {
 		$info->earliestDatestamp = $this->dao->getEarliestDatestamp(array($this->journalId));
 
 		$info->toolkitTitle = 'Open Journal Systems';
-		$versionDao = DAORegistry::getDAO('VersionDAO');
+		$versionDao = DAORegistry::getDAO('VersionDAO'); /* @var $versionDao VersionDAO */
 		$currentVersion = $versionDao->getCurrentVersion();
 		$info->toolkitVersion = $currentVersion->getVersionString();
 		$info->toolkitURL = 'http://pkp.sfu.ca/ojs/';
@@ -167,7 +168,7 @@ class JournalOAI extends OAI {
 	 */
 	function records($metadataPrefix, $from, $until, $set, $offset, $limit, &$total) {
 		$records = null;
-		if (!HookRegistry::call('JournalOAI::records', array($this, $from, $until, $set, $offset, $limit, $total, &$records))) {
+		if (!HookRegistry::call('JournalOAI::records', array($this, $from, $until, $set, $offset, $limit, &$total, &$records))) {
 			$sectionId = null;
 			if (isset($set)) {
 				list($journalId, $sectionId) = $this->setSpecToSectionId($set);
@@ -184,7 +185,7 @@ class JournalOAI extends OAI {
 	 */
 	function identifiers($metadataPrefix, $from, $until, $set, $offset, $limit, &$total) {
 		$records = null;
-		if (!HookRegistry::call('JournalOAI::identifiers', array($this, $from, $until, $set, $offset, $limit, $total, &$records))) {
+		if (!HookRegistry::call('JournalOAI::identifiers', array($this, $from, $until, $set, $offset, $limit, &$total, &$records))) {
 			$sectionId = null;
 			if (isset($set)) {
 				list($journalId, $sectionId) = $this->setSpecToSectionId($set);
@@ -201,7 +202,7 @@ class JournalOAI extends OAI {
 	 */
 	function sets($offset, $limit, &$total) {
 		$sets = null;
-		if (!HookRegistry::call('JournalOAI::sets', array($this, $offset, $limit, $total, &$sets))) {
+		if (!HookRegistry::call('JournalOAI::sets', array($this, $offset, $limit, &$total, &$sets))) {
 			$sets = $this->dao->getJournalSets($this->journalId, $offset, $limit, $total);
 		}
 		return $sets;

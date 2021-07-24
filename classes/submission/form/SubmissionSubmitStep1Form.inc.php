@@ -3,9 +3,9 @@
 /**
  * @file classes/submission/form/SubmissionSubmitStep1Form.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SubmissionSubmitStep1Form
  * @ingroup submission_form
@@ -25,16 +25,16 @@ class SubmissionSubmitStep1Form extends PKPSubmissionSubmitStep1Form {
 	}
 
 	/**
-	 * Fetch the form.
+	 * @copydoc SubmissionSubmitForm::fetch
 	 */
-	function fetch($request) {
-		$roleDao = DAORegistry::getDAO('RoleDAO');
+	function fetch($request, $template = null, $display = false) {
+		$roleDao = DAORegistry::getDAO('RoleDAO'); /* @var $roleDao RoleDAO */
 		$user = $request->getUser();
 		$canSubmitAll = $roleDao->userHasRole($this->context->getId(), $user->getId(), ROLE_ID_MANAGER) ||
 			$roleDao->userHasRole($this->context->getId(), $user->getId(), ROLE_ID_SUB_EDITOR);
 
 		// Get section options for this context
-		$sectionDao = DAORegistry::getDAO('SectionDAO');
+		$sectionDao = DAORegistry::getDAO('SectionDAO'); /* @var $sectionDao SectionDAO */
 		$sectionOptions = array('0' => '') + $sectionDao->getTitlesByContextId($this->context->getId(), !$canSubmitAll);
 		$templateMgr = TemplateManager::getManager($request);
 		$templateMgr->assign('sectionOptions', $sectionOptions);
@@ -52,14 +52,13 @@ class SubmissionSubmitStep1Form extends PKPSubmissionSubmitStep1Form {
 
 		$templateMgr->assign('sectionPolicies', $sectionPolicies);
 
-		return parent::fetch($request);
+		return parent::fetch($request, $template, $display);
 	}
 
 	/**
 	 * Checks whether a section policy contains any text (plain / readable).
 	 */
-	private function doesSectionPolicyContainAnyText($sectionPolicy)
-	{
+	private function doesSectionPolicyContainAnyText($sectionPolicy) {
 		$sectionPolicyPlainText = trim(PKPString::html2text($sectionPolicy));
 		return strlen($sectionPolicyPlainText) > 0;
 	}
@@ -70,7 +69,7 @@ class SubmissionSubmitStep1Form extends PKPSubmissionSubmitStep1Form {
 	function initData($data = array()) {
 		if (isset($this->submission)) {
 			parent::initData(array(
-				'sectionId' => $this->submission->getSectionId(),
+				'sectionId' => $this->submission->getCurrentPublication()->getData('sectionId'),
 			));
 		} else {
 			parent::initData();
@@ -95,9 +94,9 @@ class SubmissionSubmitStep1Form extends PKPSubmissionSubmitStep1Form {
 		if (!parent::validate($callHooks)) return false;
 
 		// Validate that the section ID is attached to this journal.
-		$request = Application::getRequest();
+		$request = Application::get()->getRequest();
 		$context = $request->getContext();
-		$sectionDao = DAORegistry::getDAO('SectionDAO');
+		$sectionDao = DAORegistry::getDAO('SectionDAO'); /* @var $sectionDao SectionDAO */
 		$section = $sectionDao->getById($this->getData('sectionId'), $context->getId());
 		if (!$section) return false;
 
@@ -105,12 +104,13 @@ class SubmissionSubmitStep1Form extends PKPSubmissionSubmitStep1Form {
 	}
 
 	/**
-	 * Set the submission data from the form.
-	 * @param $submission Submission
+	 * Set the publication data from the form.
+	 * @param Publication $publication
+	 * @param Submission $submission
 	 */
-	function setSubmissionData($submission) {
-		$submission->setSectionId($this->getData('sectionId'));
-		parent::setSubmissionData($submission);
+	function setPublicationData($publication, $submission) {
+		$publication->setData('sectionId', $this->getData('sectionId'));
+		parent::setPublicationData($publication, $submission);
 	}
 }
 

@@ -3,9 +3,9 @@
 /**
  * @file controllers/modals/editorDecision/EditorDecisionHandler.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class EditorDecisionHandler
  * @ingroup controllers_modals_editorDecision
@@ -57,7 +57,7 @@ class EditorDecisionHandler extends PKPEditorDecisionHandler {
 	 * Start a new review round
 	 * @param $args array
 	 * @param $request PKPRequest
-	 * @return string Serialized JSON object
+	 * @return JSONMessage
 	 */
 	function saveNewReviewRound($args, $request) {
 		// FIXME: this can probably all be managed somewhere.
@@ -69,7 +69,7 @@ class EditorDecisionHandler extends PKPEditorDecisionHandler {
 			assert(false);
 		}
 
-		return $this->_saveEditorDecision($args, $request, 'NewReviewRoundForm', $redirectOp, SUBMISSION_EDITOR_DECISION_RESUBMIT);
+		return $this->_saveEditorDecision($args, $request, 'NewReviewRoundForm', $redirectOp, SUBMISSION_EDITOR_DECISION_NEW_ROUND);
 	}
 
 
@@ -105,7 +105,7 @@ class EditorDecisionHandler extends PKPEditorDecisionHandler {
 	/**
 	 * Get editor decision notification type and level by decision.
 	 * @param $decision int
-	 * @return array
+	 * @return int
 	 */
 	protected function _getNotificationTypeByEditorDecision($decision) {
 		switch ($decision) {
@@ -117,15 +117,15 @@ class EditorDecisionHandler extends PKPEditorDecisionHandler {
 				return NOTIFICATION_TYPE_EDITOR_DECISION_PENDING_REVISIONS;
 			case SUBMISSION_EDITOR_DECISION_RESUBMIT:
 				return NOTIFICATION_TYPE_EDITOR_DECISION_RESUBMIT;
+			case SUBMISSION_EDITOR_DECISION_NEW_ROUND:
+				return NOTIFICATION_TYPE_EDITOR_DECISION_NEW_ROUND;
 			case SUBMISSION_EDITOR_DECISION_DECLINE:
 			case SUBMISSION_EDITOR_DECISION_INITIAL_DECLINE:
 				return NOTIFICATION_TYPE_EDITOR_DECISION_DECLINE;
 			case SUBMISSION_EDITOR_DECISION_SEND_TO_PRODUCTION:
 				return NOTIFICATION_TYPE_EDITOR_DECISION_SEND_TO_PRODUCTION;
-			default:
-				assert(false);
-				return null;
 		}
+		throw new Exception('Unknown editor decision.');
 	}
 
 	/**

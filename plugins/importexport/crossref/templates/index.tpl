@@ -1,9 +1,9 @@
 {**
  * plugins/importexport/crossref/templates/index.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * List of operations this plugin can perform
  *}
@@ -11,10 +11,10 @@
 {include file="common/header.tpl" pageTitle="plugins.importexport.crossref.displayName"}
 {/strip}
 
-{if !empty($configurationErrors) || 
-	!$currentContext->getSetting('publisherInstitution')|escape || 
-	!$exportArticles || 
-	(!$currentContext->getSetting('onlineIssn') && !$currentContext->getSetting('printIssn'))}
+{if !empty($configurationErrors) ||
+	!$currentContext->getData('publisherInstitution')|escape || 
+	!$exportArticles ||
+	(!$currentContext->getData('onlineIssn') && !$currentContext->getData('printIssn'))}
 	{assign var="allowExport" value=false}
 {else}
 	{assign var="allowExport" value=true}
@@ -43,12 +43,12 @@
 						{include file="controllers/notification/inPlaceNotificationContent.tpl" notificationId=crossrefConfigurationErrors notificationStyleClass="notifyWarning" notificationTitle="plugins.importexport.common.missingRequirements"|translate notificationContents="plugins.importexport.common.error.pluginNotConfigured"|translate}
 					{/if}
 				{/foreach}
-				{if !$currentContext->getSetting('publisherInstitution')}
+				{if !$currentContext->getData('publisherInstitution')}
 					{capture assign=journalSettingsUrl}{url router=$smarty.const.ROUTE_PAGE page="management" op="settings" path="context" escape=false}{/capture}
 					{capture assign=missingPublisherMessage}{translate key="plugins.importexport.crossref.error.publisherNotConfigured" journalSettingsUrl=$journalSettingsUrl}{/capture}
 					{include file="controllers/notification/inPlaceNotificationContent.tpl" notificationId=crossrefConfigurationErrors notificationStyleClass="notifyWarning" notificationTitle="plugins.importexport.common.missingRequirements"|translate notificationContents=$missingPublisherMessage}
 				{/if}
-				{if !$currentContext->getSetting('onlineIssn') && !$currentContext->getSetting('printIssn')}
+				{if !$currentContext->getData('onlineIssn') && !$currentContext->getData('printIssn')}
 					{capture assign=journalSettingsUrl}{url router=$smarty.const.ROUTE_PAGE page="management" op="settings" path="context" escape=false}{/capture}
 					{capture assign=missingIssnMessage}{translate key="plugins.importexport.crossref.error.issnNotConfigured" journalSettingsUrl=$journalSettingsUrl}{/capture}
 					{include file="controllers/notification/inPlaceNotificationContent.tpl" notificationId=crossrefConfigurationErrors notificationStyleClass="notifyWarning" notificationTitle="plugins.importexport.common.missingRequirements"|translate notificationContents=$missingIssnMessage}
@@ -99,4 +99,3 @@
 </div>
 
 {include file="common/footer.tpl"}
-

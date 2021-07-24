@@ -3,9 +3,9 @@
 /**
  * @file classes/mail/SubmissionMailTemplate.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SubmissionMailTemplate
  * @ingroup mail
@@ -48,7 +48,7 @@ class SubmissionMailTemplate extends MailTemplate {
 	 */
 	function assignParams($paramArray = array()) {
 		$submission = $this->submission;
-		$request = Application::getRequest();
+		$request = Application::get()->getRequest();
 		parent::assignParams(array_merge(
 			array(
 				'submissionTitle' => strip_tags($submission->getLocalizedFullTitle()),
@@ -65,7 +65,7 @@ class SubmissionMailTemplate extends MailTemplate {
 	 * @param $request PKPRequest optional (used for logging purposes)
 	 */
 	function send($request = null) {
-		if (parent::send(false)) {
+		if (parent::send()) {
 			$this->log($request);
 			return true;
 		} else {
@@ -110,13 +110,12 @@ class SubmissionMailTemplate extends MailTemplate {
 	 * Save the email in the submission email log.
 	 */
 	function log($request = null) {
-		import('classes.log.SubmissionEmailLogEntry');
-		$entry = new SubmissionEmailLogEntry();
+		$logDao = DAORegistry::getDAO('SubmissionEmailLogDAO'); /* @var $logDao SubmissionEmailLogDAO */
+		$entry = $logDao->newDataObject();
 		$submission = $this->submission;
 
 		// Event data
 		$entry->setEventType($this->logEventType);
-		$entry->setAssocType(ASSOC_TYPE_SUBMISSION);
 		$entry->setAssocId($submission->getId());
 		$entry->setDateSent(Core::getCurrentDate());
 
@@ -124,7 +123,6 @@ class SubmissionMailTemplate extends MailTemplate {
 		if ($request) {
 			$user = $request->getUser();
 			$entry->setSenderId($user == null ? 0 : $user->getId());
-			$entry->setIPAddress($request->getRemoteAddr());
 		} else {
 			// No user supplied -- this is e.g. a cron-automated email
 			$entry->setSenderId(0);
@@ -139,7 +137,6 @@ class SubmissionMailTemplate extends MailTemplate {
 		$entry->setBccs($this->getBccString());
 
 		// Add log entry
-		$logDao = DAORegistry::getDAO('SubmissionEmailLogDAO');
 		$logEntryId = $logDao->insertObject($entry);
 	}
 
@@ -182,13 +179,13 @@ class SubmissionMailTemplate extends MailTemplate {
 	protected function _addUsers($submissionId, $roleId, $stageId, $method) {
 		assert(in_array($method, array('addRecipient', 'addCc', 'addBcc')));
 
-		$userGroupDao = DAORegistry::getDAO('UserGroupDAO');
+		$userGroupDao = DAORegistry::getDAO('UserGroupDAO'); /* @var $userGroupDao UserGroupDAO */
 		$userGroups = $userGroupDao->getByRoleId($this->context->getId(), $roleId);
 
 		$returner = array();
 		// Cycle through all the userGroups for this role
 		while ($userGroup = $userGroups->next()) {
-			$userStageAssignmentDao = DAORegistry::getDAO('UserStageAssignmentDAO');
+			$userStageAssignmentDao = DAORegistry::getDAO('UserStageAssignmentDAO'); /* @var $userStageAssignmentDao UserStageAssignmentDAO */
 			// FIXME: #6692# Should this be getting users just for a specific user group?
 			$users = $userStageAssignmentDao->getUsersBySubmissionAndStageId($submissionId, $stageId, $userGroup->getId());
 			while ($user = $users->next()) {

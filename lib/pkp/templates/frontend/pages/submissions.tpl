@@ -1,9 +1,9 @@
 {**
  * templates/frontend/pages/submissions.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @brief Display the page to view the editorial team.
  *
@@ -14,6 +14,9 @@
 
 <div class="page page_submissions">
 	{include file="frontend/components/breadcrumbs.tpl" currentTitleKey="about.submissions"}
+	<h1>
+		{translate key="about.submissions"}
+	</h1>
 
 	<div class="cmp_notification">
 		{if $sections|@count == 0}
@@ -35,12 +38,13 @@
 		<div class="submission_checklist">
 			<h2>
 				{translate key="about.submissionPreparationChecklist"}
-				{include file="frontend/components/editLink.tpl" page="management" op="settings" path="publication" anchor="submissionStage" sectionTitleKey="about.submissionPreparationChecklist"}
+				{include file="frontend/components/editLink.tpl" page="management" op="settings" path="workflow" anchor="submission" sectionTitleKey="about.submissionPreparationChecklist"}
 			</h2>
 			{translate key="about.submissionPreparationChecklist.description"}
 			<ul>
 				{foreach from=$submissionChecklist item=checklistItem}
 					<li>
+						<span class="fa fa-check" aria-hidden="true"></span>
 						{$checklistItem.content|nl2br}
 					</li>
 				{/foreach}
@@ -48,13 +52,13 @@
 		</div>
 	{/if}
 
-	{if $currentContext->getLocalizedSetting('authorGuidelines')}
+	{if $currentContext->getLocalizedData('authorGuidelines')}
 	<div class="author_guidelines" id="authorGuidelines">
 		<h2>
 			{translate key="about.authorGuidelines"}
-			{include file="frontend/components/editLink.tpl" page="management" op="settings" path="publication" anchor="submissionStage" sectionTitleKey="about.authorGuidelines"}
+			{include file="frontend/components/editLink.tpl" page="management" op="settings" path="workflow" anchor="submission" sectionTitleKey="about.authorGuidelines"}
 		</h2>
-		{$currentContext->getLocalizedSetting('authorGuidelines')}
+		{$currentContext->getLocalizedData('authorGuidelines')}
 	</div>
 	{/if}
 
@@ -73,23 +77,23 @@
 		{/if}
 	{/foreach}
 
-	{if $currentContext->getLocalizedSetting('copyrightNotice')}
+	{if $currentContext->getLocalizedData('copyrightNotice')}
 		<div class="copyright_notice">
 			<h2>
 				{translate key="about.copyrightNotice"}
-				{include file="frontend/components/editLink.tpl" page="management" op="settings" path="distribution" anchor="permissions" sectionTitleKey="about.copyrightNotice"}
+				{include file="frontend/components/editLink.tpl" page="management" op="settings" path="distribution" anchor="license" sectionTitleKey="about.copyrightNotice"}
 			</h2>
-			{$currentContext->getLocalizedSetting('copyrightNotice')}
+			{$currentContext->getLocalizedData('copyrightNotice')}
 		</div>
 	{/if}
 
-	{if $currentContext->getLocalizedSetting('privacyStatement')}
-	<div class="privacy_statement" id ="privacyStatement">
+	{if $currentContext->getLocalizedData('privacyStatement')}
+	<div class="privacy_statement" id="privacyStatement">
 		<h2>
 			{translate key="about.privacyStatement"}
-			{include file="frontend/components/editLink.tpl" page="management" op="settings" path="publication" anchor="submissionStage" sectionTitleKey="about.privacyStatement"}
+			{include file="frontend/components/editLink.tpl" page="management" op="settings" path="website" anchor="setup" sectionTitleKey="about.privacyStatement"}
 		</h2>
-		{$currentContext->getLocalizedSetting('privacyStatement')}
+		{$currentContext->getLocalizedData('privacyStatement')}
 	</div>
 	{/if}
 

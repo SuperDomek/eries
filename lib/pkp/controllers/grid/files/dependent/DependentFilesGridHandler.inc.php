@@ -3,9 +3,9 @@
 /**
  * @file controllers/grid/files/dependent/DependentFilesGridHandler.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class DependentFilesGridHandler
  * @ingroup controllers_grid_files_dependent
@@ -23,7 +23,7 @@ class DependentFilesGridHandler extends FileListGridHandler {
 	 */
 	function __construct() {
 		// import app-specific grid data provider for access policies.
-		$request = Application::getRequest();
+		$request = Application::get()->getRequest();
 		$fileId = $request->getUserVar('fileId'); // authorized in authorize() method.
 		import('lib.pkp.controllers.grid.files.dependent.DependentFilesGridDataProvider');
 		parent::__construct(

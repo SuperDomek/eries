@@ -5,9 +5,9 @@
 /**
  * @file styles/form.less
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @ingroup pkp_form
  *
@@ -21,7 +21,7 @@
 	font-size: @font-sml;
 	line-height: @line-sml;
 
-	fieldset {
+	fieldset:not(.pkpFilter__input--sliderMultirange) {
 		margin: 0 0 @double 0;
 		padding: 0;
 		border: none;
@@ -135,6 +135,10 @@
 			margin-right: 0.5em;
 		}
 
+		p {
+			display: inline-block;
+		}
+
 		li label {
 			font-size: @font-sml;
 			font-weight: @normal;
@@ -160,6 +164,10 @@
 		background: @bg;
 		color: @text-light;
 		color: @text-light-rgba;
+	}
+
+	input[type="range"][disabled] {
+		background: transparent;
 	}
 
 	// Field descriptions and labels beneath fields

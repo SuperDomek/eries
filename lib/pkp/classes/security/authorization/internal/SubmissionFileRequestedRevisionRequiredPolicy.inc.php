@@ -2,9 +2,9 @@
 /**
  * @file classes/security/authorization/internal/SubmissionFileRequestedRevisionRequiredPolicy.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2000-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SubmissionFileRequestedRevisionRequiredPolicy
  * @ingroup security_authorization_internal
@@ -47,7 +47,7 @@ class SubmissionFileRequestedRevisionRequiredPolicy extends SubmissionFileBaseAc
 		$reviewRound = $reviewRoundDao->getBySubmissionFileId($submissionFile->getFileId());
 		if (!is_a($reviewRound, 'ReviewRound')) return AUTHORIZATION_DENY;
 		import('classes.workflow.EditorDecisionActionsManager');
-		if (!EditorDecisionActionsManager::getEditorTakenActionInReviewRound($request->getContext(), $reviewRound, array(SUBMISSION_EDITOR_DECISION_PENDING_REVISIONS))) {
+		if (!(new EditorDecisionActionsManager())->getEditorTakenActionInReviewRound($request->getContext(), $reviewRound, array(SUBMISSION_EDITOR_DECISION_PENDING_REVISIONS))) {
 			return AUTHORIZATION_DENY;
 		}
 

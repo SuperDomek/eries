@@ -3,9 +3,9 @@
 /**
  * @file controllers/wizard/fileUpload/FileUploadWizardHandler.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class FileUploadWizardHandler
  * @ingroup controllers_wizard_fileUpload
@@ -295,7 +295,7 @@ class PKPFileUploadWizardHandler extends Handler {
 				// If this attachment was created in the review stage, add it to
 				// the review round.
 				if ($reviewRound = $this->getReviewRound()) {
-					$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO');
+					$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO'); /* @var $submissionFileDao SubmissionFileDAO */
 					$submissionFileDao->assignRevisionToReviewRound($submissionFile->getFileId(), $submissionFile->getRevision(), $reviewRound);
 				}
 				break;
@@ -304,13 +304,13 @@ class PKPFileUploadWizardHandler extends Handler {
 			case SUBMISSION_FILE_REVIEW_REVISION:
 				// Add the uploaded review file to the review round.
 				$reviewRound = $this->getReviewRound();
-				$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO');
+				$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO'); /* @var $submissionFileDao SubmissionFileDAO */
 				$submissionFileDao->assignRevisionToReviewRound($submissionFile->getFileId(), $submissionFile->getRevision(), $reviewRound);
 
 				if ($submissionFile->getFileStage() == SUBMISSION_FILE_REVIEW_REVISION) {
 					// Get a list of author user IDs
 					$authorUserIds = array();
-					$stageAssignmentDao = DAORegistry::getDAO('StageAssignmentDAO');
+					$stageAssignmentDao = DAORegistry::getDAO('StageAssignmentDAO'); /* @var $stageAssignmentDao StageAssignmentDAO */
 					$submitterAssignments = $stageAssignmentDao->getBySubmissionAndRoleId($reviewRound->getSubmissionId(), ROLE_ID_AUTHOR);
 					while ($assignment = $submitterAssignments->next()) {
 						$authorUserIds[] = $assignment->getUserId();
@@ -319,7 +319,7 @@ class PKPFileUploadWizardHandler extends Handler {
 					// Update the task notifications
 					$notificationMgr = new NotificationManager();
 					$notificationMgr->updateNotification(
-						Application::getRequest(),
+						Application::get()->getRequest(),
 						array(NOTIFICATION_TYPE_PENDING_INTERNAL_REVISIONS, NOTIFICATION_TYPE_PENDING_EXTERNAL_REVISIONS),
 						$authorUserIds,
 						ASSOC_TYPE_SUBMISSION,
@@ -328,43 +328,66 @@ class PKPFileUploadWizardHandler extends Handler {
 
 					// Update the ReviewRound status when revision is submitted
 					import('lib.pkp.classes.submission.reviewRound.ReviewRoundDAO');
-					$reviewRoundDao = DAORegistry::getDAO('ReviewRoundDAO');
+					$reviewRoundDao = DAORegistry::getDAO('ReviewRoundDAO'); /* @var $reviewRoundDao ReviewRoundDAO */
 					$reviewRoundDao->updateStatus($reviewRound);
 
 					// Notify editors about the revision upload
 					$submission = $this->getSubmission();
-					$request = Application::getRequest();
+					$request = Application::get()->getRequest();
 					$router = $request->getRouter();
 					$dispatcher = $router->getDispatcher();
 					$context = $request->getContext();
 					$uploader = $request->getUser();
 					// If the file is uploaded by an author
 					if (in_array($uploader->getId(), $authorUserIds)) {
+
+						// Fetch the latest notification email timestamp if any
+						import('lib.pkp.classes.log.SubmissionEmailLogEntry'); // Import email event constants
+						$submissionEmailLogDao = DAORegistry::getDAO('SubmissionEmailLogDAO'); /* @var $submissionEmailLogDao SubmissionEmailLogDAO */
+						$submissionEmails = $submissionEmailLogDao->getByEventType($submission->getId(), SUBMISSION_EMAIL_AUTHOR_NOTIFY_REVISED_VERSION);
+						$lastNotification = null;
+						$sentDates = array();
+						if ($submissionEmails){
+							while ($email = $submissionEmails->next()) {
+								if ($email->getDateSent()){
+									$sentDates[] = $email->getDateSent();
+								}
+							}
+							if (!empty($sentDates)){ 
+								$lastNotification = max(array_map('strtotime', $sentDates));
+							}
+						}
+
 						import('lib.pkp.classes.mail.SubmissionMailTemplate');
 						$mail = new SubmissionMailTemplate($submission, 'REVISED_VERSION_NOTIFY');
-						import('lib.pkp.classes.log.PKPSubmissionEmailLogEntry'); // Import email event constants
 						$mail->setEventType(SUBMISSION_EMAIL_AUTHOR_NOTIFY_REVISED_VERSION);
-						$mail->setReplyTo($context->getSetting('contactEmail'), $context->getSetting('contactName'));
+						$mail->setReplyTo($context->getData('contactEmail'), $context->getData('contactName'));
 						// Get editors assigned to the submission, consider also the recommendOnly editors
-						$userDao = DAORegistry::getDAO('UserDAO');
+						$userDao = DAORegistry::getDAO('UserDAO'); /* @var $userDao UserDAO */
 						$editorsStageAssignments = $stageAssignmentDao->getEditorsAssignedToStage($submission->getId(), $this->getStageId());
 						foreach ($editorsStageAssignments as $editorsStageAssignment) {
-							$editorId = $editorsStageAssignment->getUserId();
-							$editor = $userDao->getById($editorId);
-							$mail->addRecipient($editor->getEmail(), $editor->getFullName());
+							$editor = $userDao->getById($editorsStageAssignment->getUserId());
+ 							// If no prior notification exists OR if editor has logged in after the last revision upload OR the last upload and notification was sent more than a day ago, send a new notification
+							if (is_null($lastNotification) || strtotime($editor->getDateLastLogin()) > $lastNotification || strtotime('-1 day') > $lastNotification){
+								$mail->addRecipient($editor->getEmail(), $editor->getFullName());
+							}
 						}
 						// Get uploader name
 						$submissionUrl = $dispatcher->url($request, ROUTE_PAGE, null, 'workflow', 'index', array($submission->getId(), $this->getStageId()));
 						$mail->assignParams(array(
 							'authorName' => $uploader->getFullName(),
-							'editorialContactSignature' => $context->getSetting('contactName'),
+							'editorialContactSignature' => $context->getData('contactName'),
 							'submissionUrl' => $submissionUrl,
 						));
-						if (!$mail->send($request)) {
-							import('classes.notification.NotificationManager');
-							$notificationMgr = new NotificationManager();
-							$notificationMgr->createTrivialNotification($request->getUser()->getId(), NOTIFICATION_TYPE_ERROR, array('contents' => __('email.compose.error')));
+
+						if ($mail->getRecipients()){
+							if (!$mail->send($request)) {
+								import('classes.notification.NotificationManager');
+								$notificationMgr = new NotificationManager();
+								$notificationMgr->createTrivialNotification($request->getUser()->getId(), NOTIFICATION_TYPE_ERROR, array('contents' => __('email.compose.error')));
+							}
 						}
+
 					}
 				}
 				break;
@@ -544,5 +567,3 @@ class PKPFileUploadWizardHandler extends Handler {
 		);
 	}
 }
-
-

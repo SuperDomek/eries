@@ -3,9 +3,9 @@
 /**
  * @file plugins/generic/lensGalley/LensGalleyPlugin.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class LensGalleyPlugin
  * @ingroup plugins_generic_lensGalley
@@ -64,17 +64,27 @@ class LensGalleyPlugin extends GenericPlugin {
 		$request =& $args[0];
 		$issue =& $args[1];
 		$galley =& $args[2];
-		$article =& $args[3];
+		$submission =& $args[3];
 
 		$templateMgr = TemplateManager::getManager($request);
 		if ($galley && in_array($galley->getFileType(), array('application/xml', 'text/xml'))) {
+			$galleyPublication = null;
+			foreach ($submission->getData('publications') as $publication) {
+				if ($publication->getId() === $galley->getData('publicationId')) {
+					$galleyPublication = $publication;
+					break;
+				}
+			}
 			$templateMgr->assign(array(
 				'pluginLensPath' => $this->getLensPath($request),
 				'displayTemplatePath' => $this->getTemplateResource('display.tpl'),
 				'pluginUrl' => $request->getBaseUrl() . '/' . $this->getPluginPath(),
 				'galleyFile' => $galley->getFile(),
 				'issue' => $issue,
-				'article' => $article,
+				'article' => $submission,
+				'bestId' => $submission->getBestId(),
+				'isLatestPublication' => $submission->getData('currentPublicationId') === $galley->getData('publicationId'),
+				'galleyPublication' => $galleyPublication,
 				'galley' => $galley,
 				'jQueryUrl' => $this->_getJQueryUrl($request),
 			));
@@ -97,7 +107,7 @@ class LensGalleyPlugin extends GenericPlugin {
 		$galley =& $args[2];
 
 		$templateMgr = TemplateManager::getManager($request);
-		if ($galley && $galley->getFileType() == 'application/xml') {
+		if ($galley && in_array($galley->getFileType(), array('application/xml', 'text/xml'))) {
 			$templateMgr->assign(array(
 				'pluginLensPath' => $this->getLensPath($request),
 				'displayTemplatePath' => $this->getTemplateResource('display.tpl'),
@@ -154,9 +164,9 @@ class LensGalleyPlugin extends GenericPlugin {
 		$article =& $args[0];
 		$galley =& $args[1];
 		$fileId =& $args[2];
-		$request = Application::getRequest();
+		$request = Application::get()->getRequest();
 
-		if ($galley && $galley->getFileType() == 'application/xml' && $galley->getFileId() == $fileId) {
+		if ($galley && in_array($galley->getFileType(), array('application/xml', 'text/xml')) && $galley->getFileId() == $fileId) {
 			if (!HookRegistry::call('LensGalleyPlugin::articleDownload', array($article,  &$galley, &$fileId))) {
 				$xmlContents = $this->_getXMLContents($request, $galley);
 				header('Content-Type: application/xml');
@@ -190,15 +200,17 @@ class LensGalleyPlugin extends GenericPlugin {
 		$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO');
 		import('lib.pkp.classes.submission.SubmissionFile'); // Constants
 		$embeddableFiles = array_merge(
-			$submissionFileDao->getLatestRevisions($submissionFile->getSubmissionId(), SUBMISSION_FILE_PROOF),
-			$submissionFileDao->getLatestRevisionsByAssocId(ASSOC_TYPE_SUBMISSION_FILE, $submissionFile->getFileId(), $submissionFile->getSubmissionId(), SUBMISSION_FILE_DEPENDENT)
+			$submissionFileDao->getLatestRevisions($submissionFile->getData('submissionId'), SUBMISSION_FILE_PROOF),
+			$submissionFileDao->getLatestRevisionsByAssocId(ASSOC_TYPE_SUBMISSION_FILE, $submissionFile->getFileId(), $submissionFile->getData('submissionId'), SUBMISSION_FILE_DEPENDENT)
 		);
-		$referredArticle = null;
-		$articleDao = DAORegistry::getDAO('ArticleDAO');
+		$referredArticle = $referredPublication = null;
+		$submissionDao = DAORegistry::getDAO('SubmissionDAO');
+		$publicationService = Services::get('publication');
 		foreach ($embeddableFiles as $embeddableFile) {
 			// Ensure that the $referredArticle object refers to the article we want
-			if (!$referredArticle || $referredArticle->getId() != $galley->getSubmissionId()) {
-				$referredArticle = $articleDao->getById($galley->getSubmissionId());
+			if (!$referredArticle || !$referredPublication || $referredPublication->getData('submissionId') != $referredArticle->getId() || $referredPublication->getId() != $galley->getData('publicationId')) {
+				$referredPublication = $publicationService->get($galley->getData('publicationId'));
+				$referredArticle = $submissionDao->getById($referredPublication->getData('submissionId'));
 			}
 			$fileUrl = $request->url(null, 'article', 'download', array($referredArticle->getBestArticleId(), $galley->getBestGalleyId(), $embeddableFile->getFileId()));
 			$pattern = preg_quote($embeddableFile->getOriginalFileName());
@@ -219,7 +231,7 @@ class LensGalleyPlugin extends GenericPlugin {
 
 		// Perform variable replacement for journal, issue, site info
 		$issueDao = DAORegistry::getDAO('IssueDAO');
-		$issue = $issueDao->getByArticleId($galley->getSubmissionId());
+		$issue = $issueDao->getBySubmissionId($galley->getData('submissionId'));
 
 		$journal = $request->getJournal();
 		$site = $request->getSite();
@@ -228,7 +240,7 @@ class LensGalleyPlugin extends GenericPlugin {
 			'issueTitle' => $issue?$issue->getIssueIdentification():__('editor.article.scheduleForPublication.toBeAssigned'),
 			'journalTitle' => $journal->getLocalizedName(),
 			'siteTitle' => $site->getLocalizedTitle(),
-			'currentUrl' => $request->getRequestUrl()
+			'currentUrl' => $request->getRequestUrl(),
 		);
 
 		foreach ($paramArray as $key => $value) {
@@ -239,7 +251,7 @@ class LensGalleyPlugin extends GenericPlugin {
 	}
 
 	function _handleOjsUrl($matchArray) {
-		$request = Application::getRequest();
+		$request = Application::get()->getRequest();
 		$url = $matchArray[2];
 		$anchor = null;
 		if (($i = strpos($url, '#')) !== false) {
@@ -304,7 +316,7 @@ class LensGalleyPlugin extends GenericPlugin {
 				$journal = $request->getJournal();
 				import ('classes.file.PublicFileManager');
 				$publicFileManager = new PublicFileManager();
-				$url = $request->getBaseUrl() . '/' . $publicFileManager->getJournalFilesPath($journal->getId()) . '/' . implode('/', $urlParts) . ($anchor?'#' . $anchor:'');
+				$url = $request->getBaseUrl() . '/' . $publicFileManager->getContextFilesPath($journal->getId()) . '/' . implode('/', $urlParts) . ($anchor?'#' . $anchor:'');
 				break;
 		}
 		return $matchArray[1] . $url . $matchArray[3];

@@ -15,15 +15,6 @@
 import('plugins.reports.counter.classes.CounterReport');
 
 class CounterReportJR1 extends CounterReport {
-
-	/**
-	 * Constructor
-	 * @param string $release
-	 */
-	function CounterReportJR1($release) {
-		parent::CounterReport($release);
-	}
-
 	/**
 	 * Get the report title
 	 * @return $string
@@ -42,7 +33,7 @@ class CounterReportJR1 extends CounterReport {
 	 * @return array COUNTER\ReportItem array
 	 */
 	function getReportItems($columns = array(), $filters = array(), $orderBy = array(), $range = null) {
-		$metricsDao = DAORegistry::getDAO('MetricsDAO');
+		$metricsDao = DAORegistry::getDAO('MetricsDAO'); /* @var $metricsDao MetricsDAO */
 
 		// Columns are fixed for this report
 		$defaultColumns = array(STATISTICS_DIMENSION_MONTH, STATISTICS_DIMENSION_FILE_TYPE, STATISTICS_DIMENSION_CONTEXT_ID);
@@ -75,7 +66,7 @@ class CounterReportJR1 extends CounterReport {
 			$this->setError(new Exception(__('plugins.reports.counter.exception.filter'), COUNTER_EXCEPTION_WARNING | COUNTER_EXCEPTION_BAD_FILTERS));
 		}
 		// Metric type is ojs::counter
-		$metricType = OJS_METRIC_TYPE_COUNTER;
+		$metricType = METRIC_TYPE_COUNTER;
 		// Ordering must be by Journal (ReportItem), and by Month (ItemPerformance) for JR1
 		$validOrder = array(STATISTICS_DIMENSION_CONTEXT_ID => STATISTICS_ORDER_DESC, STATISTICS_DIMENSION_MONTH => STATISTICS_ORDER_ASC);
 		// TODO: range
@@ -139,7 +130,7 @@ class CounterReportJR1 extends CounterReport {
 	 * @return mixed COUNTER\ReportItems or false
 	 */
 	private function _createReportItem($journalId, $metrics) {
-		$journalDao = DAORegistry::getDAO('JournalDAO');
+		$journalDao = DAORegistry::getDAO('JournalDAO'); /* @var $journalDao JournalDAO */
 		$journal = $journalDao->getById($journalId);
 		if (!$journal) {
 			return false;
@@ -147,9 +138,9 @@ class CounterReportJR1 extends CounterReport {
 		$journalName = $journal->getLocalizedName();
 		$journalPubIds = array();
 		foreach (array('print', 'online') as $issnType) {
-			if ($journal->getSetting($issnType.'Issn')) {
+			if ($journal->getData($issnType.'Issn')) {
 				try {
-					$journalPubIds[] = new COUNTER\Identifier(ucfirst($issnType).'_ISSN', $journal->getSetting($issnType.'Issn'));
+					$journalPubIds[] = new COUNTER\Identifier(ucfirst($issnType).'_ISSN', $journal->getData($issnType.'Issn'));
 				} catch (Exception $ex) {
 					// Just ignore it
 				}
@@ -158,7 +149,7 @@ class CounterReportJR1 extends CounterReport {
 		$journalPubIds[] = new COUNTER\Identifier(COUNTER_LITERAL_PROPRIETARY, $journal->getPath());
 		$reportItem = array();
 		try {
-			$reportItem = new COUNTER\ReportItems(__('common.openJournalSystems'), $journalName, COUNTER_LITERAL_JOURNAL, $metrics, NULL, $journalPubIds);
+			$reportItem = new COUNTER\ReportItems(__('common.software'), $journalName, COUNTER_LITERAL_JOURNAL, $metrics, NULL, $journalPubIds);
 		} catch (Exception $e) {
 			$this->setError($e, COUNTER_EXCEPTION_ERROR | COUNTER_EXCEPTION_INTERNAL);
 		}

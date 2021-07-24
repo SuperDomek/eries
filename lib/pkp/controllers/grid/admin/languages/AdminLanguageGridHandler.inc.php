@@ -3,9 +3,9 @@
 /**
  * @file controllers/grid/admin/languages/AdminLanguageGridHandler.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2000-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class AdminLanguageGridHandler
  * @ingroup controllers_grid_admin_languages
@@ -31,7 +31,7 @@ class AdminLanguageGridHandler extends LanguageGridHandler {
 				'fetchGrid', 'fetchRow',
 				'installLocale', 'saveInstallLocale', 'uninstallLocale',
 				'downloadLocale', 'disableLocale', 'enableLocale',
-				'reloadLocale', 'setPrimaryLocale'
+				'setPrimaryLocale'
 			)
 		);
 	}
@@ -123,13 +123,6 @@ class AdminLanguageGridHandler extends LanguageGridHandler {
 	//
 	// Implement methods from GridHandler.
 	//
-	/**
-	 * @copydoc GridHandler::getRowInstance()
-	 */
-	protected function getRowInstance() {
-		return new LanguageGridRow();
-	}
-
 	/**
 	 * @copydoc GridHandler::loadData()
 	 */
@@ -225,7 +218,7 @@ class AdminLanguageGridHandler extends LanguageGridHandler {
 		$this->setupTemplate($request, true);
 		$locale = $request->getUserVar('locale');
 
-		import('classes.i18n.LanguageAction');
+		import('lib.pkp.classes.i18n.LanguageAction');
 		$languageAction = new LanguageAction();
 
 		if (!$languageAction->isDownloadAvailable() || !preg_match('/^[a-z]{2}_[A-Z]{2}$/', $locale)) {
@@ -280,7 +273,7 @@ class AdminLanguageGridHandler extends LanguageGridHandler {
 				$supportedLocales = $site->getSupportedLocales();
 				$supportedLocales = array_diff($supportedLocales, array($locale));
 				$site->setSupportedLocales($supportedLocales);
-				$siteDao = DAORegistry::getDAO('SiteDAO');
+				$siteDao = DAORegistry::getDAO('SiteDAO'); /* @var $siteDao SiteDAO */
 				$siteDao->updateObject($site);
 
 				$this->_updateContextLocaleSettings($request);
@@ -355,33 +348,6 @@ class AdminLanguageGridHandler extends LanguageGridHandler {
 		return new JSONMessage(false);
 	}
 
-	/**
-	 * Reload locale.
-	 * @param $args array
-	 * @param $request Request
-	 * @return JSONMessage JSON object
-	 */
-	public function reloadLocale($args, $request) {
-		$site = $request->getSite();
-		$locale = $request->getUserVar('rowId');
-
-		$gridData = $this->getGridDataElements($request);
-		if ($request->checkCSRF() && array_key_exists($locale, $gridData)) {
-			AppLocale::reloadLocale($locale);
-			$settingsDao = Application::getContextSettingsDAO();
-			if ($request->getContext()) $settingsDao->reloadLocalizedDefaultContextSettings($request, $locale);
-			$notificationManager = new NotificationManager();
-			$user = $request->getUser();
-			$notificationManager->createTrivialNotification(
-				$user->getId(), NOTIFICATION_TYPE_SUCCESS,
-				array('contents' => __('notification.localeReloaded', array('locale' => $gridData[$locale]['name'])))
-			);
-			return DAO::getDataChangedEvent($locale);
-		}
-
-		return new JSONMessage(false);
-	}
-
 
 	/**
 	 * Set primary locale.
@@ -400,10 +366,10 @@ class AdminLanguageGridHandler extends LanguageGridHandler {
 		if (array_key_exists($rowId, $gridData)) {
 			if (AppLocale::isLocaleValid($rowId)) {
 				$oldSitePrimaryLocale = $site->getPrimaryLocale();
-				$userDao = DAORegistry::getDAO('UserDAO');
+				$userDao = DAORegistry::getDAO('UserDAO'); /* @var $userDao UserDAO */
 				$userDao->changeSitePrimaryLocale($oldSitePrimaryLocale, $rowId);
 				$site->setPrimaryLocale($rowId);
-				$siteDao = DAORegistry::getDAO('SiteDAO');
+				$siteDao = DAORegistry::getDAO('SiteDAO'); /* @var $siteDao SiteDAO */
 				$siteDao->updateObject($site);
 
 				$notificationManager->createTrivialNotification(
@@ -450,7 +416,7 @@ class AdminLanguageGridHandler extends LanguageGridHandler {
 		$site = $request->getSite();
 		$site->setSupportedLocales($newSupportedLocales);
 
-		$siteDao = DAORegistry::getDAO('SiteDAO');
+		$siteDao = DAORegistry::getDAO('SiteDAO'); /* @var $siteDao SiteDAO */
 		$siteDao->updateObject($site);
 
 		$this->_updateContextLocaleSettings($request);
@@ -464,24 +430,28 @@ class AdminLanguageGridHandler extends LanguageGridHandler {
 	protected function _updateContextLocaleSettings($request) {
 		$site = $request->getSite();
 		$siteSupportedLocales = $site->getSupportedLocales();
+		$contextService = \Services::get('context');
 
 		$contextDao = Application::getContextDAO();
 		$contexts = $contextDao->getAll();
 		while ($context = $contexts->next()) {
+			$params = [];
 			$primaryLocale = $context->getPrimaryLocale();
 			foreach (array('supportedLocales', 'supportedFormLocales', 'supportedSubmissionLocales') as $settingName) {
-				$localeList = $context->getSetting($settingName);
+				$localeList = $context->getData($settingName);
 
 				if (is_array($localeList)) {
-					$localeList = array_intersect($localeList, $siteSupportedLocales);
-					$context->updateSetting($settingName, $localeList, 'object');
+					$params[$settingName] = array_intersect($localeList, $siteSupportedLocales);
 				}
 			}
 			if (!in_array($primaryLocale, $siteSupportedLocales)) {
-				$context->setPrimaryLocale($site->getPrimaryLocale());
-				$contextDao->updateObject($context);
+				$params['primaryLocale'] = $site->getPrimaryLocale();
+				$primaryLocale = $params['primaryLocale'];
 			}
-
+			$errors = $contextService->validate(VALIDATE_ACTION_EDIT, $params, $params['supportedLocales'], $primaryLocale);
+			// If there are errors, it's too late to do anything about it
+			assert(empty($errors));
+			$contextService->edit($context, $params, $request);
 		}
 	}
 
@@ -499,5 +469,3 @@ class AdminLanguageGridHandler extends LanguageGridHandler {
 		return ($contexts->getCount() == 1 && $context && in_array(ROLE_ID_MANAGER, $userRoles));
 	}
 }
-
-

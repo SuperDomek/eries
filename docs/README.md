@@ -1,10 +1,10 @@
-	====================================
+	===================================
 	=== Open Journal Systems
 	=== The Public Knowledge Project
-	=== Version: 3.1.2
-	=== GIT tag: 3_1_2-1
-	=== Release date:  May 30, 2019
-	====================================
+	=== Version: 3.2.1-1
+	=== GIT tag: 3_2_1-1
+	=== Release date: June 26, 2020
+	===================================
 
 
 ## About
@@ -16,7 +16,7 @@ PKP web site at <http://pkp.sfu.ca/>.
 
 ## License
 
-OJS is licensed under the GNU General Public License v2. See the file
+OJS is licensed under the GNU General Public License v3. See the file
 [docs/COPYING](COPYING) for the complete terms of this license.
 
 Third parties are welcome to modify and redistribute OJS in entirety or parts
@@ -28,7 +28,7 @@ improvements or bug fixes to the software.
 
 Recommended server requirements:
 
-* PHP >= 7.0
+* PHP >= 7.2
 * MySQL >= 4.1 or PostgreSQL >= 9.1.5
 * Apache >= 1.3.2x or >= 2.0.4x or Microsoft IIS 6
 * Operating system: Any OS that supports the above software, including
@@ -51,7 +51,7 @@ A secure deployment can be best achieved by using the following policies:
 
 * Configure OJS (`config.inc.php`) to use SHA1 hashing rather than MD5.
 
-* Configure OJS (`config.inc.php`) to use force_ssl_login so that
+* Configure OJS (`config.inc.php`) to use force_login_ssl so that
 	authenticated users communicate with the server via HTTPS.
 
 * Install OJS so that the files directory is NOT a subdirectory of

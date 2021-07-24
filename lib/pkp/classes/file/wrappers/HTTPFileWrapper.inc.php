@@ -3,9 +3,9 @@
 /**
  * @file classes/file/wrappers/HTTPFileWrapper.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2000-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @package file.wrappers
  * @ingroup file_wrappers
@@ -74,8 +74,10 @@ class HTTPFileWrapper extends FileWrapper {
 			}
 		}
 
-		if (!($this->fp = fsockopen($host, $port)))
+		if (!($this->fp = fsockopen($host, $port))) {
+			error_log(__FILE__ . ':' . __LINE__ . ' Could not connect to ' . $host . ': ' . $errstr);
 			return false;
+		}
 
 		$additionalHeadersString = '';
 		if (is_array($this->headers)) foreach ($this->headers as $name => $value) {
@@ -108,12 +110,13 @@ class HTTPFileWrapper extends FileWrapper {
 					$this->info['path'] = $newPath;
 					$this->url = $this->glue_url($this->info);
 				}
-				$returner =& FileWrapper::wrapper($this->url);
+				$returner = self::wrapper($this->url);
 				$returner->redirects = $this->redirects - 1;
 				return $returner;
 			}
 		}
 		$this->close();
+		error_log(__FILE__ . ':' . __LINE__ . ' Could not connect to ' . $host . ' (' . $rc . '; ' . $this->redirects . ')');
 		return false;
 	}
 

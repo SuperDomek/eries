@@ -3,9 +3,9 @@
 /**
  * @file controllers/grid/languages/LanguageGridRow.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2000-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class LanguageGridRow
  * @ingroup controllers_grid_languages
@@ -40,7 +40,7 @@ class LanguageGridRow extends GridRow {
 			);
 
 			if (Validation::isSiteAdmin()) {
-				if (!$rowData['primary']) {
+				if (!$request->getContext() && !$rowData['primary']) {
 					$this->addAction(
 						new LinkAction(
 							'uninstall',
@@ -54,18 +54,20 @@ class LanguageGridRow extends GridRow {
 							'delete')
 					);
 				}
-				$this->addAction(
-					new LinkAction(
-						'reload',
-						new RemoteActionConfirmationModal(
-							$request->getSession(),
-							__('manager.language.confirmDefaultSettingsOverwrite'),
-							__('manager.language.reloadLocalizedDefaultSettings'),
-							$router->url($request, null, null, 'reloadLocale', null, $actionArgs)
-							),
-						__('manager.language.reloadLocalizedDefaultSettings')
-						)
-				);
+				if ($request->getContext()) {
+					$this->addAction(
+						new LinkAction(
+							'reload',
+							new RemoteActionConfirmationModal(
+								$request->getSession(),
+								__('manager.language.confirmDefaultSettingsOverwrite'),
+								__('manager.language.reloadLocalizedDefaultSettings'),
+								$router->url($request, null, null, 'reloadLocale', null, $actionArgs)
+								),
+							__('manager.language.reloadLocalizedDefaultSettings')
+							)
+					);
+				}
 			}
 		}
 	}

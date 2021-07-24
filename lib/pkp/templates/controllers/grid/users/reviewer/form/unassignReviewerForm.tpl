@@ -1,9 +1,9 @@
 {**
  * templates/controllers/grid/user/reviewer/form/unassignReviewerForm.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Enroll existing user and assignment reviewer form.
  *
@@ -34,5 +34,9 @@
 		{fbvElement type="checkbox" id="skipEmail" name="skipEmail" label="editor.review.skipEmail"}
 	{/fbvFormSection}
 
-	{fbvFormButtons submitText="editor.review.unassignReviewer"}
+	{if $dateConfirmed}
+		{fbvFormButtons submitText="editor.review.cancelReviewer"}
+	{else}
+		{fbvFormButtons submitText="editor.review.unassignReviewer"}
+	{/if}
 </form>

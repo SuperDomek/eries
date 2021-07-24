@@ -1,14 +1,14 @@
 {**
  * plugins/generic/usageStats/templates/outputFrontend.tpl
  *
- * Copyright (c) 2013-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2013-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @brief Add HTML markup for a usage stats graph on the frontend
  *
  * @uses $pubObjectType The type of object this graph will respresent.
- *   Example: PublishedArticle
+ *   Example: Submission
  * @uses $pubObjectId The id of the object tihs graph will represent.
  *}
 

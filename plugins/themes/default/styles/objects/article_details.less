@@ -1,9 +1,9 @@
 /**
  * @file styles/objects/article_details.less
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @brief Styles applying to a view of an article with all details
  * @link templates/frontend/objects/article_details.tpl
@@ -16,7 +16,7 @@
 
 	> .subtitle {
 		margin: 0;
-		font-size: @font-lead;
+		font-size: @font-base;
 		line-height: @line-lead;
 		font-weight: @normal;
 	}
@@ -55,6 +55,12 @@
 				font-family: @font-heading;
 				font-size: @font-bump;
 				font-weight: @bold;
+			}
+
+			&.doi .label,
+			&.keywords .label {
+				display: inline;
+				font-size: @font-base;
 			}
 		}
 
@@ -113,19 +119,18 @@
 			}
 		}
 	}
-	
-	// EDIT Align abstracts in justify
+
 	.abstract {
 		text-align: justify;
+	}
+
+	.references {
+		word-break: break-word;
 	}
 
 	.item.doi,
 	.item.keywords {
 		padding-top: 0;
-
-		.label {
-			font-size: @font-sml;
-		}
 	}
 
 	.galleys_links {
@@ -165,12 +170,19 @@
 			}
 
 			.label {
+				margin: 0;
 				font-family: @font-heading;
 				font-size: @font-sml;
 				font-weight: @normal;
 				color: @text-light;
 			}
 		}
+	}
+
+	.versions ul {
+		margin: 0;
+		padding: 0;
+		list-style: none;
 	}
 
 	.citation_display {
@@ -289,6 +301,19 @@
 
 		.item {
 			padding: @double;
+
+			.label {
+				margin: 0 0 @double;
+				font-family: @font-heading;
+				font-size: @font-bump;
+				font-weight: @bold;
+			}
+
+			&.doi .label,
+			&.keywords .label {
+				display: inline;
+				font-size: @font-base;
+			}
 		}
 
 		.entry_details {

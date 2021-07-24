@@ -3,9 +3,9 @@
 /**
  * @file classes/services/PKPNavigationMenuService.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2000-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPNavigationMenuService
  * @ingroup services
@@ -127,9 +127,9 @@ class PKPNavigationMenuService {
 	 * Callback for display menu item functionallity
 	 */
 	function getDisplayStatus(&$navigationMenuItem, &$navigationMenu) {
-		$request = \Application::getRequest();
+		$request = \Application::get()->getRequest();
 		$dispatcher = $request->getDispatcher();
-		$templateMgr = \TemplateManager::getManager(\Application::getRequest());
+		$templateMgr = \TemplateManager::getManager($request);
 
 		$isUserLoggedIn = \Validation::isLoggedIn();
 		$isUserLoggedInAs = \Validation::isLoggedInAs();
@@ -146,16 +146,16 @@ class PKPNavigationMenuService {
 		// Conditionally hide some items
 		switch ($menuItemType) {
 			case NMI_TYPE_ANNOUNCEMENTS:
-				$navigationMenuItem->setIsDisplayed($context && $context->getSetting('enableAnnouncements'));
+				$navigationMenuItem->setIsDisplayed($context && $context->getData('enableAnnouncements'));
 				break;
 			case NMI_TYPE_EDITORIAL_TEAM:
-				$navigationMenuItem->setIsDisplayed($context && $context->getLocalizedSetting('editorialTeam'));
+				$navigationMenuItem->setIsDisplayed($context && $context->getLocalizedData('editorialTeam'));
 				break;
 			case NMI_TYPE_CONTACT:
-				$navigationMenuItem->setIsDisplayed($context && ($context->getSetting('mailingAddress') || $context->getSetting('contactName')));
+				$navigationMenuItem->setIsDisplayed($context && ($context->getData('mailingAddress') || $context->getData('contactName')));
 				break;
 			case NMI_TYPE_USER_REGISTER:
-				$navigationMenuItem->setIsDisplayed(!$isUserLoggedIn && !($context && $context->getSetting('disableUserReg')));
+				$navigationMenuItem->setIsDisplayed(!$isUserLoggedIn && !($context && $context->getData('disableUserReg')));
 				break;
 			case NMI_TYPE_USER_LOGIN:
 				$navigationMenuItem->setIsDisplayed(!$isUserLoggedIn);
@@ -172,7 +172,7 @@ class PKPNavigationMenuService {
 				$navigationMenuItem->setIsDisplayed($context);
 				break;
 			case NMI_TYPE_PRIVACY:
-				$navigationMenuItem->setIsDisplayed($context && $context->getLocalizedSetting('privacyStatement'));
+				$navigationMenuItem->setIsDisplayed($context && $context->getLocalizedData('privacyStatement'));
 				break;
 		}
 
@@ -491,7 +491,7 @@ class PKPNavigationMenuService {
 		// should call transformNavMenuItemTitle because some
 		// request don't have all template variables in place
 		if ($class == 'NavigationMenuItem') {
-			$templateMgr = \TemplateManager::getManager(\Application::getRequest());
+			$templateMgr = \TemplateManager::getManager(\Application::get()->getRequest());
 			$this->transformNavMenuItemTitle($templateMgr, $obj);
 		}
 
@@ -620,7 +620,7 @@ class PKPNavigationMenuService {
 	 * @return boolean true if the callback has handled the request.
 	 */
 	public function _callbackHandleCustomNavigationMenuItems($hookName, $args) {
-		$request = \Application::getRequest();
+		$request = \Application::get()->getRequest();
 
 		$page =& $args[0];
 		$op =& $args[1];

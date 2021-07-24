@@ -3,9 +3,9 @@
 /**
  * @file lib/pkp/controllers/grid/settings/category/form/CategoryForm.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class CategoryForm
  * @ingroup controllers_grid_settings_category_form
@@ -42,7 +42,7 @@ class CategoryForm extends Form {
 		$this->_contextId = $contextId;
 		$this->_categoryId = $categoryId;
 
-		$request = Application::getRequest();
+		$request = Application::get()->getRequest();
 		$user = $request->getUser();
 		$this->_userId = $user->getId();
 
@@ -53,7 +53,7 @@ class CategoryForm extends Form {
 		$this->addCheck(new FormValidatorCustom(
 			$this, 'path', 'required', 'grid.category.pathExists',
 			function($path) use ($form, $contextId) {
-				$categoryDao = DAORegistry::getDAO('CategoryDAO');
+				$categoryDao = DAORegistry::getDAO('CategoryDAO'); /* @var $categoryDao CategoryDAO */
 				return !$categoryDao->categoryExistsByPath($path,$contextId) || ($form->getData('oldPath') != null && $form->getData('oldPath') == $path);
 			}
 		));
@@ -65,11 +65,19 @@ class CategoryForm extends Form {
 	// Getters and Setters
 	//
 	/**
-	 * Get the user group id.
+	 * Get the category id.
 	 * @return int categoryId
 	 */
 	function getCategoryId() {
 		return $this->_categoryId;
+	}
+
+	/**
+	 * Set the category ID for this section.
+	 * @param $categoryId int
+	 */
+	function setCategoryId($categoryId) {
+		$this->_categoryId = $categoryId;
 	}
 
 	/**
@@ -87,7 +95,7 @@ class CategoryForm extends Form {
 	 * Get all locale field names
 	 */
 	function getLocaleFieldNames() {
-		$categoryDao = DAORegistry::getDAO('CategoryDAO');
+		$categoryDao = DAORegistry::getDAO('CategoryDAO'); /* @var $categoryDao CategoryDAO */
 		return $categoryDao->getLocaleFieldNames();
 	}
 
@@ -95,7 +103,7 @@ class CategoryForm extends Form {
 	 * @see Form::initData()
 	 */
 	function initData() {
-		$categoryDao = DAORegistry::getDAO('CategoryDAO');
+		$categoryDao = DAORegistry::getDAO('CategoryDAO'); /* @var $categoryDao CategoryDAO */
 		$category = $categoryDao->getById($this->getCategoryId(), $this->getContextId());
 
 		if ($category) {
@@ -105,9 +113,10 @@ class CategoryForm extends Form {
 			$this->setData('path', $category->getPath());
 			$this->setData('image', $category->getImage());
 
-			$publishedSubmissionDao = Application::getSubmissionDAO();
-			$sortOption = $category->getSortOption() ? $category->getSortOption() : $publishedSubmissionDao->getDefaultSortOption();
+			$submissionDao = DAORegistry::getDAO('SubmissionDAO'); /* @var $submissionDao SubmissionDAO */
+			$sortOption = $category->getSortOption() ? $category->getSortOption() : $submissionDao->getDefaultSortOption();
 			$this->setData('sortOption', $sortOption);
+			$this->setData('subEditors', $this->_getAssignedSubEditorIds($this->getCategoryId(), $this->getContextId()));
 		}
 	}
 
@@ -118,7 +127,7 @@ class CategoryForm extends Form {
 		if ($temporaryFileId = $this->getData('temporaryFileId')) {
 			import('lib.pkp.classes.file.TemporaryFileManager');
 			$temporaryFileManager = new TemporaryFileManager();
-			$temporaryFileDao = DAORegistry::getDAO('TemporaryFileDAO');
+			$temporaryFileDao = DAORegistry::getDAO('TemporaryFileDAO'); /* @var $temporaryFileDao TemporaryFileDAO */
 			$temporaryFile = $temporaryFileDao->getTemporaryFile($temporaryFileId, $this->_userId);
 			if (	!$temporaryFile ||
 				!($this->_imageExtension = $temporaryFileManager->getImageExtension($temporaryFile->getFileType())) ||
@@ -136,11 +145,11 @@ class CategoryForm extends Form {
 	 * @see Form::readInputData()
 	 */
 	function readInputData() {
-		$this->readUserVars(array('name', 'parentId', 'path', 'description', 'temporaryFileId', 'sortOption'));
+		$this->readUserVars(array('name', 'parentId', 'path', 'description', 'temporaryFileId', 'sortOption', 'subEditors'));
 
 		// For path duplicate checking; excuse the current path.
 		if ($categoryId = $this->getCategoryId()) {
-			$categoryDao = DAORegistry::getDAO('CategoryDAO');
+			$categoryDao = DAORegistry::getDAO('CategoryDAO'); /* @var $categoryDao CategoryDAO */
 			$category = $categoryDao->getById($categoryId, $this->getContextId());
 			$this->setData('oldPath', $category->getPath());
 		}
@@ -150,7 +159,7 @@ class CategoryForm extends Form {
 	 * @copydoc Form::fetch()
 	 */
 	function fetch($request, $template = null, $display = false) {
-		$categoryDao = DAORegistry::getDAO('CategoryDAO');
+		$categoryDao = DAORegistry::getDAO('CategoryDAO'); /* @var $categoryDao CategoryDAO */
 		$context = $request->getContext();
 		$templateMgr = TemplateManager::getManager($request);
 		$templateMgr->assign('categoryId', $this->getCategoryId());
@@ -177,8 +186,19 @@ class CategoryForm extends Form {
 			}
 		}
 		// Sort options.
-		$submissionDao = Application::getSubmissionDAO();
+		$submissionDao = DAORegistry::getDAO('SubmissionDAO'); /* @var $submissionDao SubmissionDAO */
 		$templateMgr->assign('sortOptions', $submissionDao->getSortSelectOptions());
+
+		// Sub Editors
+		$subEditorsListPanel = $this->_getSubEditorsListPanel($context->getId(), $request);
+		$templateMgr->assign(array(
+			'hasSubEditors' => !empty($subEditorsListPanel->items),
+			'subEditorsListData' => [
+				'components' => [
+					'subeditors' => $subEditorsListPanel->getConfig(),
+				]
+			]
+		));
 
 		return parent::fetch($request, $template, $display);
 	}
@@ -186,9 +206,9 @@ class CategoryForm extends Form {
 	/**
 	 * @copydoc Form::execute()
 	 */
-	function execute() {
+	function execute(...$functionArgs) {
 		$categoryId = $this->getCategoryId();
-		$categoryDao = DAORegistry::getDAO('CategoryDAO');
+		$categoryDao = DAORegistry::getDAO('CategoryDAO'); /* @var $categoryDao CategoryDAO */
 
 		// Get a category object to edit or create
 		if ($categoryId == null) {
@@ -207,17 +227,20 @@ class CategoryForm extends Form {
 
 		// Update or insert the category object
 		if ($categoryId == null) {
-			$category->setId($categoryDao->insertObject($category));
+			$this->setCategoryId($categoryDao->insertObject($category));
 		} else {
 			$category->setSequence(REALLY_BIG_NUMBER);
 			$categoryDao->updateObject($category);
 			$categoryDao->resequenceCategories($this->getContextId());
 		}
 
+		// Update category editors
+		$this->_saveSubEditors($this->getContextId());
+
 		// Handle the image upload if there was one.
 		if ($temporaryFileId = $this->getData('temporaryFileId')) {
 			// Fetch the temporary file storing the uploaded library file
-			$temporaryFileDao = DAORegistry::getDAO('TemporaryFileDAO');
+			$temporaryFileDao = DAORegistry::getDAO('TemporaryFileDAO'); /* @var $temporaryFileDao TemporaryFileDAO */
 
 			$temporaryFile = $temporaryFileDao->getTemporaryFile($temporaryFileId, $this->_userId);
 			$temporaryFilePath = $temporaryFile->getFilePath();
@@ -244,7 +267,7 @@ class CategoryForm extends Form {
 			}
 			assert($image);
 
-			$context = Application::getRequest()->getContext();
+			$context = Application::get()->getRequest()->getContext();
 			$coverThumbnailsMaxWidth = $context->getSetting('coverThumbnailsMaxWidth');
 			$coverThumbnailsMaxHeight = $context->getSetting('coverThumbnailsMaxHeight');
 			$thumbnailFilename = $category->getId() . '-category-thumbnail' . $this->_imageExtension;
@@ -289,8 +312,82 @@ class CategoryForm extends Form {
 
 		// Update category object to store image information.
 		$categoryDao->updateObject($category);
+		parent::execute(...$functionArgs);
 		return $category;
 	}
-}
 
+	/**
+	 * Get a list of all subeditor IDs assigned to this category
+	 *
+	 * @param $categoryId int
+	 * @param $contextId int
+	 * @return array
+	 */
+	public function _getAssignedSubEditorIds($categoryId, $contextId) {
+		return Services::get('user')->getIds(array(
+			'contextId' => $contextId,
+			'roleIds' => ROLE_ID_SUB_EDITOR,
+			'assignedToCategory' => $categoryId,
+		));
+	}
+
+	/**
+	 * Compile data for a subeditors SelectListPanel
+	 *
+	 * @param $contextId int
+	 * @param $request Request
+	 * @return \PKP\components\listPanels\ListPanel
+	 */
+	public function _getSubEditorsListPanel($contextId, $request) {
+
+		$params = [
+			'contextId' => $contextId,
+			'roleIds' => ROLE_ID_SUB_EDITOR,
+		];
+
+		import('classes.core.Services');
+		$usersIterator = Services::get('user')->getMany($params);
+		$items = [];
+		foreach ($usersIterator as $user) {
+			$items[] = [
+				'id' => (int) $user->getId(),
+				'title' => $user->getFullName()
+			];
+		}
+
+		return new \PKP\components\listPanels\ListPanel(
+			'subeditors',
+			__('submissionGroup.assignedSubEditors'),
+			[
+				'canSelect' => true,
+				'getParams' => $params,
+				'items' => $items,
+				'itemsmax' => Services::get('user')->getMax($params),
+				'selected' => $this->getData('subEditors')
+						? $this->getData('subEditors')
+						: [],
+				'selectorName' => 'subEditors[]',
+			]
+		);
+	}
+
+	/**
+	 * Save changes to subeditors
+	 *
+	 * @param $contextId int
+	 */
+	public function _saveSubEditors($contextId) {
+		$subEditorsDao = DAORegistry::getDAO('SubEditorsDAO'); /* @var $subEditorsDao SubEditorsDAO */
+		$subEditorsDao->deleteBySubmissionGroupId($this->_categoryId, ASSOC_TYPE_CATEGORY, $contextId);
+		$subEditors = $this->getData('subEditors');
+		if (!empty($subEditors)) {
+			$roleDao = DAORegistry::getDAO('RoleDAO'); /* @var $roleDao RoleDAO */
+			foreach ($subEditors as $subEditor) {
+				if ($roleDao->userHasRole($contextId, $subEditor, ROLE_ID_SUB_EDITOR)) {
+					$subEditorsDao->insertEditor($contextId, $this->_categoryId, $subEditor, ASSOC_TYPE_CATEGORY);
+				}
+			}
+		}
+	}
+}
 

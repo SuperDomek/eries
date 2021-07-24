@@ -3,9 +3,9 @@
 /**
  * @file classes/services/queryBuilders/BaseQueryBuilder.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2000-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class BaseQueryBuilder
  * @ingroup services_query_builders
@@ -35,7 +35,7 @@ abstract class BaseQueryBuilder {
 	 */
 	protected function bootstrap() {
 
-		// Map valid OJS3 config options to Illuminate database drivers
+		// Map valid config options to Illuminate database drivers
 		$driver = strtolower(Config::getVar('database', 'driver'));
 		if (substr($driver, 0, 8) === 'postgres') {
 			$driver = 'pgsql';
@@ -59,7 +59,7 @@ abstract class BaseQueryBuilder {
 			        'unix_socket'=> Config::getVar('database', 'unix_socket'),
 				'password'  => Config::getVar('database', 'password'),
 				'charset'   => $charset,
-				'collation' => 'utf8_general_ci',
+				'collation' => Config::getVar('database', 'collation', 'utf8_general_ci'),
 		));
 		$capsule->setAsGlobal();
 	}

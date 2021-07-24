@@ -1,15 +1,15 @@
 {**
  * templates/management/tools/statistics.tpl
  *
- * Copyright (c) 2013-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2013-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Display the statistics & reporting page.
  *
  *}
 <div class="pkp_page_content pkp_page_statistics">
-	{help file="tools.md" section="statistics" class="pkp_help_tab"}
+	{help file="tools" section="statistics" class="pkp_help_tab"}
 
 	{if $showMetricTypeSelector || $appSettings}
 		{include file="management/tools/form/statisticsSettingsForm.tpl"}

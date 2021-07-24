@@ -3,9 +3,9 @@
 /**
  * @file StaticPagesPlugin.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @package plugins.generic.staticPages
  * @class StaticPagesPlugin
@@ -37,7 +37,7 @@ class StaticPagesPlugin extends GenericPlugin {
 	 * @return boolean True iff TinyMCE is installed.
 	 */
 	function isTinyMCEInstalled() {
-		$application = Application::getApplication();
+		$application = Application::get();
 		$products = $application->getEnabledProducts('plugins.generic');
 		return (isset($products['tinymce']));
 	}
@@ -53,7 +53,7 @@ class StaticPagesPlugin extends GenericPlugin {
 				$staticPagesDao = new StaticPagesDAO();
 				DAORegistry::registerDAO('StaticPagesDAO', $staticPagesDao);
 
-				HookRegistry::register('Templates::Management::Settings::website', array($this, 'callbackShowWebsiteSettingsTabs'));
+				HookRegistry::register('Template::Settings::website', array($this, 'callbackShowWebsiteSettingsTabs'));
 
 				// Intercept the LoadHandler hook to present
 				// static pages when requested.
@@ -75,12 +75,12 @@ class StaticPagesPlugin extends GenericPlugin {
 	 * @return boolean Hook handling status
 	 */
 	function callbackShowWebsiteSettingsTabs($hookName, $args) {
+		$templateMgr = $args[1];
 		$output =& $args[2];
 		$request =& Registry::get('request');
 		$dispatcher = $request->getDispatcher();
 
-		// Add a new tab for static pages
-		$output .= '<li><a name="staticPages" href="' . $dispatcher->url($request, ROUTE_COMPONENT, null, 'plugins.generic.staticPages.controllers.grid.StaticPageGridHandler', 'index') . '">' . __('plugins.generic.staticPages.staticPages') . '</a></li>';
+		$output .= $templateMgr->fetch($this->getTemplateResource('staticPagesTab.tpl'));
 
 		// Permit other plugins to continue interacting with this hook
 		return false;
@@ -93,7 +93,7 @@ class StaticPagesPlugin extends GenericPlugin {
 	 * @return boolean Hook handling status
 	 */
 	function callbackHandleContent($hookName, $args) {
-		$request = Application::getRequest();
+		$request = Application::get()->getRequest();
 		$templateMgr = TemplateManager::getManager($request);
 
 		$page =& $args[0];
@@ -194,4 +194,3 @@ class StaticPagesPlugin extends GenericPlugin {
 		return $request->getBaseUrl() . '/' . $this->getPluginPath() . '/js';
 	}
 }
-

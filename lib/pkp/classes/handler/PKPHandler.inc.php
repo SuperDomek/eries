@@ -3,9 +3,9 @@
 /**
  * @file classes/handler/PKPHandler.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2000-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @package core
  * @class PKPHandler
@@ -411,7 +411,7 @@ class PKPHandler {
 			}
 		}
 
-		if ($context) $count = $context->getSetting('itemsPerPage');
+		if ($context) $count = $context->getData('itemsPerPage');
 		if (!isset($count)) $count = Config::getVar('interface', 'items_per_page');
 
 		import('lib.pkp.classes.db.DBResultRange');
@@ -511,7 +511,7 @@ class PKPHandler {
 	 * @return mixed Either Context or null
 	 */
 	function getFirstUserContext($user, $contexts) {
-		$userGroupDao = DAORegistry::getDAO('UserGroupDAO');
+		$userGroupDao = DAORegistry::getDAO('UserGroupDAO'); /* @var $userGroupDao UserGroupDAO */
 		$context = null;
 		foreach($contexts as $workingContext) {
 			$userIsEnrolled = $userGroupDao->userInAnyGroup($user->getId(), $workingContext->getId());
@@ -546,6 +546,46 @@ class PKPHandler {
 	 */
 	public function setApiToken($apiToken) {
 		return $this->_apiToken = $apiToken;
+	}
+
+	/**
+	 * Returns a "best-guess" context, based in the request data, if
+	 * a request needs to have one in its context but may be in a site-level
+	 * context as specified in the URL.
+	 * @param $request Request
+	 * @param $contextsCount int Optional reference to receive context count
+	 * @return mixed Either a Context or null if none could be determined.
+	 */
+	function getTargetContext($request, &$contextsCount = null) {
+		// Get the requested path.
+		$router = $request->getRouter();
+		$requestedPath = $router->getRequestedContextPath($request);
+
+		if ($requestedPath === 'index' || $requestedPath === '') {
+			// No context requested. Check how many contexts the site has.
+			$contextDao = Application::getContextDAO(); /* @var $contextDao ContextDAO */
+			$contexts = $contextDao->getAll(true);
+			$contextsCount = $contexts->getCount();
+			$context = null;
+			if ($contextsCount === 1) {
+				// Return the unique context.
+				$context = $contexts->next();
+			}
+			if (!$context && $contextsCount > 1) {
+				// Get the site redirect.
+				$context = $this->getSiteRedirectContext($request);
+			}
+		} else {
+			// Return the requested context.
+			$context = $router->getContext($request);
+
+			// If the specified context does not exist, respond with a 404.
+			if (!$context) $request->getDispatcher()->handle404();
+		}
+		if (is_a($context, 'Context')) {
+			return $context;
+		}
+		return null;
 	}
 }
 

@@ -2,9 +2,9 @@
 
 # @file tools/checkHelp.sh
 #
-# Copyright (c) 2014-2019 Simon Fraser University
-# Copyright (c) 2010-2019 John Willinsky
-# Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+# Copyright (c) 2014-2020 Simon Fraser University
+# Copyright (c) 2010-2020 John Willinsky
+# Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
 #
 # Script to check help file mappings from code to Markdown.
 #
@@ -14,8 +14,8 @@
 # Look for help filenames referred to in templates and check that they all exist (in English)
 ERRORS=0
 for filename in `find . -name \*.tpl -exec sed -n -e "s/.*{help[^}]file=\"\([^\"#]\+\)[#\"].*/\1/p" "{}" ";"`; do
-	if [ ! -f docs/manual/en/$filename ]; then
-		echo "Help file \"$filename\" referred to in template does not exist!"
+	if [ ! -f docs/manual/en/$filename.md ]; then
+		echo "Help file \"$filename.md\" referred to in template does not exist!"
 		ERRORS=1
 	fi
 done

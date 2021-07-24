@@ -3,9 +3,9 @@
 /**
  * @file classes/context/CategoryDAO.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class CategoryDAO
  * @ingroup context
@@ -98,6 +98,24 @@ class CategoryDAO extends DAO {
 
 		$result->Close();
 		return $returner;
+	}
+
+	/**
+	 * Retrieve categories by publication id
+	 *
+	 * @param int $publicationId
+	 * @return DAOResultFactory
+	 */
+	public function getByPublicationId($publicationId) {
+		$result = $this->retrieve(
+			'SELECT	c.*
+			FROM categories c
+			INNER JOIN publication_categories pc ON (pc.category_id = c.category_id)
+			WHERE pc.publication_id = ?',
+			(int) $publicationId
+		);
+
+		return new DAOResultFactory($result, $this, '_fromRow');
 	}
 
 	/**
@@ -297,7 +315,7 @@ class CategoryDAO extends DAO {
 
 			// remove any monograph assignments for this category.
 			$this->update(
-				'DELETE FROM submission_categories WHERE category_id = ?',
+				'DELETE FROM publication_categories WHERE category_id = ?',
 				array((int) $categoryId)
 			);
 		}
@@ -317,6 +335,32 @@ class CategoryDAO extends DAO {
 	}
 
 	/**
+	 * Assign a publication to a category
+	 *
+	 * @param int $categoryId
+	 * @param int $publicationId
+	 */
+	public function insertPublicationAssignment($categoryId, $publicationId) {
+		$this->update(
+			'INSERT INTO publication_categories (category_id, publication_id)
+			VALUES (?, ?)',
+			array((int) $categoryId, (int) $publicationId)
+		);
+	}
+
+	/**
+	 * Delete the assignment of a category to a publication
+	 *
+	 * @param int $publicationId
+	 */
+	public function deletePublicationAssignments($publicationId) {
+		$this->update(
+			'DELETE FROM publication_categories WHERE publication_id = ?',
+			array((int) $publicationId)
+		);
+	}
+
+	/**
 	 * Retrieve all categories for a context.
 	 * @param $contextId int Conext ID.
 	 * @param $rangeInfo Object Optional range information.
@@ -330,7 +374,7 @@ class CategoryDAO extends DAO {
 			FROM	categories c
 				LEFT JOIN categories pc ON (pc.category_id = c.parent_id)
 			WHERE	c.context_id = ?
-			ORDER BY (COALESCE(pc.seq, 0)*16384) + CASE WHEN pc.seq IS NULL THEN 16384 * c.seq ELSE c.seq END',
+			ORDER BY (COALESCE((pc.seq * 8192) + pc.category_id, 0) * 8192) + CASE WHEN pc.category_id IS NULL THEN 8192 * ((c.seq * 8192) + c.category_id) ELSE c.seq END',
 			array((int) $contextId)
 		);
 
@@ -375,36 +419,6 @@ class CategoryDAO extends DAO {
 			$params
 		);
 		return new DAOResultFactory($result, $this, '_fromRow');
-	}
-
-	/**
-	 * Retrieve all categories assigned to a submission
-	 * @param $submissionId int Submission ID
-	 * @return DAOResultFactory containing Category ordered by sequence
-	 */
-	public function getBySubmissionId($submissionId) {
-		$result = $this->retrieveRange(
-			'SELECT *
-			FROM	categories
-			LEFT JOIN submission_categories AS sc ON (sc.category_id = categories.category_id)
-			WHERE	sc.submission_id = ?
-			ORDER BY seq',
-			array((int) $submissionId)
-		);
-
-		$categories = array();
-		while (!$result->EOF) {
-			$categories[] = array(
-				'id' => (int) $result->fields['category_id'],
-				'context_id' => (int) $result->fields['context_id'],
-				'parent_id' => (int) $result->fields['parent_id'],
-				'path' => $result->fields['path'],
-				'image' => $result->fields['image'],
-				'seq' => (int) $result->fields['seq'],
-			);
-			$result->MoveNext();
-		}
-		return $categories;
 	}
 
 	/**

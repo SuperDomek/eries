@@ -3,9 +3,9 @@
 /**
  * @file pages/sitemap/PKPSitemapHandler.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPSitemapHandler
  * @ingroup pages_sitemap
@@ -82,15 +82,15 @@ class PKPSitemapHandler extends Handler {
 		// Context home
 		$root->appendChild($this->_createUrlTree($doc, $request->url($context->getPath())));
 		// User register
-		if ($context->getSetting('disableUserReg') != 1) {
+		if ($context->getData('disableUserReg') != 1) {
 			$root->appendChild($this->_createUrlTree($doc, $request->url($context->getPath(), 'user', 'register')));
 		}
 		// User login
 		$root->appendChild($this->_createUrlTree($doc, $request->url($context->getPath(), 'login')));
 		// Announcements
-		if ($context->getSetting('enableAnnouncements') == 1) {
+		if ($context->getData('enableAnnouncements') == 1) {
 			$root->appendChild($this->_createUrlTree($doc, $request->url($context->getPath(), 'announcement')));
-			$announcementDao = DAORegistry::getDAO('AnnouncementDAO');
+			$announcementDao = DAORegistry::getDAO('AnnouncementDAO'); /* @var $announcementDao AnnouncementDAO */
 			$contextAssocType = Application::getContextAssocType();
 			$announcementsResult = $announcementDao->getByAssocId($contextAssocType, $contextId);
 			while ($announcement = $announcementsResult->next()) {
@@ -98,21 +98,21 @@ class PKPSitemapHandler extends Handler {
 			}
 		}
 		// About: context
-		if (!empty($context->getSetting('about'))) {
+		if (!empty($context->getData('about'))) {
 			$root->appendChild($this->_createUrlTree($doc, $request->url($context->getPath(), 'about')));
 		}
 		// About: submissions
 		$root->appendChild($this->_createUrlTree($doc, $request->url($context->getPath(), 'about', 'submissions')));
 		// About: editorial team
-		if (!empty($context->getSetting('editorialTeam'))) {
+		if (!empty($context->getData('editorialTeam'))) {
 			$root->appendChild($this->_createUrlTree($doc, $request->url($context->getPath(), 'about', 'editorialTeam')));
 		}
 		// About: contact
-		if (!empty($context->getSetting('mailingAddress')) || !empty($context->getSetting('contactName'))) {
+		if (!empty($context->getData('mailingAddress')) || !empty($context->getData('contactName'))) {
 			$root->appendChild($this->_createUrlTree($doc, $request->url($context->getPath(), 'about', 'contact')));
 		}
 		// Custom pages (navigation menu items)
-		$navigationMenuItemDao = DAORegistry::getDAO('NavigationMenuItemDAO');
+		$navigationMenuItemDao = DAORegistry::getDAO('NavigationMenuItemDAO'); /* @var $navigationMenuItemDao NavigationMenuItemDAO */
 		$menuItemsResult = $navigationMenuItemDao->getByType(NMI_TYPE_CUSTOM, $contextId);
 		while ($menuItem = $menuItemsResult->next()) {
 			$root->appendChild($this->_createUrlTree($doc, $request->url($context->getPath(), $menuItem->getPath())));

@@ -3,9 +3,9 @@
 /**
  * @file plugins/generic/webFeed/WebFeedPlugin.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class WebFeedPlugin
  * @ingroup plugins_block_webFeed
@@ -62,7 +62,7 @@ class WebFeedPlugin extends GenericPlugin {
 	 */
 	public function callbackAddLinks($hookName, $args) {
 		// Only page requests will be handled
-		$request = Application::getRequest();
+		$request = Application::get()->getRequest();
 		if (!is_a($request->getRouter(), 'PKPPageRouter')) return false;
 
 		$templateManager =& $args[0];
@@ -70,7 +70,7 @@ class WebFeedPlugin extends GenericPlugin {
 		if (is_null($currentJournal)) {
 			return;
 		}
-		$issueDao = DAORegistry::getDAO('IssueDAO');
+		$issueDao = DAORegistry::getDAO('IssueDAO'); /* @var $issueDao IssueDAO */
 		$currentIssue = $issueDao->getCurrent($currentJournal->getId(), true);
 
 		if (!$currentIssue) {

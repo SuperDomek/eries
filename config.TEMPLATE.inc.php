@@ -7,9 +7,9 @@
 ;
 ; config.TEMPLATE.inc.php
 ;
-; Copyright (c) 2014-2019 Simon Fraser University
-; Copyright (c) 2003-2019 John Willinsky
-; Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+; Copyright (c) 2014-2020 Simon Fraser University
+; Copyright (c) 2003-2020 John Willinsky
+; Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
 ;
 ; OJS Configuration settings.
 ; Rename config.TEMPLATE.inc.php to config.inc.php to use.
@@ -62,9 +62,9 @@ datetime_format_short = "%Y-%m-%d %I:%M %p"
 datetime_format_long = "%B %e, %Y - %I:%M %p"
 time_format = "%I:%M %p"
 
-; Use URL parameters instead of CGI PATH_INFO. This is useful for
-; broken server setups that don't support the PATH_INFO environment
-; variable.
+; Use URL parameters instead of CGI PATH_INFO. This is useful for broken server
+; setups that don't support the PATH_INFO environment variable.
+; WARNING: This option is DEPRECATED and will be removed in the future.
 disable_path_info = Off
 
 ; Use fopen(...) for URL-based reads. Modern versions of dspace
@@ -128,7 +128,7 @@ sitewide_privacy_statement = Off
 
 [database]
 
-driver = mysql
+driver = mysqli
 host = localhost
 username = ojs
 password = ojs
@@ -136,6 +136,9 @@ name = ojs
 ; Set the non-standard port and/or socket, if used
 ; port = 3306
 ; unix_socket = /var/run/mysqld/mysqld.sock
+
+; Database collation
+collation = utf8_general_ci
 
 ; Enable persistent connections
 persistent = Off
@@ -196,10 +199,6 @@ client_charset = utf-8
 ; (although the actual name may differ slightly depending on the server)
 connection_charset = Off
 
-; Database storage character set
-; Must be set to "Off" if not supported by the database server
-database_charset = Off
-
 
 ;;;;;;;;;;;;;;;;;
 ; File Settings ;
@@ -217,6 +216,13 @@ files_dir = files
 ; should be relative to the base OJS directory)
 ; Windows users should use forward slashes
 public_files_dir = public
+
+; The maximum allowed size in bytes of each user's public files
+; directory. This is where user's can upload images through the
+; tinymce editor to their bio. Editors can upload images for
+; some of the settings.
+; Set this to 0 to disallow such uploads.
+public_user_dir_size = 5000
 
 ; Permissions mask for created files and directories
 umask = 0022
@@ -313,6 +319,10 @@ allowed_html = "a[href|target|title],em,strong,cite,code,ul,ol,li[class],dl,dt,d
 ; smtp_auth = ssl
 ; smtp_username = username
 ; smtp_password = password
+
+; Enable suppressing verification of SMTP certificate in PHPMailer
+; Note: this is not recommended per PHPMailer documentation
+; smtp_suppress_cert_check = On
 
 ; Allow envelope sender to be specified
 ; (may not be possible with some server configurations)
@@ -441,6 +451,8 @@ recaptcha_private_key = your_private_key
 ; Whether or not to use Captcha on user registration
 captcha_on_register = on
 
+; Validate the hostname in the ReCaptcha response
+recaptcha_enforce_hostname = Off
 
 ;;;;;;;;;;;;;;;;;;;;;
 ; External Commands ;
@@ -502,3 +514,8 @@ deprecation_warnings = Off
 
 ; Log web service request information for debugging
 log_web_service_info = Off
+
+; declare a cainfo path if a certificate other than PHP's default should be used for curl calls.
+; This setting overrides the 'curl.cainfo' parameter of the php.ini configuration file. 
+[curl]
+; cainfo = ""

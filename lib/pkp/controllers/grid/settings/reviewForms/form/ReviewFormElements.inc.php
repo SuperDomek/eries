@@ -2,14 +2,14 @@
 /**
  * @file controllers/grid/settings/reviewForms/form/ReviewFormElements.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ReviewFormElements
  * @ingroup controllers_grid_settings_reviewForms_form
  *
- * @brief Form for manager to edit review form elements. 
+ * @brief Form for manager to edit review form elements.
  */
 
 import('lib.pkp.classes.db.DBDataXMLParser');
@@ -23,7 +23,7 @@ class ReviewFormElements extends Form {
 	/**
 	 * Constructor.
 	 * @param $template string
-	 * @param $reviewFormId 
+	 * @param $reviewFormId
 	 */
 	function __construct($reviewFormId) {
 		parent::__construct('manager/reviewForms/reviewFormElements.tpl');
@@ -53,11 +53,11 @@ class ReviewFormElements extends Form {
 	function initData() {
 		if (isset($this->reviewFormId)) {
 			// Get review form
-			$reviewFormDao = DAORegistry::getDAO('ReviewFormDAO');
-			$reviewForm = $reviewFormDao->getById($this->reviewFormId, ASSOC_TYPE_JOURNAL, $this->contextId);
+			$reviewFormDao = DAORegistry::getDAO('ReviewFormDAO'); /* @var $reviewFormDao ReviewFormDAO */
+			$reviewForm = $reviewFormDao->getById($this->reviewFormId, Application::getContextAssocType(), $this->contextId);
 
 			// Get review form elements
-			$reviewFormElementDao = DAORegistry::getDAO('ReviewFormElementDAO');
+			$reviewFormElementDao = DAORegistry::getDAO('ReviewFormElementDAO'); /* @var $reviewFormElementDao ReviewFormElementDAO */
 			$reviewFormElements = $reviewFormElementDao->getByReviewFormId($reviewFormId, null);
 
 			// Set data
@@ -66,5 +66,3 @@ class ReviewFormElements extends Form {
 		}
 	}
 }
-
-

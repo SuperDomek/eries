@@ -5,9 +5,9 @@
 /**
  * @file styles/controllers/notification.less
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @ingroup pkp_controllers_notification
  *
@@ -133,11 +133,13 @@
 .notifyError .ui-pnotify-text,
 .notifyFormError .ui-pnotify-text,
 .notifyWarning .ui-pnotify-text,
-.notifyForbidden .ui-pnotify-text {
+.notifyForbidden .ui-pnotify-text,
+.alert-danger .ui-pnotify-text {
 	background: @no;
 }
 
-.notifySuccess .ui-pnotify-text {
+.notifySuccess .ui-pnotify-text,
+.alert-success .ui-pnotify-text {
 	background: @yes;
 }
 

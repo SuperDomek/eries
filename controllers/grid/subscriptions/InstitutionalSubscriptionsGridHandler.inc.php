@@ -3,9 +3,9 @@
 /**
  * @file controllers/grid/subscriptions/InstitutionalSubscriptionsGridHandler.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2000-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class InstitutionalSubscriptionsGridHandler
  * @ingroup controllers_grid_subscriptions
@@ -134,7 +134,7 @@ class InstitutionalSubscriptionsGridHandler extends SubscriptionsGridHandler {
 		// Get the context.
 		$journal = $request->getContext();
 
-		$subscriptionDao = DAORegistry::getDAO('InstitutionalSubscriptionDAO');
+		$subscriptionDao = DAORegistry::getDAO('InstitutionalSubscriptionDAO'); /* @var $subscriptionDao InstitutionalSubscriptionDAO */
 		$rangeInfo = $this->getGridRangeInfo($request, $this->getId());
 		return $subscriptionDao->getByJournalId($journal->getId(), null, $filter['searchField'], $filter['searchMatch'], $filter['search']?$filter['search']:null, null, null, null, $rangeInfo);
 	}
@@ -194,7 +194,7 @@ class InstitutionalSubscriptionsGridHandler extends SubscriptionsGridHandler {
 
 		// Identify the subscription ID.
 		$subscriptionId = $request->getUserVar('rowId');
-		$subscriptionDao = DAORegistry::getDAO('InstitutionalSubscriptionDAO');
+		$subscriptionDao = DAORegistry::getDAO('InstitutionalSubscriptionDAO'); /* @var $subscriptionDao InstitutionalSubscriptionDAO */
 		$subscriptionDao->deleteById($subscriptionId, $context->getId());
 		return DAO::getDataChangedEvent();
 	}

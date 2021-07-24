@@ -8,9 +8,9 @@
 /**
  * @file classes/xml/XMLParser.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2000-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class XMLParser
  * @ingroup xml
@@ -26,10 +26,6 @@ define('XML_PARSER_TARGET_ENCODING', Config::getVar('i18n', 'client_charset'));
 import('lib.pkp.classes.xml.XMLParserDOMHandler');
 
 class XMLParser {
-
-	/** @var int original magic_quotes_runtime setting */
-	var $magicQuotes;
-
 	/** @var object instance of XMLParserHandler */
 	var $handler;
 
@@ -41,14 +37,11 @@ class XMLParser {
 	 * Initialize parser and set parser options.
 	 */
 	function __construct() {
-		// magic_quotes_runtime must be disabled for XML parsing
-		$this->magicQuotes = get_magic_quotes_runtime();
-		if ($this->magicQuotes) set_magic_quotes_runtime(0);
 		$this->errors = array();
 	}
 
-	function &parseText($text) {
-		$parser =& $this->createParser();
+	function parseText($text) {
+		$parser = $this->createParser();
 
 		if (!isset($this->handler)) {
 			// Use default handler for parsing
@@ -64,7 +57,7 @@ class XMLParser {
 			$this->addError(xml_error_string(xml_get_error_code($parser)));
 		}
 
-		$result =& $this->handler->getResult();
+		$result = $this->handler->getResult();
 		$this->destroyParser($parser);
 		if (isset($handler)) {
 			$handler->destroy();
@@ -79,8 +72,8 @@ class XMLParser {
 	 * @param $dataCallback mixed Optional callback for data handling: function dataCallback($operation, $wrapper, $data = null)
 	 * @return object actual return type depends on the handler
 	 */
-	function &parse($file, $dataCallback = null) {
-		$parser =& $this->createParser();
+	function parse($file, $dataCallback = null) {
+		$parser = $this->createParser();
 
 		if (!isset($this->handler)) {
 			// Use default handler for parsing
@@ -93,16 +86,14 @@ class XMLParser {
 		xml_set_character_data_handler($parser, "characterData");
 
 		import('lib.pkp.classes.file.FileWrapper');
-		$wrapper =& FileWrapper::wrapper($file);
+		$wrapper = FileWrapper::wrapper($file);
 
 		// Handle responses of various types
 		while (true) {
 			$newWrapper = $wrapper->open();
-			if (is_object($newWrapper)) {
+			if (is_a($newWrapper, 'FileWrapper')) {
 				// Follow a redirect
-				unset($wrapper);
-				$wrapper =& $newWrapper;
-				unset ($newWrapper);
+				$wrapper = $newWrapper;
 			} elseif (!$newWrapper) {
 				// Could not open resource -- error
 				$returner = false;
@@ -165,8 +156,8 @@ class XMLParser {
 	 * Set the handler to use for parse(...).
 	 * @param $handler XMLParserHandler
 	 */
-	function setHandler(&$handler) {
-		$this->handler =& $handler;
+	function setHandler($handler) {
+		$this->handler = $handler;
 	}
 
 	/**
@@ -174,14 +165,16 @@ class XMLParser {
 	 * This is best suited for XML documents with fairly simple structure.
 	 * @param $text string XML data
 	 * @param $tagsToMatch array optional, if set tags not in the array will be skipped
-	 * @return array a struct of the form ($TAG => array('attributes' => array( ... ), 'value' => $VALUE), ... )
+	 * @return array? a struct of the form ($TAG => array('attributes' => array( ... ), 'value' => $VALUE), ... )
 	 */
-	function &parseTextStruct(&$text, $tagsToMatch = array()) {
-		$parser =& $this->createParser();
-		xml_parse_into_struct($parser, $text, $values, $tags);
+	function parseTextStruct($text, $tagsToMatch = array()) {
+		$parser = $this->createParser();
+		$result = xml_parse_into_struct($parser, $text, $values, $tags);
 		$this->destroyParser($parser);
+		if (!$result) return null;
 
 		// Clean up data struct, removing undesired tags if necessary
+		$data = array();
 		foreach ($tags as $key => $indices) {
 			if (!empty($tagsToMatch) && !in_array($key, $tagsToMatch)) {
 				continue;
@@ -209,25 +202,24 @@ class XMLParser {
 	 * This is best suited for XML documents with fairly simple structure.
 	 * @param $file string full path to the XML file
 	 * @param $tagsToMatch array optional, if set tags not in the array will be skipped
-	 * @return array a struct of the form ($TAG => array('attributes' => array( ... ), 'value' => $VALUE), ... )
+	 * @return array? a struct of the form ($TAG => array('attributes' => array( ... ), 'value' => $VALUE), ... )
 	 */
-	function &parseStruct($file, $tagsToMatch = array()) {
+	function parseStruct($file, $tagsToMatch = array()) {
 		import('lib.pkp.classes.file.FileWrapper');
-		$wrapper =& FileWrapper::wrapper($file);
+		$wrapper = FileWrapper::wrapper($file);
 		$fileContents = $wrapper->contents();
 		if (!$fileContents) {
 			$result = false;
 			return $result;
 		}
-		$returner =& $this->parseTextStruct($fileContents, $tagsToMatch);
-		return $returner;
+		return $this->parseTextStruct($fileContents, $tagsToMatch);
 	}
 
 	/**
 	 * Initialize a new XML parser.
 	 * @return resource
 	 */
-	function &createParser() {
+	function createParser() {
 		$parser = xml_parser_create(XML_PARSER_SOURCE_ENCODING);
 		xml_parser_set_option($parser, XML_OPTION_TARGET_ENCODING, XML_PARSER_TARGET_ENCODING);
 		xml_parser_set_option($parser, XML_OPTION_CASE_FOLDING, false);
@@ -241,15 +233,6 @@ class XMLParser {
 	function destroyParser($parser) {
 		xml_parser_free($parser);
 	}
-
-	/**
-	 * Perform required clean up for this object.
-	 */
-	function destroy() {
-		// Set magic_quotes_runtime back to original setting
-		if ($this->magicQuotes) set_magic_quotes_runtime($this->magicQuotes);
-	}
-
 }
 
 /**
@@ -290,5 +273,12 @@ class XMLParserHandler {
 	 */
 	function getResult() {
 		return null;
+	}
+
+	/**
+	 * Perform clean up for this object
+	 * @deprecated
+	 */
+	function destroy() {
 	}
 }

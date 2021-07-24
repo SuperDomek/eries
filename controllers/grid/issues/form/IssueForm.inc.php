@@ -3,9 +3,9 @@
 /**
  * @file controllers/grid/issues/form/IssueForm.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class IssueForm
  * @ingroup controllers_grid_issues_form
@@ -45,6 +45,7 @@ class IssueForm extends Form {
 		$this->addCheck(new FormValidatorCustom($this, 'showTitle', 'optional', 'editor.issues.titleRequired', function($showTitle) use ($form) {
 			return !$showTitle || implode('', $form->getData('title'))!='' ? true : false;
 		}));
+		$this->addCheck(new FormValidatorRegExp($this, 'urlPath', 'optional', 'validator.alpha_dash', '/^[-_a-z0-9]*$/'));
 		$this->addCheck(new FormValidatorPost($this));
 		$this->addCheck(new FormValidatorCSRF($this));
 		$this->issue = $issue;
@@ -55,14 +56,14 @@ class IssueForm extends Form {
 	 * @return array
 	 */
 	function getLocaleFieldNames() {
-		$issueDao = DAORegistry::getDAO('IssueDAO');
+		$issueDao = DAORegistry::getDAO('IssueDAO'); /* @var $issueDao IssueDAO */
 		return $issueDao->getLocaleFieldNames();
 	}
 
 	/**
 	 * @copydoc Form::fetch()
 	 */
-	function fetch($request) {
+	function fetch($request, $template = null, $display = false) {
 		if ($this->issue) {
 			$templateMgr = TemplateManager::getManager($request);
 			$templateMgr->assign(array(
@@ -92,7 +93,7 @@ class IssueForm extends Form {
 			);
 		}
 
-		return parent::fetch($request);
+		return parent::fetch($request, $template, $display);
 	}
 
 	/**
@@ -100,15 +101,32 @@ class IssueForm extends Form {
 	 */
 	function validate($callHooks = true) {
 		if ($temporaryFileId = $this->getData('temporaryFileId')) {
-			$request = Application::getRequest();
+			$request = Application::get()->getRequest();
 			$user = $request->getUser();
-			$temporaryFileDao = DAORegistry::getDAO('TemporaryFileDAO');
+			$temporaryFileDao = DAORegistry::getDAO('TemporaryFileDAO'); /* @var $temporaryFileDao TemporaryFileDAO */
 			$temporaryFile = $temporaryFileDao->getTemporaryFile($temporaryFileId, $user->getId());
 
 			import('classes.file.PublicFileManager');
 			$publicFileManager = new PublicFileManager();
 			if (!$publicFileManager->getImageExtension($temporaryFile->getFileType())) {
 				$this->addError('coverImage', __('editor.issues.invalidCoverImageFormat'));
+			}
+		}
+
+		// Check if urlPath is already being used
+		if ($this->getData('urlPath')) {
+			if (ctype_digit((string) $this->getData('urlPath'))) {
+				$this->addError('urlPath', __('publication.urlPath.numberInvalid'));
+				$this->addErrorField('urlPath');
+			} else {
+				$issueDao = DAORegistry::getDAO('IssueDAO'); /* @var $issueDao IssueDAO */
+				$issue = $issueDao->getByBestId($this->getData('urlPath'), Application::get()->getRequest()->getContext()->getId());
+				if ($issue &&
+					(!$this->issue || $this->issue->getId() !== $issue->getId())
+				) {
+					$this->addError('urlPath', __('publication.urlPath.duplicate'));
+					$this->addErrorField('urlPath');
+				}
 			}
 		}
 
@@ -134,6 +152,7 @@ class IssueForm extends Form {
 				'showTitle' => $this->issue->getShowTitle(),
 				'coverImage' => $this->issue->getCoverImage($locale),
 				'coverImageAltText' => $this->issue->getCoverImageAltText($locale),
+				'urlPath' => $this->issue->getData('urlPath'),
 			);
 			parent::initData();
 		} else {
@@ -163,6 +182,7 @@ class IssueForm extends Form {
 			'temporaryFileId',
 			'coverImageAltText',
 			'datePublished',
+			'urlPath',
 		));
 
 		$form = $this;
@@ -174,17 +194,19 @@ class IssueForm extends Form {
 	/**
 	 * Save issue settings.
 	 */
-	function execute() {
-		$request = Application::getRequest();
+	function execute(...$functionArgs) {
+		parent::execute(...$functionArgs);
+
+		$request = Application::get()->getRequest();
 		$journal = $request->getJournal();
 
-		$issueDao = DAORegistry::getDAO('IssueDAO');
+		$issueDao = DAORegistry::getDAO('IssueDAO'); /* @var $issueDao IssueDAO */
 		if ($this->issue) {
 			$isNewIssue = false;
 			$issue = $this->issue;
 		} else {
 			$issue = $issueDao->newDataObject();
-			switch ($journal->getSetting('publishingMode')) {
+			switch ($journal->getData('publishingMode')) {
 				case PUBLISHING_MODE_SUBSCRIPTION:
 				case PUBLISHING_MODE_NONE:
 					$issue->setAccessStatus(ISSUE_ACCESS_SUBSCRIPTION);
@@ -202,9 +224,9 @@ class IssueForm extends Form {
 
 		$issue->setJournalId($journal->getId());
 		$issue->setTitle($this->getData('title'), null); // Localized
-		$issue->setVolume(empty($volume) ? 0 : $volume);
-		$issue->setNumber(empty($number) ? 0 : $number);
-		$issue->setYear(empty($year) ? 0 : $year);
+		$issue->setVolume(empty($volume) ? null : $volume);
+		$issue->setNumber(empty($number) ? null : $number);
+		$issue->setYear(empty($year) ? null : $year);
 		if (!$isNewIssue) {
 			$issue->setDatePublished($this->getData('datePublished'));
 		}
@@ -213,6 +235,7 @@ class IssueForm extends Form {
 		$issue->setShowNumber($this->getData('showNumber'));
 		$issue->setShowYear($this->getData('showYear'));
 		$issue->setShowTitle($this->getData('showTitle'));
+		$issue->setData('urlPath', $this->getData('urlPath'));
 
 		// If it is a new issue, first insert it, then update the cover
 		// because the cover name needs an issue id.
@@ -226,14 +249,14 @@ class IssueForm extends Form {
 		// Copy an uploaded cover file for the issue, if there is one.
 		if ($temporaryFileId = $this->getData('temporaryFileId')) {
 			$user = $request->getUser();
-			$temporaryFileDao = DAORegistry::getDAO('TemporaryFileDAO');
+			$temporaryFileDao = DAORegistry::getDAO('TemporaryFileDAO'); /* @var $temporaryFileDao TemporaryFileDAO */
 			$temporaryFile = $temporaryFileDao->getTemporaryFile($temporaryFileId, $user->getId());
 
 			import('classes.file.PublicFileManager');
 			$publicFileManager = new PublicFileManager();
 			$newFileName = 'cover_issue_' . $issue->getId() . '_' . $locale . $publicFileManager->getImageExtension($temporaryFile->getFileType());
 			$journal = $request->getJournal();
-			$publicFileManager->copyJournalFile($journal->getId(), $temporaryFile->getFilePath(), $newFileName);
+			$publicFileManager->copyContextFile($journal->getId(), $temporaryFile->getFilePath(), $newFileName);
 			$issue->setCoverImage($newFileName, $locale);
 			$issueDao->updateObject($issue);
 		}

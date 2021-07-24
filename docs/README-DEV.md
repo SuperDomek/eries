@@ -173,8 +173,8 @@ For contributions that are distributed separately as patches or plugins:
 * Whenever possible, git commit log messages should be prefixed with
   `pkp/pkp-lib#ISSUENUM` to reference a git issue; see
   https://github.com/pkp/pkp-lib#issues.
-* Please consult http://pkp.sfu.ca/wiki/index.php/HOW-TO_check_out_PKP_applications_from_git
-  for instructions on setting up a development environment.
+* Please consult the README document for instructions on setting up a
+  development environment.
 
 
 ### File Header
@@ -186,9 +186,9 @@ For contributions that are distributed separately as patches or plugins:
 /**
  * @file /path/to/filename.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @package PACKAGE
  * @class CLASS
@@ -236,9 +236,9 @@ For contributions that are distributed separately as patches or plugins:
 	{**
 	 * /path/to/filename.tpl
 	 *
-	 * Copyright (c) 2014-2019 Simon Fraser University
-	 * Copyright (c) 2003-2019 John Willinsky
-	 * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+	 * Copyright (c) 2014-2020 Simon Fraser University
+	 * Copyright (c) 2003-2020 John Willinsky
+	 * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
 	 *
 	 * DESCRIPTION.
 	 *}
@@ -249,9 +249,9 @@ For contributions that are distributed separately as patches or plugins:
 
 ### Localization
 
-* i18n strings are defined in locale/<locale_key>/locale.xml.
+* i18n strings are defined in locale/<locale_key>/locale.po.
 * Key names should be in the form "sectionname(.subsectionname)*.name".
-  E.g., "manager.setup.journalTitle"
+  E.g., "manager.setup.contextTitle"
 * Use {translate key="my.key.name"} in templates to translate i18n keys.
 * Use the String wrapper class in place of the built-in string
   manipulation/regexp routines when handling data that could potentially be in
@@ -288,5 +288,4 @@ Note that these should apply to parameters supplied to {translate key="..."} and
 
 * Use `$request->redirectUrl($url)`, or better yet, `$request->redirect(...)` for
   HTTP redirects instead of `header('Location: ...');`
-* For additional coding convention information, see the OJS Design Document
-  at http://pkp.sfu.ca/ojs/OJSTechnicalReference.pdf.
+* For additional information, see https://docs.pkp.sfu.ca/dev/.

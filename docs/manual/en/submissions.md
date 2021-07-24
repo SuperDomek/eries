@@ -1,11 +1,10 @@
 # Submissions
 
-1. Introduction
-2. [Start A New Submission](submissions.md#new-submission)
-3. [My Queue](submissions.md#my-queue)
-4. [All Active](submissions.md#active)
-5. [Archives](submissions.md#archives)
-6. [Find Submissions Quickly](submissions.md#find-quickly)
+1. [Start A New Submission](submissions#new-submission)
+1. [My Queue](submissions#my-queue)
+1. [All Active](submissions#active)
+1. [Archives](submissions#archives)
+1. [Find Submissions Quickly](submissions#find-quickly)
 
 Access any submissions currently under consideration from the Submissions page.
 
@@ -13,9 +12,7 @@ Editorial and administrative users also have access to all published and archive
 
 ## <a name="new-submission"></a>Start A New Submission
 
-You can start a new submission by clicking the **New Submission** button which appears above each of the submission lists.
-
-If you are a Reviewer you may not see this button, but you can still make a submission if you click **View Site** on the top right and look for a link to make a submission on the journal's homepage. 
+You can start a new submission by clicking the **New Submission** button which appears above each of the submission lists. For more information, see [Learning OJS 3: Submitting an Article](https://docs.pkp.sfu.ca/learning-ojs/en/authoring#submitting-an-article.
 
 ## <a name="my-queue"></a>My Queue
 
@@ -29,7 +26,7 @@ Journal Managers can view any new submissions which have not yet been assigned a
 
 ## <a name="active"></a>Active
 
-Find any submissions in the system that haven't been published or declined. Only editorial and administrative users have access to this tab.
+Find any submissions in the system that haven't been published or declined. Only editorial and administrative users have access to this tab. Fore more detailed information, see [Learning OJS 3: Submissions](https://docs.pkp.sfu.ca/learning-ojs/en/editorial-workflow#submissions).
 
 ## <a name="archives"></a>Archives
 

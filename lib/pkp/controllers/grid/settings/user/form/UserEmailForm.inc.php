@@ -3,9 +3,9 @@
 /**
  * @file controllers/grid/settings/user/form/UserEmailForm.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class UserEmailForm
  * @ingroup controllers_grid_settings_user_form
@@ -50,7 +50,7 @@ class UserEmailForm extends Form {
 	 * @copydoc Form::Fetch
 	 */
 	function fetch($request, $template = null, $display = false) {
-		$userDao = DAORegistry::getDAO('UserDAO');
+		$userDao = DAORegistry::getDAO('UserDAO'); /* @var $userDao UserDAO */
 		$user = $userDao->getById($this->userId);
 
 		$templateMgr = TemplateManager::getManager($request);
@@ -65,11 +65,12 @@ class UserEmailForm extends Form {
 
 	/**
 	 * Send the email
+	 * @copydoc Form::execute()
 	 */
-	function execute() {
-		$userDao = DAORegistry::getDAO('UserDAO');
+	function execute(...$functionArgs) {
+		$userDao = DAORegistry::getDAO('UserDAO'); /* @var $userDao UserDAO */
 		$toUser = $userDao->getById($this->userId);
-		$request = Application::getRequest();
+		$request = Application::get()->getRequest();
 		$fromUser = $request->getUser();
 
 		import('lib.pkp.classes.mail.MailTemplate');
@@ -80,7 +81,9 @@ class UserEmailForm extends Form {
 		$email->setSubject($this->getData('subject'));
 		$email->setBody($this->getData('message'));
 		$email->assignParams();
-error_log('here');
+
+		parent::execute(...$functionArgs);
+
 		if (!$email->send()) {
 			import('classes.notification.NotificationManager');
 			$notificationMgr = new NotificationManager();

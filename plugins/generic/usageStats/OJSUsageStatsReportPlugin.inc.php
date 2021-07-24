@@ -3,9 +3,9 @@
 /**
  * @file plugins/generic/usageStats/OJSUsageStatsReportPlugin.inc.php
  *
- * Copyright (c) 2013-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2013-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class OJUsageStatsReportPlugin
  * @ingroup plugins_generic_usageStats
@@ -86,7 +86,7 @@ class OJSUsageStatsReportPlugin extends PKPUsageStatsReportPlugin {
 			ASSOC_TYPE_JOURNAL,
 			ASSOC_TYPE_ISSUE,
 			ASSOC_TYPE_ISSUE_GALLEY,
-			ASSOC_TYPE_ARTICLE,
+			ASSOC_TYPE_SUBMISSION,
 			ASSOC_TYPE_SUBMISSION_FILE
 		);
 	}

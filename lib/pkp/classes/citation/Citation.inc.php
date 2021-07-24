@@ -7,9 +7,9 @@
 /**
  * @file classes/citation/Citation.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2000-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class Citation
  * @ingroup citation
@@ -26,27 +26,12 @@ class Citation extends DataObject {
 	 */
 	function __construct($rawCitation = null) {
 		parent::__construct();
-		$this->setRawCitation($rawCitation); // this will set state to CITATION_RAW
+		$this->setRawCitation($rawCitation);
 	}
 
 	//
 	// Getters and Setters
 	//
-	/**
-	 * Get the submission id
-	 * @return integer
-	 */
-	function getSubmissionId() {
-		return $this->getData('submissionId');
-	}
-
-	/**
-	 * Set the submission id
-	 * @param $submissionId integer
-	 */
-	function setSubmissionId($submissionId) {
-		$this->setData('submissionId', $submissionId);
-	}
 
 	/**
 	 * Replace URLs through HTML links, if the citation does not already contain HTML links
@@ -55,8 +40,8 @@ class Citation extends DataObject {
 	function getCitationWithLinks() {
 		$citation = $this->getRawCitation();
 		if (stripos($citation, '<a href=') === false) {
-			return preg_replace_callback( // EDIT  hopefully FIXed in future versions
-				'#(http|https|ftp):\/\/[\d\w\.-]+\.[\w\.]{2,6}[^\s\]\[\<\>]*/?#',
+			$citation = preg_replace_callback(
+				'#(http|https|ftp)://[\d\w\.-]+\.[\w\.]{2,6}[^\s\]\[\<\>]*/?#',
 				function($matches) {
 					$trailingDot = in_array($char = substr($matches[0], -1), array('.', ','));
 					$url = rtrim($matches[0], '.,');

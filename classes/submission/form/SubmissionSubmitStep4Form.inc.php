@@ -3,9 +3,9 @@
 /**
  * @file classes/submission/form/SubmissionSubmitStep4Form.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SubmissionSubmitStep4Form
  * @ingroup submission_form
@@ -32,8 +32,8 @@ class SubmissionSubmitStep4Form extends PKPSubmissionSubmitStep4Form {
 	 * Save changes to submission.
 	 * @return int the submission ID
 	 */
-	function execute() {
-		parent::execute();
+	function execute(...$functionParams) {
+		parent::execute(...$functionParams);
 
 		$submission = $this->submission;
 		// Send author notification email
@@ -41,13 +41,13 @@ class SubmissionSubmitStep4Form extends PKPSubmissionSubmitStep4Form {
 		$mail = new ArticleMailTemplate($submission, 'SUBMISSION_ACK', null, null, false);
 		$authorMail = new ArticleMailTemplate($submission, 'SUBMISSION_ACK_NOT_USER', null, null, false);
 
-		$request = Application::getRequest();
+		$request = Application::get()->getRequest();
 		$context = $request->getContext();
 		$router = $request->getRouter();
 		if ($mail->isEnabled()) {
 			// submission ack emails should be from the contact.
-			$mail->setFrom($this->context->getSetting('contactEmail'), $this->context->getSetting('contactName'));
-			$authorMail->setFrom($this->context->getSetting('contactEmail'), $this->context->getSetting('contactName'));
+			$mail->setFrom($this->context->getData('contactEmail'), $this->context->getData('contactName'));
+			$authorMail->setFrom($this->context->getData('contactEmail'), $this->context->getData('contactName'));
 
 			$user = $request->getUser();
 			$primaryAuthor = $submission->getPrimaryAuthor();
@@ -56,16 +56,6 @@ class SubmissionSubmitStep4Form extends PKPSubmissionSubmitStep4Form {
 				$primaryAuthor = $authors[0];
 			}
 			$mail->addRecipient($user->getEmail(), $user->getFullName());
-			// Add primary contact and e-mail address as specified in the journal submission settings
-			if ($context->getSetting('copySubmissionAckPrimaryContact')) {
-				$mail->addBcc(
-					$context->getSetting('contactEmail'),
-					$context->getSetting('contactName')
-				);
-			}
-			if ($copyAddress = $context->getSetting('copySubmissionAckAddress')) {
-				$mail->addBcc($copyAddress);
-			}
 
 			if ($user->getEmail() != $primaryAuthor->getEmail()) {
 				$authorMail->addRecipient($primaryAuthor->getEmail(), $primaryAuthor->getFullName());
@@ -86,13 +76,13 @@ class SubmissionSubmitStep4Form extends PKPSubmissionSubmitStep4Form {
 			$mail->assignParams(array(
 				'authorName' => $user->getFullName(),
 				'authorUsername' => $user->getUsername(),
-				'editorialContactSignature' => $context->getSetting('contactName'),
+				'editorialContactSignature' => $context->getData('contactName'),
 				'submissionUrl' => $router->url($request, null, 'authorDashboard', 'submission', $submission->getId()),
 			));
 
 			$authorMail->assignParams(array(
 				'submitterName' => $user->getFullName(),
-				'editorialContactSignature' => $context->getSetting('contactName'),
+				'editorialContactSignature' => $context->getData('contactName'),
 			));
 
 			if (!$mail->send($request)) {

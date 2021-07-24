@@ -1,9 +1,9 @@
 {**
  * templates/frontend/pages/aboutThisPublishingSystem.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @brief Display the page to view details about the OJS software.
  *
@@ -15,6 +15,9 @@
 
 <div class="page page_about_publishing_system">
 	{include file="frontend/components/breadcrumbs.tpl" currentTitleKey="about.aboutThisPublishingSystem"}
+	<h1>
+		{translate key="about.aboutThisPublishingSystem"}
+	</h1>
 
 	<p>
 		{if $currentJournal}

@@ -1,9 +1,9 @@
 {**
  * templates/frontend/pages/userRegister.tpl
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * User registration form.
  *
@@ -13,6 +13,9 @@
 
 <div class="page page_register">
 	{include file="frontend/components/breadcrumbs.tpl" currentTitleKey="user.register"}
+	<h1>
+		{translate key="user.register"}
+	</h1>
 
 	<form class="cmp_form register" id="register" method="post" action="{url op="register"}">
 		{csrf}
@@ -29,7 +32,7 @@
 		{if $currentContext}
 
 			<fieldset class="consent">
-				{if $currentContext->getSetting('privacyStatement')}
+				{if $currentContext->getData('privacyStatement')}
 					{* Require the user to agree to the terms of the privacy policy *}
 					<div class="fields">
 						<div class="optin optin-privacy">

@@ -3,9 +3,9 @@
 /**
  * @file pages/management/PKPToolsHandler.inc.php
  *
- * Copyright (c) 2013-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2013-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPToolsHandler
  * @ingroup pages_management
@@ -26,7 +26,7 @@ class PKPToolsHandler extends ManagementHandler {
 		parent::__construct();
 		$this->addRoleAssignment(
 			ROLE_ID_MANAGER,
-			array('tools', 'statistics', 'importexport')
+			array('tools', 'statistics', 'importexport', 'permissions')
 		);
 	}
 
@@ -65,6 +65,12 @@ class PKPToolsHandler extends ManagementHandler {
 				break;
 			case 'saveStatisticsSettings':
 				return $this->saveStatisticsSettings($args, $request);
+			case 'permissions':
+				$this->permissions($args, $request);
+				break;
+			case 'resetPermissions':
+				$this->resetPermissions($args, $request);
+				break;
 			default:
 				assert(false);
 			}
@@ -112,14 +118,14 @@ class PKPToolsHandler extends ManagementHandler {
 
 		$templateMgr = TemplateManager::getManager($request);
 
-		$application = Application::getApplication();
+		$application = Application::get();
 		$templateMgr->assign('appSettings', $this->hasAppStatsSettings());
 		$templateMgr->assign('contextObjectName', __($application->getNameKey()));
 
 		$reportPlugins = PluginRegistry::loadCategory('reports');
 		$templateMgr->assign('reportPlugins', $reportPlugins);
 
-		$templateMgr->assign('defaultMetricType', $context->getSetting('defaultMetricType'));
+		$templateMgr->assign('defaultMetricType', $context->getData('defaultMetricType'));
 		$availableMetricTypes = $context->getMetricTypes(true);
 		$templateMgr->assign('availableMetricTypes', $availableMetricTypes);
 		if (count($availableMetricTypes) > 1) {
@@ -194,12 +200,12 @@ class PKPToolsHandler extends ManagementHandler {
 		}
 
 		$columns = $request->getUserVar('columns');
-		$filters = unserialize($request->getUserVar('filters'));
+		$filters = (array) json_decode($request->getUserVar('filters'));
 		if (!$filters) $filters = $request->getUserVar('filters');
 
 		$orderBy = $request->getUserVar('orderBy');
 		if ($orderBy) {
-			$orderBy = unserialize($orderBy);
+			$orderBy = (array) json_decode($orderBy);
 			if (!$orderBy) $orderBy = $request->getUserVar('orderBy');
 		} else {
 			$orderBy = array();
@@ -371,7 +377,7 @@ class PKPToolsHandler extends ManagementHandler {
 				if (!$context) break;
 				return $context->getLocalizedName();
 			case ASSOC_TYPE_SUBMISSION:
-				$submissionDao = Application::getSubmissionDAO(); /* @var $submissionDao SubmissionDAO */
+				$submissionDao = DAORegistry::getDAO('SubmissionDAO'); /* @var $submissionDao SubmissionDAO */
 				$submission = $submissionDao->getById($assocId, null, true);
 				if (!$submission) break;
 				return $submission->getLocalizedTitle();
@@ -397,6 +403,45 @@ class PKPToolsHandler extends ManagementHandler {
 	 */
 	protected function hasAppStatsSettings() {
 		return false;
+	}
+
+	/**
+	 * Display the permissipns area.
+	 * @param $args array
+	 * @param $request PKPRequest
+	 */
+	function permissions($args, $request) {
+		$this->setupTemplate($request);
+
+		$templateMgr = TemplateManager::getManager($request);
+
+		return $templateMgr->fetchJson('management/tools/permissions.tpl');
+	}
+
+	/**
+	 * Reset article/monograph permissions
+	 * @param $args array
+	 * @param $request PKPRequest
+	 */
+	function resetPermissions($args, $request) {
+		if (!$request->checkCSRF()) return new JSONMessage(false);
+
+		$context = $request->getContext();
+		if (!$context) {
+			return;
+		}
+
+		$submissionDao = DAORegistry::getDAO('SubmissionDAO'); /* @var $submissionDao SubmissionDAO */
+		$submissionDao->resetPermissions($context->getId());
+
+		$user = $request->getUser();
+		NotificationManager::createTrivialNotification($user->getId(), NOTIFICATION_TYPE_SUCCESS, array('contents' => __('manager.setup.resetPermissions.success')));
+
+		// This is an ugly hack to force the PageHandler to return JSON, so this
+		// method can communicate properly with the AjaxFormHandler. Returning a
+		// JSONMessage, or JSONMessage::toString(), doesn't seem to do it.
+		echo json_encode(true);
+		die;
 	}
 
 }

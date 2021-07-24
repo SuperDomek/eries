@@ -2,9 +2,9 @@
 /**
  * @file classes/security/authorization/WorkflowStageAccessPolicy.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2000-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class WorkflowStageAccessPolicy
  * @ingroup security_authorization
@@ -37,7 +37,8 @@ class WorkflowStageAccessPolicy extends ContextPolicy {
 		// A workflow stage component can only be called if there's a
 		// valid submission in the request.
 		import('lib.pkp.classes.security.authorization.internal.SubmissionRequiredPolicy');
-		$this->addPolicy(new SubmissionRequiredPolicy($request, $args, $submissionParameterName));
+		$submissionRequiredPolicy = new SubmissionRequiredPolicy($request, $args, $submissionParameterName);
+		$this->addPolicy($submissionRequiredPolicy);
 
 		import('lib.pkp.classes.security.authorization.internal.UserAccessibleWorkflowStageRequiredPolicy');
 		$this->addPolicy(new UserAccessibleWorkflowStageRequiredPolicy($request, $workflowType));

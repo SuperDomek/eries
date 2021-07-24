@@ -3,9 +3,9 @@
 /**
  * @file controllers/grid/settings/submissionChecklist/SubmissionChecklistGridHandler.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2000-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SubmissionChecklistGridHandler
  * @ingroup controllers_grid_settings_submissionChecklist
@@ -94,7 +94,7 @@ class SubmissionChecklistGridHandler extends SetupGridHandler {
 		// Elements to be displayed in the grid
 		$router = $request->getRouter();
 		$context = $router->getContext($request);
-		$submissionChecklist = $context->getSetting('submissionChecklist');
+		$submissionChecklist = $context->getData('submissionChecklist');
 
 		return $submissionChecklist[AppLocale::getLocale()];
 	}
@@ -167,7 +167,7 @@ class SubmissionChecklistGridHandler extends SetupGridHandler {
 		$context = $router->getContext($request);
 
 		// get all of the submissionChecklists
-		$submissionChecklistAll = $context->getSetting('submissionChecklist');
+		$submissionChecklistAll = $context->getData('submissionChecklist');
 
 		foreach (AppLocale::getSupportedLocales() as $locale => $name) {
 			if ( isset($submissionChecklistAll[$locale][$rowId]) ) {
@@ -200,7 +200,7 @@ class SubmissionChecklistGridHandler extends SetupGridHandler {
 		$context = $router->getContext($request);
 
 		// Get all of the submissionChecklists.
-		$submissionChecklistAll = $context->getSetting('submissionChecklist');
+		$submissionChecklistAll = $context->getData('submissionChecklist');
 		$locale = AppLocale::getLocale();
 
 		if (isset($submissionChecklistAll[$locale][$rowId])) {

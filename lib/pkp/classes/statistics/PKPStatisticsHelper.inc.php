@@ -3,9 +3,9 @@
 /**
 * @file classes/statistics/PKPStatisticsHelper.inc.php
 *
-* Copyright (c) 2013-2019 Simon Fraser University
-* Copyright (c) 2003-2019 John Willinsky
-* Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+* Copyright (c) 2013-2020 Simon Fraser University
+* Copyright (c) 2003-2020 John Willinsky
+* Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
 *
 * @class PKPStatisticsHelper
 * @ingroup statistics
@@ -56,8 +56,7 @@ define('STATISTICS_YESTERDAY', 'yesterday');
 define('STATISTICS_CURRENT_MONTH', 'currentMonth');
 
 // Set the earliest date used
-define('`STATISTICS_EARLIEST_DATE`', '20010101');
-
+define('STATISTICS_EARLIEST_DATE', '20010101');
 
 abstract class PKPStatisticsHelper {
 
@@ -150,7 +149,7 @@ abstract class PKPStatisticsHelper {
 
 		// Retrieve site-level report plugins.
 		$reportPlugins = PluginRegistry::loadCategory('reports', true, CONTEXT_SITE);
-		if (!is_array($reportPlugins) || empty($metricType)) {
+		if (empty($reportPlugins) || empty($metricType)) {
 			return $returner;
 		}
 
@@ -180,7 +179,7 @@ abstract class PKPStatisticsHelper {
 	function getAllMetricTypeStrings() {
 		$allMetricTypes = array();
 		$reportPlugins = PluginRegistry::loadCategory('reports', true, CONTEXT_SITE);
-		if (is_array($reportPlugins)) {
+		if (!empty($reportPlugins)) {
 			foreach ($reportPlugins as $reportPlugin) {
 				/* @var $reportPlugin ReportPlugin */
 				$reportMetricTypes = $reportPlugin->getMetricTypes();
@@ -265,11 +264,11 @@ abstract class PKPStatisticsHelper {
 		$args = array(
 			'metricType' => $metricType,
 			'columns' => $columns,
-			'filters' => serialize($filter)
+			'filters' => json_encode($filter)
 		);
 
 		if (!empty($orderBy)) {
-			$args['orderBy'] = serialize($orderBy);
+			$args['orderBy'] = json_encode($orderBy);
 		}
 
 		return $dispatcher->url($request, ROUTE_PAGE, null, 'management', 'tools', 'generateReport', $args);
@@ -332,7 +331,7 @@ abstract class PKPStatisticsHelper {
 	 * their respective names as array values.
 	 * @return array
 	 */
-	protected function getFileTypesArray() {
+	public function getFileTypesArray() {
 		return array(
 			STATISTICS_FILE_TYPE_PDF => 'PDF',
 			STATISTICS_FILE_TYPE_HTML => 'HTML',

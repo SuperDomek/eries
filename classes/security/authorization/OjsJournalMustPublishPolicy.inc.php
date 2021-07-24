@@ -2,9 +2,9 @@
 /**
  * @file classes/security/authorization/OjsJournalMustPublishPolicy.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2000-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class OjsJournalMustPublishPolicy
  * @ingroup security_authorization
@@ -51,7 +51,7 @@ class OjsJournalMustPublishPolicy extends AuthorizationPolicy {
 			return AUTHORIZATION_PERMIT;
 		}
 
-		if ($this->_context->getSetting('publishingMode') == PUBLISHING_MODE_NONE) {
+		if ($this->_context->getData('publishingMode') == PUBLISHING_MODE_NONE) {
 			return AUTHORIZATION_DENY;
 		}
 

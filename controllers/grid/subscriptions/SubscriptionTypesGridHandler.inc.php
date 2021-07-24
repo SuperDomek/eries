@@ -3,9 +3,9 @@
 /**
  * @file controllers/grid/subscriptions/SubscriptionTypesGridHandler.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2000-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SubscriptionTypesGridHandler
  * @ingroup controllers_grid_subscriptions
@@ -147,7 +147,7 @@ class SubscriptionTypesGridHandler extends GridHandler {
 		// Get the context.
 		$journal = $request->getContext();
 
-		$subscriptionTypeDao = DAORegistry::getDAO('SubscriptionTypeDAO');
+		$subscriptionTypeDao = DAORegistry::getDAO('SubscriptionTypeDAO'); /* @var $subscriptionTypeDao SubscriptionTypeDAO */
 		$rangeInfo = $this->getGridRangeInfo($request, $this->getId());
 		return $subscriptionTypeDao->getByJournalId($journal->getId());
 	}
@@ -216,7 +216,7 @@ class SubscriptionTypesGridHandler extends GridHandler {
 
 		// Identify the subscription type ID.
 		$subscriptionTypeId = $request->getUserVar('rowId');
-		$subscriptionTypeDao = DAORegistry::getDAO('SubscriptionTypeDAO');
+		$subscriptionTypeDao = DAORegistry::getDAO('SubscriptionTypeDAO'); /* @var $subscriptionTypeDao SubscriptionTypeDAO */
 		$subscriptionTypeDao->deleteById($subscriptionTypeId, $context->getId());
 		return DAO::getDataChangedEvent($subscriptionTypeId);
 	}

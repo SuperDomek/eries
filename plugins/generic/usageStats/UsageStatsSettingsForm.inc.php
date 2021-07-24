@@ -3,9 +3,9 @@
 /**
  * @file plugins/generic/usageStats/UsageStatsSettingsForm.inc.php
  *
- * Copyright (c) 2013-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2013-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class UsageStatsSettingsForm
  * @ingroup plugins_generic_usageStats
@@ -49,7 +49,8 @@ class UsageStatsSettingsForm extends Form {
 		$this->setData('selectedOptionalColumns', $plugin->getSetting(CONTEXT_ID_NONE, 'optionalColumns'));
 		$this->setData('compressArchives', $plugin->getSetting(CONTEXT_ID_NONE, 'compressArchives'));
 
-		$context = Request::getContext();
+		$request = Application::get()->getRequest();
+		$context = $request->getContext();
 		$this->setData('displayStatistics', $plugin->_getPluginSetting($context, 'displayStatistics'));
 		$this->setData('datasetMaxCount', $plugin->_getPluginSetting($context, 'datasetMaxCount'));
 		$this->setData('chartType', $plugin->_getPluginSetting($context, 'chartType'));
@@ -76,29 +77,30 @@ class UsageStatsSettingsForm extends Form {
 	/**
 	 * @copydoc Form::fetch()
 	 */
-	function fetch($request) {
+	function fetch($request, $template = null, $display = false) {
 		$templateMgr = TemplateManager::getManager($request);
-		$chartTypes = array(
-			'bar' => __('plugins.generic.usageStats.settings.statsDisplayOptions.chartType.bar'),
-			'line' => __('plugins.generic.usageStats.settings.statsDisplayOptions.chartType.line')
-		);
-		$templateMgr->assign('chartTypes', $chartTypes);
-		$templateMgr->assign('pluginName', $this->plugin->getName());
 		$saltFilepath = Config::getVar('usageStats', 'salt_filepath');
-		$templateMgr->assign('saltFilepath', $saltFilepath && file_exists($saltFilepath) && is_writable($saltFilepath));
-		$templateMgr->assign('optionalColumnsOptions', $this->getOptionalColumnsList());
+		$application = Application::get();
+		$templateMgr->assign(array(
+			'chartTypes' => array(
+				'bar' => __('plugins.generic.usageStats.settings.statsDisplayOptions.chartType.bar'),
+				'line' => __('plugins.generic.usageStats.settings.statsDisplayOptions.chartType.line'),
+			),
+			'pluginName' => $this->plugin->getName(),
+			'saltFilepath' => $saltFilepath && file_exists($saltFilepath) && is_writable($saltFilepath),
+			'optionalColumnsOptions' => $this->getOptionalColumnsList(),
+			'applicationName' => $application->getName(),
+		));
 		if (!$this->getData('selectedOptionalColumns')) {
 			$this->setData('selectedOptionalColumns', array());
 		}
-		$application = Application::getApplication();
-		$templateMgr->assign('applicationName', $application->getName());
-		return parent::fetch($request);
+		return parent::fetch($request, $template, $display);
 	}
 
 	/**
-	 * Save settings.
+	 * @copydoc Form::execute()
 	 */
-	function execute() {
+	function execute(...$functionArgs) {
 		$plugin = $this->plugin;
 
 		$plugin->updateSetting(CONTEXT_ID_NONE, 'createLogFiles', $this->getData('createLogFiles'), 'bool');
@@ -107,7 +109,8 @@ class UsageStatsSettingsForm extends Form {
 		$plugin->updateSetting(CONTEXT_ID_NONE, 'compressArchives', $this->getData('compressArchives'), 'bool');
 		$plugin->updateSetting(CONTEXT_ID_NONE, 'saltFilepath', $this->getData('saltFilepath'));
 
-		$context = Request::getContext();
+		$request = Application::get()->getRequest();
+		$context = $request->getContext();
 		$contextId = $context ? $context->getId() : CONTEXT_ID_NONE;
 		$plugin->updateSetting($contextId, 'displayStatistics', $this->getData('displayStatistics'), 'bool');
 		$plugin->updateSetting($contextId, 'chartType', $this->getData('chartType'));
@@ -116,7 +119,7 @@ class UsageStatsSettingsForm extends Form {
 		$optionalColumns = $this->getData('optionalColumns');
 		// Make sure optional columns data makes sense.
 		if ($optionalColumns && in_array(STATISTICS_DIMENSION_CITY, $optionalColumns) && !in_array(STATISTICS_DIMENSION_REGION, $optionalColumns)) {
-			$user = Request::getUser();
+			$user = $request->getUser();
 			import('classes.notification.NotificationManager');
 			$notificationManager = new NotificationManager();
 			$notificationManager->createTrivialNotification(
@@ -126,6 +129,8 @@ class UsageStatsSettingsForm extends Form {
 			$optionalColumns[] = STATISTICS_DIMENSION_REGION;
 		}
 		$plugin->updateSetting(CONTEXT_ID_NONE, 'optionalColumns', $optionalColumns);
+
+		parent::execute(...$functionArgs);
 	}
 
 	/**

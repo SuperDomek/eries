@@ -1,11 +1,11 @@
 <?php
 
 /**
- * @file classes/services/PKPStatsService.php
+ * @file classes/services/PKPStatsService.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2000-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPStatsService
  * @ingroup services
@@ -15,559 +15,314 @@
 
 namespace PKP\Services;
 
-use \PKP\Services\EntityProperties\PKPBaseEntityPropertyService;
-use \DAORegistry;
-
-
-class PKPStatsService extends PKPBaseEntityPropertyService {
+class PKPStatsService {
 
 	/**
-	 * Constructor
-	 */
-	public function __construct() {
-		parent::__construct($this);
-	}
-
-	/**
-	 * Get statistics records of the submissions (filtered by request parameters),
-	 * ordered by total stats numbers of their abstract and galley views.
+	 * Get all statistics records that match the passed arguments
 	 *
-	 * @param int $contextId
-	 * @param array $args {
-	 * 		@option string orderBy
-	 * 		@option string orderDirection
-	 * 		@option int count
-	 * 		@option int offset
-	 *		@option string timeSegment
-	 *		@option string dateStart
-	 *		@option string dateEnd
-	 *		@option array sectionIds
-	 *		@option array searchPhrase
-	 * }
-	 *
+	 * @param array $args [
+	 *  @option array contextIds Return records for these contexts
+	 *  @option array submissionIds Return records for these submissions
+	 *  @option array sectionIds Return records for these sections
+	 *  @option string dateEnd Return records on or before this date
+	 *  @option string dateStart Return records on or after this date
+	 *  @option array assocTypes Return records for these types of objects. One of ASSOC_TYPE_*
+	 *  @option array assocIds Return records for these objects. Only used when assocTypes is set.
+	 *  @option array fileTypes Return records for these file types. One of STATISTICS_FILE_TYPE_*
+	 * ]
 	 * @return array
 	 */
-	public function getOrderedSubmissions($contextId, $args = array()) {
-		$records = array();
-		if (!empty($args['searchPhrase'])) {
-		    $submissionIds = $this->_filterSubmissionsBySearchPhrase($contextId, $args['searchPhrase']);
-		    if (empty($submissionIds)) return $records;
-		}
-		$statsListQB = $this->_buildGetOrderedSubmissionsQueryObject($contextId, $args);
-		if (isset($submissionIds)) {
-		    $statsListQB->filterBySubmissionIds($submissionIds);
-		}
-		$statsQO = $statsListQB->get();
-		if ($statsQO) {
-			$metricsDao = \DAORegistry::getDAO('MetricsDAO');
-			$result = $metricsDao->retrieve($statsQO->toSql(), $statsQO->getBindings());
-			$records = $result->GetAll();
-		}
-		return $records;
-	}
+	public function getRecords($args = []) {
 
-	/**
-	 * Get the total counts of abstract and file views, as well as
-	 * the totals broken down by time segment,
-	 * for all submission statistics records (filtered by request parameters)
-	 *
-	 * @param int $contextId
-	 * @param array $args {
-	 * 		@option string orderBy
-	 * 		@option string orderDirection
-	 * 		@option int count
-	 * 		@option int offset
-	 *		@option string timeSegment
-	 *		@option string dateStart
-	 *		@option string dateEnd
-	 *		@option array sectionIds
-	 *		@option array searchPhrase
-	 * }
-	 *
-	 * @return array
-	 */
-	public function getTotalSubmissionsStats($contextId, $args = array()) {
-		$records = array();
-		if (!empty($args['searchPhrase'])) {
-			$submissionIds = $this->_filterSubmissionsBySearchPhrase($contextId, $args['searchPhrase']);
-			if (empty($submissionIds)) return $records;
-		}
-		$statsListQB = $this->_buildGetTotalSubmissionsStatsQueryObject($contextId, $args);
-		if (isset($submissionIds)) {
-			$statsListQB->filterBySubmissionIds($submissionIds);
-		}
-		$statsQO = $statsListQB->get();
-		if ($statsQO) {
-			$metricsDao = \DAORegistry::getDAO('MetricsDAO');
-			$result = $metricsDao->retrieve($statsQO->toSql(), $statsQO->getBindings());
-			$records = $result->GetAll();
-		}
-		return $records;
-	}
+		// Get the stats constants
+		import('classes.statistics.StatisticsHelper');
 
-	/**
-	 * @see \PKP\Services\EntityProperties\EntityPropertyInterface::getProperties()
-	 *
-	 * @param $object object Submission
-	 * @param $props array
-	 * @param $args array
-	 *		$args['request'] PKPRequest Required
-	 *		$args['slimRequest'] SlimRequest
-	 *		$args['params] array of validated request parameters
-	 *
-	 * @return array
-	 */
-	public function getProperties($object, $props, $args = null) {
-		assert(is_a($object, 'Submission'));
-		$entityService = \ServicesContainer::instance()->get('submission');
-		$params = array(
-			'entityAssocType' => ASSOC_TYPE_SUBMISSION,
-			'fileAssocType' => ASSOC_TYPE_SUBMISSION_FILE,
-		);
-		$statsListQB = $this->_buildGetSubmissionQueryObject($object->getContextId(), $object->getId(), $args['params']);
-		$statsQO = $statsListQB->get();
+		$defaultArgs = [
+			'dateStart' => STATISTICS_EARLIEST_DATE,
+			'dateEnd' => date('Y-m-d', strtotime('yesterday')),
 
-		$metricsDao = \DAORegistry::getDAO('MetricsDAO');
-		$result = $metricsDao->retrieve($statsQO->toSql(), $statsQO->getBindings());
-		$records = $result->GetAll();
+			// Require a context to be specified to prevent unwanted data leakage
+			// if someone forgets to specify the context.
+			'contextIds' => [CONTEXT_ID_NONE],
+		];
 
-		$values = $this->getRecordProperties($records, $params, $props, $args);
-		$values['object'] = $entityService->getStatsObjectSummaryProperties($object, $args);
-
-		\HookRegistry::call('Stats::getProperties', array(&$values, $object, $props, $args));
-
-		return $values;
-	}
-
-	/**
-	 * @see \PKP\Services\EntityProperties\EntityPropertyInterface::getSummaryProperties()
-	 *
-	 * @param $object object Submission
-	 * @param $args array
-	 *		$args['request'] PKPRequest Required
-	 *		$args['slimRequest'] SlimRequest
-	 *		$args['params] array of validated request parameters
-	 *
-	 * @return array
-	 */
-	public function getSummaryProperties($object, $args = null) {
-		$props = array (
-			'total', 'abstractViews', 'totalFileViews', 'pdf', 'html', 'other', 'timeSegments',
-		);
-
-		\HookRegistry::call('Stats::getProperties::summaryProperties', array(&$props, $object, $args));
-
-		return $this->getProperties($object, $props, $args);
-	}
-
-	/**
-	 * @see \PKP\Services\EntityProperties\EntityPropertyInterface::getFullProperties()
-	 * @param $object object Submission
-	 * @param $args array
-	 *		$args['request'] PKPRequest Required
-	 *		$args['slimRequest'] SlimRequest
-	 *		$args['params] array of validated request parameters
-	 * @return array
-	 */
-	public function getFullProperties($object, $args = null) {
-		$props = array (
-			'total', 'abstractViews', 'totalFileViews', 'pdf', 'html', 'other', 'timeSegments',
-		);
-
-		\HookRegistry::call('Stats::getProperties::fullProperties', array(&$props, $object, $args));
-
-		return $this->getProperties($object, $props, $args);
-	}
-
-	/**
-	 * Get properties for the total stats
-	 *
-	 * @param $records array
-	 * @param $args array
-	 *		$args['request'] PKPRequest Required
-	 *		$args['slimRequest'] SlimRequest
-	 *		$args['params] array of validated request parameters
-	 *
-	 * @return array
-	 */
-	public function getTotalStatsProperties($records, $args = null) {
-		$props = array (
-			'total', 'abstractViews', 'totalFileViews', 'timeSegments',
-		);
-
-		\HookRegistry::call('Stats::getProperties::totalStatsProperties', array(&$props, $records, $args));
-
-		$params = array(
-			'entityAssocType' => ASSOC_TYPE_SUBMISSION,
-			'fileAssocType' => ASSOC_TYPE_SUBMISSION_FILE,
-		);
-		return $this->getRecordProperties($records, $params, $props, $args);
-	}
-
-	/**
-	 * Returns all time segments and their stats
-	 *
-	 * @param $records array
-	 * @param $params array
-	 * 		@option int entityAssocType
-	 * 		@otion int fileAssocType
-	 * @param $props array
-	 * @param $args array
-	 *		$args['request'] PKPRequest Required
-	 *		$args['slimRequest'] SlimRequest
-	 *		$args['params] array of validated request parameters
-	 *
-	 * @return array
-	 */
-	public function getTimeSegments($records, $params, $props, $args = null) {
-		// get the requested and used time segment (month or day)
-		if (isset($args['params']['timeSegment'])) {
-			$timeSegment = $args['params']['timeSegment'] == 'day' ? STATISTICS_DIMENSION_DAY : STATISTICS_DIMENSION_MONTH;
-		} else {
-			$timeSegment = STATISTICS_DIMENSION_MONTH;
-		}
-
-		// get the earliest found date (month or day), in format Ymd
-		$earliestDateFound = $timeSegment == STATISTICS_DIMENSION_MONTH ? end($records)[$timeSegment] . '01' : end($records)[$timeSegment];
-		// get the start and end date:
-		// if dateStart parameter exists take it, else take the earliest found date
-		$dateStart = isset($args['params']['dateStart']) ? str_replace('-', '', $args['params']['dateStart']) : $earliestDateFound;
-		// if dateEnd parameter exists take it, else take the current date
-		$dateEnd = isset($args['params']['dateEnd']) ? str_replace('-', '', $args['params']['dateEnd']) : date('Ymd', time());
-		// get all time segments (months or days) between the start and end date
-		// the result dates are then sorted DESC (latest -> earliest)
-		$timeSegmentDates = array_reverse($this->_getTimeSegments($dateStart, $dateEnd, $timeSegment));
-
-		// Get stats for all existing days (months or days), and
-		// prepare the timeSegments return values (date, dateLabel and the actual stats for each time segment)
-		$allTimeSegments = $timeSegmentsStats = array();
-		foreach ($timeSegmentDates as $timeSegmentDate) {
-			// all stats we are interested in
-			$total = $abstractViews = $fileViews = $pdfs = $htmls = $others = 0;
-
-			// get all records with the given date
-			// if the given date is not found, an empty array will be the result
-			$dateRecords = array_filter($records, function ($record) use ($timeSegmentDate, $timeSegment) {
-				return ($record[$timeSegment] == $timeSegmentDate);
-			});
-
-			$timeSegmentsStats[$timeSegmentDate] = $this->getStatsProperties($dateRecords, $params, $props);
-
-			// get time segment date label
-			if ($timeSegment == STATISTICS_DIMENSION_MONTH) {
-				$dateLabel = strftime('%B %Y', strtotime($timeSegmentDate . '01'));
-			} elseif ($timeSegment == STATISTICS_DIMENSION_DAY) {
-				$dateLabel = strftime(\Config::getVar('general', 'date_format_long'), strtotime($timeSegmentDate));
-			}
-
-			// time segments values to be returned
-			$allTimeSegments[] = array_merge(array(
-					'date' => $timeSegmentDate,
-					'dateLabel' => $dateLabel
-				),
-				$timeSegmentsStats[$timeSegmentDate]
-			);
-		}
-		return $allTimeSegments;
-	}
-
-	/**
-	 * Returns values given a list of properties of the stats record
-	 *
-	 * @param $records array
-	 * @param $params array
-	 * 		@option int entityAssocType
-	 * 		@otion int fileAssocType
-	 * @param $props array
-	 * @param $args array
-	 *		$args['request'] PKPRequest Required
-	 *		$args['slimRequest'] SlimRequest
-	 *		$args['params] array of validated request parameters
-	 *
-	 * @return array
-	 */
-	public function getRecordProperties($records, $params, $props, $args = null) {
-		$values = $this->getStatsProperties($records, $params, $props, $args);
-		if (in_array('timeSegments', $props)) {
-			$timeSegmentProps = $props;
-			unset($timeSegmentProps['timeSegments']);
-			$values['timeSegments'] = $this->getTimeSegments($records, $params, $timeSegmentProps, $args);
-		}
-		return $values;
-	}
-
-	/**
-	 * Returns stats values given a list of properties of the stats record
-	 *
-	 * @param $records array
-	 * @param $params array
-	 * 		@option int entityAssocType
-	 * 		@otion int fileAssocType
-	 * @param $props array
-	 * @param $args array
-	 *		$args['request'] PKPRequest Required
-	 *		$args['slimRequest'] SlimRequest
-	 *		$args['params] array of validated request parameters
-	 *
-	 * @return array
-	 */
-	public function getStatsProperties($records, $params, $props, $args = null) {
-		$values = array();
-		// get entity (Submission) and file assoc type
-		// used for abstract and file views
-		$entityAssocType = $params['entityAssocType'];
-		$fileAssocType = $params['fileAssocType'];
-		foreach ($props as $prop) {
-			switch ($prop) {
-				case 'total':
-					if (empty($records)) {
-						$values[$prop] = 0;
-					} else {
-						// total = sum of all records
-						$values[$prop] = array_sum(array_map(
-							function($record){
-								return $record[STATISTICS_METRIC];
-							},
-							$records
-						));
-					}
-					break;
-				case 'abstractViews':
-					if (empty($records)) {
-						$values[$prop] = 0;
-					} else {
-						// filter abstract views records (containing the entity assoc type)
-						$abstractViewsRecords = array_filter($records, function ($record) use ($entityAssocType) {
-							return ($record[STATISTICS_DIMENSION_ASSOC_TYPE] == $entityAssocType);
-						});
-						// abstract views = sum of all abstract views records
-						$values[$prop] = array_sum(array_map(
-							function($record){
-								return $record[STATISTICS_METRIC];
-							},
-							$abstractViewsRecords
-						));
-					}
-					break;
-				case 'totalFileViews':
-					if (empty($records)) {
-						$values[$prop] = 0;
-					} else {
-						// filter file views records (containing the file assoc type)
-						$fileViewsRecords = array_filter($records, function ($record) use ($fileAssocType) {
-							return ($record[STATISTICS_DIMENSION_ASSOC_TYPE] == $fileAssocType);
-						});
-						// total file views = sum of all ttotal file views records
-						$values[$prop] = array_sum(array_map(
-							function($record){
-								return $record[STATISTICS_METRIC];
-							},
-							$fileViewsRecords
-						));
-					}
-					break;
-				case 'pdf':
-					if (empty($records)) {
-						$values[$prop] = 0;
-					} else {
-						// filter pdf views records (containing the file assoc type and the pdf file type)
-						$pdfRecords = array_filter($records, function ($record) use ($fileAssocType) {
-							return ($record[STATISTICS_DIMENSION_ASSOC_TYPE] == $fileAssocType && $record[STATISTICS_DIMENSION_FILE_TYPE] == STATISTICS_FILE_TYPE_PDF);
-						});
-						//  pdf views = sum of all pdf views records
-						$values[$prop] = array_sum(array_map(
-							function($record){
-								return $record[STATISTICS_METRIC];
-							},
-							$pdfRecords
-						));
-					}
-					break;
-				case 'html':
-					if (empty($records)) {
-						$values[$prop] = 0;
-					} else {
-						// filter html views records (containing the file assoc type and the html file type)
-						$htmlRecords = array_filter($records, function ($record) use ($fileAssocType) {
-							return ($record[STATISTICS_DIMENSION_ASSOC_TYPE] == $fileAssocType && $record[STATISTICS_DIMENSION_FILE_TYPE] == STATISTICS_FILE_TYPE_HTML);
-						});
-						// html views = sum of all html views records
-						$values[$prop] = array_sum(array_map(
-							function($record){
-								return $record[STATISTICS_METRIC];
-							},
-							$htmlRecords
-						));
-					}
-					break;
-				case 'other':
-					if (empty($records)) {
-						$values[$prop] = 0;
-					} else {
-						// filter other file tpye views records (containing the file assoc type and the other file type)
-						$otherRecords = array_filter($records, function ($record) use ($fileAssocType) {
-							return ($record[STATISTICS_DIMENSION_ASSOC_TYPE] == $fileAssocType && $record[STATISTICS_DIMENSION_FILE_TYPE] == STATISTICS_FILE_TYPE_OTHER);
-						});
-						// calculate the other file type views = sum of all other file type views for the current date
-						$values[$prop] = array_sum(array_map(
-							function($record){
-								return $record[STATISTICS_METRIC];
-							},
-							$otherRecords
-						));
-					}
-					break;
-			}
-		}
-
-		return $values;
-	}
-
-
-	/**
-	 * Build the stats query object for getOrderedSubmissions requests
-	 *
-	 * @see self::getOrderedSubmissions()
-	 *
-	 * @return object Query object
-	 */
-	private function _buildGetOrderedSubmissionsQueryObject($contextId, $args = array()) {
-		$defaultArgs = array(
-			'orderBy' => 'total',
-			'orderDirection' =>  'DESC',
-		);
 		$args = array_merge($defaultArgs, $args);
+		$statsQB = $this->getQueryBuilder($args);
 
-		$statsListQB = new \PKP\Services\QueryBuilders\PKPStatsListQueryBuilder($contextId);
-		$statsListQB
-			->lookingFor('orderedSubmissions')
-			->orderColumn($args['orderBy'])
-			->orderDirection($args['orderDirection']);
+		\HookRegistry::call('Stats::getRecords::queryBuilder', array($statsQB, $args));
 
-		// filter by (OJS) section i.e. (OMP) series IDs
-		if (isset($args['sectionIds'])) $statsListQB->filterBySectionIds($args['sectionIds']);
+		$statsQO = $statsQB->getRecords();
 
-		$dateStart = isset($args['dateStart']) ? $args['dateStart'] : null;
-		$dateEnd = isset($args['dateEnd']) ? $args['dateEnd'] : null;
-		if ($dateStart || $dateEnd) {
-			$statsListQB->filterByDateRange($dateStart, $dateEnd);
+		$result = \DAORegistry::getDAO('MetricsDAO')
+			->retrieve($statsQO->toSql(), $statsQO->getBindings());
+
+		$records = [];
+		while (!$result->EOF) {
+			$records[] = [
+				'loadId' => $result->fields['load_id'],
+				'contextId' => (int) $result->fields['context_id'],
+				'submissionId' => (int) $result->fields['submission_id'],
+				'assocType' => (int) $result->fields['assoc_type'],
+				'assocId' => (int) $result->fields['assoc_id'],
+				'day' => (int) $result->fields['day'],
+				'month' => (int) $result->fields['month'],
+				'fileType' => (int) $result->fields['file_type'],
+				'countryId' => $result->fields['country_id'],
+				'region' => $result->fields['region'],
+				'city' => $result->fields['city'],
+				'metric' => (int) $result->fields['metric'],
+				'metricType' => $result->fields['metric_type'],
+				'pkpSectionId' => (int) $result->fields['pkp_section_id'],
+				'assocObjectType' => (int) $result->fields['assoc_object_type'],
+				'assocObjectTId' => (int) $result->fields['assoc_object_id'],
+				'representation_id' => (int) $result->fields['representation_id'],
+			];
+			$result->MoveNext();
 		}
 
-		\HookRegistry::call('Stats::getSubmissions::queryBuilder', array($statsListQB, $contextId, $args));
-
-		return $statsListQB;
+		return $records;
 	}
 
 	/**
-	 * Build the stats query object for getTotalStats requests
+	 * Get the sum of a set of metrics broken down by day or month
 	 *
-	 * @see self::getTotalStats()
-	 *
-	 * @return object Query object
+	 * @param string $timelineInterval STATISTICS_DIMENSION_MONTH or STATISTICS_DIMENSION_DAY
+	 * @param array $args Filter the records to include. See self::getRecords()
+	 * @return array
 	 */
-	private function _buildGetTotalSubmissionsStatsQueryObject($contextId, $args = array()) {
-		$statsListQB = new \PKP\Services\QueryBuilders\PKPStatsListQueryBuilder($contextId);
-		$statsListQB->lookingFor('totalSubmissionsStats');
+	public function getTimeline($timelineInterval, $args = []) {
 
-		if (isset($args['timeSegment'])) {
-			$statsListQB
-				->timeSegment($args['timeSegment'])
-				->orderColumn($args['timeSegment'])
-				->orderDirection('DESC');
+		$defaultArgs = [
+			'dateStart' => STATISTICS_EARLIEST_DATE,
+			'dateEnd' => date('Y-m-d', strtotime('yesterday')),
+
+			// Require a context to be specified to prevent unwanted data leakage
+			// if someone forgets to specify the context. If you really want to
+			// get data across all contexts, pass an empty `contextId` arg.
+			'contextIds' => [CONTEXT_ID_NONE],
+		];
+
+		$args = array_merge($defaultArgs, $args);
+		$timelineQB = $this->getQueryBuilder($args);
+
+		\HookRegistry::call('Stats::getTimeline::queryBuilder', array($timelineQB, $args));
+
+		$timelineQO = $timelineQB
+			->getSum([$timelineInterval])
+			->orderBy($timelineInterval);
+
+		$result = \DAORegistry::getDAO('MetricsDAO')
+			->retrieve($timelineQO->toSql(), $timelineQO->getBindings());
+
+		$dateValues = [];
+		while (!$result->EOF) {
+			$date = substr($result->fields[$timelineInterval], 0, 4) . '-' . substr($result->fields[$timelineInterval], 4, 2);
+			if ($timelineInterval === STATISTICS_DIMENSION_DAY) {
+				$date = substr($date, 0, 7) . '-' . substr($result->fields[$timelineInterval], 6, 2);
+			}
+			$dateValues[$date] = (int) $result->fields['metric'];
+			$result->MoveNext();
 		}
 
-		// filter by (OJS) section i.e. (OMP) series IDs
-		if (isset($args['sectionIds'])) $statsListQB->filterBySectionIds($args['sectionIds']);
+		$timeline = $this->getEmptyTimelineIntervals($args['dateStart'], $args['dateEnd'], $timelineInterval);
 
-		$dateStart = isset($args['dateStart']) ? $args['dateStart'] : null;
-		$dateEnd = isset($args['dateEnd']) ? $args['dateEnd'] : null;
-		if ($dateStart || $dateEnd) {
-			$statsListQB->filterByDateRange($dateStart, $dateEnd);
-		}
+		$timeline = array_map(function($entry) use ($dateValues) {
+			foreach ($dateValues as $date => $value) {
+				if ($entry['date'] === $date) {
+					$entry['value'] = $value;
+					break;
+				}
+			}
+			return $entry;
+		}, $timeline);
 
-		\HookRegistry::call('Stats::getTotalSubmissions::queryBuilder', array($statsListQB, $contextId, $args));
-
-		return $statsListQB;
+		return $timeline;
 	}
 
 	/**
-	 * Build the stats query object for getProperties of a Submission requests
+	 * Get a list of objects ordered by their total stats
 	 *
-	 * @see self::getProperties()
+	 * The $args argument is used to determine what records to include in
+	 * the results. The $groupBy argument is used to group these records.
 	 *
-	 * @return object Query object
+	 * For example, to get a list of submissions ordered by their total PDF
+	 * galley views:
+	 *
+	 * // Get all records with the PDF file type
+	 * $args = ['fileType' => STATISTICS_FILE_TYPE_PDF]
+	 *
+	 * // Group them by their submission ID
+	 * $groupBy = STATISTICS_DIMENSION_SUBMISSION_ID
+	 *
+	 * @param string $groupBy The column to sum the stats by.
+	 * @param string $orderDirection STATISTICS_ORDER_ASC or STATISTICS_ORDER_DESC
+	 * @param array $args Filter the records to include. See self::getRecords()
 	 */
-	private function _buildGetSubmissionQueryObject($contextId, $submissionId, $args = array()) {
-		$statsListQB = new \PKP\Services\QueryBuilders\PKPStatsListQueryBuilder($contextId);
-		$statsListQB
-			->lookingFor('submissionStats')
-			->filterBySubmissionIds($submissionId);
+	public function getOrderedObjects($groupBy, $orderDirection, $args = []) {
 
-		if (isset($args['timeSegment'])) {
-			$statsListQB
-				->timeSegment($args['timeSegment'])
-				->orderColumn($args['timeSegment'])
-				->orderDirection('DESC');
+		$defaultArgs = [
+			'dateStart' => STATISTICS_EARLIEST_DATE,
+			'dateEnd' => date('Y-m-d', strtotime('yesterday')),
+
+			// Require a context to be specified to prevent unwanted data leakage
+			// if someone forgets to specify the context. If you really want to
+			// get data across all contexts, pass an empty `contextId` arg.
+			'contextIds' => [CONTEXT_ID_NONE],
+		];
+
+		$args = array_merge($defaultArgs, $args);
+		$orderedQB = $this->getQueryBuilder($args);
+
+		\HookRegistry::call('Stats::getOrderedObjects::queryBuilder', array($orderedQB, $args));
+
+		$orderedQO = $orderedQB
+			->getSum([$groupBy])
+			->orderBy('metric', $orderDirection === STATISTICS_ORDER_ASC ? 'asc' : 'desc');
+
+		$range = null;
+		if (isset($args['count'])) {
+			import('lib.pkp.classes.db.DBResultRange');
+			$range = new \DBResultRange($args['count'], null, isset($args['offset']) ? $args['offset'] : 0);
 		}
 
-		$dateStart = isset($args['dateStart']) ? $args['dateStart'] : null;
-		$dateEnd = isset($args['dateEnd']) ? $args['dateEnd'] : null;
-		if ($dateStart || $dateEnd) {
-			$statsListQB->filterByDateRange($dateStart, $dateEnd);
+		$result = \DAORegistry::getDAO('MetricsDAO')
+			->retrieveRange($orderedQO->toSql(), $orderedQO->getBindings(), $range);
+
+		$objects = [];
+		while (!$result->EOF) {
+			$objects[] = [
+				'id' => (int) $result->fields[$groupBy],
+				'total' => (int) $result->fields['metric'],
+			];
+			$result->MoveNext();
 		}
 
-		\HookRegistry::call('Stats::getSubmission::queryBuilder', array($statsListQB, $contextId, $submissionId, $args));
-
-		return $statsListQB;
+		return $objects;
 	}
 
 	/**
-	 * Filter submissions by the given search phrase
+	 * A callback to be used with array_reduce() to add up the metric value
+	 * for a record
 	 *
-	 * @param $searchPhrase string
-	 * @return array of submisison IDs
+	 * @param array $record
+	 * @return integer
 	 */
-	private function _filterSubmissionsBySearchPhrase($contextId, $searchPhrase) {
-		$submissionIds = array();
-		$submissionService = \ServicesContainer::instance()->get('submission');
-		$submissions = $submissionService->getSubmissions($contextId, array('searchPhrase' => $searchPhrase));
-		if (!empty($submissions)) {
-			$submissionIds = array_map(
-				function($submission){
-					return $submission->getId();
-				},
-				$submissions
-			);
-		}
-		return $submissionIds;
+	public function sumMetric($total, $record) {
+		$total += $record['metric'];
+		return $total;
 	}
 
 	/**
-	 * Get all time segments (months or days) beween the given start and the end date.
-	 * It is assumed that startDate <= endDate
+	 * A callback to be used with array_filter() to return records for
+	 * a file (galley, representation).
+	 *
+	 * @param array $record
+	 * @return array
+	 */
+	public function filterRecordFile($record) {
+		return !empty($record['fileType']);
+	}
+
+	/**
+	 * A callback to be used with array_filter() to return records for
+	 * a pdf file.
+	 *
+	 * @param array $record
+	 * @return array
+	 */
+	public function filterRecordPdf($record) {
+		return $record['fileType'] === STATISTICS_FILE_TYPE_PDF;
+	}
+
+	/**
+	 * A callback to be used with array_filter() to return records for
+	 * a HTML file.
+	 *
+	 * @param array $record
+	 * @return array
+	 */
+	public function filterRecordHtml($record) {
+		return $record['fileType'] === STATISTICS_FILE_TYPE_HTML;
+	}
+
+	/**
+	 * A callback to be used with array_filter() to return records for
+	 * any Other files (all files that are not PDF or HTML).
+	 *
+	 * @param array $record
+	 * @return array
+	 */
+	public function filterRecordOther($record) {
+		return $record['fileType'] === STATISTICS_FILE_TYPE_OTHER;
+	}
+
+	/**
+	 * Get all time segments (months or days) between the start and end date
+	 * with empty values.
 	 *
 	 * @param $startDate string
 	 * @param $endDate string
-	 * @param $timeSegment string
+	 * @param $timelineInterval string STATISTICS_DIMENSION_MONTH or STATISTICS_DIMENSION_DAY
 	 * @return array of time segments in ASC order
 	 */
-	private function _getTimeSegments($startDate, $endDate, $timeSegment) {
-		if ($timeSegment == STATISTICS_DIMENSION_MONTH) {
-			$resultDateFormat = 'Ym';
-			$interval = '+1 month';
-		} elseif ($timeSegment == STATISTICS_DIMENSION_DAY) {
-			$resultDateFormat = 'Ymd';
-			$interval = '+1 day';
-		}
-		$startTime  = strtotime($startDate);
-		$endTime  = strtotime($endDate);
+	public function getEmptyTimelineIntervals($startDate, $endDate, $timelineInterval) {
 
-		$timeSegments = array();
-		while($startTime <= $endTime) {
-			$timeSegments[] = date($resultDateFormat, $startTime);
-			$startTime = strtotime(date('Ymd', $startTime) . $interval);
+		if ($timelineInterval === STATISTICS_DIMENSION_MONTH) {
+			$dateFormat = 'Y-m';
+			$labelFormat = '%B %Y';
+			$interval = 'P1M';
+		} elseif ($timelineInterval === STATISTICS_DIMENSION_DAY) {
+			$dateFormat = 'Y-m-d';
+			$labelFormat = \Config::getVar('general', 'date_format_long');
+			$interval = 'P1D';
 		}
-		return $timeSegments;
+
+		$startDate = new \DateTime($startDate);
+		$endDate = new \DateTime($endDate);
+
+		$timelineIntervals = [];
+		while ($startDate->format($dateFormat) <= $endDate->format($dateFormat)) {
+			$timelineIntervals[] = [
+				'date' => $startDate->format($dateFormat),
+				'label' => strftime($labelFormat, $startDate->getTimestamp()),
+				'value' => 0,
+			];
+			$startDate->add(new \DateInterval($interval));
+		}
+
+		return $timelineIntervals;
 	}
 
+	/**
+	 * Get a QueryBuilder object with the passed args
+	 *
+	 * @param array $args See self::getRecords()
+	 * @return \PKP\Services\QueryBuilders\PKPStatsQueryBuilder
+	 */
+	protected function getQueryBuilder($args = []) {
+		$statsQB = new \PKP\Services\QueryBuilders\PKPStatsQueryBuilder();
+		$statsQB
+			->filterByContexts($args['contextIds'])
+			->before($args['dateEnd'])
+			->after($args['dateStart']);
+
+		if (!empty(($args['submissionIds']))) {
+			$statsQB->filterBySubmissions($args['submissionIds']);
+		}
+
+		if (!empty($args['assocTypes'])) {
+			$statsQB->filterByAssocTypes($args['assocTypes']);
+			if (!empty($args['assocIds'])) {
+				$statsQB->filterByAssocIds($args['assocIds']);
+			}
+		}
+
+		if (!empty($args['fileTypes'])) {
+			$statsQB->filterByFileTypes(($args['fileTypes']));
+		}
+
+		\HookRegistry::call('Stats::queryBuilder', array($statsQB, $args));
+
+		return $statsQB;
+	}
 }

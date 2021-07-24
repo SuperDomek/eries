@@ -3,9 +3,9 @@
 /**
  * @file controllers/grid/users/reviewer/ReviewerGridCellProvider.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2000-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2000-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ReviewerGridCellProvider
  * @ingroup controllers_grid_users_reviewer
@@ -111,7 +111,7 @@ class ReviewerGridCellProvider extends DataObjectGridCellProvider {
 
 		$router = $request->getRouter();
 		$action = false;
-		$submissionDao = Application::getSubmissionDAO();
+		$submissionDao = DAORegistry::getDAO('SubmissionDAO'); /* @var $submissionDao SubmissionDAO */
 		$submission = $submissionDao->getById($reviewAssignment->getSubmissionId());
 
 		// Only attach actions to the actions column. The actions and status
@@ -164,8 +164,12 @@ class ReviewerGridCellProvider extends DataObjectGridCellProvider {
 				return '<span class="state overdue">'.__('common.overdue').'</span><span class="details">'.__('editor.review.responseDue', array('date' => substr($reviewAssignment->getDateResponseDue(),0,10))).'</span>';
 			case REVIEW_ASSIGNMENT_STATUS_DECLINED:
 				return '<span class="state declined" title="' . __('editor.review.requestDeclined.tooltip') . '">'.__('editor.review.requestDeclined').'</span>';
+			case REVIEW_ASSIGNMENT_STATUS_CANCELLED:
+				return '<span class="state declined" title="' . __('editor.review.requestCancelled.tooltip') . '">'.__('editor.review.requestCancelled').'</span>';
 			case REVIEW_ASSIGNMENT_STATUS_RECEIVED:
 				return  $this->_getStatusWithRecommendation('editor.review.reviewSubmitted', $reviewAssignment);
+			case REVIEW_ASSIGNMENT_STATUS_THANKED:
+				return  $this->_getStatusWithRecommendation('editor.review.reviewerThanked', $reviewAssignment);
 			default:
 				return '';
 		}

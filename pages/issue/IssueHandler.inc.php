@@ -3,9 +3,9 @@
 /**
  * @file pages/issue/IssueHandler.inc.php
  *
- * Copyright (c) 2014-2019 Simon Fraser University
- * Copyright (c) 2003-2019 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class IssueHandler
  * @ingroup pages_issue
@@ -47,7 +47,7 @@ class IssueHandler extends Handler {
 		$galleyId = isset($args[1]) ? $args[1] : 0;
 		if ($galleyId) {
 			$issue = $this->getAuthorizedContextObject(ASSOC_TYPE_ISSUE);
-			$galleyDao = DAORegistry::getDAO('IssueGalleyDAO');
+			$galleyDao = DAORegistry::getDAO('IssueGalleyDAO'); /* @var $galleyDao IssueGalleyDAO */
 			$journal = $request->getJournal();
 			$galley = $galleyDao->getByBestId($galleyId, $issue->getId());
 
@@ -70,7 +70,7 @@ class IssueHandler extends Handler {
 	 */
 	function current($args, $request) {
 		$journal = $request->getJournal();
-		$issueDao = DAORegistry::getDAO('IssueDAO');
+		$issueDao = DAORegistry::getDAO('IssueDAO'); /* @var $issueDao IssueDAO */
 		$issue = $issueDao->getCurrent($journal->getId(), true);
 
 		if ($issue != null) {
@@ -122,20 +122,19 @@ class IssueHandler extends Handler {
 		$templateMgr = TemplateManager::getManager($request);
 		$context = $request->getContext();
 
-		$count = $context->getSetting('itemsPerPage') ? $context->getSetting('itemsPerPage') : Config::getVar('interface', 'items_per_page');
+		$count = $context->getData('itemsPerPage') ? $context->getData('itemsPerPage') : Config::getVar('interface', 'items_per_page');
 		$offset = $page > 1 ? ($page - 1) * $count : 0;
 
-		import('classes.core.ServicesContainer');
-		$issueService = ServicesContainer::instance()->get('issue');
 		$params = array(
+			'contextId' => $context->getId(),
 			'orderBy' => 'seq',
 			'orderDirection' => 'ASC',
 			'count' => $count,
 			'offset' => $offset,
 			'isPublished' => true,
 		);
-		$issues = $issueService->getIssues($context->getId(), $params);
-		$total = $issueService->getIssuesMaxCount($context->getId(), $params);
+		$issues = iterator_to_array(Services::get('issue')->getMany($params));
+		$total = Services::get('issue')->getMax($params);
 
 		$showingStart = $offset + 1;
 		$showingEnd = min($offset + $count, $offset + count($issues));
@@ -213,7 +212,7 @@ class IssueHandler extends Handler {
 			$isSubscribedDomain = $issueAction->subscribedDomain($request, $journal, $issue->getId());
 
 			// Check if login is required for viewing.
-			if (!$isSubscribedDomain && !Validation::isLoggedIn() && $journal->getSetting('restrictArticleAccess')) {
+			if (!$isSubscribedDomain && !Validation::isLoggedIn() && $journal->getData('restrictArticleAccess')) {
 				Validation::redirectLogin();
 			}
 
@@ -236,13 +235,13 @@ class IssueHandler extends Handler {
 						}
 
 						// If the issue galley has been purchased, then allow reader access
-						$completedPaymentDao = DAORegistry::getDAO('OJSCompletedPaymentDAO');
+						$completedPaymentDao = DAORegistry::getDAO('OJSCompletedPaymentDAO'); /* @var $completedPaymentDao OJSCompletedPaymentDAO */
 						$dateEndMembership = $user->getSetting('dateEndMembership', 0);
 						if ($completedPaymentDao->hasPaidPurchaseIssue($userId, $issue->getId()) || (!is_null($dateEndMembership) && $dateEndMembership > time())) {
 							return true;
 						} else {
 							// Otherwise queue an issue purchase payment and display payment form
-							$queuedPayment = $paymentManager->createQueuedPayment($request, PAYMENT_TYPE_PURCHASE_ISSUE, $userId, $issue->getId(), $journal->getSetting('purchaseIssueFee'));
+							$queuedPayment = $paymentManager->createQueuedPayment($request, PAYMENT_TYPE_PURCHASE_ISSUE, $userId, $issue->getId(), $journal->getData('purchaseIssueFee'));
 							$paymentManager->queuePayment($queuedPayment);
 
 							$paymentForm = $paymentManager->getPaymentForm($queuedPayment);
@@ -297,19 +296,48 @@ class IssueHandler extends Handler {
 			'locale' => $locale,
 		));
 
-		$issueGalleyDao = DAORegistry::getDAO('IssueGalleyDAO');
-		$publishedArticleDao = DAORegistry::getDAO('PublishedArticleDAO');
+		$issueGalleyDao = DAORegistry::getDAO('IssueGalleyDAO'); /* @var $issueGalleyDao IssueGalleyDAO */
 
-		$genreDao = DAORegistry::getDAO('GenreDAO');
+		$genreDao = DAORegistry::getDAO('GenreDAO'); /* @var $genreDao GenreDAO */
 		$primaryGenres = $genreDao->getPrimaryByContextId($journal->getId())->toArray();
 		$primaryGenreIds = array_map(function($genre) {
 			return $genre->getId();
 		}, $primaryGenres);
 
+		// Show scheduled submissions if this is a preview
+		import('classes.submission.Submission'); // import STATUS_ constants
+		$allowedStatuses = [STATUS_PUBLISHED];
+		if (!$issue->getPublished()) {
+			$allowedStatuses[] = STATUS_SCHEDULED;
+		}
+
+		$issueSubmissions = iterator_to_array(Services::get('submission')->getMany([
+			'contextId' => $journal->getId(),
+			'issueIds' => [$issue->getId()],
+			'status' => $allowedStatuses,
+			'orderBy' => 'seq',
+			'orderDirection' => 'ASC',
+		]));
+
+		$sections = Application::get()->getSectionDao()->getByIssueId($issue->getId());
+		$issueSubmissionsInSection = [];
+		foreach ($sections as $section) {
+			$issueSubmissionsInSection[$section->getId()] = [
+				'title' => $section->getLocalizedTitle(),
+				'articles' => [],
+			];
+		}
+		foreach ($issueSubmissions as $submission) {
+			if (!$sectionId = $submission->getCurrentPublication()->getData('sectionId')) {
+				continue;
+			}
+			$issueSubmissionsInSection[$sectionId]['articles'][] = $submission;
+		}
+
 		$templateMgr->assign(array(
 			'issue' => $issue,
 			'issueGalleys' => $issueGalleyDao->getByIssueId($issue->getId()),
-			'publishedArticles' => $publishedArticleDao->getPublishedArticlesInSections($issue->getId(), true),
+			'publishedSubmissions' => $issueSubmissionsInSection,
 			'primaryGenreIds' => $primaryGenreIds,
 		));
 
@@ -329,20 +357,21 @@ class IssueHandler extends Handler {
 			$templateMgr->assign('issueExpiryPartial', $partial);
 
 			// Partial subscription expiry for articles
-			$publishedArticleDao = DAORegistry::getDAO('PublishedArticleDAO');
-			$publishedArticlesTemp = $publishedArticleDao->getPublishedArticles($issue->getId());
-
 			$articleExpiryPartial = array();
-			foreach ($publishedArticlesTemp as $publishedArticle) {
-				$partial = $issueAction->subscribedUser($user, $journal, $issue->getId(), $publishedArticle->getId());
-				if (!$partial) $issueAction->subscribedDomain($request, $journal, $issue->getId(), $publishedArticle->getId());
-				$articleExpiryPartial[$publishedArticle->getId()] = $partial;
+			foreach ($issueSubmissions as $issueSubmission) {
+				$partial = $issueAction->subscribedUser($user, $journal, $issue->getId(), $issueSubmission->getId());
+				if (!$partial) $issueAction->subscribedDomain($request, $journal, $issue->getId(), $issueSubmission->getId());
+				$articleExpiryPartial[$issueSubmission->getId()] = $partial;
 			}
 			$templateMgr->assign('articleExpiryPartial', $articleExpiryPartial);
 		}
 
+		$completedPaymentDao = DAORegistry::getDAO('OJSCompletedPaymentDAO'); /* @var $completedPaymentDao OJSCompletedPaymentDAO */
 		$templateMgr->assign(array(
-			'hasAccess' => !$subscriptionRequired || $issue->getAccessStatus() == ISSUE_ACCESS_OPEN || $subscribedUser || $subscribedDomain
+			'hasAccess' => !$subscriptionRequired ||
+				$issue->getAccessStatus() == ISSUE_ACCESS_OPEN ||
+				$subscribedUser || $subscribedDomain ||
+				($user && $completedPaymentDao->hasPaidPurchaseIssue($user->getId(), $issue->getId()))
 		));
 
 		import('classes.payment.ojs.OJSPaymentManager');
@@ -355,5 +384,3 @@ class IssueHandler extends Handler {
 		}
 	}
 }
-
-

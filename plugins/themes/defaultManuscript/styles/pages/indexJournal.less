@@ -1,8 +1,8 @@
 /**
  * @file  plugins/themes/default/styles/pages/indexJournal.less
  *
- * Copyright (c) 2014-2017 Simon Fraser University Library
- * Copyright (c) 2003-2017 John Willinsky
+ * Copyright (c) 2014-2020 Simon Fraser University
+ * Copyright (c) 2003-2020 John Willinsky
  * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
  *
  * @brief Styles applying to the front page of the journal
@@ -13,10 +13,9 @@
 	.homepage_image {
 		position: relative;
 		margin-top: -1px; // covers up the border
-		width: auto;
-    	min-height: 355px;
+		width: 855px;
+		min-height: 355px;
 		background-repeat: no-repeat;
-
 		.issue_overlay {
 			position: absolute;
 			width: 100%;
@@ -31,10 +30,6 @@
 				border: none;
 				margin: 0;
 				padding: @double;
-
-				.galleys_links {
-					list-style: none;
-				}
 
 				.galleys_links li {
 					margin-bottom: 0;
@@ -81,6 +76,12 @@
 		}
 
 	    @media(min-width: @screen-desktop) {
+
+	        /*h2 + .obj_announcement_summary, // first announcement only
+	        .more {
+	            padding-top: 80px;
+	            padding-bottom: 80px;
+	        }*/
 
 	        .more .obj_announcement_summary {
 	            padding-top: 0;
