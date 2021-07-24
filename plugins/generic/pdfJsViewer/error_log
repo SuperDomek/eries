@@ -1,0 +1,20 @@
+[18-Sep-2020 23:16:46 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function import() in /home/eriesjournalcom/public_html/plugins/generic/pdfJsViewer/PdfJsViewerPlugin.inc.php:15
+Stack trace:
+#0 /home/eriesjournalcom/public_html/plugins/generic/pdfJsViewer/index.php(19): require_once()
+#1 {main}
+  thrown in /home/eriesjournalcom/public_html/plugins/generic/pdfJsViewer/PdfJsViewerPlugin.inc.php on line 15
+[09-Feb-2021 02:51:13 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function import() in /home/eriesjournalcom/public_html/plugins/generic/pdfJsViewer/PdfJsViewerPlugin.inc.php:15
+Stack trace:
+#0 /home/eriesjournalcom/public_html/plugins/generic/pdfJsViewer/index.php(19): require_once()
+#1 {main}
+  thrown in /home/eriesjournalcom/public_html/plugins/generic/pdfJsViewer/PdfJsViewerPlugin.inc.php on line 15
+[29-Mar-2021 19:09:10 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function import() in /home/eriesjournalcom/public_html/plugins/generic/pdfJsViewer/PdfJsViewerPlugin.inc.php:15
+Stack trace:
+#0 /home/eriesjournalcom/public_html/plugins/generic/pdfJsViewer/index.php(19): require_once()
+#1 {main}
+  thrown in /home/eriesjournalcom/public_html/plugins/generic/pdfJsViewer/PdfJsViewerPlugin.inc.php on line 15
+[01-May-2021 10:28:47 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function import() in /home/eriesjournalcom/public_html/plugins/generic/pdfJsViewer/PdfJsViewerPlugin.inc.php:15
+Stack trace:
+#0 /home/eriesjournalcom/public_html/plugins/generic/pdfJsViewer/index.php(19): require_once()
+#1 {main}
+  thrown in /home/eriesjournalcom/public_html/plugins/generic/pdfJsViewer/PdfJsViewerPlugin.inc.php on line 15
