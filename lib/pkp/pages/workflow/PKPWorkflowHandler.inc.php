@@ -245,7 +245,11 @@ abstract class PKPWorkflowHandler extends Handler {
 			]
 		);
 
-		$citationsForm = new PKP\components\forms\publication\PKPCitationsForm($latestPublicationApiUrl, $latestPublication);
+		// EDIT enrich the call with parsed citations to display in the FORM
+		$citationDao = DAORegistry::getDAO('CitationDAO'); /* @var $citationDao CitationDAO */
+		$parsedCitations = $citationDao->getByPublicationId($latestPublication->getId());
+
+		$citationsForm = new PKP\components\forms\publication\PKPCitationsForm($latestPublicationApiUrl, $latestPublication, $parsedCitations);
 		$publicationLicenseForm = new PKP\components\forms\publication\PKPPublicationLicenseForm($latestPublicationApiUrl, $locales, $latestPublication, $submissionContext, $authorUserGroups);
 		$titleAbstractForm = new PKP\components\forms\publication\PKPTitleAbstractForm($latestPublicationApiUrl, $locales, $latestPublication);
 

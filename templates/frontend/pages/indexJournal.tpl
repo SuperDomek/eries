@@ -22,11 +22,11 @@
 
 	{call_hook name="Templates::Index::journal"}
 
-	{if !$activeTheme->getOption('useHomepageImageAsHeader') && $homepageImage}
+	{* {if !$activeTheme->getOption('useHomepageImageAsHeader') && $homepageImage}
 		<div class="homepage_image">
 			<img src="{$publicFilesDir}/{$homepageImage.uploadName|escape:"url"}"{if $homepageImage.altText} alt="{$homepageImage.altText|escape}"{/if}>
 		</div>
-	{/if}
+	{/if} *}
 
 	{* Journal Description *}
 	{if $activeTheme->getOption('showDescriptionInJournalIndex')}
@@ -38,7 +38,7 @@
 	{/if}
 
 	{* Announcements *}
-	{if $numAnnouncementsHomepage && $announcements|@count}
+	{* {if $numAnnouncementsHomepage && $announcements|@count}
 		<section class="cmp_announcements highlight_first">
 			<a id="homepageAnnouncements"></a>
 			<h2>
@@ -66,19 +66,16 @@
 			{/foreach}
 			</div><!-- .more -->
 		</section>
-	{/if}
+	{/if} *}
 
 	{* Latest issue *}
 	{if $issue}
 		<section class="current_issue">
-			<a id="homepageIssue"></a>
-			<h2>
-				{translate key="journal.currentIssue"}
-			</h2>
+			{* <a id="homepageIssue"></a>
 			<div class="current_issue_title">
 				{$issue->getIssueIdentification()|strip_unsafe_html}
-			</div>
-			{include file="frontend/objects/issue_toc.tpl" heading="h3"}
+			</div> *}
+			{include file="frontend/objects/issue_toc_home.tpl" heading="h3"}
 			<a href="{url router=$smarty.const.ROUTE_PAGE page="issue" op="archive"}" class="read_more">
 				{translate key="journal.viewAllIssues"}
 			</a>
@@ -87,10 +84,13 @@
 
 	{* Additional Homepage Content *}
 	{if $additionalHomeContent}
+		<hr />
 		<div class="additional_content">
 			{$additionalHomeContent}
 		</div>
 	{/if}
+
+	
 </div><!-- .page -->
 
 {include file="frontend/components/footer.tpl"}

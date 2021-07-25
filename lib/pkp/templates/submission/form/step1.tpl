@@ -41,7 +41,7 @@
 	{/if}
 
 	{* Cover Note To Editor*}
-	{fbvFormSection for="commentsToEditor" title="submission.submit.coverNote"}
+	{fbvFormSection for="commentsToEditor" label="submission.submit.coverNote" description="submission.submit.coverNoteDescription"}
 		{fbvElement type="textarea" name="commentsToEditor" id="commentsToEditor" value=$commentsToEditor rich=true}
 	{/fbvFormSection}
 

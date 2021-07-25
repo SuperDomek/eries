@@ -14,6 +14,10 @@
 namespace PKP\components\forms\publication;
 use \PKP\components\forms\FormComponent;
 use \PKP\components\forms\FieldTextarea;
+use \PKP\components\forms\FieldHTML;
+use \PKP\components\forms\FieldRichTextarea;
+
+import('classes.handler.Handler');
 
 define('FORM_CITATIONS', 'citations');
 
@@ -26,17 +30,43 @@ class PKPCitationsForm extends FormComponent {
 
 	/**
 	 * Constructor
+	 * 
+	 * EDIT add references preview for editors and text field with formatting
 	 *
 	 * @param $action string URL to submit the form to
 	 * @param $publication Publication The publication to change settings for
 	 */
-	public function __construct($action, $publication) {
+	public function __construct($action, $publication, $parsedCitations) {
 		$this->action = $action;
+		
+		if($parsedCitations){
+			$parsedCitationsArray = $parsedCitations->toArray();
+			$parsedCitationsHTML = "";
+			foreach($parsedCitationsArray as $parsedCitation){
+				$parsedCitationLink = strip_tags($parsedCitation->getCitationWithLinks(),['em', 'i']);
+				$parsedCitationsHTML .= "<p>" . $parsedCitation->getCitationWithLinks() . "</p>";
+			}
+		}
+		
+		$this->addField(new FieldRichTextarea('citationsRaw', [
+			'label' => __('submission.citations'),
+			'description' => __('submission.citations.description'),
+			'value' => $publication->getData('citationsRaw'),
+			'size' => 'large',
+			//'toolbar' => 'italic',
+		]));
 
-		$this->addField(new FieldTextarea('citationsRaw', [
+		/* $this->addField(new FieldTextarea('citationsRaw', [
 				'label' => __('submission.citations'),
 				'description' => __('submission.citations.description'),
 				'value' => $publication->getData('citationsRaw'),
+			])); */
+
+		if($parsedCitations){
+			$this->addField(new FieldHTML('citationsTextPreviewHTML', [
+				'label' => __('submission.citations.preview'),
+				'description' => $parsedCitationsHTML,
 			]));
+		}
 	}
 }

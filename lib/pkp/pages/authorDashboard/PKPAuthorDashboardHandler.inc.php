@@ -217,7 +217,7 @@ abstract class PKPAuthorDashboardHandler extends Handler {
 		);
 
 		$titleAbstractForm = new PKP\components\forms\publication\PKPTitleAbstractForm($latestPublicationApiUrl, $locales, $latestPublication);
-		$citationsForm = new PKP\components\forms\publication\PKPCitationsForm($latestPublicationApiUrl, $latestPublication);
+		$citationsForm = new PKP\components\forms\publication\PKPCitationsForm($latestPublicationApiUrl, $latestPublication, null);
 
 		// Import constants
 		import('classes.submission.Submission');

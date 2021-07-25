@@ -81,7 +81,7 @@ msgid "reviewer.submission.reviewDescription"
 msgstr "Enter (or paste) your review of this submission into the form below."
 
 msgid "reviewer.submission.uploadDescription"
-msgstr "Upload files you would like the editor and/or author to consult, including revised versions of the original review file(s)."
+msgstr "In case you would like to upload files you would like the editor and/or author to consult, including revised versions of the original review file(s)."
 
 msgid "reviewer.complete"
 msgstr "Review Submitted"

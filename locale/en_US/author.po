@@ -134,7 +134,10 @@ msgid "author.submit.copyrightNoticeAgreeRequired"
 msgstr "You must agree to the terms of the Copyright Notice before continuing."
 
 msgid "submission.submit.coverNote"
-msgstr "Comments for the Editor"
+msgstr "Suggested expert reviewers and comments for the Editor"
+
+msgid "submission.submit.coverNoteDescription"
+msgstr "Specify two expert reviewers for your submission. You can also use this field for additional comments for editor."
 
 msgid "author.submit.comments"
 msgstr "Enter text (optional)"

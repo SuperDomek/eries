@@ -17,9 +17,9 @@
 
 {if $coverageEnabled || $typeEnabled || $sourceEnabled || $rightsEnabled}
 	{fbvFormArea id="additionalDublinCore" title="submission.metadata"}
-		{fbvFormSection description="submission.metadataDescription"}
+		{* {fbvFormSection description="submission.metadataDescription"}
 			
-		{/fbvFormSection}
+		{/fbvFormSection} *}
 		{if $coverageEnabled}
 			{fbvFormSection title="submission.coverage" for="coverage" required=$coverageRequired}
 				{fbvElement type="text" multilingual=true name="coverage" id="coverage" value=$coverage maxlength="255" readonly=$readOnly required=false required=$coverageRequired}
@@ -44,7 +44,8 @@
 {/if}
 
 {if $languagesEnabled || $subjectsEnabled || $agenciesEnabled || $keywordsEnabled || $citationsEnabled || $disciplinesEnabled}
-	{fbvFormArea id="tagitFields" title="submission.submit.metadataForm"}
+	{* {fbvFormArea id="tagitFields" title="submission.submit.metadataForm"} *}
+	{fbvFormArea id="tagitFields"}
 		{if $languagesEnabled}
 			{$languagesField}
 		{/if}
@@ -70,7 +71,7 @@
 		{/if}
 		{if $citationsEnabled}
 			{fbvFormSection label="submission.citations" required=$citationsRequired}
-				{fbvElement type="textarea" id="citationsRaw" value=$citationsRaw multilingual=false disabled=$readOnly required=$citationsRequired}
+				{fbvElement type="textarea" id="citationsRaw" value=$citationsRaw multilingual=false rich="extended" disabled=$readOnly required=$citationsRequired}
 			{/fbvFormSection}
 		{/if}
 	{/fbvFormArea}

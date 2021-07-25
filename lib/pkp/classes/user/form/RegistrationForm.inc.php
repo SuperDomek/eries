@@ -53,6 +53,9 @@ class RegistrationForm extends Form {
 
 		$this->addCheck(new FormValidator($this, 'country', 'required', 'user.profile.form.countryRequired'));
 
+		// add affiliation required
+		$this->addCheck(new FormValidator($this, 'affiliation', 'required', 'user.profile.form.affiliationRequired'));
+
 		// Email checks
 		$this->addCheck(new FormValidatorEmail($this, 'email', 'required', 'user.profile.form.emailRequired'));
 		$this->addCheck(new FormValidatorCustom($this, 'email', 'required', 'user.register.form.emailExists', array(DAORegistry::getDAO('UserDAO'), 'userExistsByEmail'), array(), true));

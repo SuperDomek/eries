@@ -64,6 +64,11 @@ class CitationStyleLanguagePlugin extends GenericPlugin {
 
 		$defaults = array(
 			array(
+				'id' => 'the-journal-on-efficiency-and-responsibility-in-education-and-science',
+				'title' => __('plugins.generic.citationStyleLanguage.style.eries'),
+				'isEnabled' => true,
+			),
+			array(
 				'id' => 'acm-sig-proceedings',
 				'title' => __('plugins.generic.citationStyleLanguage.style.acm-sig-proceedings'),
 				'isEnabled' => true,

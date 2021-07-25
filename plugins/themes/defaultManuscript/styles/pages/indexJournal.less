@@ -11,7 +11,61 @@
 .pkp_page_index {
 
 	.homepage_image {
+		position: relative;
 		margin-top: -1px; // covers up the border
+		width: auto;
+		min-height: 355px;
+		background-repeat: no-repeat;
+
+		.issue_overlay {
+			position: absolute;
+			width: 100%;
+			bottom: 0;
+			color: white;
+			background-color: rgba(0,0,0,0.5); /*dim the background*/
+
+			.galleys {
+				position: absolute;
+				bottom: 0;
+				right: @double;
+				border: none;
+				margin: 0;
+				padding: @double;
+
+				.galleys_links {
+					list-style: none;
+				}
+
+				.galleys_links li {
+					margin-bottom: 0;
+				}
+			}
+
+			.current_issue_title {
+				font-size: @font-header;
+				font-family: @font-heading;
+				padding: @double;
+				margin: 0;
+			}
+			.description {
+				padding: 0 @double @double @double;
+				font-size: @font-lead;
+				p {
+					margin: 0;
+				}
+			}
+			.published {
+				padding: 0 @double @double @double;
+				margin: 0;
+				.label {
+					color: inherit;
+				}
+			}
+			a {
+				text-decoration: none !important;
+				color: inherit;
+			}
+		}
 	}
 
 	.cmp_announcements {
@@ -27,11 +81,11 @@
 
 	    @media(min-width: @screen-desktop) {
 
-	        h2 + .obj_announcement_summary, // first announcement only
+	        /* h2 + .obj_announcement_summary, // first announcement only
 	        .more {
 	            padding-top: 80px;
 	            padding-bottom: 80px;
-	        }
+	        } */
 
 	        .more .obj_announcement_summary {
 	            padding-top: 0;
