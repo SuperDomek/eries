@@ -3,8 +3,8 @@
 /**
  * @file plugins/importexport/native/filter/PublicationNativeXmlFilter.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PublicationNativeXmlFilter
@@ -25,8 +25,6 @@ class PublicationNativeXmlFilter extends PKPPublicationNativeXmlFilter {
 	function getClassName() {
 		return 'plugins.importexport.native.filter.PublicationNativeXmlFilter';
 	}
-
-	
 
 
 	//
@@ -84,35 +82,6 @@ class PublicationNativeXmlFilter extends PKPPublicationNativeXmlFilter {
 		$coversNode = $nativeFilterHelper->createPublicationCoversNode($this, $doc, $entity);
 		if ($coversNode) $entityNode->appendChild($coversNode);
 
-		$citationsListNode = $this->createCitationsNode($doc, $deployment, $entity);
-		if ($citationsListNode) {
-			$entityNode->appendChild($citationsListNode);
-		}
-
 		return $entityNode;
-	}
-
-	/**
-	 * Create and return a Citations node.
-	 * @param $doc DOMDocument
-	 * @param $deployment
-	 * @param $publication Publication
-	 * @return DOMElement
-	 */
-	private function createCitationsNode($doc, $deployment, $publication) {
-		$citationDao = DAORegistry::getDAO('CitationDAO');
-
-		$nodeCitations = $doc->createElementNS($deployment->getNamespace(), 'citations');
-		$submissionCitations = $citationDao->getByPublicationId($publication->getId());
-		if ($submissionCitations->getCount() != 0) {
-			while ($elementCitation = $submissionCitations->next()) {
-				$rawCitation = $elementCitation->getRawCitation();
-				$nodeCitations->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'citation', htmlspecialchars($rawCitation, ENT_COMPAT, 'UTF-8')));
-			}
-
-			return $nodeCitations;
-		}
-
-		return null;
 	}
 }

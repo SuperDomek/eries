@@ -1,8 +1,8 @@
 {**
  * templates/submission/submissionMetadataFormFields.tpl
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Submission's metadata form fields. To be included in any form that wants to handle
@@ -44,7 +44,7 @@
 {/if}
 
 {if $languagesEnabled || $subjectsEnabled || $agenciesEnabled || $keywordsEnabled || $citationsEnabled || $disciplinesEnabled}
-	{fbvFormArea id="tagitFields"}
+	{fbvFormArea id="tagitFields" title="submission.submit.metadataForm"}
 		{if $languagesEnabled}
 			{$languagesField}
 		{/if}
@@ -59,18 +59,18 @@
 			{/fbvFormSection}
 		{/if}
 		{if $keywordsEnabled}
-			{fbvFormSection description="submission.submit.metadataForm.keywords" label="common.keywords" required=$keywordsRequired}
+			{fbvFormSection description="submission.submit.metadataForm.tip" label="common.keywords" required=$keywordsRequired}
 				{fbvElement type="keyword" id="keywords" multilingual=true current=$keywords disabled=$readOnly required=$keywordsRequired}
 			{/fbvFormSection}
 		{/if}
 		{if $agenciesEnabled}
-			{fbvFormSection description="submission.submit.metadataForm.acknowledgement" label="submission.supportingAgencies" required=$agenciesRequired}
+			{fbvFormSection description="submission.submit.metadataForm.tip" label="submission.supportingAgencies" required=$agenciesRequired}
 				{fbvElement type="keyword" id="agencies" multilingual=true current=$agencies disabled=$readOnly required=$agenciesRequired}
 			{/fbvFormSection}
 		{/if}
 		{if $citationsEnabled}
 			{fbvFormSection label="submission.citations" required=$citationsRequired}
-				{fbvElement type="textarea" id="citationsRaw" value=$citationsRaw multilingual=false rich=true disabled=$readOnly required=$citationsRequired}
+				{fbvElement type="textarea" id="citationsRaw" value=$citationsRaw multilingual=false disabled=$readOnly required=$citationsRequired}
 			{/fbvFormSection}
 		{/if}
 	{/fbvFormArea}

@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/users/reviewer/form/AdvancedSearchReviewerForm.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class AdvancedSearchReviewerForm
@@ -71,7 +71,7 @@ class AdvancedSearchReviewerForm extends ReviewerForm {
 
 		// Get user IDs already assigned to this submission, and admins and
 		// managers who may have access to author identities and can not guarantee
-		// blind reviews
+		// anonymous reviews
 		$warnOnAssignment = array();
 		$stageAssignmentDao = DAORegistry::getDAO('StageAssignmentDAO'); /* @var $stageAssignmentDao StageAssignmentDAO */
 		$stageAssignmentResults = $stageAssignmentDao->getBySubmissionAndStageId($this->getSubmissionId());
@@ -103,11 +103,9 @@ class AdvancedSearchReviewerForm extends ReviewerForm {
 				'currentlyAssigned' => $currentlyAssigned,
 				'getParams' => [
 					'contextId' => $submissionContext->getId(),
-					'count' => 15,
 					'reviewStage' => $reviewRound->getStageId(),
 				],
 				'selectorName' => 'reviewerId',
-				'selectorType' => 'radio',
 				'warnOnAssignment' => $warnOnAssignment,
 			]
 		);

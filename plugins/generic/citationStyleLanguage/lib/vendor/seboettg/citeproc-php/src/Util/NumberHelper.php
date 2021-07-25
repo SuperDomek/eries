@@ -24,7 +24,7 @@ class NumberHelper
 
     const PATTERN_ROMAN = "/^[ivxlcdm]+\.?$/i";
 
-    const PATTERN_ROMAN_RANGE = "/^([ivxlcdm]+\.*\s*[*\–\-&+,;]\s*){1,}[ivxlcdm]+\.?$/i";
+    const PATTERN_ROMAN_RANGE = "/^([ivxlcdm]+\.*)\s*([*\–\-&+,;])\s*([ivxlcdm]+\.?)$/i";
 
     const PATTERN_AFFIXES = "/^[a-z]?\d+[a-z]?$/i";
 
@@ -96,9 +96,9 @@ class NumberHelper
 
         $values = [];
         // Convert the string to an array of roman values:
-        for ($i = 0; $i < strlen($romanNumber); ++$i) {
-            $char = strtoupper($romanNumber[$i]);
-            if (self::ROMAN_DIGITS[$char] !== null) {
+        for ($i = 0; $i < mb_strlen($romanNumber); ++$i) {
+            $char = mb_strtoupper($romanNumber[$i]);
+            if (isset(self::ROMAN_DIGITS[$char])) {
                 $values[] = self::ROMAN_DIGITS[$char];
             }
         }
@@ -118,8 +118,8 @@ class NumberHelper
     public static function isRomanNumber($str)
     {
         $number = trim($str);
-        for ($i = 0; $i < strlen($number); ++$i) {
-            $char = strtoupper($number[$i]);
+        for ($i = 0; $i < mb_strlen($number); ++$i) {
+            $char = mb_strtoupper($number[$i]);
             if (!in_array($char, array_keys(self::ROMAN_DIGITS))) {
                 return false;
             }

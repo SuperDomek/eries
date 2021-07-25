@@ -2,8 +2,8 @@
 /**
  * @file classes/components/form/FieldText.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class FieldText
@@ -25,8 +25,8 @@ class FieldText extends Field {
 	/** @var string The label of the button added by self::$optIntoEdit */
 	public $optIntoEditLabel = '';
 
-	/** @var string Accepts: `small`, `regular` or `large` */
-	public $size = 'regular';
+	/** @var string Accepts: `small`, `normal` or `large` */
+	public $size = 'normal';
 
 	/** @var string A prefix to display before the input value */
 	public $prefix = '';

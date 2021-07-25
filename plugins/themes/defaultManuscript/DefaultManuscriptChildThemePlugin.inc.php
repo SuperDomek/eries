@@ -30,10 +30,8 @@ class DefaultManuscriptChildThemePlugin extends ThemePlugin {
 		$this->modifyStyle('stylesheet', array('addLess' => array('styles/index.less')));
 
 		// Remove the typography options of the parent theme.
-		// `removeOption` was introduced in OJS 3.0.2
-		if (method_exists($this, 'removeOption')) {
-			$this->removeOption('typography');
-		}
+		$this->removeOption('typography');
+		$this->removeOption('useHomepageImageAsHeader');
 
 		// Add the option for an accent color
 		$this->addOption('accentColour', 'FieldColor', [
@@ -42,27 +40,19 @@ class DefaultManuscriptChildThemePlugin extends ThemePlugin {
 			'default' => '#F7BC4A',
 		]);
 
-		// Load the Montserrat and Open Sans fonts
-		$this->addStyle(
-			'font',
-			'//fonts.googleapis.com/css?family=Montserrat:400,700|Noto+Serif:400,400i,700,700i',
-			array('baseUrl' => '')
-		);
-
 		// Dequeue any fonts loaded by parent theme
-		// `removeStyle` was introduced in OJS 3.0.2
 		if (method_exists($this, 'removeStyle')) {
-			$this->removeStyle('fontNotoSans');
-			$this->removeStyle('fontNotoSerif');
-			$this->removeStyle('fontNotoSansNotoSerif');
-			$this->removeStyle('fontLato');
-			$this->removeStyle('fontLora');
-			$this->removeStyle('fontLoraOpenSans');
-			$this->removeStyle('fontNotoSerif');
-			$this->removeStyle('fontNotoSerif');
-			$this->removeStyle('fontNotoSerif');
-			$this->removeStyle('fontNotoSerif');
-			$this->removeStyle('fontNotoSerif');
+			$this->removeStyle('font');
+			$this->removeStyle('font');
+			$this->removeStyle('font');
+			$this->removeStyle('font');
+			$this->removeStyle('font');
+			$this->removeStyle('font');
+			$this->removeStyle('font');
+			$this->removeStyle('font');
+			$this->removeStyle('font');
+			$this->removeStyle('font');
+			$this->removeStyle('font');
 		}
 
 		// Start with a fresh array of additionalLessVariables so that we can

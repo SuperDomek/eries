@@ -1,8 +1,8 @@
 {**
  * templates/controllers/modals/editorDecision/form/promoteForm.tpl
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Form used to send reviews to author
@@ -60,6 +60,13 @@
 					</a>
 				{/fbvFormSection}
 			{/if}
+
+			{if isset($reviewers)}
+				{include file="controllers/modals/editorDecision/form/bccReviewers.tpl"
+					reviewers=$reviewers
+					selected=$bccReviewers
+				}
+			{/if}
 		</div>
 
 		{if $decisionData.paymentType}
@@ -110,6 +117,7 @@
 	</div>
 
 	{fbvFormSection class="formButtons form_buttons"}
+		<span class="pkp_spinner"></span>
 		<button class="pkp_button promoteForm-step-btn" data-step="files">
 			{translate key="editor.submission.decision.nextButton" stageName=$stageName}
 		</button>
@@ -119,6 +127,5 @@
 		</button>
 		{assign var=cancelButtonId value="cancelFormButton"|concat:"-"|uniqid}
 		<a href="#" id="{$cancelButtonId}" class="cancelButton">{translate key="common.cancel"}</a>
-		<span class="pkp_spinner"></span>
 	{/fbvFormSection}
 </form>

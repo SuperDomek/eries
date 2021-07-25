@@ -3,8 +3,8 @@
 /**
  * @file classes/notification/PKPNotificationManager.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPNotificationManager
@@ -111,8 +111,6 @@ class PKPNotificationManager extends PKPNotificationOperationManager {
 				return $this->_getTranslatedKeyWithParameters('common.pluginEnabled', $notification->getId());
 			case NOTIFICATION_TYPE_PLUGIN_DISABLED:
 				return $this->_getTranslatedKeyWithParameters('common.pluginDisabled', $notification->getId());
-			case NOTIFICATION_TYPE_LOCALE_INSTALLED:
-				return $this->_getTranslatedKeyWithParameters('admin.languages.localeInstalled', $notification->getId());
 			case NOTIFICATION_TYPE_REVIEWER_COMMENT:
 				assert($notification->getAssocType() == ASSOC_TYPE_REVIEW_ASSIGNMENT && is_numeric($notification->getAssocId()));
 				$reviewAssignmentDao = DAORegistry::getDAO('ReviewAssignmentDAO'); /* @var $reviewAssignmentDao ReviewAssignmentDAO */
@@ -148,14 +146,15 @@ class PKPNotificationManager extends PKPNotificationOperationManager {
 				AppLocale::requireComponents(LOCALE_COMPONENT_APP_EDITOR); // load review round status keys.
 				$user = $request->getUser();
 				$stageAssignments = $stageAssignmentDao->getBySubmissionAndRoleId($reviewRound->getSubmissionId(), ROLE_ID_AUTHOR, null, $user->getId());
-				$isAuthor = $stageAssignments->getCount()>0;
-				$stageAssignments->close();
+				$isAuthor = (boolean) $stageAssignments->next();
 				return __($reviewRound->getStatusKey($isAuthor));
 			case NOTIFICATION_TYPE_PAYMENT_REQUIRED:
 				return __('payment.type.publication.required');
 			case NOTIFICATION_TYPE_EDITORIAL_REPORT:
 				$notificationSettings = $this->getNotificationSettings($notification->getId());
 				return $notificationSettings['contents'];
+			case NOTIFICATION_TYPE_EDITOR_DECISION_REVERT_DECLINE:
+				return __('notification.type.revertDecline');
 			default:
 				$delegateResult = $this->getByDelegate(
 					$notification->getType(),
@@ -187,16 +186,13 @@ class PKPNotificationManager extends PKPNotificationOperationManager {
 
 		switch ($type) {
 			case NOTIFICATION_TYPE_FORM_ERROR:
+				return join(' ', $content);
+			case NOTIFICATION_TYPE_ERROR:
+				if (!is_array($content)) return $content;
+
 				$templateMgr = TemplateManager::getManager($request);
 				$templateMgr->assign('errors', $content);
-				return $templateMgr->fetch('controllers/notification/formErrorNotificationContent.tpl');
-			case NOTIFICATION_TYPE_ERROR:
-				if (is_array($content)) {
-					$templateMgr->assign('errors', $content);
-					return $templateMgr->fetch('controllers/notification/errorNotificationContent.tpl');
-				} else {
-					return $content;
-				}
+				return $templateMgr->fetch('controllers/notification/errorNotificationContent.tpl');
 			default:
 				$delegateResult = $this->getByDelegate(
 					$notification->getType(),
@@ -363,6 +359,7 @@ class PKPNotificationManager extends PKPNotificationOperationManager {
 		switch ($notificationType) {
 			case NOTIFICATION_TYPE_SUBMISSION_SUBMITTED:
 			case NOTIFICATION_TYPE_METADATA_MODIFIED:
+			case NOTIFICATION_TYPE_SUBMISSION_NEW_VERSION:
 			case NOTIFICATION_TYPE_EDITOR_ASSIGNMENT_REQUIRED:
 				assert($assocType == ASSOC_TYPE_SUBMISSION && is_numeric($assocId));
 				import('lib.pkp.classes.notification.managerDelegate.SubmissionNotificationManager');
@@ -384,6 +381,7 @@ class PKPNotificationManager extends PKPNotificationOperationManager {
 			case NOTIFICATION_TYPE_EDITOR_DECISION_RESUBMIT:
 			case NOTIFICATION_TYPE_EDITOR_DECISION_NEW_ROUND:
 			case NOTIFICATION_TYPE_EDITOR_DECISION_DECLINE:
+			case NOTIFICATION_TYPE_EDITOR_DECISION_REVERT_DECLINE:
 			case NOTIFICATION_TYPE_EDITOR_DECISION_SEND_TO_PRODUCTION:
 				assert($assocType == ASSOC_TYPE_SUBMISSION && is_numeric($assocId));
 				import('lib.pkp.classes.notification.managerDelegate.EditorDecisionNotificationManager');
@@ -453,5 +451,4 @@ class PKPNotificationManager extends PKPNotificationOperationManager {
 		return __($key, $this->getParamsForCurrentLocale($params));
 	}
 }
-
 

@@ -1,8 +1,8 @@
 {**
  * templates/frontend/objects/article_details.tpl
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @brief View of an Article which displays all details about the article.
@@ -55,6 +55,7 @@
  * @uses $currentPublication Publication The most recently published version of this article
  * @uses $issue Issue The issue this article is assigned to
  * @uses $section Section The journal section this article is assigned to
+ * @uses $categories Category The category this article is assigned to
  * @uses $primaryGalleys array List of article galleys that are not supplementary or dependent
  * @uses $supplementaryGalleys array List of article galleys that are supplementary
  * @uses $keywords array List of keywords assigned to this article
@@ -64,10 +65,19 @@
  *   included with published submissions.
  * @uses $ccLicenseBadge string An image and text with details about the license
  *}
+ {if !$heading}
+ 	{assign var="heading" value="h3"}
+ {/if}
 <article class="obj_article_details">
 
+	{* Indicate if this is only a preview *}
+	{if $publication->getData('status') !== $smarty.const.STATUS_PUBLISHED}
+	<div class="cmp_notification notice">
+		{capture assign="submissionUrl"}{url page="workflow" op="access" path=$article->getId()}{/capture}
+		{translate key="submission.viewingPreview" url=$submissionUrl}
+	</div>
 	{* Notification that this is an old version *}
-	{if $currentPublication->getId() !== $publication->getId()}
+	{elseif $currentPublication->getId() !== $publication->getId()}
 		<div class="cmp_notification notice">
 			{capture assign="latestVersionUrl"}{url page="article" op="view" path=$article->getBestId()}{/capture}
 			{translate key="submission.outdatedVersion"
@@ -102,6 +112,9 @@
 							{if $author->getLocalizedData('affiliation')}
 								<span class="affiliation">
 									{$author->getLocalizedData('affiliation')|escape}
+									{if $author->getData('rorId')}
+										<a href="{$author->getData('rorId')|escape}">{$rorIdIcon}</a>
+									{/if}
 								</span>
 							{/if}
 							{if $author->getData('orcid')}
@@ -211,11 +224,10 @@
 					<div class="value">
 						{if $parsedCitations}
 							{foreach from=$parsedCitations item="parsedCitation"}
-								{$parsedCitation->getCitationWithLinks()|strip_unsafe_html} {call_hook name="Templates::Article::Details::Reference" citation=$parsedCitation}
+								<p>{$parsedCitation->getCitationWithLinks()|strip_unsafe_html} {call_hook name="Templates::Article::Details::Reference" citation=$parsedCitation}</p>
 							{/foreach}
 						{else}
-							{*$publication->getData('citationsRaw')|escape|nl2br*}
-							{$publication->getData('citationsRaw')}
+							{$publication->getData('citationsRaw')|escape|nl2br}
 						{/if}
 					</div>
 				</section>
@@ -367,7 +379,7 @@
 			{/if}
 
 			{* Issue article appears in *}
-			{if $issue || $section}
+			{if $issue || $section || $categories}
 				<div class="item issue">
 
 					{if $issue}
@@ -390,6 +402,21 @@
 							</h2>
 							<div class="value">
 								{$section->getLocalizedTitle()|escape}
+							</div>
+						</section>
+					{/if}
+
+					{if $categories}
+						<section class="sub_item">
+							<h2 class="label">
+								{translate key="category.category"}
+							</h2>
+							<div class="value">
+								<ul class="categories">
+									{foreach from=$categories item=category}
+										<li><a href="{url router=$smarty.const.ROUTE_PAGE page="catalog" op="category" path=$category->getPath()|escape}">{$category->getLocalizedTitle()|escape}</a></li>
+									{/foreach}
+								</ul>
 							</div>
 						</section>
 					{/if}

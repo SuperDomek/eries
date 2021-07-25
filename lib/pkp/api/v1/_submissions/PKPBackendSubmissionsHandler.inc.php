@@ -3,8 +3,8 @@
 /**
  * @file api/v1/_submissions/PKPBackendSubmissionsHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPBackendSubmissionsHandler
@@ -89,7 +89,7 @@ abstract class PKPBackendSubmissionsHandler extends APIHandler {
 		$userRoles = $this->getAuthorizedContextObject(ASSOC_TYPE_USER_ROLES);
 		$canAccessUnassignedSubmission = !empty(array_intersect(array(ROLE_ID_SITE_ADMIN, ROLE_ID_MANAGER), $userRoles));
 		if (!$canAccessUnassignedSubmission) {
-			$defaultParams['assignedTo'] = $currentUser->getId();
+			$defaultParams['assignedTo'] = [$currentUser->getId()];
 		}
 
 		$params = array_merge($defaultParams, $slimRequest->getQueryParams());
@@ -101,15 +101,17 @@ abstract class PKPBackendSubmissionsHandler extends APIHandler {
 				// Always convert status and stageIds to array
 				case 'status':
 				case 'stageIds':
-					if (is_string($val) && strpos($val, ',') > -1) {
+				case 'assignedTo':
+					if (is_string($val)) {
 						$val = explode(',', $val);
 					} elseif (!is_array($val)) {
 						$val = array($val);
 					}
 					$params[$param] = array_map('intval', $val);
+					// Special case: assignedTo can be -1 for unassigned
+					if ($param == 'assignedTo' && $val == [-1]) $params[$param] = -1;
 					break;
 
-				case 'assignedTo':
 				case 'daysInactive':
 				case 'offset':
 					$params[$param] = (int) $val;
@@ -143,7 +145,7 @@ abstract class PKPBackendSubmissionsHandler extends APIHandler {
 
 		// Prevent users from viewing submissions they're not assigned to,
 		// except for journal managers and admins.
-		if (!$canAccessUnassignedSubmission && $params['assignedTo'] != $currentUser->getId()) {
+		if (!$canAccessUnassignedSubmission && !in_array($currentUser->getId(), $params['assignedTo'])) {
 			return $response->withStatus(403)->withJsonError('api.submissions.403.requestedOthersUnpublishedSubmissions');
 		}
 

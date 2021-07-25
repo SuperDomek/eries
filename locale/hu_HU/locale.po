@@ -1060,9 +1060,6 @@ msgstr "Nincs még ajánlás kiválasztva. Ki kell választania egyet."
 msgid "reviewer.article.confirmDecision"
 msgstr "Ha egyszer már megadott egy lektorálási döntést, azt később nem bírálhatja felül. Biztosan folytatja?"
 
-msgid "reviewer.article.ensuringBlindReview"
-msgstr "Anonim szakmai lektorálás biztosítása"
-
 msgid "copyeditor.article.fileToCopyedit"
 msgstr "Fájl ide TechSzerk"
 
@@ -1575,9 +1572,11 @@ msgstr "A kiadói rendszerről"
 msgid "about.aboutThisPublishingSystem.altText"
 msgstr "OJS szerkesztői és kiadási folyamat"
 
+#, fuzzy
 msgid "about.aboutOJSJournal"
 msgstr "Ez a folyóirat Open Journal Systems {$ojsVersion} verziót használ, amely egy nyílt forráskódú folyóirat menedzselő és kiadói szoftver, a <a href=\"http://pkp.sfu.ca/\">Public Knowledge Project</a> által támogatott és szabadon terjeszthető a GNU General Public License alatt."
 
+#, fuzzy
 msgid "about.aboutOJSSite"
 msgstr "Ez az oldal Open Journal Systems {$ojsVersion} verziót, amely egy nyílt forráskódú folyóirat menedzselő és kiadói szoftver, a <a href=\"http://pkp.sfu.ca/\">Public Knowledge Project</a> által támogatott és szabadon terjeszthető a GNU General Public License alatt."
 
@@ -1806,6 +1805,7 @@ msgstr "OJS Installáció"
 msgid "installer.ojsUpgrade"
 msgstr "OJS Frissítés"
 
+#, fuzzy
 msgid "installer.installationInstructions"
 msgstr ""
 "<h4>OJS verzió {$version}</h4>\n"
@@ -2163,9 +2163,6 @@ msgstr "Érvénytelen folyóiratszám kérése!"
 
 msgid "user.authorization.invalidCopyditorSubmission"
 msgstr "Érvénytelen technikai szerkesztés beküldése vagy nem történt meg a technikai szerkesztő példányányának kérése!"
-
-msgid "debug.notes.currencyListLoad"
-msgstr "Pénznem lista betöltése \"{$filename}\" XML-ből"
 
 msgid "grid.action.createContext"
 msgstr "Új folyóirat készítése"

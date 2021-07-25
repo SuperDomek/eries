@@ -3,8 +3,8 @@
 /**
  * @file classes/plugins/PubObjectsExportPlugin.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PubObjectsExportPlugin
@@ -55,7 +55,7 @@ abstract class PubObjectsExportPlugin extends ImportExportPlugin {
 
 		AppLocale::requireComponents(LOCALE_COMPONENT_APP_MANAGER);
 		$this->addLocaleData();
-		
+
 		HookRegistry::register('AcronPlugin::parseCronTab', array($this, 'callbackParseCronTab'));
 		foreach ($this->_getDAOs() as $dao) {
 			if ($dao instanceof SchemaDAO) {
@@ -186,14 +186,39 @@ abstract class PubObjectsExportPlugin extends ImportExportPlugin {
 		$path = array('plugin', $this->getName());
 		if ($request->getUserVar(EXPORT_ACTION_EXPORT)) {
 			assert($filter != null);
+
+			$onlyValidateExport = ($request->getUserVar('onlyValidateExport')) ? true : false;
+			if ($onlyValidateExport) {
+				$noValidation = false;
+			}
+
 			// Get the XML
 			$exportXml = $this->exportXML($objects, $filter, $context, $noValidation);
-			import('lib.pkp.classes.file.FileManager');
-			$fileManager = new FileManager();
-			$exportFileName = $this->getExportFileName($this->getExportPath(), $objectsFileNamePart, $context, '.xml');
-			$fileManager->writeFile($exportFileName, $exportXml);
-			$fileManager->downloadByPath($exportFileName);
-			$fileManager->deleteByPath($exportFileName);
+
+			if ($onlyValidateExport) {
+				if (isset($exportXml)) {
+					$this->_sendNotification(
+						$request->getUser(),
+						'plugins.importexport.common.validation.success',
+						NOTIFICATION_TYPE_SUCCESS
+					);
+				} else {
+					$this->_sendNotification(
+						$request->getUser(),
+						'plugins.importexport.common.validation.fail',
+						NOTIFICATION_TYPE_ERROR
+					);
+				}
+
+				$request->redirect(null, null, null, $path, null, $tab);
+			} else {
+				import('lib.pkp.classes.file.FileManager');
+				$fileManager = new FileManager();
+				$exportFileName = $this->getExportFileName($this->getExportPath(), $objectsFileNamePart, $context, '.xml');
+				$fileManager->writeFile($exportFileName, $exportXml);
+				$fileManager->downloadByPath($exportFileName);
+				$fileManager->deleteByPath($exportFileName);
+			}
 		} elseif ($request->getUserVar(EXPORT_ACTION_DEPOSIT)) {
 			assert($filter != null);
 			// Get the XML
@@ -254,7 +279,7 @@ abstract class PubObjectsExportPlugin extends ImportExportPlugin {
 	 * @param $objects mixed Array of or single published submission, issue or galley
 	 * @param $context Context
 	 * @param $filename Export XML filename
-	 * @return boolean Whether the XML document has been registered
+	 * @return boolean|array Whether the XML document has been registered
 	 */
 	abstract function depositXML($objects, $context, $filename);
 
@@ -415,7 +440,7 @@ abstract class PubObjectsExportPlugin extends ImportExportPlugin {
 		foreach ($this->_getObjectAdditionalSettings() as $fieldName) {
 			$additionalFields[] = $fieldName;
 		}
-		
+
 		return false;
 	}
 
@@ -535,6 +560,8 @@ abstract class PubObjectsExportPlugin extends ImportExportPlugin {
 			$this->usage($scriptName);
 			return;
 		}
+
+		PluginRegistry::loadCategory('pubIds', true, $context->getId());
 
 		if ($outputFile) {
 			if ($this->isRelativePath($outputFile)) {

@@ -1,8 +1,8 @@
 {**
  * templates/frontend/pages/indexJournal.tpl
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @brief Display the index page for a journal
@@ -22,11 +22,11 @@
 
 	{call_hook name="Templates::Index::journal"}
 
-	<!--{if !$activeTheme->getOption('useHomepageImageAsHeader') && $homepageImage}
+	{if !$activeTheme->getOption('useHomepageImageAsHeader') && $homepageImage}
 		<div class="homepage_image">
 			<img src="{$publicFilesDir}/{$homepageImage.uploadName|escape:"url"}"{if $homepageImage.altText} alt="{$homepageImage.altText|escape}"{/if}>
 		</div>
-	{/if}-->
+	{/if}
 
 	{* Journal Description *}
 	{if $activeTheme->getOption('showDescriptionInJournalIndex')}
@@ -50,7 +50,7 @@
 				{/if}
 				{if $smarty.foreach.announcements.iteration == 1}
 					{include file="frontend/objects/announcement_summary.tpl" heading="h3"}
-					{*<div class="more">*}
+					<div class="more">
 				{else}
 					<article class="obj_announcement_summary">
 						<h4>
@@ -59,12 +59,12 @@
 							</a>
 						</h4>
 						<div class="date">
-							{$announcement->getDatePosted()}
+							{$announcement->getDatePosted()|date_format:$dateFormatShort}
 						</div>
 					</article>
 				{/if}
 			{/foreach}
-			{*</div><!-- .more -->*}
+			</div><!-- .more -->
 		</section>
 	{/if}
 
@@ -72,9 +72,13 @@
 	{if $issue}
 		<section class="current_issue">
 			<a id="homepageIssue"></a>
-
-			{include file="frontend/objects/issue_toc_home.tpl"}
-			
+			<h2>
+				{translate key="journal.currentIssue"}
+			</h2>
+			<div class="current_issue_title">
+				{$issue->getIssueIdentification()|strip_unsafe_html}
+			</div>
+			{include file="frontend/objects/issue_toc.tpl" heading="h3"}
 			<a href="{url router=$smarty.const.ROUTE_PAGE page="issue" op="archive"}" class="read_more">
 				{translate key="journal.viewAllIssues"}
 			</a>
@@ -83,7 +87,6 @@
 
 	{* Additional Homepage Content *}
 	{if $additionalHomeContent}
-	<hr />
 		<div class="additional_content">
 			{$additionalHomeContent}
 		</div>

@@ -27,6 +27,7 @@ You can add information about your journal for specific user groups that will ap
 
 ### Languages
 Languages that have been installed on your site by an Administrator can be enabled for the user interface (UI), forms, and submissions.
+
 * If you check off **UI** for a language, the front and back end interface will be available in that language
 * If you check off **Forms**, you will be able to fill in any forms or fields in the back end dashboard with content in that language
 * If you check off **Submissions**, users will be able to make a submission in that language and submit metadata in that language
@@ -37,6 +38,15 @@ Edit the existing navigation menus on your website. You can add and remove items
 
 ### Announcements
 Create announcements or announcement types to appear on your site's homepage or to be emailed to all of your readers.
+
+### Lists
+Under Lists you can configure how many items to display in a list and how many page links to display.
+
+### Privacy Statement
+Enter a privacy statement that explains how you will use data submitted to your journal and site.
+
+### Date & Time
+You can configure the format of date and time displays. If your journal is multilingual, you can have different configurations for different languages. Click the other language tab to change the settings for another language.
 
 ## <a name="plugins"></a>Plugins
 Plugins extend functionality of OJS and allow it to interact with external tools and services. Installed plugins can be enabled and configured, or you can install additional plugins from the **Plugin Gallery**.

@@ -3,8 +3,8 @@
 /**
  * @file classes/manager/form/ReviewFormElementForm.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ReviewFormElementForm
@@ -59,12 +59,13 @@ class ReviewFormElementForm extends Form {
 	function fetch($request, $template = null, $display = false) {
 		$templateMgr = TemplateManager::getManager($request);
 		import('lib.pkp.classes.reviewForm.ReviewFormElement');
+		$reviewFormElement = new ReviewFormElement();
 		$templateMgr->assign(array(
 			'reviewFormId' => $this->reviewFormId,
 			'reviewFormElementId' => $this->reviewFormElementId,
-			'multipleResponsesElementTypes' => ReviewFormElement::getMultipleResponsesElementTypes(),
-			'multipleResponsesElementTypesString' => ';'.implode(';', ReviewFormElement::getMultipleResponsesElementTypes()).';',
-			'reviewFormElementTypeOptions' => ReviewFormElement::getReviewFormElementTypeOptions(),
+			'multipleResponsesElementTypes' => $reviewFormElement->getMultipleResponsesElementTypes(),
+			'multipleResponsesElementTypesString' => ';'.implode(';', $reviewFormElement->getMultipleResponsesElementTypes()).';',
+			'reviewFormElementTypeOptions' => $reviewFormElement->getReviewFormElementTypeOptions(),
 		));
 		return parent::fetch($request, $template, $display);
 	}
@@ -127,7 +128,7 @@ class ReviewFormElementForm extends Form {
 		$reviewFormElement->setIncluded($this->getData('included') ? 1 : 0);
 		$reviewFormElement->setElementType($this->getData('elementType'));
 
-		if (in_array($this->getData('elementType'), ReviewFormElement::getMultipleResponsesElementTypes())) {
+		if (in_array($this->getData('elementType'), $reviewFormElement->getMultipleResponsesElementTypes())) {
 			$this->setData('possibleResponsesProcessed', $reviewFormElement->getPossibleResponses(null));
 			ListbuilderHandler::unpack($request, $this->getData('possibleResponses'), array($this, 'deleteEntry'), array($this, 'insertEntry'), array($this, 'updateEntry'));
 			$reviewFormElement->setPossibleResponses($this->getData('possibleResponsesProcessed'), null);

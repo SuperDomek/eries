@@ -2,8 +2,8 @@
 /**
  * @file classes/components/form/context/PKPUserAccessForm.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPUserAccessForm
@@ -34,7 +34,6 @@ class PKPUserAccessForm extends FormComponent {
 	 */
 	public function __construct($action, $context) {
 		$this->action = $action;
-		$this->successMessage = __('manager.setup.userAccess.success');
 
 		$this->addField(new FieldOptions('restrictSiteAccess', [
 				'label' => __('manager.setup.siteAccess.view'),

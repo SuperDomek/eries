@@ -3,8 +3,8 @@
 /**
  * @file classes/services/QueryBuilders/PKPStatsEditorialQueryBuilder.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPStatsEditorialQueryBuilder
@@ -16,10 +16,9 @@
 
 namespace PKP\Services\QueryBuilders;
 
-use PKP\Services\QueryBuilders\BaseQueryBuilder;
 use Illuminate\Database\Capsule\Manager as Capsule;
 
-abstract class PKPStatsEditorialQueryBuilder extends BaseQueryBuilder {
+abstract class PKPStatsEditorialQueryBuilder {
 
 	/** @var array Return stats for activity in these contexts */
 	protected $contextIds = [];
@@ -356,7 +355,7 @@ abstract class PKPStatsEditorialQueryBuilder extends BaseQueryBuilder {
 						->orWhere('s.date_submitted', '<', Capsule::raw('pi.date_published'));
 				});
 
-		\HookRegistry::call('Stats::editorial::queryObject', array($q, $this));
+		\HookRegistry::call('Stats::editorial::queryObject', array(&$q, $this));
 
 		return $q;
 	}

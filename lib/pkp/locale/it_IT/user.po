@@ -230,9 +230,6 @@ msgstr "Lingue conosciute"
 msgid "user.profile.form.profileImageInvalid"
 msgstr "Formato non valido o immagine troppo grande. I formati accettati sono .gif, .jpg, or .png, e le immagini devono essere grandi 150x150 pixel al massimo."
 
-msgid "user.profile.form.affiliationRequired"
-msgstr "Inserisci un'affiliazione."
-
 msgid "user.register.form.emailsDoNotMatch"
 msgstr "Le email inserite non corrispondono."
 
@@ -278,9 +275,6 @@ msgstr "Informazioni account"
 
 msgid "user.authorization.managerRequired"
 msgstr "Prima di procedere è necessario assegnare un utente con ruolo di Manager di stampa (ad es. Editor di stampa o di produzione)."
-
-msgid "user.interests.description"
-msgstr "(Separare i campi di interesse premendo ENTER o usando la virgola)"
 
 msgid "user.group"
 msgstr "Gruppo utenti"

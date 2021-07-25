@@ -3,8 +3,8 @@
 /**
  * @file classes/journal/Section.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class Section
@@ -186,4 +186,21 @@ class Section extends PKPSection {
 	function setHideAuthor($hideAuthor) {
 		return $this->setData('hideAuthor', $hideAuthor);
 	}
+
+	/**
+	 * Return boolean indicating if section should be inactivated.
+	 * @return int
+	 */
+	function getIsInactive() {
+		return $this->getData('isInactive');
+	}
+
+	/**
+	 * Set if section should be inactivated.
+	 * @param $isInactive int
+	 */
+	function setIsInactive($isInactive) {
+		$this->setData('isInactive', $isInactive);
+	}
+
 }

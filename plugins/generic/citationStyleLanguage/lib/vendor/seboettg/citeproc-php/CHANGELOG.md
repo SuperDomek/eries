@@ -1,5 +1,29 @@
 # CHANGELOG
 
+## 2.2.5 2020-12-06
+
+* Bugfix for [94](https://github.com/seboettg/citeproc-php/issues/95): Missing space between date parts, when date parts have no affixes
+
+## 2.2.4 2020-11-22
+
+* Bugfix for [95](https://github.com/seboettg/citeproc-php/issues/95): Missing space between authors and chapter
+
+## 2.2.3 2020-10-18
+
+* Bugfix for an error that occurred when accessing a missing plural form for a label.
+
+## 2.2.2 2020-09-26
+
+* Bugfix for [92](https://github.com/seboettg/citeproc-php/issues/92)
+* Bugfix for [93](https://github.com/seboettg/citeproc-php/issues/93)
+
+## 2.2.1 2020-09-12
+
+* Bugfix for issue [82](https://github.com/seboettg/citeproc-php/issues/82)
+* Bugfix for [84](https://github.com/seboettg/citeproc-php/issues/84)
+* Merged PR [86](https://github.com/seboettg/citeproc-php/pull/86)
+* Bugfix for [89](https://github.com/seboettg/citeproc-php/issues/89)
+
 ## 2.2.0 2020-04-04
 * Compatibility for PHP 7.2, 7.3 and 7.4. This solves the issues [76](https://github.com/seboettg/citeproc-php/issues/76), [78](https://github.com/seboettg/citeproc-php/issues/75), [80](https://github.com/seboettg/citeproc-php/issues/80) and [81](https://github.com/seboettg/citeproc-php/issues/81).
 * Merged Pull Requests [75](https://github.com/seboettg/citeproc-php/pull/75) and [79](https://github.com/seboettg/citeproc-php/pull/79)

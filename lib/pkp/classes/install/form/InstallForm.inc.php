@@ -3,8 +3,8 @@
 /**
  * @file classes/install/form/InstallForm.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class InstallForm
@@ -147,7 +147,6 @@ class InstallForm extends MaintenanceForm {
 			'databaseUsername' => Application::getName(),
 			'databasePassword' => '',
 			'databaseName' => Application::getName(),
-			'createDatabase' => 1,
 			'oaiRepositoryId' => Application::getName() . '.' . $this->_request->getServerHost(),
 			'enableBeacon' => true,
 		);
@@ -172,7 +171,6 @@ class InstallForm extends MaintenanceForm {
 			'databaseUsername',
 			'databasePassword',
 			'databaseName',
-			'createDatabase',
 			'oaiRepositoryId',
 			'enableBeacon',
 		));

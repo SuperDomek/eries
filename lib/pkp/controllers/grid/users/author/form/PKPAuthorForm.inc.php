@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/users/author/form/PKPAuthorForm.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPAuthorForm
@@ -48,7 +48,6 @@ class PKPAuthorForm extends Form {
 		$this->addCheck(new FormValidatorEmail($this, 'email', 'required', 'form.emailRequired'));
 		$this->addCheck(new FormValidatorUrl($this, 'userUrl', 'optional', 'user.profile.form.urlInvalid'));
 		$this->addCheck(new FormValidator($this, 'userGroupId', 'required', 'submission.submit.form.contributorRoleRequired'));
-		$this->addCheck(new FormValidatorLocale($this, 'affiliation', 'required', 'submission.submit.form.affiliationRequired'));
 		$this->addCheck(new FormValidatorORCID($this, 'orcid', 'optional', 'user.orcid.orcidInvalid'));
 		$this->addCheck(new FormValidatorPost($this));
 		$this->addCheck(new FormValidatorCSRF($this));

@@ -3,8 +3,8 @@
 /**
  * @file pages/article/ArticleHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ArticleHandler
@@ -28,6 +28,9 @@ class ArticleHandler extends Handler {
 	/** submission associated with the request **/
 	var $article;
 
+	/** category associated with the request **/
+	var $categories;
+
 	/** publication associated with the request **/
 	var $publication;
 
@@ -45,9 +48,28 @@ class ArticleHandler extends Handler {
 		// Permit the use of the Authorization header and an API key for access to unpublished/subscription content
 		if ($header = array_search('Authorization', array_flip(getallheaders()))) {
 			list($bearer, $jwt) = explode(' ', $header);
-			if (strcasecmp($bearer, 'Bearer') == 0) {
-				$apiToken = json_decode(JWT::decode($jwt, Config::getVar('security', 'api_key_secret', ''), array('HS256')));
-				$this->setApiToken($apiToken);
+			if (strcasecmp($bearer, 'Bearer') == 0 && !empty($jwt)) {
+				$secret = Config::getVar('security', 'api_key_secret', '');
+				if (!$secret) {
+					AppLocale::requireComponents(LOCALE_COMPONENT_PKP_API);
+					$templateMgr = TemplateManager::getManager($request);
+					$templateMgr->assign('message', 'api.500.apiSecretKeyMissing');
+					return $templateMgr->display('frontend/pages/message.tpl');
+				}
+				try {
+					$apiToken = JWT::decode($jwt, $secret, array('HS256'));
+					// Compatibility with old API keys
+					// https://github.com/pkp/pkp-lib/issues/6462
+					if (substr($apiToken, 0, 2) === '""') {
+						$apiToken = json_decode($apiToken);
+					}
+					$this->setApiToken($apiToken);
+				} catch (Exception $e) {
+					AppLocale::requireComponents(LOCALE_COMPONENT_PKP_API);
+					$templateMgr = TemplateManager::getManager($request);
+					$templateMgr->assign('message', 'api.400.invalidApiToken');
+					return $templateMgr->display('frontend/pages/message.tpl');
+				}
 			}
 		}
 
@@ -62,6 +84,7 @@ class ArticleHandler extends Handler {
 
 	/**
 	 * @see PKPHandler::initialize()
+	 * @param $request Request
 	 * @param $args array Arguments list
 	 */
 	function initialize($request, $args = array()) {
@@ -72,9 +95,15 @@ class ArticleHandler extends Handler {
 
 		if (!$submission && ctype_digit((string) $urlPath)) {
 			$submission = Services::get('submission')->get($urlPath);
+			if (!$submission || $request->getContext()->getId() != $submission->getContextId()) $submission = null;
 		}
 
-		if (!$submission || $submission->getData('status') !== STATUS_PUBLISHED) {
+		import('classes.issue.IssueAction');
+		$issueAction = new IssueAction();
+		$context = $request->getContext();
+		$user = $request->getUser();
+
+		if (!$submission || ($submission->getData('status') !== STATUS_PUBLISHED && !$issueAction->allowedPrePublicationAccess($context, $submission, $user))) {
 			$request->getDispatcher()->handle404();
 		}
 
@@ -106,7 +135,7 @@ class ArticleHandler extends Handler {
 			$galleyId = $subPath;
 		}
 
-		if ($this->publication->getData('status') !== STATUS_PUBLISHED) {
+		if ($this->publication->getData('status') !== STATUS_PUBLISHED && !$issueAction->allowedPrePublicationAccess($context, $submission, $user)) {
 			$request->getDispatcher()->handle404();
 		}
 
@@ -179,6 +208,11 @@ class ArticleHandler extends Handler {
 			fatalError('Cannot view galley.');
 		}
 
+		$categoryDao = DAORegistry::getDAO('CategoryDAO'); /* @var $categoryDao CategoryDAO */
+		$templateMgr->assign([
+			'categories' =>	$categoryDao->getByPublicationId($publication->getId())->toArray()
+		]);
+
 		// Get galleys sorted into primary and supplementary groups
 		$galleys = $publication->getData('galleys');
 		$primaryGalleys = array();
@@ -226,7 +260,7 @@ class ArticleHandler extends Handler {
 		$templateMgr->assign([
 			'licenseTerms' => $context->getLocalizedData('licenseTerms'),
 			'licenseUrl' => $publication->getData('licenseUrl'),
-			'copyrightHolder' => $publication->getData('copyrightHolder'),
+			'copyrightHolder' => $publication->getLocalizedData('copyrightHolder'),
 			'copyrightYear' => $publication->getData('copyrightYear'),
 			'pubIdPlugins' => PluginRegistry::loadCategory('pubIds', true),
 			'keywords' => $publication->getData('keywords'),
@@ -335,17 +369,18 @@ class ArticleHandler extends Handler {
 			$dispatcher->handle404();
 		}
 		$suppId = isset($args[1]) ? $args[1] : 0;
-		$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO'); /* @var $submissionFileDao SubmissionFileDAO */
-		$submissionFiles = $submissionFileDao->getBySubmissionId($articleId);
-		foreach ($submissionFiles as $submissionFile) {
+		$submissionFilesIterator = Services::get('submissionFile')->getMany([
+			'submissionIds' => [$articleId->getId()],
+		]);
+		foreach ($submissionFilesIterator as $submissionFile) {
 			if ($submissionFile->getData('old-supp-id') == $suppId) {
 				$articleGalleyDao = DAORegistry::getDAO('ArticleGalleyDAO'); /* @var $articleGalleyDao ArticleGalleyDAO */
 				$articleGalleys = $articleGalleyDao->getByPublicationId($article->getCurrentPublication()->getId());
 				while ($articleGalley = $articleGalleys->next()) {
 					$galleyFile = $articleGalley->getFile();
-					if ($galleyFile && $galleyFile->getFileId() == $submissionFile->getFileId()) {
+					if ($galleyFile && $galleyFile->getFileId() == $submissionFile->getId()) {
 						header('HTTP/1.1 301 Moved Permanently');
-						$request->redirect(null, null, 'download', array($articleId, $articleGalley->getId(), $submissionFile->getFileId()));
+						$request->redirect(null, null, 'download', array($articleId, $articleGalley->getId(), $submissionFile->getId()));
 					}
 				}
 			}
@@ -365,30 +400,37 @@ class ArticleHandler extends Handler {
 		if ($this->galley->getRemoteURL()) $request->redirectUrl($this->galley->getRemoteURL());
 		else if ($this->userCanViewGalley($request, $this->article->getId(), $this->galley->getId())) {
 			if (!$this->fileId) {
-				$submissionFile = $this->galley->getFile();
-				if ($submissionFile) {
-					$this->fileId = $submissionFile->getFileId();
-					// The file manager expects the real article id.  Extract it from the submission file.
-				}
+				$this->fileId = $this->galley->getData('submissionFileId');
 			}
 
 			// If no file ID could be determined, treat it as a 404.
 			if (!$this->fileId) $request->getDispatcher()->handle404();
 
 			// If the file ID is not the galley's file ID, ensure it is a dependent file, or else 404.
-			if ($this->fileId != $this->galley->getFileId()) {
-				$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO'); /* @var $submissionFileDao SubmissionFileDAO */
-				$dependentFileIds = array_map(
-					function($f) {return $f->getFileId();},
-					$submissionFileDao->getLatestRevisionsByAssocId(ASSOC_TYPE_SUBMISSION_FILE, $this->galley->getFileId(), $this->article->getId(), SUBMISSION_FILE_DEPENDENT)
-				);
+			if ($this->fileId != $this->galley->getData('submissionFileId')) {
+				import('lib.pkp.classes.submission.SubmissionFile'); // Constants
+				$dependentFileIds = Services::get('submissionFile')->getIds([
+					'assocTypes' => [ASSOC_TYPE_SUBMISSION_FILE],
+					'assocIds' => [$this->galley->getFileId()],
+					'fileStages' => [SUBMISSION_FILE_DEPENDENT],
+					'includeDependentFiles' => true,
+				]);
 				if (!in_array($this->fileId, $dependentFileIds)) $request->getDispatcher()->handle404();
 			}
 
 			if (!HookRegistry::call('ArticleHandler::download', array($this->article, &$this->galley, &$this->fileId))) {
-				import('lib.pkp.classes.file.SubmissionFileManager');
-				$submissionFileManager = new SubmissionFileManager($this->article->getContextId(), $this->article->getId());
-				$submissionFileManager->downloadById($this->fileId, null, $request->getUserVar('inline')?true:false);
+				$submissionFile = Services::get('submissionFile')->get($this->fileId);
+
+				if (!Services::get('file')->fs->has($submissionFile->getData('path'))) {
+					$request->getDispatcher()->handle404();
+				}
+
+				$filename = Services::get('file')->formatFilename($submissionFile->getData('path'), $submissionFile->getLocalizedData('name'));
+
+				$returner = true;
+				HookRegistry::call('FileManager::downloadFileFinished', array(&$returner));
+
+				Services::get('file')->download($submissionFile->getData('fileId'), $filename);
 			}
 		} else {
 			header('HTTP/1.0 403 Forbidden');
@@ -503,6 +545,6 @@ class ArticleHandler extends Handler {
 	 */
 	function setupTemplate($request) {
 		parent::setupTemplate($request);
-		AppLocale::requireComponents(LOCALE_COMPONENT_PKP_READER, LOCALE_COMPONENT_PKP_SUBMISSION);
+		AppLocale::requireComponents(LOCALE_COMPONENT_PKP_READER, LOCALE_COMPONENT_PKP_SUBMISSION, LOCALE_COMPONENT_APP_SUBMISSION);
 	}
 }

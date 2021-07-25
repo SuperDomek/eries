@@ -87,9 +87,6 @@ msgstr "Email"
 msgid "user.interests"
 msgstr "Наукові інтереси"
 
-msgid "user.interests.description"
-msgstr "(вказуйте кожний інтерес з нового рядку або розділяйте їх комами)"
-
 msgid "user.gossip"
 msgstr "Приватні нотатки"
 
@@ -206,9 +203,6 @@ msgstr "Необхідно вказати країну."
 
 msgid "user.profile.form.emailRequired"
 msgstr "Необхідно вказати коректну адресу email."
-
-msgid "user.profile.form.affiliationRequired"
-msgstr "Необхідно вказати місце роботи."
 
 msgid "user.profile.form.mailingAddressRequired"
 msgstr "Необхідно вказати поштову адресу."

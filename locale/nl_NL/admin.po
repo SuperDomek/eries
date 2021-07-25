@@ -2,14 +2,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"Last-Translator: \n"
-"Language-Team: \n"
+"POT-Creation-Date: 2019-11-19T10:49:28+00:00\n"
+"PO-Revision-Date: 2020-10-22 11:46+0000\n"
+"Last-Translator: Hans Spijker <hans.spijker@huygens.knaw.nl>\n"
+"Language-Team: Dutch <http://translate.pkp.sfu.ca/projects/ojs/admin/nl/>\n"
+"Language: nl_NL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2019-11-19T10:49:28+00:00\n"
-"PO-Revision-Date: 2019-11-19T10:49:28+00:00\n"
-"Language: \n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.9.1\n"
 
 msgid "admin.hostedContexts"
 msgstr "Tijdschriften"
@@ -21,31 +23,31 @@ msgid "admin.settings.config.success"
 msgstr "De instellingen voor de configuratie van de site zijn bijgewerkt."
 
 msgid "admin.settings.info.success"
-msgstr "De informatie voor de site is bijgewerkt."
+msgstr "De website-informatie is bijgewerkt."
 
 msgid "admin.settings.redirect"
-msgstr "Doorsturen naar tijdschrift"
+msgstr "Doorverwijzen naar tijdschrift"
 
 msgid "admin.settings.redirectInstructions"
-msgstr "Bezoekers van de hoofdsite worden doorgestuurd naar dit tijdschrift. Dit kan handig zijn als de site maar één tijdschrift bevat."
+msgstr ""
+"Bezoekers van de hoofdsite worden doorverwezen naar dit tijdschrift. Dit kan "
+"handig zijn als de site maar één tijdschrift bevat."
 
 msgid "admin.settings.defaultMetricDescription"
 msgstr ""
-"Uw OJS installatie is geconfigureerd voor meer dan een gebruiksmeting. Gebruiksstatistieken worden in verschillende contexten getoond.\n"
-"\t\tSoms wordt een enkele statistiek getoond, bv, om een lijst van meestgebruikte artikels te tonen of om\n"
-"\t\tzoekresultaten te wegen. Kies een van de methodes als standaard."
+"\n"
+"\t\tUw OJS installatie is geconfigureerd voor meer dan één gebruiksmeting. "
+"Gebruiksstatistieken worden in verschillende contexten getoond.\n"
+"\t\tSoms wordt een enkele statistiek getoond, bijvoorbeeld om een lijst van "
+"meest bekeken artikelen te tonen of om\n"
+"\t\t\n"
+"zoekresultaten te rangschikken. Kies een van de methodes als standaard.\n"
+"\t"
 
 msgid "admin.languages.confirmDisable"
-msgstr "Weet u zeker dat u deze taal wilt uitschakelen? Dit beïnvloedt de tijdschriften in de site die deze taal gebruiken."
-
-msgid "admin.languages.downloadUnavailable"
 msgstr ""
-"<p>Er kunnen geen taalpakketten worden gedownload van de Public Knowledge Project webserver, omdat:</p>\n"
-"\t<ul>\n"
-"\t\t<li>Het GNU \"tar\" commando is niet beschikbaar op uw server, of het kan niet worden uitgevoerd.</li>\n"
-"\t\t<li>OJS kan het taalregisterbestand niet wijzigen, dat zich standaard bevindt op \"registry/locales.xml\".</li>\n"
-"\t</ul>\n"
-"<p>Taalpakketten kunnen manueel worden gedownload van de <a href=\"http://pkp.sfu.ca\">PKP website</a>.</p>"
+"Weet u zeker dat u deze taal wilt uitschakelen? Dit kan gevolgen hebben voor "
+"tijdschriften die deze taal momenteel gebruiken."
 
 msgid "admin.languages.primaryLocaleInstructions"
 msgstr "Dit wordt de standaard taalkeuze voor de site en de tijdschriften daarin."
@@ -61,21 +63,6 @@ msgstr "Weet u zeker dat u deze taal wilt de-installeren? Dit beïnvloedt de tij
 
 msgid "admin.languages.installNewLocalesInstructions"
 msgstr "Selecteer aanvullende talen voor gebruik in dit systeem. De talen moeten geïnstalleerd worden voor ze door te tijdschriften gebruikt kunnen worden. Zie de OJS documentatie voor informatie over het toevoegen van ondersteuning voor nieuwe talen."
-
-msgid "admin.languages.downloadFailed"
-msgstr "Het ophalen van de taalbestanden is mislukt. De foutmelding hieronder beschrijft het probleem."
-
-msgid "admin.languages.localeInstalled"
-msgstr "De taal \"{$locale}\" is geïnstalleerd."
-
-msgid "admin.languages.download"
-msgstr "Taalbestanden binnenhalen"
-
-msgid "admin.languages.download.cannotOpen"
-msgstr "De taalbeschrijving kan niet geopend worden op de PKP website."
-
-msgid "admin.languages.download.cannotModifyRegistry"
-msgstr "De taal kan niet toegevoegd worden aan het taalregister-bestand (doorgaans registry/locales.xml)\"."
 
 msgid "admin.auth.ojs"
 msgstr "OJS gebruikersdatabank"
@@ -111,7 +98,9 @@ msgid "admin.contexts.create"
 msgstr "Creëer tijdschrift"
 
 msgid "admin.journals.urlWillBe"
-msgstr "De URL van dit tijdschrift wordt {$sampleUrl}"
+msgstr ""
+"Dit moet een enkel kort woord of acroniem zijn dat het tijdschrift "
+"identificeert. De URL van het tijdschrift wordt {$sampleUrl}."
 
 msgid "admin.contexts.form.titleRequired"
 msgstr "Een titel is verplicht."
@@ -124,12 +113,6 @@ msgstr "Het pad mag alleen alfanumerieke tekens, liggende streepjes en koppeltek
 
 msgid "admin.contexts.form.pathExists"
 msgstr "Het opgegeven pad is al in gebruik voor een ander tijdschrift."
-
-msgid "admin.contexts.form.create.success"
-msgstr "{$name} is met succes aangemaakt."
-
-msgid "admin.contexts.form.edit.success"
-msgstr "{$name} is met succes bewerkt."
 
 msgid "admin.journals.enableJournalInstructions"
 msgstr "Toon dit tijdschrift op de site"

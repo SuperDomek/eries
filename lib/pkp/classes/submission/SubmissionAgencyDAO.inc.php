@@ -3,8 +3,8 @@
 /**
  * @file classes/submission/SubmissionAgencyDAO.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SubmissionAgencyDAO
@@ -23,7 +23,7 @@ class SubmissionAgencyDAO extends ControlledVocabDAO {
 	/**
 	 * Build/fetch and return a controlled vocabulary for agencies.
 	 * @param $publicationId int
-	 * @param $assocType int DO NOT USE: For 2.x to 3.x migration pkp/pkp-lib#3572
+	 * @param $assocType int DO NOT USE: For <3.1 to 3.x migration pkp/pkp-lib#3572 pkp/pkp-lib#6213
 	 * @return ControlledVocab
 	 */
 	function build($publicationId, $assocType = ASSOC_TYPE_PUBLICATION) {
@@ -42,12 +42,13 @@ class SubmissionAgencyDAO extends ControlledVocabDAO {
 	 * Get agencies for a specified submission ID.
 	 * @param $publicationId int
 	 * @param $locales array
+	 * @param $assocType int DO NOT USE: For <3.1 to 3.x migration pkp/pkp-lib#6213
 	 * @return array
 	 */
-	function getAgencies($publicationId, $locales = []) {
+	function getAgencies($publicationId, $locales = [], $assocType = ASSOC_TYPE_PUBLICATION) {
 		$result = [];
 
-		$agencies = $this->build($publicationId);
+		$agencies = $this->build($publicationId, $assocType);
 		$submissionAgencyEntryDao = DAORegistry::getDAO('SubmissionAgencyEntryDAO'); /* @var $submissionAgencyEntryDao SubmissionAgencyEntryDAO */
 		$submissionAgencies = $submissionAgencyEntryDao->getByControlledVocabId($agencies->getId());
 		while ($agencyEntry = $submissionAgencies->next()) {
@@ -70,18 +71,12 @@ class SubmissionAgencyDAO extends ControlledVocabDAO {
 	 * @return array
 	 */
 	function getAllUniqueAgencies() {
-		$agencies = array();
+		$result = $this->retrieve('SELECT DISTINCT setting_value FROM controlled_vocab_entry_settings WHERE setting_name = ?', [CONTROLLED_VOCAB_SUBMISSION_AGENCY]);
 
-		$result = $this->retrieve(
-			'SELECT DISTINCT setting_value FROM controlled_vocab_entry_settings WHERE setting_name = ?', CONTROLLED_VOCAB_SUBMISSION_AGENCY
-		);
-
-		while (!$result->EOF) {
-			$agencies[] = $result->fields[0];
-			$result->MoveNext();
+		$agencies = [];
+		foreach ($result as $row) {
+			$agencies[] = $row->setting_value;
 		}
-
-		$result->Close();
 		return $agencies;
 	}
 
@@ -90,7 +85,7 @@ class SubmissionAgencyDAO extends ControlledVocabDAO {
 	 * @param $agencies array List of agencies.
 	 * @param $publicationId int Submission ID.
 	 * @param $deleteFirst boolean True iff existing agencies should be removed first.
-	 * @param $assocType int DO NOT USE: For 2.x to 3.x migration pkp/pkp-lib#3572
+	 * @param $assocType int DO NOT USE: For <3.1 to 3.x migration pkp/pkp-lib#3572 pkp/pkp-lib#6213
 	 * @return int
 	 */
 	function insertAgencies($agencies, $publicationId, $deleteFirst = true, $assocType = ASSOC_TYPE_PUBLICATION) {

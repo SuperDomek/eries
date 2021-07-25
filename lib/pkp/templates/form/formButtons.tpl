@@ -1,8 +1,8 @@
 {**
  * templates/form/formButtons.tpl
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Form button bar
@@ -18,6 +18,9 @@
 
 {fbvFormSection class="formButtons form_buttons"}
 
+	{* Loading indicator *}
+	<span class="pkp_spinner"></span>
+
 	{* Submit button *}
 	{assign var=submitButtonId value="submitFormButton"|concat:"-"|uniqid}
 
@@ -28,16 +31,13 @@
 				dialogText="$FBV_confirmSubmit"}
 	{/if}
 
-	{fbvElement type="submit" class="{if $FBV_saveText}pkp_button_primary{/if} submitFormButton" id=$submitButtonId label=$FBV_submitText translate=$FBV_translate disabled=$FBV_submitDisabled}
+	{fbvElement type="submit" class="{if $FBV_saveText}pkp_button_primary{/if} submitFormButton" name="submitFormButton" id=$submitButtonId label=$FBV_submitText translate=$FBV_translate disabled=$FBV_submitDisabled}
 
 	{* Save button *}
 	{if $FBV_saveText}
 		{assign var=saveButtonId value="saveFormButton"|concat:"-"|uniqid}
-		{fbvElement type="submit" class="saveFormButton" name="saveFormButton" id=$saveButtonId value=$FBV_saveValue label=$FBV_saveText disabled=$FBV_submitDisabled}
+		{fbvElement type="submit" class="saveFormButton" name="saveFormButton" id=$saveButtonId label=$FBV_saveText disabled=$FBV_submitDisabled}
 	{/if}
-
-	{* Loading indicator *}
-	<span class="pkp_spinner"></span>
 
 	{* Cancel button (if any) *}
 	{if !$FBV_hideCancel}

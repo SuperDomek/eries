@@ -3,8 +3,8 @@
 /**
  * @file plugins/generic/lensGalley/LensGalleyPlugin.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class LensGalleyPlugin
@@ -139,11 +139,7 @@ class LensGalleyPlugin extends GenericPlugin {
 	 */
 	private function _getJQueryUrl($request) {
 		$min = Config::getVar('general', 'enable_minified') ? '.min' : '';
-		if (Config::getVar('general', 'enable_cdn')) {
-			return '//ajax.googleapis.com/ajax/libs/jquery/' . CDN_JQUERY_VERSION . '/jquery' . $min . '.js';
-		} else {
-			return $request->getBaseUrl() . '/lib/pkp/lib/vendor/components/jquery/jquery' . $min . '.js';
-		}
+		return $request->getBaseUrl() . '/lib/pkp/lib/vendor/components/jquery/jquery' . $min . '.js';
 	}
 
 	/**
@@ -194,15 +190,19 @@ class LensGalleyPlugin extends GenericPlugin {
 	function _getXMLContents($request, $galley) {
 		$journal = $request->getJournal();
 		$submissionFile = $galley->getFile();
-		$contents = file_get_contents($submissionFile->getFilePath());
+		$fileService = Services::get('file');
+		$file = $fileService->get($submissionFile->getData('fileId'));
+		$contents = $fileService->fs->read($file->path);
 
 		// Replace media file references
-		$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO');
 		import('lib.pkp.classes.submission.SubmissionFile'); // Constants
-		$embeddableFiles = array_merge(
-			$submissionFileDao->getLatestRevisions($submissionFile->getData('submissionId'), SUBMISSION_FILE_PROOF),
-			$submissionFileDao->getLatestRevisionsByAssocId(ASSOC_TYPE_SUBMISSION_FILE, $submissionFile->getFileId(), $submissionFile->getData('submissionId'), SUBMISSION_FILE_DEPENDENT)
-		);
+                $embeddableFilesIterator = Services::get('submissionFile')->getMany([
+                        'assocTypes' => [ASSOC_TYPE_SUBMISSION_FILE],
+                        'assocIds' => [$submissionFile->getId()],
+                        'fileStages' => [SUBMISSION_FILE_DEPENDENT],
+                        'includeDependentFiles' => true,
+		]);
+		$embeddableFiles = iterator_to_array($embeddableFilesIterator);
 		$referredArticle = $referredPublication = null;
 		$submissionDao = DAORegistry::getDAO('SubmissionDAO');
 		$publicationService = Services::get('publication');
@@ -212,14 +212,15 @@ class LensGalleyPlugin extends GenericPlugin {
 				$referredPublication = $publicationService->get($galley->getData('publicationId'));
 				$referredArticle = $submissionDao->getById($referredPublication->getData('submissionId'));
 			}
-			$fileUrl = $request->url(null, 'article', 'download', array($referredArticle->getBestArticleId(), $galley->getBestGalleyId(), $embeddableFile->getFileId()));
-			$pattern = preg_quote($embeddableFile->getOriginalFileName());
+			$fileUrl = $request->url(null, 'article', 'download', [$referredArticle->getBestArticleId(), $galley->getBestGalleyId(), $embeddableFile->getId()]);
+			$pattern = preg_quote(rawurlencode($embeddableFile->getLocalizedData('name')));
 
 			$contents = preg_replace(
 				$pattern='/([Ss][Rr][Cc]|[Hh][Rr][Ee][Ff]|[Dd][Aa][Tt][Aa])\s*=\s*"([^"]*' . $pattern . ')"/',
 				'\1="' . $fileUrl . '"',
 				$contents
 			);
+			if ($contents === null) error_log('PREG error in ' . __FILE__ . ' line ' . __LINE__ . ': ' . preg_last_error());
 		}
 
 		// Perform replacement for ojs://... URLs
@@ -228,6 +229,7 @@ class LensGalleyPlugin extends GenericPlugin {
 			array($this, '_handleOjsUrl'),
 			$contents
 		);
+		if ($contents === null) error_log('PREG error in ' . __FILE__ . ' line ' . __LINE__ . ': ' . preg_last_error());
 
 		// Perform variable replacement for journal, issue, site info
 		$issueDao = DAORegistry::getDAO('IssueDAO');

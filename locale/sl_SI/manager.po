@@ -3,10 +3,10 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-19T10:49:32+00:00\n"
-"PO-Revision-Date: 2020-01-15 02:09+0000\n"
+"PO-Revision-Date: 2020-12-13 11:52+0000\n"
 "Last-Translator: Primož Svetek <primoz.svetek@gmail.com>\n"
 "Language-Team: Slovenian <http://translate.pkp.sfu.ca/projects/ojs/manager/"
-"sl/>\n"
+"sl_SI/>\n"
 "Language: sl_SI\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -91,7 +91,7 @@ msgid "manager.payment.generalFees"
 msgstr "Splošna pristojbina"
 
 msgid "manager.payment.generalFeesDescription"
-msgstr "Možnost članstva bo objavljena na strani O reviji pod Politike. V slučaju aktivacije opcije, se bo donatorska povezava pokazala nad funkcijo iskanja na desni strani okvirja."
+msgstr "Možnost članstva bo objavljena na strani O reviji pod Politike."
 
 msgid "manager.payment.generalOptions"
 msgstr "Splošne nastavitve"
@@ -218,6 +218,7 @@ msgstr "Uredniki te rubrike"
 msgid "manager.sections.confirmDelete"
 msgstr "Ste prepričani, da želite trajno zbrisati to rubriko?"
 
+#, fuzzy
 msgid "manager.sections.alertDelete"
 msgstr "Pred brisanjem rubrike, morate objavljene prispevke iz te rubrike premakniti v drugo rubriko."
 
@@ -252,7 +253,8 @@ msgid "manager.sections.hideTocTitle"
 msgstr "Izpusti naslov te rubriko v kazalu vsebine te številke."
 
 msgid "manager.sections.identifyType"
-msgstr "Pri kreiranju metapodatkov, bodo vsi prispevki v tej rubriki označeni kot:"
+msgstr ""
+"Pri kreiranju metapodatkov, bodo vsi prispevki v tej rubriki označeni kot"
 
 msgid "manager.sections.identifyTypeExamples"
 msgstr "(na primer, \"prispevek\", \"povabljen komentar\", \"uvodnik\", itd.)"
@@ -291,7 +293,7 @@ msgid "manager.sections.wordCount"
 msgstr "Število besed"
 
 msgid "manager.sections.wordCountInstructions"
-msgstr "Omeji število besed v izvlečku v tej rubriki na (0 za neomejeno):"
+msgstr "Omeji število besed v izvlečku v tej rubriki na (0 za neomejeno)"
 
 msgid "manager.setup"
 msgstr "Nastavitve"
@@ -467,7 +469,7 @@ msgid "manager.setup.enableAnnouncementsHomepage2"
 msgstr "zadnjih obvestil na domači strani revije."
 
 msgid "manager.setup.enableUserRegistration"
-msgstr "Uporabniki se lahko sami registrirajo za eno ali več spodnjih vlog pri reviji:"
+msgstr "Uporabniki se lahko sami registrirajo pri reviji."
 
 msgid "manager.setup.focusAndScope"
 msgstr "Namen in cilji revije"
@@ -844,9 +846,6 @@ msgstr "Avtomatizirani e-poštni opomniki"
 
 msgid "manager.setup.reviewOptions.automatedRemindersDisabled"
 msgstr "Za aktivacijo teh opcij mora administrator spletišča aktivirati nastavitev <tt>scheduled_tasks</tt>v nastavitveni datoteki OJS. Morda bodo potrebne tudi dodatne nastavitve strežnika, da bo ta opcija podprta kot je opisano v OJS dokumentaciji."
-
-msgid "manager.setup.reviewOptions.blindReview"
-msgstr "Anonimnost recenzije"
 
 msgid "manager.setup.reviewOptions.numWeeksPerReview"
 msgstr "Tipični rok za končanje recenzije"
@@ -1798,9 +1797,6 @@ msgstr "Statistika članka"
 msgid "manager.setup.resetPermissions.success"
 msgstr "Dovoljenja članka so bila uspešno ponastavljena."
 
-msgid "manager.setup.userAccess.success"
-msgstr "Dostop uporabnikov do revije je bil posodobljen."
-
 msgid "manager.setup.enableOai.description"
 msgstr ""
 "Podajte metapodatke za storitve indeksiranja drugih proizvajalcev skozi <a "
@@ -1823,9 +1819,6 @@ msgstr ""
 "vašo stran. Vabljeni ste, da prijavite vaš <a href=\"{$sitemapUrl}\" target="
 "\"_blank\">zemljevid strani</a>."
 
-msgid "manager.setup.searchEngineIndexing.success"
-msgstr "Nastavitve za iskalnike so bile posodobljene."
-
 msgid "manager.setup.reviewOptions.reviewerAccessKeysEnabled.label"
 msgstr "Vključi varno povezavo v email povabilo recenzentom."
 
@@ -1842,17 +1835,8 @@ msgstr ""
 msgid "manager.setup.publishing"
 msgstr "Podrobnosti objavljanja"
 
-msgid "manager.setup.privacyStatement.success"
-msgstr "Izjava o zasebnosti je bila posodobljena."
-
 msgid "manager.setup.numPageLinks.description"
 msgstr "Omejite število prikazanih povezav do nadaljnjih strani v seznamu."
-
-msgid "manager.setup.masthead.success"
-msgstr "Kolofon revije je bil posodobljen."
-
-msgid "manager.setup.lists.success"
-msgstr "Nastavitve seznamov revije so bile shranjene."
 
 msgid "manager.setup.keyInfo.description"
 msgstr ""
@@ -1866,9 +1850,6 @@ msgid "manager.setup.itemsPerPage.description"
 msgstr ""
 "Omejite število postavk (npr. člankov, uporabnikov, številk revij), ki naj "
 "se prikažejo na eni strani, ostale bodo na naslednjih straneh."
-
-msgid "manager.setup.information.success"
-msgstr "Informacije za revijo so bile posodobljene."
 
 msgid "manager.setup.identity"
 msgstr "Identiteta revije"
@@ -1902,24 +1883,9 @@ msgstr ""
 msgid "manager.setup.emailBounceAddress.description"
 msgstr "Vsak nedostavljen email se bo sporočil kot napaka na ta naslov."
 
-msgid "manager.setup.contact.success"
-msgstr "Kontaktne podrobnosti revije so bile posodobljene."
-
-msgid "manager.setup.archiving.success"
-msgstr "Podrobnosti arhiviranja so bile posodobljene."
-
 msgid "manager.setup.announcementsIntroduction.description"
 msgstr ""
 "Vnesite informacije, za katere želite, da se prikažejo na strani z obvestili."
-
-msgid "manager.setup.announcements.success"
-msgstr "Nastavitve obveščanja so bile posodobljene."
-
-msgid "manager.payment.success"
-msgstr "Nastavitve plačila so bile posodobljene."
-
-msgid "manager.distribution.publishingMode.success"
-msgstr "Podrobnosti objavljanja so bile posodobljene."
 
 msgid "manager.distribution.publishingMode.subscription"
 msgstr "Revija bo zahtevala naročnino za dostop do delov ali celotne revije."
@@ -1947,3 +1913,25 @@ msgstr ""
 "Določite, kako bo izbran privzet datum avtorskih pravic članka. Ta je lahko "
 "spremenjen pri vsakem članku posebej. Če uporabljate sistem \"publish as you "
 "go\", ne uporabljajte datuma objave številke."
+
+msgid "plugins.importexport.common.validation.fail"
+msgstr "Preverjanje ni uspelo."
+
+msgid "plugins.importexport.common.validation.success"
+msgstr "Preverjanje uspešno!"
+
+msgid "manager.setup.disableSubmissions.notAccepting"
+msgstr ""
+"Revija trenutno ne sprejema prispevkov. Oddajo lahko omogočite nastavitvah "
+"delovnega toka."
+
+msgid "manager.setup.disableSubmissions.description"
+msgstr ""
+"Preprečite uporabnikom oddajo novih prispevkov v revijo. Oddajo lahko "
+"onemogočite za vsako rubriko posebej pri nastavitvah <a href=\"{$url}\">"
+"rubrik revije</a>."
+
+msgid "manager.sections.confirmDeactivateSection.error"
+msgstr ""
+"Vsaj ena rubrik amora biti aktivna. Če želite preprečiti oddajo novih "
+"prispevkov, to naredite med nastavitvami delovnega toka."

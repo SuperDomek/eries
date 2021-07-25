@@ -2,14 +2,20 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"Last-Translator: \n"
-"Language-Team: \n"
+"POT-Creation-Date: 2019-11-19T10:49:47+00:00\n"
+"PO-Revision-Date: 2020-12-12 08:52+0000\n"
+"Last-Translator: Antti-Jussi Nygård <ajnyga@gmail.com>\n"
+"Language-Team: Finnish <http://translate.pkp.sfu.ca/projects/pkp-lib/editor/"
+"fi_FI/>\n"
+"Language: fi_FI\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2019-11-19T10:49:47+00:00\n"
-"PO-Revision-Date: 2019-11-19T10:49:47+00:00\n"
-"Language: \n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.9.1\n"
+
+msgid "editor.submissionArchive.confirmDelete"
+msgstr "Haluatko varmasti poistaa tämän käsikirjoituksen pysyvästi?"
 
 msgid "editor.submissionLibrary"
 msgstr "Liitekirjasto"
@@ -83,11 +89,11 @@ msgstr "Älä lähetä kirjoittajalle sähköpostia"
 msgid "editor.submissionReview.open"
 msgstr "Avoin"
 
-msgid "editor.submissionReview.blind"
-msgstr "Sokko"
+msgid "editor.submissionReview.anonymous"
+msgstr "Anonyymi arvioija/Tunnistettu kirjoittaja"
 
-msgid "editor.submissionReview.doubleBlind"
-msgstr "Kaksoissokko"
+msgid "editor.submissionReview.doubleAnonymous"
+msgstr "Anonyymi arvioija/anonyymi kirjoittaja"
 
 msgid "editor.submissionReview.restrictFiles"
 msgstr "Arvioitavat tiedostot"
@@ -335,9 +341,6 @@ msgstr "Tallenna toimituksellinen suositus"
 msgid "editor.submissionReview.recordRecommendation.notifyEditors"
 msgstr "Ilmoita toimittajille"
 
-msgid ""
-msgstr ""
-
 msgid "editor.submissionReview.recordRecommendation.createDiscussion"
 msgstr "Luo keskustelu tästä suosituksesta."
 
@@ -348,16 +351,10 @@ msgid "editor.submissionReview.recordRecommendation.skipEmail"
 msgstr "Älä lähetä toimittajille sähköpostia."
 
 msgid "editor.review.rateReviewer.description"
-msgstr "Arvioi vertaisarvioinnin laatu (ei näy arvioijalle)."
+msgstr "Pisteytä arvioinnin laatu (ei näy arvioijalle)."
 
 msgid "editor.review.reviewerRating.none"
-msgstr "Ei arviota"
-
-msgid "reviewer.list.count"
-msgstr "{$count} arvioijaa"
-
-msgid "reviewer.list.itemsOfTotal"
-msgstr "{$count} / {$total} arvioijaa"
+msgstr "Ei pisteytystä"
 
 msgid "reviewer.list.filterRating"
 msgstr "Arvio vähintään"
@@ -398,6 +395,7 @@ msgstr "Asiantuntijuus"
 msgid "reviewer.list.biography"
 msgstr "Biografia"
 
+#, fuzzy
 msgid "reviewer.list.warnOnAssign"
 msgstr "Arvioija on lukittu, koska hänellä on rooli, jolla voi nähdä kirjoittajan nimen. Sokkoarviointi ei ole mahdollinen. Haluatko käyttää tätä arvioijaa joka tapauksessa?"
 
@@ -414,4 +412,58 @@ msgid "editor.review.requestDeclined"
 msgstr "Pyyntö hylätty"
 
 msgid "editor.review.requestDeclined.tooltip"
-msgstr "Arvioija ei hyväksynyt arviointipyyntöä"
+msgstr "Arvioija ei hyväksynyt arviointipyyntöä."
+
+msgid "editor.review.requestCancelled.tooltip"
+msgstr "Toimittaja perui tämän arviointipyynnön."
+
+msgid "reviewer.list.empty"
+msgstr "Arvioijia ei löytynyt"
+
+msgid "reviewer.list.cancelledReviews"
+msgstr "Perutut arviointipyynnöt"
+
+msgid "editor.review.errorReinstatingReviewer"
+msgstr "Arvioijaa palauttaessa tapahtui virhe. Yritä uudelleen."
+
+msgid "editor.review.reviewerThanked"
+msgstr "Arvioijaa kiitetty"
+
+msgid "editor.review.requestCancelled"
+msgstr "Pyyntö peruttu"
+
+msgid "editor.review.reinstateReviewer"
+msgstr "Palauta arvioija"
+
+msgid "editor.review.cancelReviewer"
+msgstr "Peru arvioija"
+
+msgid "editor.submission.workflowDecision.changeDecision"
+msgstr "Muuta päätöstä"
+
+msgid "editor.submission.workflowDecision.submission.underReview"
+msgstr "Käsikirjoitus hyväksytty arvioitavaksi."
+
+msgid "editor.submission.workflowDecision.submission.production"
+msgstr "Lähetetty tuotantoon."
+
+msgid "editor.submission.workflowDecision.submission.reviewRound"
+msgstr "Lähetty uudestaan arvioitavaksi."
+
+msgid "editor.submission.workflowDecision.submission.published"
+msgstr "Käsikirjoitus julkaistu."
+
+msgid "editor.submission.workflowDecision.submission.accepted"
+msgstr "Käsikirjoitus hyväksytty."
+
+msgid "editor.submission.workflowDecision.submission"
+msgstr "Päätös tallennettu"
+
+msgid "editor.activityLog"
+msgstr "Tapahtumaloki"
+
+msgid "editor.submission.workflowDecision.submission.declined"
+msgstr "Käsikirjoitus hylätty."
+
+msgid "editor.submission.revertDeclineDescription"
+msgstr "Oletko varma, että haluat perua päätöksen hylätä tämä käsikirjoitus?"

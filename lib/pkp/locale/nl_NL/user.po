@@ -95,9 +95,6 @@ msgstr "Voornaam"
 msgid "user.interests"
 msgstr "Review-interesses"
 
-msgid "user.interests.description"
-msgstr "(scheid interesses met de enter- of komma-toets)"
-
 msgid "user.gossip"
 msgstr "Privé-opmerkingen"
 
@@ -223,9 +220,6 @@ msgstr "Een land is verplicht."
 
 msgid "user.profile.form.emailRequired"
 msgstr "Een geldig e-mailadres is verplicht."
-
-msgid "user.profile.form.affiliationRequired"
-msgstr "Een affiliatie is verplicht."
 
 msgid "user.profile.form.givenNameRequired"
 msgstr "Een voornaam is verplicht."

@@ -3,8 +3,8 @@
 /**
  * @file plugins/reports/views/ViewReportPlugin.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ViewReportPlugin
@@ -118,7 +118,7 @@ class ViewReportPlugin extends ReportPlugin {
 		fputcsv($fp, array_merge($columns, $galleyLabels));
 
 		ksort($abstractViewCounts);
-		$dateFormatShort = Config::getVar('general', 'date_format_short');
+		$dateFormatShort = $context->getLocalizedDateFormatShort();
 		foreach ($abstractViewCounts as $articleId => $abstractViewCount) {
 			$values = array(
 				$articleId,

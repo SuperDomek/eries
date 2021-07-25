@@ -14,6 +14,9 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 3.9.1\n"
 
+msgid "editor.submissionArchive.confirmDelete"
+msgstr "Är du säker på att du vill ta bort det här bidraget permanent?"
+
 msgid "editor.submissionLibrary"
 msgstr "Bidragsbibliotek"
 
@@ -92,10 +95,12 @@ msgstr "Skicka inte e-postmeddelande till författaren"
 msgid "editor.submissionReview.open"
 msgstr "Öppen"
 
-msgid "editor.submissionReview.blind"
+#, fuzzy
+msgid "editor.submissionReview.anonymous"
 msgstr "Anonym"
 
-msgid "editor.submissionReview.doubleBlind"
+#, fuzzy
+msgid "editor.submissionReview.doubleAnonymous"
 msgstr "Dubbelt anonym"
 
 msgid "editor.submissionReview.restrictFiles"
@@ -356,12 +361,6 @@ msgstr "Mönstret {$pattern} tillåts inte för den publika identifikatorn."
 msgid "editor.submission.schedulePublication"
 msgstr "Planera för publicering"
 
-msgid "reviewer.list.count"
-msgstr "{$count} granskare"
-
-msgid "reviewer.list.itemsOfTotal"
-msgstr "{$count} av {$total} granskare"
-
 msgid "reviewer.list.filterRating"
 msgstr "Med lägsta betyg"
 
@@ -395,6 +394,7 @@ msgstr "Aldrig tilldelad något granskningsuppdrag"
 msgid "reviewer.list.currentlyAssigned"
 msgstr "Den här granskaren har redan fått i uppdrag att granska det här bidraget."
 
+#, fuzzy
 msgid "reviewer.list.warnOnAssign"
 msgstr "Den här granskaren är låst eftersom hen har blivit tilldelad en roll som kan se författarens identitet. Anonym granskning kan inte garanteras. Vill du trots detta låsa upp den här granskaren?"
 

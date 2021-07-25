@@ -3,8 +3,8 @@
 /**
  * @file lib/pkp/controllers/grid/users/stageParticipant/form/PKPStageParticipantNotifyForm.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPStageParticipantNotifyForm
@@ -42,9 +42,8 @@ abstract class PKPStageParticipantNotifyForm extends Form {
 		if($itemType == ASSOC_TYPE_SUBMISSION) {
 			$this->_submissionId = $itemId;
 		} else {
-			$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO'); /* @var $submissionFileDao SubmissionFileDAO */
-			$submissionFile = $submissionFileDao->getLatestRevision($itemId);
-			$this->_submissionId = $submissionFile->getSubmissionId();
+			$submissionFile = Services::get('submissionFile')->get($itemId);
+			$this->_submissionId = $submissionFile->getData('submissionId');
 		}
 
 		// Some other forms (e.g. the Add Participant form) subclass this form and
@@ -304,7 +303,7 @@ abstract class PKPStageParticipantNotifyForm extends Form {
 			$type
 		);
 
-		if ($notificationFactory->wasEmpty()) {
+		if (!$notificationFactory->next()) {
 			$context = $request->getContext();
 			$notificationMgr = new NotificationManager();
 			$notificationMgr->createNotification(

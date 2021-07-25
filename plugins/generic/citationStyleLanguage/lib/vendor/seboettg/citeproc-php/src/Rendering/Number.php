@@ -202,13 +202,14 @@ class Number implements Rendering
     private function toDecimalNumber($number)
     {
         $decimalNumber = $number;
-        if (Util\NumberHelper::isRomanNumber($number) || Util\NumberHelper::isRomanRange($number)) {
-            if (preg_match("/\s*([^\-\–&,]+)\s*([\-\–&,])\s*([^\-\–&,]+)\s*/", $number, $matches)) {
-                $num1 = Util\NumberHelper::roman2Dec($matches[1]);
-                $num2 = Util\NumberHelper::roman2Dec($matches[3]);
-                $decimalNumber = $num1.$matches[2].$num2;
-            } else {
-                $decimalNumber = Util\NumberHelper::roman2Dec($number);
+        if (Util\NumberHelper::isRomanNumber($number)) {
+            $decimalNumber = Util\NumberHelper::roman2Dec($number);
+        } else {
+            $number = mb_strtolower($number);
+            if (preg_match(Util\NumberHelper::PATTERN_ROMAN_RANGE, $number, $matches)) {
+                $num1 = Util\NumberHelper::roman2Dec(mb_strtoupper($matches[1]));
+                $num2 = Util\NumberHelper::roman2Dec(mb_strtoupper($matches[3]));
+                $decimalNumber = sprintf('%d%s%d', $num1, $matches[2], $num2);
             }
         }
         return $decimalNumber;

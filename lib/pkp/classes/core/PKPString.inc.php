@@ -3,8 +3,8 @@
 /**
  * @file classes/core/PKPString.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPString
@@ -59,7 +59,6 @@ class PKPString {
 			// Set up required ini settings for mbstring
 			// FIXME Do any other mbstring settings need to be set?
 			mb_internal_encoding($clientCharset);
-			mb_substitute_character('63');		// question mark
 		}
 
 		// Define modifier to be used in regexp_* routines

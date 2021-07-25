@@ -2,14 +2,18 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"Last-Translator: \n"
-"Language-Team: \n"
+"POT-Creation-Date: 2019-11-19T10:49:31+00:00\n"
+"PO-Revision-Date: 2021-01-17 14:53+0000\n"
+"Last-Translator: Pavel Pisklakov <ppv1979@mail.ru>\n"
+"Language-Team: Russian <http://translate.pkp.sfu.ca/projects/ojs/submission/"
+"ru_RU/>\n"
+"Language: ru_RU\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2019-11-19T10:49:31+00:00\n"
-"PO-Revision-Date: 2019-11-19T10:49:31+00:00\n"
-"Language: \n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<="
+"4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 3.9.1\n"
 
 msgid "submission.submit.title"
 msgstr "Отправить статью"
@@ -158,6 +162,9 @@ msgstr "Запрошенный формат оформления библиог�
 msgid "submission.metadataDescription"
 msgstr "Эти спецификации основаны на наборе метаданных Dublin Core — международном стандарте, используемом для описания контента журнала."
 
+msgid "submission.viewingPreview"
+msgstr "Это предварительный просмотр, материал пока не опубликован. <a href=\"{$url}\">Просмотреть материал</a>"
+
 msgid "section.any"
 msgstr "Любой раздел"
 
@@ -182,11 +189,11 @@ msgstr "Дата публикации будет автоматически пр
 msgid "publication.invalidSection"
 msgstr "Раздел для этой публикации не удаётся найти."
 
+msgid "publication.inactiveSection"
+msgstr "«{$section}» (Отправка отключена)"
+
 msgid "publication.invalidIssue"
 msgstr "Выпуск для этой публикации не удаётся найти."
-
-msgid "publication.issue.success"
-msgstr "информация о выпуске этой публикации была обновлена."
 
 msgid "publication.publish.confirmation"
 msgstr "Все требования к публикации были выполнены. Вы уверены, что хотите опубликовать этот материал?"
@@ -212,8 +219,100 @@ msgstr "Запланировано к публикации в <a href=\"{$issueU
 msgid "publication.unscheduledIn"
 msgstr "Не запланировано к публикации в выпуске."
 
-msgid "publication.scheduleInissue"
+msgid "publication.assignToissue"
 msgstr "Назначить в выпуск"
 
 msgid "publication.selectIssue"
 msgstr "Выберите выпуск, чтобы запланировать к публикации"
+
+msgid "submission.publication"
+msgstr "Публикация"
+
+msgid "publication.status.published"
+msgstr "Опубликовано"
+
+msgid "submission.status.scheduled"
+msgstr "Запланирован"
+
+msgid "publication.status.unscheduled"
+msgstr "Снято с плана"
+
+msgid "submission.publications"
+msgstr "Публикации"
+
+msgid "publication.copyrightYearBasis.issueDescription"
+msgstr "Год копирайта будет задан автоматически при публикации выпуска."
+
+msgid "publication.copyrightYearBasis.submissionDescription"
+msgstr "Год копирайта будет проставлен автоматически, исходя из даты публикации."
+
+msgid "publication.datePublished"
+msgstr "Дата публикации"
+
+msgid "publication.editDisabled"
+msgstr "Эта версия была опубликована, её нельзя отредактировать."
+
+msgid "publication.event.published"
+msgstr "Материал был опубликован."
+
+msgid "publication.event.scheduled"
+msgstr "Материал запланирован к публикации."
+
+msgid "publication.event.unpublished"
+msgstr "Материал был снят с публикации."
+
+msgid "publication.event.versionPublished"
+msgstr "Опубликована новая версия."
+
+msgid "publication.event.versionScheduled"
+msgstr "Новая версия запланирована к публикации."
+
+msgid "publication.event.versionUnpublished"
+msgstr "Версия была убрана с публикации."
+
+msgid "publication.invalidSubmission"
+msgstr "Материал для этой публикации не удаётся найти."
+
+msgid "publication.publish"
+msgstr "Опубликовать"
+
+msgid "publication.publish.requirements"
+msgstr "Перед публикацией необходимо выполнить следующие требования."
+
+msgid "publication.required.declined"
+msgstr "Отклонённый материал нельзя опубликовать."
+
+msgid "publication.required.reviewStage"
+msgstr "Перед публикацией материал должен быть на этапе «Литературное редактирование» или «Публикация»."
+
+msgid "submission.license.description"
+msgstr "Автоматически при публикации будет назначена лицензия <a href='{$licenseUrl}' target='_blank'>{$licenseName}</a>."
+
+msgid "submission.copyrightHolder.description"
+msgstr "Автоматически при публикации будет проставлено авторское право {$copyright}."
+
+msgid "submission.copyrightOther.description"
+msgstr "Проставить авторское право на опубликованных материалах с указанием следующей формулировки."
+
+msgid "publication.unpublish"
+msgstr "Снять с публикации"
+
+msgid "publication.unpublish.confirm"
+msgstr "Вы уверены, что не хотите публиковать этот материал?"
+
+msgid "publication.unschedule.confirm"
+msgstr "Вы уверены, что не хотите запланировать этот материал к публикации?"
+
+msgid "publication.version.details"
+msgstr "Информация о публикации для версии {$version}"
+
+msgid "submission.queries.production"
+msgstr "Обсуждения публикации"
+
+msgid "publication.changeIssue"
+msgstr "Изменить выпуск"
+
+msgid "publication.assignedToIssue"
+msgstr ""
+"Этот материал был назначен в <a href=\"{$issueUrl}\">«{$issueName}»</a>, но "
+"он не был запланирован для публикации."

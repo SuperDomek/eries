@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-10-15T13:36:56-07:00\n"
-"PO-Revision-Date: 2020-06-04 18:39+0000\n"
+"PO-Revision-Date: 2020-12-18 16:52+0000\n"
 "Last-Translator: Marie-Hélène Vézina [UdeMontréal] <marie-"
 "helene.vezina@umontreal.ca>\n"
 "Language-Team: French (Canada) <http://translate.pkp.sfu.ca/projects/pkp-lib/"
@@ -170,7 +170,7 @@ msgid "common.available"
 msgstr "Disponible"
 
 msgid "common.back"
-msgstr "Précédent-e"
+msgstr "Précédent"
 
 msgid "common.between"
 msgstr "entre"
@@ -562,10 +562,10 @@ msgid "common.noMatches"
 msgstr "Aucune concordance"
 
 msgid "common.off"
-msgstr "Arrêté-e"
+msgstr "Arrêté"
 
 msgid "common.on"
-msgstr "Démarré-e"
+msgstr "Démarré"
 
 msgid "common.ok"
 msgstr "OK"
@@ -625,10 +625,10 @@ msgid "common.pluginDisabled"
 msgstr "Le plugiciel « {$pluginName} » a été désactivé."
 
 msgid "common.prefix"
-msgstr "Préfixe"
+msgstr "Article inital"
 
 msgid "common.prefixAndTitle.tip"
-msgstr "Si le titre du document commence par « un/une » ou  « le/la » (ou quelque chose de similaire concernant l'ordre alphabétique), mettre le mot dans Préfixe."
+msgstr "Exemples : Un/Une, Le/La"
 
 msgid "common.preview"
 msgstr "Aperçu"
@@ -782,6 +782,9 @@ msgstr "Élément"
 
 msgid "common.uninitiated"
 msgstr "Non-initié-e"
+
+msgid "common.unknownError"
+msgstr "Une erreur imprévue est survenue. Veuillez recharger la page et essayer à nouveau."
 
 msgid "common.unread"
 msgstr "Non lu-e"
@@ -1044,9 +1047,6 @@ msgstr "Veuillez corriger {$count} erreurs."
 msgid "form.errors"
 msgstr "Le formulaire n'a pas été enregistré car {$ count} erreurs ont été rencontrées. Veuillez corriger ces erreurs et réessayer."
 
-msgid "form.errorUnknown"
-msgstr "Une erreur inattendue est survenue. Vous avez peut-être été déconnecté-e. Veuillez recharger la page et essayer de nouveau."
-
 msgid "form.errorsOccurred"
 msgstr "Des erreurs se sont produites pendant le traitement du formulaire"
 
@@ -1061,9 +1061,6 @@ msgstr "contient"
 
 msgid "form.is"
 msgstr "est"
-
-msgid "form.missingRequired"
-msgstr "Ce champ est requis."
 
 msgid "form.startsWith"
 msgstr "commence par"
@@ -1114,10 +1111,10 @@ msgid "help.toc"
 msgstr "Table des matières"
 
 msgid "help.previous"
-msgstr "Précédent-e"
+msgstr "Précédent"
 
 msgid "help.next"
-msgstr "Suivant-e"
+msgstr "Suivant"
 
 msgid "help.upALevel"
 msgstr "Niveau supérieur"
@@ -1238,7 +1235,7 @@ msgid "locale.supported"
 msgstr "Paramètres régionaux pris en charge"
 
 msgid "navigation.access"
-msgstr "Utilisateurs &amp; Rôles"
+msgstr "Utilisateurs-trices &amp; Rôles"
 
 msgid "navigation.about"
 msgstr "À propos"
@@ -1390,12 +1387,6 @@ msgstr "Type d'annoncé modifié."
 msgid "notification.removedAnnouncementType"
 msgstr "Type d'annonce supprimé."
 
-msgid "notification.addedAnnouncement"
-msgstr "Annonce ajoutée."
-
-msgid "notification.editedAnnouncement"
-msgstr "Annonce modifiée."
-
 msgid "notification.removedAnnouncement"
 msgstr "Annonce supprimée."
 
@@ -1454,7 +1445,8 @@ msgid "notification.savedSubmissionMetadata"
 msgstr "Les métadonnées de la soumission ont été sauvegardées."
 
 msgid "notification.sendNotificationConfirmation"
-msgstr "Envoyer un courriel d'avis à tous les utilisateurs enregistrés"
+msgstr ""
+"Envoyer un courriel d'avis à tous les utilisateurs-trices enregistrés-es."
 
 msgid "search.author"
 msgstr "Par auteur"
@@ -1516,9 +1508,6 @@ msgstr "Tous les termes des champs indexés"
 msgid "search.matchAll"
 msgstr "Dans toutes les catégories"
 
-msgid "search.noKeywordError"
-msgstr "Vous devez entrer au moins un mot-clé de recherche."
-
 msgid "search.noResults"
 msgstr "Aucun résultat"
 
@@ -1555,8 +1544,8 @@ msgstr "Télécharger ce fichier"
 msgid "context.path"
 msgstr "Chemin d'accès"
 
-msgid "review.ensuringBlindReview"
-msgstr "Assurer une évaluation anonyme"
+msgid "review.ensuringAnonymousReview"
+msgstr "Comment s'assurer que tous les fichiers soient anonymisés"
 
 msgid "grid.action.showReviewPolicy"
 msgstr "Lire la politique actuelle concernant l'évaluation"
@@ -1576,7 +1565,8 @@ msgstr "Tâches"
 msgid "dashboard.myQueue"
 msgstr "Mes soumissions"
 
-msgid "review.blindPeerReview"
+#, fuzzy
+msgid "review.anonymousPeerReview"
 msgstr ""
 "<p>Afin d'assurer l'intégrité de l'évaluation par les pairs en double-"
 "aveugle des soumissions envoyées à cette revue, tous les efforts possibles "
@@ -1588,7 +1578,6 @@ msgstr ""
 "<ul><li>Supprimer le nom de l'auteur-e du texte. Dans la bibliographie et "
 "dans les notes en bas de page, on utilise le mot  « Auteur-e » et l'année au "
 "lieu du nom de l'auteur-e, du titre de l'article, etc.</li>\n"
-"\n"
 "<li>L'identification de l'auteur-e ne doit plus apparaître dans les "
 "propriétés du fichier. Pour se faire vous devez suivre les étapes suivantes :"
 "\n"
@@ -1954,3 +1943,57 @@ msgstr "Plus que"
 
 msgid "common.lessThanOnly"
 msgstr "Moins que"
+
+msgid "common.titleSeparator"
+msgstr " | "
+
+msgid "user.register.form.privacyConsentLabel"
+msgstr "Options de confidentialité"
+
+msgid "user.authorization.unauthorizedReviewAssignment"
+msgstr "Vous n'avez pas accès à cette assignation d'évaluation."
+
+msgid "user.authorization.unauthorizedNote"
+msgstr "Vous n'avez pas accès à ce message de discussion."
+
+msgid "user.authorization.invalidQuery"
+msgstr "Discussion non valide."
+
+msgid "user.authorization.invalidReviewRound"
+msgstr "Cycle d'évaluation non valide."
+
+msgid "user.email"
+msgstr "Adresse de courriel"
+
+msgid "review.anonymousPeerReview.title"
+msgstr "Comment s'assurer que les fichiers soient anonymisés"
+
+msgid "search.searchResults.foundPlural"
+msgstr "{$count} résultats ont été trouvés."
+
+msgid "search.searchResults.foundSingle"
+msgstr "Un seul résultat a été trouvé."
+
+msgid "navigation.backTo"
+msgstr "⟵ Revenir à  {$page}"
+
+msgid "form.saved"
+msgstr "Enregistré"
+
+msgid "common.viewWithName"
+msgstr "Afficher {$name}"
+
+msgid "common.user.nonexistent"
+msgstr "[Utilisateur-trice inexistant-e]"
+
+msgid "common.addFile"
+msgstr "Ajouter un fichier"
+
+msgid "common.selectWithName"
+msgstr "Sélectionner {$name}"
+
+msgid "common.editItem"
+msgstr "Modifier {$name}"
+
+msgid "common.inactive"
+msgstr "Inactif-ve"

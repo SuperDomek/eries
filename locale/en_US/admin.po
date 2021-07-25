@@ -14,15 +14,6 @@ msgstr ""
 msgid "admin.hostedContexts"
 msgstr "Hosted Journals"
 
-msgid "admin.settings.appearance.success"
-msgstr "The site appearance settings have been successfully updated."
-
-msgid "admin.settings.config.success"
-msgstr "The site configuration settings have been successfully updated."
-
-msgid "admin.settings.info.success"
-msgstr "The site information has been successfully updated."
-
 msgid "admin.settings.redirect"
 msgstr "Journal redirect"
 
@@ -40,15 +31,6 @@ msgstr ""
 msgid "admin.languages.confirmDisable"
 msgstr "Are you sure you want to disable this locale? This may affect any hosted journals currently using the locale."
 
-msgid "admin.languages.downloadUnavailable"
-msgstr ""
-"<p>Downloading language packs from the Public Knowledge Project web server is not currently available because:</p>\n"
-"\t<ul>\n"
-"\t\t<li>Your server does not have or allow execution of the GNU \"tar\" utility.</li>\n"
-"\t\t<li>OJS is unable to modify the locale registry file, typically \"registry/locales.xml\".</li>\n"
-"\t</ul>\n"
-"<p>Language packs can be manually downloaded from the <a href=\"http://pkp.sfu.ca\">PKP web site</a>.</p>"
-
 msgid "admin.languages.primaryLocaleInstructions"
 msgstr "This will be the default language for the site and any hosted journals."
 
@@ -63,21 +45,6 @@ msgstr "Are you sure you want to uninstall this locale? This may affect any host
 
 msgid "admin.languages.installNewLocalesInstructions"
 msgstr "Select any additional locales to install support for in this system. Locales must be installed before they can be used by hosted journals. See the OJS documentation for information on adding support for new languages."
-
-msgid "admin.languages.downloadFailed"
-msgstr "The locale download failed. The error message(s) below describe the failure."
-
-msgid "admin.languages.localeInstalled"
-msgstr "The \"{$locale}\" locale has been installed."
-
-msgid "admin.languages.download"
-msgstr "Download Locale"
-
-msgid "admin.languages.download.cannotOpen"
-msgstr "Cannot open language descriptor from PKP web site."
-
-msgid "admin.languages.download.cannotModifyRegistry"
-msgstr "Cannot add the new locale to the locale registry file, typically \"registry/locales.xml\"."
 
 msgid "admin.auth.ojs"
 msgstr "OJS User Database"
@@ -127,11 +94,8 @@ msgstr "The path can only include letters, numbers and the characters _ and -. I
 msgid "admin.contexts.form.pathExists"
 msgstr "The path you provided is already in use by another journal."
 
-msgid "admin.contexts.form.create.success"
-msgstr "{$name} was created successfully."
-
-msgid "admin.contexts.form.edit.success"
-msgstr "{$name} was edited successfully."
+msgid "admin.contexts.form.primaryLocaleNotSupported"
+msgstr "The primary locale must be one of the journal's supported locales."
 
 msgid "admin.journals.enableJournalInstructions"
 msgstr "Enable this journal to appear publicly on the site"
@@ -186,3 +150,24 @@ msgstr "Open Access Notification"
 
 msgid "admin.scheduledTask.reviewReminder"
 msgstr "Review Reminder"
+
+msgid "admin.settings.enableBulkEmails.description"
+msgstr ""
+"Select the hosted journals that should be allowed to send bulk emails. When this feature is enabled, "
+"a journal manager will be able to send an email to all users registered with their journal."
+"<br><br>"
+"Misuse of this feature to send unsolicited email may violate anti-spam laws in some jurisdictions and "
+"may result in your server's emails being blocked as spam. Seek technical advice before "
+"enabling this feature and consider consulting with journal managers to ensure it is used appropriately."
+"<br><br>"
+"Further restrictions on this feature can be enabled for each journal by visiting its settings wizard in "
+"the list of <a href=\"{$hostedContextsUrl}\">Hosted Journals</a>."
+
+msgid "admin.settings.disableBulkEmailRoles.description"
+msgstr ""
+"A journal manager will be unable to send bulk emails to any of the roles selected below. Use this setting to limit abuse of the email notification feature. For example, it may be safer to disable bulk emails to readers, authors, or other large user groups that have not consented to receive such emails."
+"<br><br>"
+"The bulk email feature can be disabled completely for this journal in <a href=\"{$siteSettingsUrl}\">Admin > Site Settings</a>."
+
+msgid "admin.settings.disableBulkEmailRoles.contextDisabled"
+msgstr "The bulk email feature has been disabled for this journal. Enable this feature in <a href=\"{$siteSettingsUrl}\">Admin > Site Settings</a>."

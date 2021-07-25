@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/settings/pluginGallery/PluginGalleryGridHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PluginGalleryGridHandler
@@ -257,22 +257,10 @@ class PluginGalleryGridHandler extends GridHandler {
 
 		// Download the plugin package.
 		try {
-			$wrapper = FileWrapper::wrapper($plugin->getReleasePackage());
-			while (true) {
-				$newWrapper = $wrapper->open();
-				if (is_a($newWrapper, 'FileWrapper')) {
-					// Follow a redirect
-					$wrapper = $newWrapper;
-				} elseif (!$newWrapper) {
-					throw new Exception('Unable to open plugin URL!');
-				} else {
-					// OK, we've found the end result
-					break;
-				}
-			}
-
-			if (!$wrapper->save($destPath)) throw new Exception('Unable to save plugin to local file!');
-			$wrapper->close();
+			$client = Application::get()->getHttpClient();
+			$response = $client->request('GET', $plugin->getReleasePackage());
+			$body = $response->getBody();
+			if (!file_put_contents($destPath, $body->getContents())) throw new Exception('Unable to save plugin to local file!');
 		} catch (Exception $e) {
 			$notificationMgr->createTrivialNotification($user->getId(), NOTIFICATION_TYPE_ERROR, array('contents' => $e->getMessage()));
 			return $request->redirectUrlJson($redirectUrl);

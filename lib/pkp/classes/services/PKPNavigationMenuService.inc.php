@@ -3,8 +3,8 @@
 /**
  * @file classes/services/PKPNavigationMenuService.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPNavigationMenuService
@@ -182,7 +182,7 @@ class PKPNavigationMenuService {
 				case NMI_TYPE_USER_LOGOUT:
 					if ($isUserLoggedInAs) {
 						$userName = $request->getUser() ? ' ' . $request->getUser()->getUserName() : '';
-						$navigationMenuItem->setTitle(__('user.logOutAs') . $userName, \AppLocale::getLocale());
+						$navigationMenuItem->setTitle(__('user.logOutAs', ['username' => $userName]), \AppLocale::getLocale());
 					}
 					break;
 				case NMI_TYPE_USER_DASHBOARD:
@@ -267,18 +267,10 @@ class PKPNavigationMenuService {
 					));
 					break;
 				case NMI_TYPE_ADMINISTRATION:
-					$contextPath = 'index';
-					$user = $request->getUser();
-					$contextDao = \Application::getContextDAO();
-					$workingContexts = $contextDao->getAvailable($user?$user->getId():null);
-					if ($workingContexts && $workingContexts->getCount() == 1) {
-						$workingContext = $workingContexts->next();
-						$contextPath = $workingContext->getPath();
-					}
 					$navigationMenuItem->setUrl($dispatcher->url(
 						$request,
 						ROUTE_PAGE,
-						$contextPath,
+						'index',
 						'admin',
 						'index',
 						null
@@ -360,6 +352,9 @@ class PKPNavigationMenuService {
 						'privacy',
 						null
 					));
+					break;
+				case NMI_TYPE_REMOTE_URL:
+					$navigationMenuItem->setUrl($navigationMenuItem->getLocalizedRemoteUrl());
 					break;
 			}
 		}
@@ -580,6 +575,8 @@ class PKPNavigationMenuService {
 			\AppLocale::requireComponents(LOCALE_COMPONENT_PKP_COMMON, LOCALE_COMPONENT_PKP_MANAGER, LOCALE_COMPONENT_APP_COMMON, LOCALE_COMPONENT_PKP_USER);
 			if ($localisedTitle = $nmi->getLocalizedTitle()) {
 				$nmi->setTitle($localisedTitle, \AppLocale::getLocale());
+			} elseif ($nmi->getTitleLocaleKey() === '{$loggedInUsername}') {
+				$nmi->setTitle($nmi->getTitleLocaleKey(), \AppLocale::getLocale());
 			} else {
 				$nmi->setTitle(__($nmi->getTitleLocaleKey()), \AppLocale::getLocale());
 			}

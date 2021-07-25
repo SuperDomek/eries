@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/navigationMenus/form/PKPNavigationMenuItemsForm.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPNavigationMenuItemsForm
@@ -128,6 +128,7 @@ class PKPNavigationMenuItemsForm extends Form {
 			$this->_data =  $formData;
 
 			$this->setData('content', $navigationMenuItem->getContent(null)); // Localized
+			$this->setData('remoteUrl', $navigationMenuItem->getRemoteUrl(null)); // Localized
 		}
 	}
 
@@ -135,7 +136,7 @@ class PKPNavigationMenuItemsForm extends Form {
 	 * Assign form data to user-submitted data.
 	 */
 	function readInputData() {
-		$this->readUserVars(array('navigationMenuItemId', 'path', 'content', 'title', 'url', 'menuItemType'));
+		$this->readUserVars(array('navigationMenuItemId', 'path', 'content', 'title', 'remoteUrl', 'menuItemType'));
 	}
 
 	/**
@@ -185,7 +186,7 @@ class PKPNavigationMenuItemsForm extends Form {
 		$navigationMenuItem->setPath($this->getData('path'));
 		$navigationMenuItem->setContent($this->getData('content'), null); // Localized
 		$navigationMenuItem->setContextId($this->getContextId());
-		$navigationMenuItem->setUrl($this->getData('url'));
+		$navigationMenuItem->setRemoteUrl($this->getData('remoteUrl'), null); // Localized
 		$navigationMenuItem->setType($this->getData('menuItemType'));
 
 		// Update or insert navigation menu item
@@ -219,8 +220,11 @@ class PKPNavigationMenuItemsForm extends Form {
 					$this->addError('path', __('manager.navigationMenus.form.duplicatePath'));
 				}
 			} elseif ($this->getData('menuItemType') == NMI_TYPE_REMOTE_URL) {
-				if(!filter_var($this->getData('url'), FILTER_VALIDATE_URL)) {
-					$this->addError('url', __('manager.navigationMenus.form.customUrlError'));
+				$remoteUrls = $this->getData('remoteUrl');
+				foreach ($remoteUrls as $remoteUrl) {
+					if(!filter_var($remoteUrl, FILTER_VALIDATE_URL)) {
+						$this->addError('remoteUrl', __('manager.navigationMenus.form.customUrlError'));
+					}
 				}
 			}
 		} else {

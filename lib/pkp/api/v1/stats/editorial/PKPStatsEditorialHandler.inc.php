@@ -3,8 +3,8 @@
 /**
  * @file api/v1/stats/PKPStatsEditorialHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPStatsEditorialHandler
@@ -29,12 +29,12 @@ abstract class PKPStatsEditorialHandler extends APIHandler {
 				[
 					'pattern' => $this->getEndpointPattern(),
 					'handler' => [$this, 'get'],
-					'roles' => [ROLE_ID_SITE_ADMIN, ROLE_ID_MANAGER],
+					'roles' => [ROLE_ID_SITE_ADMIN, ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR],
 				],
 				[
 					'pattern' => $this->getEndpointPattern() . '/averages',
 					'handler' => [$this, 'getAverages'],
-					'roles' => [ROLE_ID_SITE_ADMIN, ROLE_ID_MANAGER],
+					'roles' => [ROLE_ID_SITE_ADMIN, ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR],
 				],
 			],
 		];
@@ -106,7 +106,13 @@ abstract class PKPStatsEditorialHandler extends APIHandler {
 			return $response->withStatus(400)->withJsonError($result);
 		}
 
-		return $response->withJson(Services::get('editorialStats')->getOverview($params));
+		return $response->withJson(array_map(
+			function ($item) {
+				$item['name'] = __($item['name']);
+				return $item;
+			},
+			Services::get('editorialStats')->getOverview($params)
+		));
 	}
 
 	/**

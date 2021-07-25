@@ -3,8 +3,8 @@
 /**
  * @file classes/submission/SubmissionLanguageDAO.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SubmissionLanguageDAO
@@ -23,7 +23,7 @@ class SubmissionLanguageDAO extends ControlledVocabDAO {
 	/**
 	 * Build/fetch and return a controlled vocabulary for languages.
 	 * @param $publicationId int
-	 * @param $assocType int DO NOT USE: For 2.x to 3.x migration pkp/pkp-lib#3572
+	 * @param $assocType int DO NOT USE: For <3.1 to 3.x migration pkp/pkp-lib#3572 pkp/pkp-lib#6213
 	 * @return ControlledVocab
 	 */
 	function build($publicationId, $assocType = ASSOC_TYPE_PUBLICATION) {
@@ -43,12 +43,13 @@ class SubmissionLanguageDAO extends ControlledVocabDAO {
 	 * Get Languages for a submission.
 	 * @param $publicationId int
 	 * @param $locales array
+	 * @param $assocType int DO NOT USE: For <3.1 to 3.x migration pkp/pkp-lib#6213
 	 * @return array
 	 */
-	function getLanguages($publicationId, $locales = []) {
+	function getLanguages($publicationId, $locales = [], $assocType = ASSOC_TYPE_PUBLICATION) {
 		$result = [];
 
-		$languages = $this->build($publicationId);
+		$languages = $this->build($publicationId, $assocType);
 		$submissionLanguageEntryDao = DAORegistry::getDAO('SubmissionLanguageEntryDAO'); /* @var $submissionLanguageEntryDao SubmissionLanguageEntryDAO */
 		$submissionLanguages = $submissionLanguageEntryDao->getByControlledVocabId($languages->getId());
 		while ($languageEntry = $submissionLanguages->next()) {
@@ -71,18 +72,12 @@ class SubmissionLanguageDAO extends ControlledVocabDAO {
 	 * @return array
 	 */
 	function getAllUniqueLanguages() {
+		$result = $this->retrieve('SELECT DISTINCT setting_value FROM controlled_vocab_entry_settings WHERE setting_name = ?', [CONTROLLED_VOCAB_SUBMISSION_LANGUAGE]);
+
 		$languages = array();
-
-		$result = $this->retrieve(
-			'SELECT DISTINCT setting_value FROM controlled_vocab_entry_settings WHERE setting_name = ?', CONTROLLED_VOCAB_SUBMISSION_LANGUAGE
-		);
-
-		while (!$result->EOF) {
-			$languages[] = $result->fields[0];
-			$result->MoveNext();
+		foreach ($result as $row) {
+			$languages[] = $row->setting_value;
 		}
-
-		$result->Close();
 		return $languages;
 	}
 
@@ -91,7 +86,7 @@ class SubmissionLanguageDAO extends ControlledVocabDAO {
 	 * @param $languages array
 	 * @param $publicationId int
 	 * @param $deleteFirst boolean
-	 * @param $assocType int DO NOT USE: For 2.x to 3.x migration pkp/pkp-lib#3572
+	 * @param $assocType int DO NOT USE: For <3.1 to 3.x migration pkp/pkp-lib#3572 pkp/pkp-lib#6213
 	 * @return int
 	 */
 	function insertLanguages($languages, $publicationId, $deleteFirst = true, $assocType = ASSOC_TYPE_PUBLICATION) {

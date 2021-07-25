@@ -3,8 +3,8 @@
 /**
  * @file plugins/generic/announcementFeed/AnnouncementFeedGatewayPlugin.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class AnnouncementFeedGatewayPlugin
@@ -110,14 +110,14 @@ class AnnouncementFeedGatewayPlugin extends GatewayPlugin {
 		if ($recentItems > 0) {
 			import('lib.pkp.classes.db.DBResultRange');
 			$rangeInfo = new DBResultRange($recentItems, 1);
-			$announcements = $announcementDao->getAnnouncementsNotExpiredByAssocId(ASSOC_TYPE_JOURNAL, $journalId, $rangeInfo);
+			$announcements = $announcementDao->getAnnouncementsNotExpiredByAssocId(ASSOC_TYPE_JOURNAL, $journalId, $rangeInfo)->toArray();
 		} else {
-			$announcements =  $announcementDao->getAnnouncementsNotExpiredByAssocId(ASSOC_TYPE_JOURNAL, $journalId);
+			$announcements =  $announcementDao->getAnnouncementsNotExpiredByAssocId(ASSOC_TYPE_JOURNAL, $journalId)->toArray();
 		}
 
 		// Get date of most recent announcement
 		$lastDateUpdated = $this->_parentPlugin->getSetting($journal->getId(), 'dateUpdated');
-		if ($announcements->wasEmpty()) {
+		if (empty($announcements)) {
 			if (empty($lastDateUpdated)) {
 				$dateUpdated = Core::getCurrentDate();
 				$this->_parentPlugin->updateSetting($journal->getId(), 'dateUpdated', $dateUpdated, 'string');
@@ -140,7 +140,7 @@ class AnnouncementFeedGatewayPlugin extends GatewayPlugin {
 			'ojsVersion' => $version->getVersionString(),
 			'selfUrl' => $request->getCompleteUrl(),
 			'dateUpdated' => $dateUpdated,
-			'announcements' => $announcements->toArray(),
+			'announcements' => $announcements,
 			'journal' => $journal,
 		));
 

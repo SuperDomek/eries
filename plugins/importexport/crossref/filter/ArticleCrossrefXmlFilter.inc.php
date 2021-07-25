@@ -3,8 +3,8 @@
 /**
  * @file plugins/importexport/crossref/filter/ArticleCrossrefXmlFilter.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ArticleCrossrefXmlFilter
@@ -119,12 +119,16 @@ class ArticleCrossrefXmlFilter extends IssueCrossrefXmlFilter {
 			$givenNames = $author->getGivenName(null);
 
 			// Check if both givenName and familyName is set for the submission language.
-			if (isset($familyNames[$locale]) && isset($givenNames[$locale])) {
+			if (!empty($familyNames[$locale]) && !empty($givenNames[$locale])) {
 				$personNameNode->setAttribute('language', PKPLocale::getIso1FromLocale($locale));
 				$personNameNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'given_name', htmlspecialchars(ucfirst($givenNames[$locale]), ENT_COMPAT, 'UTF-8')));
 				$personNameNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'surname', htmlspecialchars(ucfirst($familyNames[$locale]), ENT_COMPAT, 'UTF-8')));
-
 				$hasAltName = false;
+
+				if ($author->getData('orcid')) {
+					$personNameNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'ORCID', $author->getData('orcid')));
+				}
+
 				foreach($familyNames as $otherLocal => $familyName) {
 					if ($otherLocal != $locale && isset($familyName) && !empty($familyName)) {
 						if (!$hasAltName) {
@@ -150,10 +154,6 @@ class ArticleCrossrefXmlFilter extends IssueCrossrefXmlFilter {
 				$personNameNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'surname', htmlspecialchars(ucfirst($author->getFullName(false)), ENT_COMPAT, 'UTF-8')));
 			}
 
-			if ($author->getData('orcid')) {
-				$personNameNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'ORCID', $author->getData('orcid')));
-			}
-			
 			$contributorsNode->appendChild($personNameNode);
 			$isFirst = false;
 		}
@@ -347,7 +347,7 @@ class ArticleCrossrefXmlFilter extends IssueCrossrefXmlFilter {
 			$componentNode = $doc->createElementNS($deployment->getNamespace(), 'component');
 			$componentNode->setAttribute('parent_relation', 'isPartOf');
 			/* Titles */
-			$componentFileTitle = $componentFile->getName($componentGalley->getLocale());
+			$componentFileTitle = $componentFile->getData('name', $componentGalley->getLocale());
 			if (!empty($componentFileTitle)) {
 				$titlesNode = $doc->createElementNS($deployment->getNamespace(), 'titles');
 				$titlesNode->appendChild($node = $doc->createElementNS($deployment->getNamespace(), 'title', htmlspecialchars($componentFileTitle, ENT_COMPAT, 'UTF-8')));

@@ -3,8 +3,8 @@
 /**
  * @file classes/log/EventLogEntry.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class EventLogEntry
@@ -157,30 +157,29 @@ class EventLogEntry extends DataObject {
 			$reviewAssignmentDao = DAORegistry::getDAO('ReviewAssignmentDAO'); /* @var $reviewAssignmentDao ReviewAssignmentDAO */
 			// Reviewer activity log entries (assigning, accepting, declining)
 			if (isset($params['reviewerName'])) {
-				$blindAuthor = true;
+				$anonymousAuthor = true;
 				if (isset($params['reviewAssignmentId'])) {
 					$reviewAssignment = $reviewAssignmentDao->getById($params['reviewAssignmentId']);
-					if ($reviewAssignment && !in_array($reviewAssignment->getReviewMethod(), array(SUBMISSION_REVIEW_METHOD_BLIND, SUBMISSION_REVIEW_METHOD_DOUBLEBLIND))) {
-						$blindAuthor = false;
+					if ($reviewAssignment && !in_array($reviewAssignment->getReviewMethod(), array(SUBMISSION_REVIEW_METHOD_ANONYMOUS, SUBMISSION_REVIEW_METHOD_DOUBLEANONYMOUS))) {
+						$anonymousAuthor = false;
 					}
 				}
-				if ($blindAuthor) {
+				if ($anonymousAuthor) {
 					$params['reviewerName'] = __('editor.review.anonymousReviewer');
 				}
 			}
 			// Files submitted by reviewers
 			if (isset($params['fileStage']) && $params['fileStage'] === SUBMISSION_FILE_REVIEW_ATTACHMENT) {
 				assert(isset($params['fileId']) && isset($params['submissionId']));
-				$blindAuthor = true;
-				$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO'); /* @var $submissionFileDao SubmissionFileDAO */
-				$submissionFile = $submissionFileDao->getLatestRevision($params['fileId']);
-				if ($submissionFile && $submissionFile->getAssocType() === ASSOC_TYPE_REVIEW_ASSIGNMENT) {
-					$reviewAssignment = $reviewAssignmentDao->getById($submissionFile->getAssocId());
-					if ($reviewAssignment && !in_array($reviewAssignment->getReviewMethod(), array(SUBMISSION_REVIEW_METHOD_BLIND, SUBMISSION_REVIEW_METHOD_DOUBLEBLIND))) {
-						$blindAuthor = false;
+				$anonymousAuthor = true;
+				$submissionFile = Services::get('submissionFile')->get($params['id']);
+				if ($submissionFile && $submissionFile->getData('assocType') === ASSOC_TYPE_REVIEW_ASSIGNMENT) {
+					$reviewAssignment = $reviewAssignmentDao->getById($submissionFile->getData('assocId'));
+					if ($reviewAssignment && !in_array($reviewAssignment->getReviewMethod(), array(SUBMISSION_REVIEW_METHOD_ANONYMOUS, SUBMISSION_REVIEW_METHOD_DOUBLEANONYMOUS))) {
+						$anonymousAuthor = false;
 					}
 				}
-				if (isset($params['username']) && $blindAuthor) {
+				if (isset($params['username']) && $anonymousAuthor) {
 					if (isset($params['username'])) {
 						$params['username'] = __('editor.review.anonymousReviewer');
 					}

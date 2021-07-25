@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-10-15T14:05:03-07:00\n"
-"PO-Revision-Date: 2020-06-09 19:36+0000\n"
+"PO-Revision-Date: 2020-12-09 14:51+0000\n"
 "Last-Translator: Marie-Hélène Vézina [UdeMontréal] <marie-"
 "helene.vezina@umontreal.ca>\n"
 "Language-Team: French (Canada) <http://translate.pkp.sfu.ca/projects/ojs/"
@@ -46,9 +46,6 @@ msgstr "La revue offrira son contenu en libre accès."
 
 msgid "manager.distribution.publishingMode.subscription"
 msgstr "La revue exigera un abonnement pour accéder à une partie ou à l'intégralité de son contenu."
-
-msgid "manager.distribution.publishingMode.success"
-msgstr "Les informations de publication ont été mises à jour."
 
 msgid "manager.website.archiving"
 msgstr "Archivage"
@@ -128,7 +125,9 @@ msgid "manager.payment.generalFees"
 msgstr "Frais généraux"
 
 msgid "manager.payment.generalFeesDescription"
-msgstr "L'adhésion à l'association apparaîtra dans « À propos » de la revue, sous « Politiques », et le lien pour faire des dons apparaîtra au-dessus de la fonction de recherche, dans l'encadré latéral de droite."
+msgstr ""
+"L'adhésion à l'association apparaîtra dans « À propos de la revue », sous « "
+"Politiques »."
 
 msgid "manager.payment.generalOptions"
 msgstr "Options générales"
@@ -147,9 +146,6 @@ msgstr "Cela activera l'application des paiements d'abonnements où les types, f
 
 msgid "subscriptionManager.subscription.confirmRemove"
 msgstr "Êtes-vous certain-e de vouloir supprimer cet abonnement ?"
-
-msgid "manager.payment.success"
-msgstr "Les paramètres de paiement ont été mis à jour."
 
 msgid "manager.payment.options.enablePayments"
 msgstr "Les paiement seront activés pour cette revue. Veuillez noter que les utilisateurs-trices doivent se connecter pour effectuer des paiements."
@@ -262,6 +258,7 @@ msgstr "Rédacteurs-trices de cette rubrique"
 msgid "manager.sections.confirmDelete"
 msgstr "Êtes-vous certain-e de vouloir définitivement supprimer cette rubrique ?"
 
+#, fuzzy
 msgid "manager.sections.alertDelete"
 msgstr "Pour pouvoir supprimer cette rubrique, vous devez d'abord déplacer les articles qui y sont publiés dans d'autres rubriques."
 
@@ -394,9 +391,6 @@ msgstr "Au lieu du titre et du logo, une version HTML de l'en-tête peut aussi �
 msgid "manager.setup.announcements"
 msgstr "Annonces"
 
-msgid "manager.setup.announcements.success"
-msgstr "Les paramètres des annonces ont été mis à jour."
-
 msgid "manager.setup.announcementsIntroduction"
 msgstr "Introduction"
 
@@ -405,9 +399,6 @@ msgstr "Ajouter toute information additionnelle qui devrait être affichée aux 
 
 msgid "manager.setup.appearInAboutJournal"
 msgstr "(À paraître dans « À propos » de la revue) "
-
-msgid "manager.setup.archiving.success"
-msgstr "Les informations d'archivage de cette revue ont été mises à jour."
 
 msgid "manager.setup.competingInterests.requireAuthors"
 msgstr "Les auteurs-es soumissionnaires doivent déposer une déclaration de conflits d'intérêts avec leur soumission."
@@ -420,9 +411,6 @@ msgstr "Historique de la revue"
 
 msgid "manager.setup.historyDescription"
 msgstr "Ce texte apparaîtra dans la section « À propos » du site Web de la revue et peut être utilisé pour décrire tout changement au titre de la revue, au comité éditorial, et tout autre élément d'intérêt dans l'histoire de la publication de la revue."
-
-msgid "manager.setup.contact.success"
-msgstr "Les coordonnées de cette revue ont été mises à jour."
 
 msgid "manager.setup.currentIssue"
 msgstr "Numéro courant"
@@ -564,9 +552,6 @@ msgstr "Pour les bibliothécaires"
 msgid "manager.setup.information.forReaders"
 msgstr "Pour les lecteurs-trices"
 
-msgid "manager.setup.information.success"
-msgstr "Les informations pour cette revue ont été mises à jour."
-
 msgid "manager.setup.initialIssue"
 msgstr "Numéro initial"
 
@@ -669,9 +654,6 @@ msgstr "Fournir une brève description de votre revue et présenter les rédacte
 msgid "manager.setup.labelName"
 msgstr "Nom du libellé"
 
-msgid "manager.setup.lists.success"
-msgstr "Les paramètres de listes pour cette revue ont été mis à jour."
-
 msgid "manager.setup.lists"
 msgstr "Listes"
 
@@ -746,9 +728,6 @@ msgstr "Configuration de la gestion et de la publication"
 msgid "manager.setup.managingTheJournal"
 msgstr "Étape 4. Gérer la revue"
 
-msgid "manager.setup.masthead.success"
-msgstr "Les renseignements du bloc générique de cette revue ont été mis à jour."
-
 msgid "manager.setup.navigationBar"
 msgstr "Barre de navigation"
 
@@ -793,9 +772,6 @@ msgstr "Orientation, évaluation par les pairs, rubriques, confidentialité, sé
 
 msgid "manager.setup.printIssn"
 msgstr "ISSN imprimé"
-
-msgid "manager.setup.privacyStatement.success"
-msgstr "La déclaration de confidentialité a été mise à jour."
 
 msgid "manager.setup.proofingInstructions"
 msgstr "Directives pour la correction d'épreuves"
@@ -845,9 +821,6 @@ msgstr "Rappels automatiques par courriel"
 msgid "manager.setup.reviewOptions.automatedRemindersDisabled"
 msgstr "Pour activer ces options, l'administrateur-trice du site doit activer l'option <tt>scheduled_tasks</tt> dans le fichier de configuration d'OJS. Une configuration serveur supplémentaire peut être requise afin de prendre en charge cette fonctionnalité (laquelle n'est pas disponible sur tous les serveurs), tel que mentionné dans la documentation d'OJS."
 
-msgid "manager.setup.reviewOptions.blindReview"
-msgstr "Évaluation à l'aveugle"
-
 msgid "manager.setup.reviewOptions.numWeeksPerReview"
 msgstr "Nombre de semaines allouées pour compléter l'évaluation"
 
@@ -886,9 +859,6 @@ msgstr "Politique d'évaluation"
 
 msgid "manager.setup.searchEngineIndexing"
 msgstr "Indexation par les moteurs de recherche"
-
-msgid "manager.setup.searchEngineIndexing.success"
-msgstr "Les paramètres d'indexation par les moteurs de recherche ont été mis à jour."
 
 msgid "manager.setup.searchEngineIndexing.description"
 msgstr "Aider les moteurs de recherche comme Google à découvrir et à afficher votre site. Nous vous encourageons à envoyer votre <a href=\"{$sitemapUrl}\" target=\"_blank\">plan de site</a> (sitemap)."
@@ -970,9 +940,6 @@ msgstr "Les articles et les numéros peuvent être étiquetés avec un numéro d
 
 msgid "manager.setup.useEditorialReviewBoard"
 msgstr "La revue aura recours à un comité éditorial/d'évaluation."
-
-msgid "manager.setup.userAccess.success"
-msgstr "Les informations d'accès de l'utilisateur-trice pour cette revue ont été mises à jour."
 
 msgid "manager.setup.useThumbnail"
 msgstr "Vignette"
@@ -1625,7 +1592,16 @@ msgid "manager.setup.resetPermissions.confirm"
 msgstr "Êtes-vous certain-e de vouloir réinitialiser les autorisations déjà rattachées à l'article ?"
 
 msgid "manager.setup.resetPermissions.description"
-msgstr "Supprimer la mention de copyright et les informations de licence pour chaque article publié, en rétablissant les paramètres par défaut actuels de la revue. Ceci supprimera  toutes les mentions de copyright et les licences antérieures liées aux articles et ce de façon permanente. Dans certains cas, il se peut que vous ne soyez pas légalement autorisé-e à attribuer une nouvelle licence à un travail publié sous une licence différente. Agissez avec prudence lorsque vous utilisez cet outil et ayez recours, au besoin, à une expertise juridique si vous ne savez pas exactement de quels droits vous disposez sur les articles publiés dans votre revue."
+msgstr ""
+"Supprimer la mention de copyright et les informations de licence pour chaque "
+"article publié, en rétablissant les paramètres par défaut actuels de la "
+"revue. Ceci supprimera toutes les mentions de copyright et les licences "
+"antérieures liées aux articles et ce de façon permanente. Dans certains cas, "
+"il se peut que vous ne soyez pas légalement autorisé-e à attribuer une "
+"nouvelle licence à un travail publié sous une licence différente. Agissez "
+"avec prudence lorsque vous utilisez cet outil et ayez recours, au besoin, à "
+"une expertise juridique si vous ne savez pas exactement de quels droits vous "
+"disposez sur les articles publiés dans votre revue."
 
 msgid "manager.setup.resetPermissions.success"
 msgstr "Les autorisations des articles ont bien été réinitialisées."
@@ -1763,3 +1739,26 @@ msgstr "Fichiers"
 
 msgid "stats.publicationStats"
 msgstr "Statistiques de l'article"
+
+msgid "plugins.importexport.common.validation.fail"
+msgstr "La validation a échoué."
+
+msgid "plugins.importexport.common.validation.success"
+msgstr "Validation réussie !"
+
+msgid "manager.setup.disableSubmissions.notAccepting"
+msgstr ""
+"Cette revue n'accepte pas de soumissions pour le moment. Consulter les "
+"paramètres de flux de travail pour autoriser les soumissions."
+
+msgid "manager.setup.disableSubmissions.description"
+msgstr ""
+"Empêcher les utilisateurs-trices de soumettre de nouveaux articles à la "
+"revue. Les soumissions peuvent être désactivées pour des rubriques "
+"individuelles sur la page des paramètres des <a href=\"{$url}\"> rubriques "
+"de revue</a>."
+
+msgid "manager.sections.confirmDeactivateSection.error"
+msgstr ""
+"Au moins une rubrique doit être active. Consulter les paramètres de flux de "
+"travail pour désactiver toutes les soumissions à cette revue."

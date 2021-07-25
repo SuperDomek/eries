@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-19T10:49:30+00:00\n"
-"PO-Revision-Date: 2020-06-12 22:00+0000\n"
-"Last-Translator: Carla Marques <carla.marques@sdum.uminho.pt>\n"
+"PO-Revision-Date: 2020-12-22 20:48+0000\n"
+"Last-Translator: Carla Marques <carla.marques@usdb.uminho.pt>\n"
 "Language-Team: Portuguese (Portugal) <http://translate.pkp.sfu.ca/projects/"
 "ojs/manager/pt_PT/>\n"
 "Language: pt_PT\n"
@@ -93,10 +93,7 @@ msgid "manager.payment.generalFees"
 msgstr "Taxas Gerais"
 
 msgid "manager.payment.generalFeesDescription"
-msgstr ""
-"A Taxa de Adesão aparecerá na secção Políticas em Sobre da revista e o link "
-"para doações aparecerá, normalmente, acima das funções de pesquisa na barra "
-"direita."
+msgstr "A Taxa de Adesão aparecerá na secção Políticas em Sobre a Revista."
 
 msgid "manager.payment.generalOptions"
 msgstr "Opções Gerais"
@@ -698,9 +695,6 @@ msgstr ""
 "Configurações adicionais no servidor podem ser necessárias para suportar "
 "tais funcionalidades (pode não ser possível em todos os tipos de servidores!)"
 ", como descrito na documentação do sistema."
-
-msgid "manager.setup.reviewOptions.blindReview"
-msgstr "Revisão Cega por Pares"
 
 msgid "manager.setup.reviewOptions.numWeeksPerReview"
 msgstr "Tempo padrão permitido para conlusão de uma revisão"
@@ -1392,6 +1386,7 @@ msgstr "Comprar Número"
 msgid "manager.sections.confirmDelete"
 msgstr "Tem a certeza que pretende eliminar permanentemente esta secção?"
 
+#, fuzzy
 msgid "manager.sections.alertDelete"
 msgstr ""
 "Antes de ser eliminada esta secção, tem de mover os artigos publicados para "
@@ -1768,9 +1763,6 @@ msgstr "Este é um tipo de subscrição que não expira; não insira data de fim
 msgid "manager.subscriptions.form.dateStartEmpty"
 msgstr "Este é um tipo de subscrição que não expira; não insira data de início."
 
-msgid "manager.setup.userAccess.success"
-msgstr "Os detalhes de acesso do utilizador a esta revista foram atualizados."
-
 msgid "manager.setup.enableOai.description"
 msgstr ""
 "Insira metadados para serviços de indexação externos através de  <a href=\""
@@ -1791,9 +1783,6 @@ msgstr ""
 "busca possam disponibilizar quando inserirem a revista em listas de "
 "resultados."
 
-msgid "manager.setup.searchEngineIndexing.success"
-msgstr "As configurações de índice da ferramenta de pesquisa foram atualizadas."
-
 msgid "manager.setup.reviewOptions.reviewerAccessKeysEnabled.label"
 msgstr "Inclua um link seguro nos e-mails de convite aos revisores."
 
@@ -1803,17 +1792,8 @@ msgstr "Restringir o acesso aos ficheiros"
 msgid "manager.setup.publishing"
 msgstr "Detalhes de publicação"
 
-msgid "manager.setup.privacyStatement.success"
-msgstr "A declaração de privacidade foi atualizada."
-
 msgid "manager.setup.numPageLinks.description"
 msgstr "Limite o número de links a aparecerem em páginas seguintes numa lista."
-
-msgid "manager.setup.masthead.success"
-msgstr "Os detalhes do cabeçalho desta revista foram atualizados."
-
-msgid "manager.setup.lists.success"
-msgstr "As configurações de lista desta revista foram atualizadas."
 
 msgid "manager.setup.keyInfo.description"
 msgstr ""
@@ -1829,9 +1809,6 @@ msgstr ""
 "designações de edição) para aparecer numa lista antes de aparecerem os itens "
 "seguintes em outra página."
 
-msgid "manager.setup.information.success"
-msgstr "As informações da revista foram atualizadas."
-
 msgid "manager.setup.identity"
 msgstr "Identidade da revista"
 
@@ -1843,23 +1820,8 @@ msgstr ""
 msgid "manager.setup.numAnnouncementsHomepage"
 msgstr "Exibir na página inicial"
 
-msgid "manager.setup.contact.success"
-msgstr "Os detalhes de contacto desta revista foram atualizados."
-
-msgid "manager.setup.archiving.success"
-msgstr "Os detalhes de arquivo desta revista foram atualizados."
-
 msgid "manager.setup.announcementsIntroduction"
 msgstr "Introdução"
-
-msgid "manager.setup.announcements.success"
-msgstr "As configurações das notícias foram atualizadas."
-
-msgid "manager.payment.success"
-msgstr "As configurações de pagamento foram atualizadas."
-
-msgid "manager.distribution.publishingMode.success"
-msgstr "Os detalhes da publicação foram atualizados."
 
 msgid "manager.distribution.publishingMode"
 msgstr "Modo de publicação"
@@ -1878,3 +1840,25 @@ msgstr ""
 "Esolha como é selecionada a data padrão para os direitos de autor de um "
 "artigo. Este padrão pode ser alterado caso a caso. Se usa a publicação "
 "contínua, não use a data de publicação do volume."
+
+msgid "plugins.importexport.common.validation.fail"
+msgstr "Falha de validação."
+
+msgid "plugins.importexport.common.validation.success"
+msgstr "Validação bem-sucedida!"
+
+msgid "manager.setup.disableSubmissions.notAccepting"
+msgstr ""
+"Esta revista não está presentemente a aceitar submissões. Visite as "
+"definições do fluxo de trabalho para permitir submissões."
+
+msgid "manager.setup.disableSubmissions.description"
+msgstr ""
+"Impedir utilizadores de fazer novas submissões na revista. As submissões "
+"podem ser desativadas para cada secção da revista em <a href=\"{$url}\">"
+"secções da revista</a> na página de definições."
+
+msgid "manager.sections.confirmDeactivateSection.error"
+msgstr ""
+"Pelo menos uma secção deverá estar ativa. Verifique as definições do Fluxo "
+"de Trabalho para desativar todas as submissões nesta revista."

@@ -50,9 +50,6 @@ msgstr "Нет материалов в архиве."
 msgid "editor.submissionArchive.saveChanges"
 msgstr "Сохранить изменения в архиве материалов? Отмеченные для удаления материалы будут навсегда удалены из системы."
 
-msgid "editor.submissionArchive.confirmDelete"
-msgstr "Вы уверены, что хотите навсегда удалить этот материал?"
-
 msgid "editor.submissionReview.confirmDecision"
 msgstr "Вы уверены, что хотите записать это решение?"
 
@@ -366,7 +363,10 @@ msgid "editor.submissions.lastCompleted"
 msgstr "Последняя завершенная"
 
 msgid "editor.submissions.assignedTo"
-msgstr "Кому назначено"
+msgstr "Назначен редактору"
+
+msgid "issues.submissions.issueIds"
+msgstr "Назначен в выпуск"
 
 msgid "editor.submissions.inSection"
 msgstr "В разделе"

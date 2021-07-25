@@ -1003,9 +1003,11 @@ msgstr "Типови претплата"
 msgid "about.aboutThisPublishingSystem"
 msgstr "О овом издавачком систему"
 
+#, fuzzy
 msgid "about.aboutOJSJournal"
 msgstr "Овај часопис користи Open Journal Systems {$ojsVersion}, који је open source софтвер намењен уређивању и издавању часописа, развијан,  подржан и бесплатно дистрибуиран од <a href=\"http://pkp.sfu.ca/\">Public Knowledge Project</a>-а под GNU General Public License."
 
+#, fuzzy
 msgid "about.aboutOJSSite"
 msgstr "Овај сајт користи Open Journal Systems {$ojsVersion}, који је open source систем за  управљања часописима и програм за издавање, подржан и бесплатно дистрибуиран од <a href=\"http://pkp.sfu.ca/\">Public Knowledge Project</a>-а под GNU General Public License."
 
@@ -1021,6 +1023,7 @@ msgstr "OJS инсталација"
 msgid "installer.ojsUpgrade"
 msgstr "OJS надоградња"
 
+#, fuzzy
 msgid "installer.installationInstructions"
 msgstr ""
 "<h4>OJS верзија {$version}</h4>\n"
@@ -1029,7 +1032,7 @@ msgstr ""
 "\n"
 "<h4>Надоградња</h4>\n"
 "\n"
-"<p>Ако надограђујете постојећу инсталацију OJS 2.x, <a href=\"{$upgradeUrl}\">кликните овде</a> за наставак.</p>\n"
+"<p>Ако надограђујете постојећу инсталацију OJS, <a href=\"{$upgradeUrl}\">кликните овде</a> за наставак.</p>\n"
 "\n"
 "<h4>Препоручени услови за систем</h4>\n"
 "\n"
@@ -1241,15 +1244,6 @@ msgstr "Претплатнички приступ"
 msgid "reader.subscriptionOrFeeAccess"
 msgstr "Претплатнички или отворен приступ"
 
-msgid "admin.languages.downloadUnavailable"
-msgstr ""
-"<p>Преузимање фајла са језицима са Public Knowledge Пројецт сервера тренутно није доступно пошто:</p>\n"
-"\t<ul>\n"
-"\t\t<li>Ваш сервер нема или не дозвољава покретање ГНУ \"tar\" програма</li>\n"
-"\t\t<li>OJS не може модификовати локализациони registry фајл, обично \"registry/locales.xml\".</li>\n"
-"\t</ul>\n"
-"<p>Фајл са језицима можете ручно преузети са <a href=\"http://pkp.sfu.ca\">PKP web site</a>.</p>"
-
 msgid "manager.setup.copyrightNotice.sample"
 msgstr ""
 "<h3>Предложене Creative Commons одредбе о ауторским правима</h3>\n"
@@ -1411,9 +1405,6 @@ msgstr "{$userName} је одбио/ла {$round} рецензију прило�
 
 msgid "log.editor.decision"
 msgstr "{$editorName} је евидентирао уредничку одлуку ({$decision}) за чланак {$submissionId}."
-
-msgid "debug.notes.currencyListLoad"
-msgstr "Учитана је листа валута \"{$filename}\" из XML-a."
 
 msgid "reviewer.article.enterReviewForm"
 msgstr "Кликните на икону и испуните образац за реценцзију."

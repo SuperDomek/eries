@@ -3,16 +3,19 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-19T10:50:07+00:00\n"
-"PO-Revision-Date: 2020-04-28 21:28+0000\n"
-"Last-Translator: Sönmez Çelik <snmzclk@gmail.com>\n"
+"PO-Revision-Date: 2021-01-28 15:01+0000\n"
+"Last-Translator: Hüseyin Körpeoğlu <yoruyenturk@hotmail.com>\n"
 "Language-Team: Turkish <http://translate.pkp.sfu.ca/projects/pkp-lib/editor/"
-"tr/>\n"
+"tr_TR/>\n"
 "Language: tr_TR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 3.9.1\n"
+
+msgid "editor.submissionArchive.confirmDelete"
+msgstr "Bu kaydı tamamen silmek istediğinizden emin misiniz?"
 
 msgid "editor.review.rateReviewer"
 msgstr "Hakem Puanlama"
@@ -104,11 +107,11 @@ msgstr "e-posta bildirimi gönderme"
 msgid "editor.submissionReview.open"
 msgstr "Açık"
 
-msgid "editor.submissionReview.blind"
-msgstr "Körlenmiş"
+msgid "editor.submissionReview.anonymous"
+msgstr "Körleme Hakem/Açık Yazar"
 
-msgid "editor.submissionReview.doubleBlind"
-msgstr "Çift-Körlenmiş"
+msgid "editor.submissionReview.doubleAnonymous"
+msgstr "Körleme Hakem/Körleme Yazar"
 
 msgid "editor.submissionReview.restrictFiles"
 msgstr "Değerlendirilecek Dosyalar"
@@ -217,9 +220,6 @@ msgstr "Bu hakem grubunda mevcut bir hakem yetkilendirin"
 
 msgid "editor.submission.createNewRound"
 msgstr "Yeni bir değerlendirme turu oluştur"
-
-msgid "reviewer.list.itemsOfTotal"
-msgstr "{$total} hakemden {$count} adet"
 
 msgid "reviewer.list.neverAssigned"
 msgstr "Atanma yapılmadı"
@@ -377,9 +377,6 @@ msgstr "Ortak tanımlayıcı için {$pattern} modeline izin verilmez."
 msgid "editor.submission.schedulePublication"
 msgstr "Yayın İçin Planla"
 
-msgid "reviewer.list.count"
-msgstr "{$count} hakem"
-
 msgid "reviewer.list.filterRating"
 msgstr "En az reyting"
 
@@ -404,6 +401,7 @@ msgstr "Ortalama değerlendirme gün sayısı"
 msgid "reviewer.list.currentlyAssigned"
 msgstr "Bu hakem, bu gönderiyi değerlendirmek için zaten atandı."
 
+#, fuzzy
 msgid "reviewer.list.warnOnAssign"
 msgstr "Bu hakeme, yazarın kimliğini görmesine izin veren bir rol verilmiş olduğundan kilitlenmiştir. Körlenmiş hakem değerlendirmesi garanti edilemez. Yine de bu hakeme izin vermek ister misiniz?"
 
@@ -466,3 +464,15 @@ msgstr "Karar kaydedildi"
 
 msgid "editor.activityLog"
 msgstr "Etkinlik Günlüğü"
+
+msgid "editor.submission.revertDeclineDescription"
+msgstr ""
+"Bu aday makalenin reddetme kararını geri almak istediğinizden emin misiniz?"
+
+msgid "editor.discussion.errorNotStageParticipant"
+msgstr "Seçilen kişi bu aşamaya atanmaz."
+
+msgid "editor.discussion.errorAnonymousParticipants"
+msgstr ""
+"Değerlendirme sürecinin körleme hakemlik sürecini etkileyeceği için seçilen "
+"kişilerle tartışma oluşturulamaz."

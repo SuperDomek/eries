@@ -3,8 +3,8 @@
 /**
  * @file classes/plugins/PluginHelper.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PluginHelper
@@ -47,7 +47,7 @@ class PluginHelper {
 
 		// Create random dirname to avoid symlink attacks.
 		$pluginExtractDir = dirname($filePath) . DIRECTORY_SEPARATOR . $pluginShortName . substr(md5(mt_rand()), 0, 10);
-		mkdir($pluginExtractDir);
+		if (!mkdir($pluginExtractDir)) throw new Exception('Could not create directory ' . $pluginExtractDir);
 
 		// Test whether the tar binary is available for the export to work
 		$tarBinary = Config::getVar('cli', 'tar');

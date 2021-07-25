@@ -5,14 +5,14 @@
 # This file is distributed under the same license as the iso-codes package.
 # .
 # Copyright ©
-# Sveinn í Felli <sv1@fellsnet.is>, 2017, 2018.
+# Sveinn í Felli <sv1@fellsnet.is>, 2017, 2018, 2020.
 msgid ""
 msgstr ""
 "Project-Id-Version: iso_3166-2\n"
 "Report-Msgid-Bugs-To: https://salsa.debian.org/iso-codes-team/iso-codes/"
 "issues\n"
-"POT-Creation-Date: 2019-10-03 13:00+0200\n"
-"PO-Revision-Date: 2018-11-27 19:07+0000\n"
+"POT-Creation-Date: 2020-05-19 14:57+0200\n"
+"PO-Revision-Date: 2020-06-10 23:41+0000\n"
 "Last-Translator: Sveinn í Felli <sv1@fellsnet.is>\n"
 "Language-Team: Icelandic <https://hosted.weblate.org/projects/iso-codes/"
 "iso-3166-2/is/>\n"
@@ -21,7 +21,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n % 10 != 1 || n % 100 == 11;\n"
-"X-Generator: Weblate 3.3-dev\n"
+"X-Generator: Weblate 4.1-dev\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
 
 #. Name for AD-02
@@ -1842,7 +1842,7 @@ msgstr ""
 
 #. Name for BN-TU
 msgid "Tutong"
-msgstr ""
+msgstr "Tutong"
 
 #. Name for BO-B
 msgid "El Beni"
@@ -2241,7 +2241,7 @@ msgid "Southern"
 msgstr "Suður"
 
 #. Name for BY-BR
-msgid "Brèsckaja voblasc'"
+msgid "Bresckaja voblasć"
 msgstr ""
 
 #. Name for BY-HM
@@ -2249,23 +2249,23 @@ msgid "Horad Minsk"
 msgstr ""
 
 #. Name for BY-HO
-msgid "Homel'skaja voblasc'"
+msgid "Homieĺskaja voblasć"
 msgstr ""
 
 #. Name for BY-HR
-msgid "Hrodzenskaja voblasc'"
+msgid "Hrodzienskaja voblasć"
 msgstr ""
 
 #. Name for BY-MA
-msgid "Mahilëuskaja voblasc'"
+msgid "Mahilioŭskaja voblasć"
 msgstr ""
 
 #. Name for BY-MI
-msgid "Minskaja voblasc'"
+msgid "Minskaja voblasć"
 msgstr ""
 
 #. Name for BY-VI
-msgid "Vicebskaja voblasc'"
+msgid "Viciebskaja voblasć"
 msgstr ""
 
 #. Name for BZ-BZ
@@ -5306,7 +5306,7 @@ msgstr ""
 
 #. Name for GA-5
 msgid "Nyanga"
-msgstr ""
+msgstr "Nyanga"
 
 #. Name for GA-6
 msgid "Ogooué-Ivindo"
@@ -8670,7 +8670,7 @@ msgstr ""
 
 #. Name for JP-29
 msgid "Nara"
-msgstr ""
+msgstr "Nara"
 
 #. Name for JP-30
 msgid "Wakayama"
@@ -8768,7 +8768,7 @@ msgstr ""
 
 #. Name for KE-06
 msgid "Embu"
-msgstr ""
+msgstr "Embu"
 
 #. Name for KE-07
 #, fuzzy
@@ -8830,7 +8830,7 @@ msgstr ""
 
 #. Name for KE-21
 msgid "Lamu"
-msgstr ""
+msgstr "Lamu"
 
 #. Name for KE-22
 msgid "Machakos"
@@ -8874,7 +8874,7 @@ msgstr ""
 
 #. Name for KE-32
 msgid "Nandi"
-msgstr ""
+msgstr "Nandí"
 
 #. Name for KE-33
 msgid "Narok"
@@ -8918,7 +8918,7 @@ msgstr ""
 
 #. Name for KE-43
 msgid "Turkana"
-msgstr ""
+msgstr "Turkana"
 
 #. Name for KE-44
 msgid "Uasin Gishu"
@@ -12482,7 +12482,7 @@ msgstr ""
 
 #. Name for NA-KA
 msgid "Karas"
-msgstr ""
+msgstr "Karas"
 
 #. Name for NA-KH
 msgid "Khomas"
@@ -12742,7 +12742,7 @@ msgstr ""
 
 #. Name for NI-MT
 msgid "Matagalpa"
-msgstr ""
+msgstr "Matagalpa"
 
 #. Name for NI-NS
 msgid "Nueva Segovia"
@@ -12868,14 +12868,6 @@ msgstr "Sogn og Firðirnir"
 msgid "Møre og Romsdal"
 msgstr "Mæri og Romsdal"
 
-#. Name for NO-16
-msgid "Sør-Trøndelag"
-msgstr "Suður-Þrændalög"
-
-#. Name for NO-17
-msgid "Nord-Trøndelag"
-msgstr "Norður-Þrændalög"
-
 #. Name for NO-18
 msgid "Nordland"
 msgstr "Norðurland"
@@ -12895,6 +12887,12 @@ msgstr "Svalbarði (heimsskautasvæði)"
 #. Name for NO-22
 msgid "Jan Mayen (Arctic Region)"
 msgstr "Jan Mayen (heimsskautasvæði)"
+
+#. Name for NO-50
+#, fuzzy
+#| msgid "Sør-Trøndelag"
+msgid "Trøndelag"
+msgstr "Suður-Þrændalög"
 
 #. Name for NP-1
 msgid "Madhyamanchal"
@@ -17536,7 +17534,7 @@ msgstr ""
 
 #. Name for TZ-13
 msgid "Mara"
-msgstr ""
+msgstr "Mara"
 
 #. Name for TZ-14
 msgid "Mbeya"

@@ -3,8 +3,8 @@
 /**
  * @file classes/core/PKPApplication.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPApplication
@@ -14,7 +14,7 @@
  *
  */
 
-define('PHP_REQUIRED_VERSION', '7.2.0');
+define('PHP_REQUIRED_VERSION', '7.3.0');
 
 define('ROUTE_COMPONENT', 'component');
 define('ROUTE_PAGE', 'page');
@@ -24,7 +24,7 @@ define('API_VERSION', 'v1');
 
 define('CONTEXT_SITE', 0);
 define('CONTEXT_ID_NONE', 0);
-define('CONTEXT_ID_ALL', '*');
+define('CONTEXT_ID_ALL', '_');
 define('REVIEW_ROUND_NONE', 0);
 
 define('ASSOC_TYPE_PRODUCTION_ASSIGNMENT',	0x0000202);
@@ -52,6 +52,7 @@ define('ASSOC_TYPE_SUBMISSION',			0x0100009);
 define('ASSOC_TYPE_QUERY',			0x010000a);
 define('ASSOC_TYPE_QUEUED_PAYMENT',		0x010000b);
 define('ASSOC_TYPE_PUBLICATION', 0x010000c);
+define('ASSOC_TYPE_ACCESSIBLE_FILE_STAGES',    0x010000d);
 
 // Constant used in UsageStats for submission files that are not full texts
 define('ASSOC_TYPE_SUBMISSION_FILE_COUNTER_OTHER', 0x0000213);
@@ -67,6 +68,8 @@ define('WORKFLOW_STAGE_PATH_PRODUCTION', 'production');
 define('WORKFLOW_TYPE_EDITORIAL', 'editorial');
 define('WORKFLOW_TYPE_AUTHOR', 'author');
 
+use Illuminate\Database\Capsule\Manager as Capsule;
+
 interface iPKPApplicationInfoProvider {
 	/**
 	 * Get the top-level context DAO.
@@ -78,12 +81,6 @@ interface iPKPApplicationInfoProvider {
 	 * @return DAO
 	 */
 	public static function getSectionDAO();
-
-	/**
-	 * Get the submission DAO.
-	 * @deprecated Just use DAORegistry::getDAO('SubmissionDAO') directly.
-	 */
-	public static function getSubmissionDAO();
 
 	/**
 	 * Get the representation DAO.
@@ -99,22 +96,6 @@ interface iPKPApplicationInfoProvider {
 	 * Get a SubmissionSearchDAO instance.
 	 */
 	public static function getSubmissionSearchDAO();
-
-	/**
-	 * Returns the name of the context column in plugin_settings.
-	 * This is necessary to prevent a column name mismatch during
-	 * the upgrade process when the codebase and the database are out
-	 * of sync.
-	 * See:  https://pkp.sfu.ca/bugzilla/show_bug.cgi?id=8265
-	 *
-	 * The 'generic' category of plugin is loaded before the schema
-	 * is reconciled.  Subclasses of PKPApplication perform a check
-	 * against their various schemas to determine which column is
-	 * present when an upgrade is being performed so the plugin
-	 * category can be initially be loaded correctly.
-	 * @return string
-	 */
-	public static function getPluginSettingsContextColumnName();
 
 	/**
 	 * Get the stages used by the application.
@@ -185,19 +166,7 @@ abstract class PKPApplication implements iPKPApplicationInfoProvider {
 		$notes = array();
 		Registry::set('system.debug.notes', $notes);
 
-		if (Config::getVar('general', 'installed')) {
-			// Initialize database connection
-			$conn = DBConnection::getInstance();
-
-			if (!$conn->isConnected()) {
-				if (Config::getVar('database', 'debug')) {
-					$dbconn =& $conn->getDBConn();
-					fatalError('Database connection failed: ' . $dbconn->errorMsg());
-				} else {
-					fatalError('Database connection failed!');
-				}
-			}
-		}
+		if (Config::getVar('general', 'installed')) $this->initializeDatabaseConnection();
 
 		// Register custom autoloader functions for namespaces
 		spl_autoload_register(function($class) {
@@ -210,6 +179,94 @@ abstract class PKPApplication implements iPKPApplicationInfoProvider {
 			$rootPath = BASE_SYS_DIR . "/classes";
 			customAutoload($rootPath, $prefix, $class);
 		});
+	}
+
+	/**
+	 * Initialize the database connection (and related systems)
+	 */
+	public function initializeDatabaseConnection() {
+		// Ensure multiple calls to this function don't cause trouble
+		static $databaseConnectionInitialized = false;
+		if ($databaseConnectionInitialized) return;
+
+		$databaseConnectionInitialized = true;
+		$laravelContainer = new Illuminate\Container\Container();
+		Registry::set('laravelContainer', $laravelContainer);
+		(new Illuminate\Bus\BusServiceProvider($laravelContainer))->register();
+		(new Illuminate\Events\EventServiceProvider($laravelContainer))->register();
+		$eventDispatcher = new \Illuminate\Events\Dispatcher($laravelContainer);
+		$laravelContainer->instance('Illuminate\Contracts\Events\Dispatcher', $eventDispatcher);
+		$laravelContainer->instance('Illuminate\Contracts\Container\Container', $laravelContainer);
+
+		// Map valid config options to Illuminate database drivers
+		$driver = strtolower(Config::getVar('database', 'driver'));
+		if (substr($driver, 0, 8) === 'postgres') {
+			$driver = 'pgsql';
+		} else {
+			$driver = 'mysql';
+		}
+
+		$capsule = new Capsule;
+		$capsule->addConnection([
+			'driver'    => $driver,
+			'host'      => Config::getVar('database', 'host'),
+			'database'  => Config::getVar('database', 'name'),
+			'username'  => Config::getVar('database', 'username'),
+			'port'      => Config::getVar('database', 'port'),
+			'unix_socket'=> Config::getVar('database', 'unix_socket'),
+			'password'  => Config::getVar('database', 'password'),
+			'charset'   => Config::getVar('i18n', 'connection_charset', 'utf8'),
+			'collation' => Config::getVar('database', 'collation', 'utf8_general_ci'),
+		]);
+		$capsule->setEventDispatcher($eventDispatcher);
+		$capsule->setAsGlobal();
+		if (Config::getVar('database', 'debug')) Capsule::listen(function($query) {
+			error_log("Database query\n$query->sql\n" . json_encode($query->bindings));//\n Bindings: " . print_r($query->bindings, true));
+		});
+
+
+		// Set up Laravel queue handling
+		$laravelContainer->bind('exception.handler', function () {
+			return new class implements Illuminate\Contracts\Debug\ExceptionHandler {
+				public function shouldReport(Throwable $e) {
+					return true;
+				}
+
+				public function report(Throwable $e) {
+					error_log((string) $e);
+				}
+
+				public function render($request, Throwable $e) {
+					return null;
+				}
+
+				public function renderForConsole($output, Throwable $e) {
+					echo (string) $e;
+				}
+			};
+		});
+
+		$queue = new Illuminate\Queue\Capsule\Manager($laravelContainer);
+
+		// Synchronous (immediate) queue
+		$queue->addConnection(['driver' => 'sync']);
+
+		// Persistent queue
+		$connection = Capsule::schema()->getConnection();
+		$resolver = new \Illuminate\Database\ConnectionResolver(['default' => $connection]);
+		$manager = $queue->getQueueManager();
+		$laravelContainer['queue'] = $queue->getQueueManager();
+		$manager->addConnector('database', function () use ($resolver) {
+			return new Illuminate\Queue\Connectors\DatabaseConnector($resolver);
+		});
+		$queue->addConnection([
+			'driver' => 'database',
+			'table' => 'jobs',
+			'connection' => 'default',
+			'queue' => 'default',
+		], 'persistent');
+
+		$queue->setAsGlobal();
 	}
 
 	/**
@@ -226,6 +283,32 @@ abstract class PKPApplication implements iPKPApplicationInfoProvider {
 	 */
 	public static function get() {
 		return Registry::get('application');
+	}
+
+	/**
+	 * Return a HTTP client implementation.
+	 * @return \GuzzleHttp\Client
+	 */
+	public function getHttpClient() {
+		$application = Application::get();
+		$userAgent = $application->getName() . '/';
+		if (Config::getVar('general', 'installed') && !defined('RUNNING_UPGRADE')) {
+			$versionDao = DAORegistry::getDAO('VersionDAO');
+			$currentVersion = $versionDao->getCurrentVersion();
+			$userAgent .= $currentVersion->getVersionString();
+		} else {
+			$userAgent .= '?';
+		}
+
+		return new \GuzzleHttp\Client([
+			'proxy' => [
+				'http' => Config::getVar('proxy', 'http_proxy', null),
+				'https' => Config::getVar('proxy', 'https_proxy', null),
+			],
+			'headers' => [
+				'User-Agent' => $userAgent,
+			],
+		]);
 	}
 
 	/**
@@ -436,7 +519,7 @@ abstract class PKPApplication implements iPKPApplicationInfoProvider {
 			'SubmissionDisciplineEntryDAO' => 'lib.pkp.classes.submission.SubmissionDisciplineEntryDAO',
 			'SubmissionEmailLogDAO' => 'lib.pkp.classes.log.SubmissionEmailLogDAO',
 			'SubmissionEventLogDAO' => 'lib.pkp.classes.log.SubmissionEventLogDAO',
-			'SubmissionFileDAO' => 'lib.pkp.classes.submission.SubmissionFileDAO',
+			'SubmissionFileDAO' => 'classes.submission.SubmissionFileDAO',
 			'SubmissionFileEventLogDAO' => 'lib.pkp.classes.log.SubmissionFileEventLogDAO',
 			'QueryDAO' => 'lib.pkp.classes.query.QueryDAO',
 			'SubmissionLanguageDAO' => 'lib.pkp.classes.submission.SubmissionLanguageDAO',
@@ -469,23 +552,6 @@ abstract class PKPApplication implements iPKPApplicationInfoProvider {
 		$map =& Registry::get('daoMap', true, $this->getDAOMap()); // Ref req'd
 		if (isset($map[$name])) return $map[$name];
 		return null;
-	}
-
-	/**
-	 * Get an array of locale keys that define strings that should be made available to
-	 * JavaScript classes in the JS front-end.
-	 * @return array
-	 */
-	public function getJSLocaleKeys() {
-		AppLocale::requireComponents(LOCALE_COMPONENT_PKP_API);
-		return array(
-			'form.dataHasChanged',
-			'common.close',
-			'common.ok',
-			'common.error',
-			'search.noKeywordError',
-			'api.submissions.unknownError',
-		);
 	}
 
 
@@ -751,11 +817,11 @@ abstract class PKPApplication implements iPKPApplicationInfoProvider {
 	public static function getWorkflowStageName($stageId) {
 		AppLocale::requireComponents(LOCALE_COMPONENT_PKP_SUBMISSION, LOCALE_COMPONENT_APP_SUBMISSION);
 		switch ($stageId) {
-			case WORKFLOW_STAGE_ID_SUBMISSION: return __('submission.submission');
-			case WORKFLOW_STAGE_ID_INTERNAL_REVIEW: return __('workflow.review.internalReview');
-			case WORKFLOW_STAGE_ID_EXTERNAL_REVIEW: return __('workflow.review.externalReview');
-			case WORKFLOW_STAGE_ID_EDITING: return __('submission.editorial');
-			case WORKFLOW_STAGE_ID_PRODUCTION: return __('submission.production');
+			case WORKFLOW_STAGE_ID_SUBMISSION: return 'submission.submission';
+			case WORKFLOW_STAGE_ID_INTERNAL_REVIEW: return 'workflow.review.internalReview';
+			case WORKFLOW_STAGE_ID_EXTERNAL_REVIEW: return 'workflow.review.externalReview';
+			case WORKFLOW_STAGE_ID_EDITING: return 'submission.editorial';
+			case WORKFLOW_STAGE_ID_PRODUCTION: return 'submission.production';
 		}
 		throw new Exception('Name requested for an unrecognized stage id.');
 	}
@@ -772,7 +838,7 @@ abstract class PKPApplication implements iPKPApplicationInfoProvider {
 			case WORKFLOW_STAGE_ID_SUBMISSION: return '#d00a0a';
 			case WORKFLOW_STAGE_ID_INTERNAL_REVIEW: return '#e05c14';
 			case WORKFLOW_STAGE_ID_EXTERNAL_REVIEW: return '#e08914';
-			case WORKFLOW_STAGE_ID_EDITING: return '#007ab2';
+			case WORKFLOW_STAGE_ID_EDITING: return '#006798';
 			case WORKFLOW_STAGE_ID_PRODUCTION: return '#00b28d';
 		}
 		throw new Exception('Color requested for an unrecognized stage id.');

@@ -2,14 +2,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"Last-Translator: \n"
-"Language-Team: \n"
+"POT-Creation-Date: 2019-09-27T09:54:39-07:00\n"
+"PO-Revision-Date: 2020-12-03 15:43+0000\n"
+"Last-Translator: Edvin Erdtman <edvin.erdtman@liu.se>\n"
+"Language-Team: English (United States) <http://translate.pkp.sfu.ca/projects/"
+"ojs/manager/en_US/>\n"
+"Language: en_US\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2019-09-27T09:54:39-07:00\n"
-"PO-Revision-Date: 2019-09-27T09:54:39-07:00\n"
-"Language: \n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.9.1\n"
 
 msgid "manager.distribution.access"
 msgstr "Access"
@@ -37,9 +40,6 @@ msgstr "The journal will provide open access to its contents."
 
 msgid "manager.distribution.publishingMode.subscription"
 msgstr "The journal will require subscriptions to access some or all of its contents."
-
-msgid "manager.distribution.publishingMode.success"
-msgstr "The publishing details have been updated."
 
 msgid "manager.website.archiving"
 msgstr "Archiving"
@@ -116,8 +116,9 @@ msgstr "All costs must be positive numeric values (decimal points are allowed)"
 msgid "manager.payment.generalFees"
 msgstr "General Fees"
 
+#, fuzzy
 msgid "manager.payment.generalFeesDescription"
-msgstr "The Association Membership will appear in About the Journal under Policies, and the donations link will appear above the search function in the right-hand frame."
+msgstr "The Association Membership will appear in About the Journal under Policies."
 
 msgid "manager.payment.generalOptions"
 msgstr "General Options"
@@ -136,9 +137,6 @@ msgstr "This will activate payments for Subscriptions, where types, cost, durati
 
 msgid "subscriptionManager.subscription.confirmRemove"
 msgstr "Are you sure you wish to delete this subscription?"
-
-msgid "manager.payment.success"
-msgstr "The payment settings have been updated."
 
 msgid "manager.payment.options.enablePayments"
 msgstr "Payments will be enabled for this journal. Note that users will be required to log in to make payments."
@@ -252,7 +250,7 @@ msgid "manager.sections.confirmDelete"
 msgstr "Are you sure you want to permanently delete this section?"
 
 msgid "manager.sections.alertDelete"
-msgstr "Before this section can be deleted, you must move articles published within it into other sections."
+msgstr "Before this section can be deleted, you must move articles submitted to it into other sections."
 
 msgid "manager.sections.create"
 msgstr "Create Section"
@@ -265,6 +263,12 @@ msgstr "Items can only be submitted by Editors and Section Editors."
 
 msgid "manager.sections.editors"
 msgstr "Section editors"
+
+#, fuzzy
+msgid "manager.sections.confirmDeactivateSection.error"
+msgstr ""
+"At least one section must be active. Visit the workflow settings to disable "
+"all submissions to this journal."
 
 msgid "manager.sections.form.abbrevRequired"
 msgstr "An abbreviated title is required for the section"
@@ -383,9 +387,6 @@ msgstr "Alternately, instead of title and logo, an HTML version of the header ca
 msgid "manager.setup.announcements"
 msgstr "Announcements"
 
-msgid "manager.setup.announcements.success"
-msgstr "The announcements settings have been updated."
-
 msgid "manager.setup.announcementsIntroduction"
 msgstr "Introduction"
 
@@ -394,9 +395,6 @@ msgstr "Enter any information you would like to appear on your announcements pag
 
 msgid "manager.setup.appearInAboutJournal"
 msgstr "(To appear in About the Journal) "
-
-msgid "manager.setup.archiving.success"
-msgstr "The archiving details for this journal have been updated."
 
 msgid "manager.setup.competingInterests.requireAuthors"
 msgstr "Require submitting Authors to file a Competing Interest (CI) statement with their submission."
@@ -409,9 +407,6 @@ msgstr "Journal History"
 
 msgid "manager.setup.historyDescription"
 msgstr "This text will appear in the \"About\" section of the journal website and can be used to describe changes in titles, editorial board, and other items of relevance to the journal's publication history."
-
-msgid "manager.setup.contact.success"
-msgstr "The contact details for this journal have been updated."
 
 msgid "manager.setup.currentIssue"
 msgstr "Current issue"
@@ -548,9 +543,6 @@ msgstr "For Librarians"
 msgid "manager.setup.information.forReaders"
 msgstr "For Readers"
 
-msgid "manager.setup.information.success"
-msgstr "The information for this journal was updated."
-
 msgid "manager.setup.initialIssue"
 msgstr "Initial issue"
 
@@ -653,9 +645,6 @@ msgstr "Provide a short description of your journal and identify editors, managi
 msgid "manager.setup.labelName"
 msgstr "Label name"
 
-msgid "manager.setup.lists.success"
-msgstr "The list settings for this journal have been updated."
-
 msgid "manager.setup.lists"
 msgstr "Lists"
 
@@ -728,9 +717,6 @@ msgstr "Management and Publishing Setup"
 msgid "manager.setup.managingTheJournal"
 msgstr "Step 4. Managing the Journal"
 
-msgid "manager.setup.masthead.success"
-msgstr "The masthead details for this journal have been updated."
-
 msgid "manager.setup.navigationBar"
 msgstr "Navigation Bar"
 
@@ -775,9 +761,6 @@ msgstr "Focus, peer review, sections, privacy, security, and additional about it
 
 msgid "manager.setup.printIssn"
 msgstr "Print ISSN"
-
-msgid "manager.setup.privacyStatement.success"
-msgstr "The privacy statement has been updated."
 
 msgid "manager.setup.proofingInstructions"
 msgstr "Proofing Instructions"
@@ -827,9 +810,6 @@ msgstr "Automated Email Reminders"
 msgid "manager.setup.reviewOptions.automatedRemindersDisabled"
 msgstr "To send automated email reminders, the site administrator must enable the <tt>scheduled_tasks</tt> option in the OJS configuration file. Additional server configuration may be required as indicated in the OJS documentation."
 
-msgid "manager.setup.reviewOptions.blindReview"
-msgstr "Blind Review"
-
 msgid "manager.setup.reviewOptions.numWeeksPerReview"
 msgstr "Weeks allowed to complete the review"
 
@@ -865,9 +845,6 @@ msgstr "Review Policy"
 
 msgid "manager.setup.searchEngineIndexing"
 msgstr "Search Indexing"
-
-msgid "manager.setup.searchEngineIndexing.success"
-msgstr "The search engine index settings have been updated."
 
 msgid "manager.setup.searchEngineIndexing.description"
 msgstr "Help search engines like Google discover and display your site. You are encouraged to submit your <a href=\"{$sitemapUrl}\" target=\"_blank\">sitemap</a>."
@@ -926,6 +903,12 @@ msgstr "Submissions"
 msgid "manager.setup.submissions.description"
 msgstr "Author guidelines, copyright, and indexing (including registration)."
 
+msgid "manager.setup.disableSubmissions.description"
+msgstr "Prevent users from submitting new articles to the journal. Submissions can be disabled for individual journal sections on the <a href="{$url}">journal sections</a> settings page."
+
+msgid "manager.setup.disableSubmissions.notAccepting"
+msgstr "This journal is not accepting submissions at this time. Visit the workflow settings to allow submissions."
+
 msgid "manager.setup.enableOai"
 msgstr "Enable OAI"
 
@@ -949,9 +932,6 @@ msgstr "Articles and issues can be tagged with an identification number or strin
 
 msgid "manager.setup.useEditorialReviewBoard"
 msgstr "An editorial/review board will be used by the journal."
-
-msgid "manager.setup.userAccess.success"
-msgstr "The user access details for this journal have been updated."
 
 msgid "manager.setup.useThumbnail"
 msgstr "Thumbnail"
@@ -1689,6 +1669,12 @@ msgstr "Registration was not successful! The DOI registration server returned an
 
 msgid "plugins.importexport.common.register.success"
 msgstr "Registration successful!"
+
+msgid "plugins.importexport.common.validation.success"
+msgstr "Validation successful!"
+
+msgid "plugins.importexport.common.validation.fail"
+msgstr "Validation Failed."
 
 msgid "plugins.importexport.common.senderTask.warning.noDOIprefix"
 msgstr "DOI prefix is missing for the journal with the path {$path}."

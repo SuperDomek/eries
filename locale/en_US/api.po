@@ -11,6 +11,12 @@ msgstr ""
 "PO-Revision-Date: 2019-09-27T09:54:38-07:00\n"
 "Language: \n"
 
+msgid "api.announcements.400.contextsNotMatched"
+msgstr "The announcement you requested is not part of this journal."
+
+msgid "api.emails.403.disabled"
+msgstr "The email notification feature has not been enabled for this journal."
+
 msgid "api.submissions.403.cantChangeContext"
 msgstr "You can not change the journal of a submission."
 
@@ -52,3 +58,6 @@ msgstr "The publication that you requested is not part of this journal."
 
 msgid "api.publications.403.submissionsDidNotMatch"
 msgstr "The publication that you requested is not part of this submission."
+
+msgid "api.submissionFiles.400.badRepresentationAssocType"
+msgstr "You can not associated a file from this file stage with a galley."

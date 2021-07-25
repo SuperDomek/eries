@@ -3,8 +3,8 @@
 /**
  * @file plugins/importexport/native/NativeImportExportPlugin.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class NativeImportExportPlugin
@@ -71,27 +71,27 @@ class NativeImportExportPlugin extends ImportExportPlugin {
 		switch (array_shift($args)) {
 			case 'index':
 			case '':
-				$exportSubmissionsListPanel = new \PKP\components\listPanels\PKPSelectSubmissionsListPanel(
-					'exportSubmissionsListPanel',
-					__('plugins.importexport.native.exportSubmissionsSelect'),
+				$apiUrl = $request->getDispatcher()->url($request, ROUTE_API, $context->getPath(), 'submissions');
+				$submissionsListPanel = new \APP\components\listPanels\SubmissionsListPanel(
+					'submissions',
+					__('common.publications'),
 					[
-						'apiUrl' => $request->getDispatcher()->url(
-							$request,
-							ROUTE_API,
-							$context->getPath(),
-							'_submissions'
-						),
-						'canSelect' => true,
-						'canSelectAll' => true,
+						'apiUrl' => $apiUrl,
 						'count' => 100,
+						'getParams' => new stdClass(),
 						'lazyLoad' => true,
-						'selectorName' => 'selectedSubmissions[]',
 					]
 				);
-				$templateMgr->assign('exportSubmissionsListData', [
+				$submissionsConfig = $submissionsListPanel->getConfig();
+				$submissionsConfig['addUrl'] = '';
+				$submissionsConfig['filters'] = array_slice($submissionsConfig['filters'], 1);
+				$templateMgr->setState([
 					'components' => [
-						'exportSubmissionsListPanel' => $exportSubmissionsListPanel->getConfig()
-					]
+						'submissions' => $submissionsConfig,
+					],
+				]);
+				$templateMgr->assign([
+					'pageComponent' => 'ImportExportPage',
 				]);
 				$templateMgr->display($this->getTemplateResource('index.tpl'));
 				break;
@@ -111,6 +111,7 @@ class NativeImportExportPlugin extends ImportExportPlugin {
 				header('Content-Type: application/json');
 				return $json->getString();
 			case 'importBounce':
+				if (!$request->checkCSRF()) throw new Exception('CSRF mismatch!');
 				$json = new JSONMessage(true);
 				$json->setEvent('addTab', array(
 					'title' => __('plugins.importexport.native.results'),
@@ -259,7 +260,7 @@ class NativeImportExportPlugin extends ImportExportPlugin {
 		if (!empty($errors)) {
 			$this->displayXMLValidationErrors($errors, $xml);
 		}
-		
+
 		return $xml;
 	}
 
@@ -345,6 +346,8 @@ class NativeImportExportPlugin extends ImportExportPlugin {
 			$this->usage($scriptName);
 			return;
 		}
+
+		PluginRegistry::loadCategory('pubIds', true, $journal->getId());
 
 		if ($xmlFile && $this->isRelativePath($xmlFile)) {
 			$xmlFile = PWD . '/' . $xmlFile;
@@ -485,7 +488,7 @@ class NativeImportExportPlugin extends ImportExportPlugin {
 				$sticky = null;
 				continue;
 			}
-			if (!starts_with($arg, '--')) {
+			if (substr($arg, 0, 2) != '--') {
 				$newArgs[] = $arg;
 				continue;
 			}

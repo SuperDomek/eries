@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/eventLog/SubmissionEventLogGridHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SubmissionEventLogGridHandler
@@ -27,6 +27,9 @@ import('lib.pkp.controllers.grid.eventLog.EventLogGridCellProvider');
 class SubmissionEventLogGridHandler extends GridHandler {
 	/** @var Submission */
 	var $_submission;
+
+	/** @var int The current workflow stage */
+	var $_stageId;
 
 	/** @var boolean Is the current user assigned as an author to this submission */
 	var $_isCurrentUserAssignedAuthor;
@@ -105,6 +108,8 @@ class SubmissionEventLogGridHandler extends GridHandler {
 		$submission = $this->getAuthorizedContextObject(ASSOC_TYPE_SUBMISSION);
 		$this->setSubmission($submission);
 
+		$this->_stageId = (int) $args['stageId'];
+
 		// Load submission-specific translations
 		AppLocale::requireComponents(
 			LOCALE_COMPONENT_APP_SUBMISSION,
@@ -123,7 +128,7 @@ class SubmissionEventLogGridHandler extends GridHandler {
 				null,
 				new DateGridCellProvider(
 					$cellProvider,
-					Config::getVar('general', 'date_format_short')
+					\Application::get()->getRequest()->getContext()->getLocalizedDateFormatShort()
 				)
 			)
 		);
@@ -170,6 +175,7 @@ class SubmissionEventLogGridHandler extends GridHandler {
 
 		return array(
 			'submissionId' => $submission->getId(),
+			'stageId' => $this->_stageId,
 		);
 	}
 

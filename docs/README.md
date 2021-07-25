@@ -1,9 +1,9 @@
 	===================================
 	=== Open Journal Systems
 	=== The Public Knowledge Project
-	=== Version: 3.2.1-1
-	=== GIT tag: 3_2_1-1
-	=== Release date: June 26, 2020
+	=== Version: 3.3.0
+	=== GIT tag: 3_3_0-7
+	=== Release date: June 23, 2021
 	===================================
 
 
@@ -28,7 +28,7 @@ improvements or bug fixes to the software.
 
 Recommended server requirements:
 
-* PHP >= 7.2
+* PHP >= 7.3
 * MySQL >= 4.1 or PostgreSQL >= 9.1.5
 * Apache >= 1.3.2x or >= 2.0.4x or Microsoft IIS 6
 * Operating system: Any OS that supports the above software, including
@@ -79,10 +79,7 @@ To install OJS:
 		 to manually overwrite this file during installation)
 	 * `public`
 	 * `cache`
-	 * `cache/t_cache`
-	 * `cache/t_config`
-	 * `cache/t_compile`
-	 * `cache/_db`
+	 * `plugins` (for plugin installation via the web interface)
 
 3. Create a directory to store uploaded files (submission files, etc.)
 	 and make this directory writeable. It is recommended that this
@@ -176,14 +173,14 @@ interpreter installed on your server.
 * See [lib/pkp/lib/libraries.txt](../lib/pkp/lib/libraries.txt) for a list of third-party libraries
 	used by OJS.
 
-* OJS supports the legacy GeoLiteCite database to approximate geolocation
+* OJS supports the legacy GeoLite City database to approximate geolocation
 	information for usage statistics. If you would like to use this optional
-	functionality, you can download the database from MaxMind at:
-	http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz
+	functionality, you can download the database from here:
+	https://download.cnet.com/MaxMind-GeoLite-City-Database/3000-10254_4-10506960.html
 	You will need to decompress the file and place "GeoLiteCity.dat" into
 	the `plugins/generic/usageStats` directory. A separate license agreement
 	is required for this use of this database. For details, see:
-	https://dev.maxmind.com/geoip/legacy/geolite/
+	https://support.maxmind.com/geolite-legacy-discontinuation-notice/
 
 ## Contact/Support
 

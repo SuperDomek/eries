@@ -14,6 +14,9 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 3.9.1\n"
 
+msgid "editor.submissionArchive.confirmDelete"
+msgstr "Sei sicuro di cancellare definitivamente questa proposta?"
+
 msgid "editor.submissionLibrary"
 msgstr "Archivio delle proposte"
 
@@ -44,10 +47,12 @@ msgstr "Non inviare una email all'autore"
 msgid "editor.submissionReview.open"
 msgstr "Libera"
 
-msgid "editor.submissionReview.blind"
+#, fuzzy
+msgid "editor.submissionReview.anonymous"
 msgstr "Cieco"
 
-msgid "editor.submissionReview.doubleBlind"
+#, fuzzy
+msgid "editor.submissionReview.doubleAnonymous"
 msgstr "Doppio cieco"
 
 msgid "editor.submissionReview.restrictFiles"
@@ -364,12 +369,6 @@ msgstr "Valuta la qualità della revisione effettuata. Questa valutazione non sa
 msgid "editor.review.reviewerRating.none"
 msgstr "Nessuna valutazione"
 
-msgid "reviewer.list.count"
-msgstr "{$count} revisori"
-
-msgid "reviewer.list.itemsOfTotal"
-msgstr "{$count} di {$total} revisori"
-
 msgid "reviewer.list.filterRating"
 msgstr "Valutati al minimo"
 
@@ -403,6 +402,7 @@ msgstr "Mai assegnate"
 msgid "reviewer.list.currentlyAssigned"
 msgstr "Questo revisore è già stato assegnato a rivedere questa proposta."
 
+#, fuzzy
 msgid "reviewer.list.warnOnAssign"
 msgstr "Questo revisore è bloccato perche gli è già stato assegnato un ruolo che gli permette di vedere l'identità dell'autore. Una revisione cieca non può essere garantita. Vuoi lo stesso sbloccare questo revisore ?"
 

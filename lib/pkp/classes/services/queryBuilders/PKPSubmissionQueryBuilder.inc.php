@@ -3,8 +3,8 @@
 /**
  * @file classes/services/QueryBuilders/PKPSubmissionQueryBuilder.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SubmissionQueryBuilder
@@ -18,9 +18,9 @@ namespace PKP\Services\QueryBuilders;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use PKP\Services\QueryBuilders\Interfaces\EntityQueryBuilderInterface;
 
-abstract class PKPSubmissionQueryBuilder extends BaseQueryBuilder implements EntityQueryBuilderInterface {
+abstract class PKPSubmissionQueryBuilder implements EntityQueryBuilderInterface {
 
-	/** @var int|string|null Context ID or '*' to get from all contexts */
+	/** @var int|string|null Context ID or CONTEXT_ID_ALL to get from all contexts */
 	protected $categoryIds = null;
 
 	/** @var int|null Context ID */
@@ -41,8 +41,8 @@ abstract class PKPSubmissionQueryBuilder extends BaseQueryBuilder implements Ent
 	/** @var array|null list of stage ids */
 	protected $stageIds = null;
 
-	/** @var int|null user ID */
-	protected $assigneeId = null;
+	/** @var int|array user IDs */
+	protected $assignedTo = [];
 
 	/** @var string|null search phrase */
 	protected $searchPhrase = null;
@@ -186,12 +186,13 @@ abstract class PKPSubmissionQueryBuilder extends BaseQueryBuilder implements Ent
 	/**
 	 * Limit results to a specific user's submissions
 	 *
-	 * @param int $assigneeId
+	 * @param int|array $assignedTo List of assigned user ids or -1 to
+	 *   get submissions with no user assigned.
 	 *
 	 * @return \APP\Services\QueryBuilders\SubmissionQueryBuilder
 	 */
-	public function assignedTo($assigneeId) {
-		$this->assigneeId = $assigneeId;
+	public function assignedTo($assignedTo) {
+		$this->assignedTo = $assignedTo;
 		return $this;
 	}
 
@@ -263,11 +264,11 @@ abstract class PKPSubmissionQueryBuilder extends BaseQueryBuilder implements Ent
 					->groupBy('s.submission_id');
 
 		// context
-		// Never permit a query without a context_id clause unless the '*' wildcard
+		// Never permit a query without a context_id clause unless the CONTEXT_ID_ALL wildcard
 		// has been set explicitely.
 		if (is_null($this->contextId)) {
 			$q->where('s.context_id', '=', CONTEXT_ID_NONE);
-		} elseif ($this->contextId !== '*') {
+		} elseif ($this->contextId !== CONTEXT_ID_ALL) {
 			$q->where('s.context_id', '=' , $this->contextId);
 		}
 
@@ -282,7 +283,7 @@ abstract class PKPSubmissionQueryBuilder extends BaseQueryBuilder implements Ent
 			$q->leftJoin('publications as publication_tlpl', 's.current_publication_id', '=', 'publication_tlpl.publication_id')
 				->leftJoin('publication_settings as publication_tlpsl', 'publication_tlp.publication_id', '=', 'publication_tlpsl.publication_id')
 				->where('publication_tlpsl.setting_name', '=', 'title')
-				->where('publication_tlpsl.locale', '=', Capsule::raw('publication_tlpl.locale'));
+				->where('publication_tlpsl.locale', '=', Capsule::raw('s.locale'));
 			$q->groupBy(Capsule::raw('COALESCE(publication_tlps.setting_value, publication_tlpsl.setting_value)'));
 		}
 
@@ -296,6 +297,7 @@ abstract class PKPSubmissionQueryBuilder extends BaseQueryBuilder implements Ent
 		} else if ($this->orderColumn === 'po.date_published') {
 			$this->columns[] = 'po.date_published';
 			$q->leftJoin('publications as po', 's.current_publication_id', '=', 'po.publication_id');
+			$q->groupBy('po.date_published');
 		}
 
 		// statuses
@@ -345,29 +347,30 @@ abstract class PKPSubmissionQueryBuilder extends BaseQueryBuilder implements Ent
 			});
 		}
 
-		// assigned to
-		$isAssignedOnly = !is_null($this->assigneeId) && ($this->assigneeId !== -1);
+		// Assigned to
+		$isAssignedOnly = !empty($this->assignedTo) && $this->assignedTo !== -1;
 		if ($isAssignedOnly) {
-			$assigneeId = $this->assigneeId;
+			$assignedTo = $this->assignedTo;
 
 			// Stage assignments
-			$q->leftJoin('stage_assignments as sa', function($table) use ($assigneeId) {
+			$q->leftJoin('stage_assignments as sa', function($table) use ($assignedTo) {
 				$table->on('s.submission_id', '=', 'sa.submission_id');
-				$table->on('sa.user_id', '=', Capsule::raw((int) $assigneeId));
+				$table->whereIn('sa.user_id', $assignedTo);
 			});
 
 			// Review assignments
-			$q->leftJoin('review_assignments as ra', function($table) use ($assigneeId) {
+			$q->leftJoin('review_assignments as ra', function($table) use ($assignedTo) {
 				$table->on('s.submission_id', '=', 'ra.submission_id');
-				$table->on('ra.reviewer_id', '=', Capsule::raw((int) $assigneeId));
 				$table->on('ra.declined', '=', Capsule::raw((int) 0));
+				$table->on('ra.cancelled', '=', Capsule::raw((int) 0));
+				$table->whereIn('ra.reviewer_id', $assignedTo);
 			});
 
 			$q->where(function($q) {
 				$q->whereNotNull('sa.stage_assignment_id');
 				$q->orWhereNotNull('ra.review_id');
 			});
-		} elseif ($this->assigneeId === -1) {
+		} elseif ($this->assignedTo === -1) {
 			$sub = Capsule::table('stage_assignments')
 						->select(Capsule::raw('count(stage_assignments.stage_assignment_id)'))
 						->leftJoin('user_groups','stage_assignments.user_group_id','=','user_groups.user_group_id')
@@ -403,6 +406,10 @@ abstract class PKPSubmissionQueryBuilder extends BaseQueryBuilder implements Ent
 						->orWhere(function($q) use ($word, $isAssignedOnly) {
 							$q->where('aus.setting_name', IDENTITY_SETTING_FAMILYNAME);
 							$q->where(Capsule::raw('lower(aus.setting_value)'), 'LIKE', "%{$word}%");
+						})
+						->orWhere(function($q) use ($word, $isAssignedOnly) {
+							$q->where('aus.setting_name', 'orcid');
+							$q->where(Capsule::raw('lower(aus.setting_value)'), '=', "{$word}");
 						});
 						// Prevent reviewers from matching searches by author name
 						if ($isAssignedOnly) {

@@ -3,8 +3,8 @@
 /**
  * @file plugins/generic/usageEvent/UsageEventPlugin.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class UsageEventPlugin
@@ -29,7 +29,8 @@ class UsageEventPlugin extends PKPUsageEventPlugin {
 			'ArticleHandler::download',
 			'IssueHandler::download',
 			'HtmlArticleGalleyPlugin::articleDownload',
-			'HtmlArticleGalleyPlugin::articleDownloadFinished'
+			'HtmlArticleGalleyPlugin::articleDownloadFinished',
+			'LensGalleyPlugin::articleDownloadFinished'
 		));
 	}
 
@@ -38,7 +39,8 @@ class UsageEventPlugin extends PKPUsageEventPlugin {
 	 */
 	protected function getDownloadFinishedEventHooks() {
 		return array_merge(parent::getDownloadFinishedEventHooks(), array(
-			'HtmlArticleGalleyPlugin::articleDownloadFinished'
+			'HtmlArticleGalleyPlugin::articleDownloadFinished',
+			'LensGalleyPlugin::articleDownloadFinished'
 		));
 	}
 
@@ -63,10 +65,17 @@ class UsageEventPlugin extends PKPUsageEventPlugin {
 					if (!in_array($page, $wantedPages) || !in_array($op, $wantedOps)) break;
 
 					// View requests with 1 argument might relate to journal
-					// or article. With more than 1 is related with other objects
-					// that we are not interested in or that are counted using a
-					// different hook.
-					if ($op == 'view' && count($args) > 1) break;
+					// or article. With more than 1 is related either with a
+					// version of the submissin abstract page or
+					// with other objects that we are not interested in or
+					// that are counted using a different hook.
+					// If the operation is 'view' and the arguments count > 1
+					// the arguments must be: $submissionId/version/$publicationId.
+					if ($op == 'view' && count($args) > 1) {
+						if ($args[1] !== 'version') break;
+						else if (count($args) != 3) break;
+						$publicationId = (int) $args[2];
+					}
 
 					$journal = $templateMgr->getTemplateVars('currentContext');
 					$issue = $templateMgr->getTemplateVars('issue');
@@ -93,6 +102,11 @@ class UsageEventPlugin extends PKPUsageEventPlugin {
 						$assocType = ASSOC_TYPE_SUBMISSION;
 						$canonicalUrlParams = array($pubObject->getId());
 						$idParams = array('m' . $pubObject->getId());
+						if (isset($publicationId)) {
+							// no need to check if the publication exists (for the submisison),
+							// 404 would be returned and the usage event would not be there
+							$canonicalUrlParams = array($pubObject->getId(), 'version', $publicationId);
+						}
 					}
 
 					$downloadSuccess = true;
@@ -114,18 +128,18 @@ class UsageEventPlugin extends PKPUsageEventPlugin {
 					// Article file.
 				case 'ArticleHandler::download':
 				case 'HtmlArticleGalleyPlugin::articleDownload':
+				case 'LensGalleyPlugin::articleDownloadFinished':
 					$assocType = ASSOC_TYPE_SUBMISSION_FILE;
 					$article = $hookArgs[0];
 					$galley = $hookArgs[1];
-					$fileId = $hookArgs[2];
+					$submissionFileId = $hookArgs[2];
 					// if file is not a gallay file (e.g. CSS or images), there is no usage event.
-					if ($galley->getFileId() != $fileId) return false;
+					if ($galley->getData('submissionFileId') != $submissionFileId) return false;
 					$canonicalUrlOp = 'download';
-					$canonicalUrlParams = array($article->getId(), $galley->getId(), $fileId);
-					$idParams = array('a' . $article->getId(), 'g' . $galley->getId(), 'f' . $fileId);
+					$canonicalUrlParams = array($article->getId(), $galley->getId(), $submissionFileId);
+					$idParams = array('a' . $article->getId(), 'g' . $galley->getId(), 'f' . $submissionFileId);
 					$downloadSuccess = false;
-					$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO'); /* @var $submissionFileDao SubmissionFileDAO */
-					$pubObject = $submissionFileDao->getLatestRevision($fileId);
+					$pubObject = Services::get('submissionFile')->get($submissionFileId);
 					break;
 				default:
 					// Why are we called from an unknown hook?

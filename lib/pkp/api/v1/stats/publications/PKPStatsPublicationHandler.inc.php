@@ -3,8 +3,8 @@
 /**
  * @file api/v1/stats/PKPStatsHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPStatsPublicationHandler
@@ -26,7 +26,7 @@ abstract class PKPStatsPublicationHandler extends APIHandler {
 	 */
 	public function __construct() {
 		$this->_handlerPath = 'stats/publications';
-		$roles = array(ROLE_ID_SITE_ADMIN, ROLE_ID_MANAGER);
+		$roles = array(ROLE_ID_SITE_ADMIN, ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR);
 		$this->_endpoints = array(
 			'GET' => array (
 				array(
@@ -242,13 +242,11 @@ abstract class PKPStatsPublicationHandler extends APIHandler {
 			$statsQB->filterBySubmissions($allowedParams['submissionIds']);
 		}
 		$statsQO = $statsQB->getSubmissionIds();
-		$result = \DAORegistry::getDAO('MetricsDAO')
-			->retrieve($statsQO->toSql(), $statsQO->getBindings());
-		$itemsMax = $result->RecordCount();
 
+		$metricsDao = \DAORegistry::getDAO('MetricsDAO'); /** @var MetricsDAO */
 		return $response->withJson([
 			'items' => $items,
-			'itemsMax' => $itemsMax,
+			'itemsMax' => $metricsDao->countRecords($statsQO->toSql(), $statsQO->getBindings()),
 		], 200);
 	}
 

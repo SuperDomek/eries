@@ -3,8 +3,8 @@
 /**
  * @file pages/management/SettingsHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SettingsHandler
@@ -79,7 +79,7 @@ class SettingsHandler extends ManagementHandler {
 		// not need to be submitted. It's a dirty hack, but we can change this once
 		// an API is in place for plugins and plugin settings.
 		$plnPlugin = PluginRegistry::getPlugin('generic', 'plnplugin');
-		$archivePnForm = new \PKP\components\forms\FormComponent('archivePn', 'PUT', 'dummy', 'dummy', $supportedFormLocales);
+		$archivePnForm = new \PKP\components\forms\FormComponent('archivePn', 'PUT', 'dummy', $supportedFormLocales);
 		$archivePnForm->addPage([
 				'id' => 'default',
 				'submitButton' => null,
@@ -111,11 +111,8 @@ class SettingsHandler extends ManagementHandler {
 				'settingsUrl' => $pnSettingsUrl,
 				'csrfToken' => $request->getSession()->getCSRFToken(),
 				'groupId' => 'default',
-				'i18n' => [
-					'enablePluginError' => __('api.submissions.unknownError'),
-					'enablePluginSuccess' => __('common.pluginEnabled', ['pluginName' => __('manager.setup.plnPluginArchiving')]),
-					'disablePluginSuccess' => __('common.pluginDisabled', ['pluginName' => __('manager.setup.plnPluginArchiving')]),
-				],
+				'enablePluginSuccess' => __('common.pluginEnabled', ['pluginName' => __('manager.setup.plnPluginArchiving')]),
+				'disablePluginSuccess' => __('common.pluginDisabled', ['pluginName' => __('manager.setup.plnPluginArchiving')]),
 			]));
 		} else {
 			$archivePnForm->addField(new \PKP\components\forms\FieldHTML('pn', [
@@ -126,11 +123,20 @@ class SettingsHandler extends ManagementHandler {
 		}
 
 		// Add forms to the existing settings data
-		$settingsData = $templateMgr->getTemplateVars('settingsData');
-		$settingsData['components'][$accessForm->id] = $accessForm->getConfig();
-		$settingsData['components'][$archivingLockssForm->id] = $archivingLockssForm->getConfig();
-		$settingsData['components'][$archivePnForm->id] = $archivePnForm->getConfig();
-		$templateMgr->assign('settingsData', $settingsData);
+		$components = $templateMgr->getState('components');
+		$components[$accessForm->id] = $accessForm->getConfig();
+		$components[$archivingLockssForm->id] = $archivingLockssForm->getConfig();
+		$components[$archivePnForm->id] = $archivePnForm->getConfig();
+		$templateMgr->setState(['components' => $components]);
+
+		// Add a payments link to be added/removed when payments form submitted
+		$templateMgr->setState([
+			'paymentsNavLink' => [
+				'name' => __('common.payments'),
+				'url' => $router->url($request, null, 'payments'),
+				'isCurrent' => false,
+			],
+		]);
 
 		// Hook into the settings templates to add the appropriate tabs
 		HookRegistry::register('Template::Settings::distribution', function($hookName, $args) {

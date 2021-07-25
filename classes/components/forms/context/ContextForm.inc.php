@@ -2,8 +2,8 @@
 /**
  * @file classes/components/form/context/ContextForm.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ContextForm
@@ -21,8 +21,8 @@ class ContextForm extends PKPContextForm {
 	/**
 	 * @copydoc PKPContextForm::__construct()
 	 */
-	public function __construct($action, $successMessage, $locales, $baseUrl, $context) {
-		parent::__construct($action, $successMessage, $locales, $baseUrl, $context);
+	public function __construct($action, $locales, $baseUrl, $context) {
+		parent::__construct($action, $locales, $baseUrl, $context);
 
 		$this->addField(new FieldText('abbreviation', [
 				'label' => __('manager.setup.journalAbbreviation'),

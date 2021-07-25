@@ -3,8 +3,8 @@
 /**
  * @file plugins/oaiMetadataFormats/marcxml/OAIMetadataFormat_MARC21.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class OAIMetadataFormat_MARC21
@@ -15,6 +15,14 @@
  */
 
 class OAIMetadataFormat_MARC21 extends OAIMetadataFormat {
+	/**
+	 * Constructor.
+	 */
+	function __construct($prefix, $schema, $namespace) {
+		parent::__construct($prefix, $schema, $namespace);
+		PKPLocale::requireComponents([LOCALE_COMPONENT_PKP_SUBMISSION]); // submission.copyrightStatement
+	}
+
 	/**
 	 * @see OAIMetadataFormat#toXml
 	 */

@@ -1,8 +1,8 @@
 {**
  * templates/submission/submissionMetadataFormTitleFields.tpl
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Submission's metadata form title fields. To be included in any form that wants to handle
@@ -15,10 +15,10 @@
 {/if}
 {fbvElement type="hidden" name="submissionVersion" id="submissionVersion" value=$formParams.submissionVersion}
 <div class="pkp_helpers_clear">
-	{* EDIT removed field prefix*}
-	{fbvElement type="hidden" name="prefix" id="prefix" value=$prefix}
-	{* EDIT removed size info and inline to keep 100% width*}
-	{fbvFormSection for="title" title="common.title" required=true}
+	{fbvFormSection for="title" title="common.prefix" inline="true" size=$fbvStyles.size.SMALL}
+		{fbvElement label="common.prefixAndTitle.tip" type="text" multilingual=true name="prefix" id="prefix" value=$prefix readonly=$readOnly maxlength="32"}
+	{/fbvFormSection}
+	{fbvFormSection for="title" title="common.title" inline="true" size=$fbvStyles.size.LARGE required=true}
 		{fbvElement type="text" multilingual=true name="title" id="title" value=$title readonly=$readOnly maxlength="255" required=true}
 	{/fbvFormSection}
 </div>

@@ -2,8 +2,8 @@
 /**
  * @file classes/services/QueryBuilders/GalleyQueryBuilder.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class GalleyQueryBuilder
@@ -17,7 +17,7 @@ namespace APP\Services\QueryBuilders;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use PKP\Services\QueryBuilders\Interfaces\EntityQueryBuilderInterface;
 
-class GalleyQueryBuilder extends \PKP\Services\QueryBuilders\BaseQueryBuilder implements EntityQueryBuilderInterface {
+class GalleyQueryBuilder implements EntityQueryBuilderInterface {
 	/** @var array List of columns (see getQuery) */
 	public $columns;
 
@@ -67,6 +67,8 @@ class GalleyQueryBuilder extends \PKP\Services\QueryBuilders\BaseQueryBuilder im
 		if (!empty($this->publicationIds)) {
 			$q->whereIn('g.publication_id', $this->publicationIds);
 		}
+
+		$q->orderBy('g.seq', 'asc');
 
 		// Add app-specific query statements
 		\HookRegistry::call('Galley::getMany::queryObject', array(&$q, $this));

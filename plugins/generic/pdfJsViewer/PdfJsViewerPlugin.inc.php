@@ -80,7 +80,12 @@ class PdfJsViewerPlugin extends GenericPlugin {
 			default: throw new Exception('Unknown application!');
 		}
 
-		if ($galley && $galley->getFileType() == 'application/pdf') {
+		if (!$galley) {
+			return false;
+		}
+
+		$submissionFile = $galley->getFile();
+		if ($submissionFile->getData('mimetype') === 'application/pdf') {
 			$galleyPublication = null;
 			foreach ($submission->getData('publications') as $publication) {
 				if ($publication->getId() === $galley->getData('publicationId')) {
@@ -92,13 +97,12 @@ class PdfJsViewerPlugin extends GenericPlugin {
 			$templateMgr->assign(array(
 				'displayTemplateResource' => $this->getTemplateResource('display.tpl'),
 				'pluginUrl' => $request->getBaseUrl() . '/' . $this->getPluginPath(),
-				'galleyFile' => $galley->getFile(),
+				'galleyFile' => $submissionFile,
 				'issue' => $issue,
 				'submission' => $submission,
 				'submissionNoun' => $submissionNoun,
 				'bestId' => $submission->getBestId(),
 				'galley' => $galley,
-				'jQueryUrl' => $this->_getJQueryUrl($request),
 				'currentVersionString' => $application->getCurrentVersion()->getVersionString(false),
 				'isLatestPublication' => $submission->getData('currentPublicationId') === $galley->getData('publicationId'),
 				'galleyPublication' => $galleyPublication,
@@ -130,7 +134,6 @@ class PdfJsViewerPlugin extends GenericPlugin {
 				'galleyFile' => $galley->getFile(),
 				'issue' => $issue,
 				'galley' => $galley,
-				'jQueryUrl' => $this->_getJQueryUrl($request),
 				'currentVersionString' => $application->getCurrentVersion()->getVersionString(false),
 				'isLatestPublication' => true,
 			));
@@ -139,20 +142,6 @@ class PdfJsViewerPlugin extends GenericPlugin {
 		}
 
 		return false;
-	}
-
-	/**
-	 * Get the URL for JQuery JS.
-	 * @param $request PKPRequest
-	 * @return string
-	 */
-	private function _getJQueryUrl($request) {
-		$min = Config::getVar('general', 'enable_minified') ? '.min' : '';
-		if (Config::getVar('general', 'enable_cdn')) {
-			return '//ajax.googleapis.com/ajax/libs/jquery/' . CDN_JQUERY_VERSION . '/jquery' . $min . '.js';
-		} else {
-			return $request->getBaseUrl() . '/lib/pkp/lib/vendor/components/jquery/jquery' . $min . '.js';
-		}
 	}
 }
 

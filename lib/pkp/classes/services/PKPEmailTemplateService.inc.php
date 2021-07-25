@@ -2,8 +2,8 @@
 /**
  * @file classes/services/PKPEmailTemplateService.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPEmailTemplateService
@@ -24,6 +24,8 @@ use \PKP\Services\interfaces\EntityPropertyInterface;
 use \PKP\Services\interfaces\EntityReadInterface;
 use \PKP\Services\interfaces\EntityWriteInterface;
 use \PKP\Services\QueryBuilders\PKPEmailTemplateQueryBuilder;
+
+define('EMAIL_TEMPLATE_STAGE_DEFAULT', 0);
 
 import('lib.pkp.classes.db.DBResultRange');
 
@@ -58,11 +60,8 @@ class PKPEmailTemplateService implements EntityPropertyInterface, EntityReadInte
 			->getCompiledQuery();
 		$emailTemplateDao = DAORegistry::getDAO('EmailTemplateDAO'); /* @var $emailTemplateDao EmailTemplateDAO */
 		$result = $emailTemplateDao->retrieve($emailTemplateQueryParts[0], $emailTemplateQueryParts[1]);
-		if ($result->RecordCount() !== 0) {
-			$emailTemplate = $emailTemplateDao->_fromRow($result->GetRowAssoc(false));
-		}
-		$result->Close();
-		return !empty($emailTemplate) ? $emailTemplate : null;
+		$row = $result->current();
+		return $row?$emailTemplateDao->_fromRow((array)$row):null;
 	}
 
 	/**
@@ -87,6 +86,7 @@ class PKPEmailTemplateService implements EntityPropertyInterface, EntityReadInte
 	 * 		@option int|array fromRoleIds
 	 * 		@option int|array toRoleIds
 	 * 		@option string searchPhrase
+	 * 		@option int|array stageIds
 	 * }
 	 * @return Iterator
 	 */
@@ -121,6 +121,7 @@ class PKPEmailTemplateService implements EntityPropertyInterface, EntityReadInte
 			'isCustom' => null,
 			'fromRoleIds' => null,
 			'toRoleIds' => null,
+			'stageIds' => null,
 			'searchPhrase' => null,
 		);
 
@@ -133,9 +134,10 @@ class PKPEmailTemplateService implements EntityPropertyInterface, EntityReadInte
 			->filterByIsCustom($args['isCustom'])
 			->filterByFromRoleIds($args['fromRoleIds'])
 			->filterByToRoleIds($args['toRoleIds'])
+			->filterByStageIds($args['stageIds'])
 			->searchPhrase($args['searchPhrase']);
 
-		HookRegistry::call('EmailTemplate::getMany::queryBuilder', array($emailTemplateQB, $args));
+		HookRegistry::call('EmailTemplate::getMany::queryBuilder', array(&$emailTemplateQB, $args));
 
 		return $emailTemplateQB;
 	}
@@ -272,7 +274,7 @@ class PKPEmailTemplateService implements EntityPropertyInterface, EntityReadInte
 		$emailTemplateDao->insertObject($emailTemplate);
 		$emailTemplate = $this->getByKey($contextId, $emailTemplate->getData('key'));
 
-		HookRegistry::call('EmailTemplate::add', array($emailTemplate, $request));
+		HookRegistry::call('EmailTemplate::add', array(&$emailTemplate, $request));
 
 		return $emailTemplate;
 	}
@@ -285,7 +287,7 @@ class PKPEmailTemplateService implements EntityPropertyInterface, EntityReadInte
 		$newEmailTemplate = $emailTemplateDao->newDataObject();
 		$newEmailTemplate->_data = array_merge($emailTemplate->_data, $params);
 
-		HookRegistry::call('EmailTemplate::edit', array($newEmailTemplate, $emailTemplate, $params, $request));
+		HookRegistry::call('EmailTemplate::edit', array(&$newEmailTemplate, $emailTemplate, $params, $request));
 
 		$emailTemplateKey = $emailTemplate->getData('key');
 
@@ -313,10 +315,10 @@ class PKPEmailTemplateService implements EntityPropertyInterface, EntityReadInte
 	 * @copydoc \PKP\Services\EntityProperties\EntityWriteInterface::delete()
 	 */
 	public function delete($emailTemplate) {
-		HookRegistry::call('EmailTemplate::delete::before', array($emailTemplate));
+		HookRegistry::call('EmailTemplate::delete::before', array(&$emailTemplate));
 		$emailTemplateDao = DAORegistry::getDAO('EmailTemplateDAO'); /* @var $emailTemplateDao EmailTemplateDAO */
 		$emailTemplateDao->deleteObject($emailTemplate);
-		HookRegistry::call('EmailTemplate::delete', array($emailTemplate));
+		HookRegistry::call('EmailTemplate::delete', array(&$emailTemplate));
 	}
 
 	/**

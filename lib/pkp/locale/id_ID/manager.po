@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-19T10:49:52+00:00\n"
-"PO-Revision-Date: 2020-03-05 12:26+0000\n"
-"Last-Translator: Fransisca H <sisca.ojs@gmail.com>\n"
+"PO-Revision-Date: 2021-01-14 11:00+0000\n"
+"Last-Translator: Ramli Baharuddin <ramli.baharuddin@relawanjurnal.id>\n"
 "Language-Team: Indonesian <http://translate.pkp.sfu.ca/projects/pkp-lib/"
 "manager/id/>\n"
 "Language: id_ID\n"
@@ -18,7 +18,7 @@ msgid "manager.announcements"
 msgstr "Pengumuman"
 
 msgid "manager.announcements.confirmDelete"
-msgstr "Apakah Anda yakin ingin menghapus pengumuman ini secara permanen?"
+msgstr "Apakah Anda yakin ingin menghapus pengumuman {$title} secara permanen?"
 
 msgid "manager.announcements.create"
 msgstr "Buat Pengumuman Baru"
@@ -54,7 +54,7 @@ msgid "manager.announcements.form.dateExpireYearIncompleteDate"
 msgstr "Pilih bulan dan/atau hari di samping tahun tanggal masa berakhir."
 
 msgid "manager.announcements.form.description"
-msgstr "Deskripsi"
+msgstr "Pengumuman"
 
 msgid "manager.announcements.form.descriptionInstructions"
 msgstr "Teks lengkap pengumuman."
@@ -645,8 +645,8 @@ msgstr ""
 
 msgid "manager.setup.metadata.languages.request"
 msgstr ""
-"Minta penulis untuk mencantumkan bahasa yang digunakan dalam naskah saat "
-"menyerahkannya."
+"Minta penulis untuk mencantumkan bahasa yang digunakan naskah saat "
+"mengirimnya ke jurnal."
 
 msgid "manager.setup.metadata.languages.noRequest"
 msgstr ""
@@ -705,9 +705,6 @@ msgstr ""
 
 msgid "manager.setup.metadata.coverage"
 msgstr "Cakupan"
-
-msgid "manager.setup.metadata.success"
-msgstr "Metadata pengiriman naskah telah berhasil diperbarui."
 
 msgid "manager.setup.metadata.submission"
 msgstr "Borang Pengajuan Naskah"
@@ -972,16 +969,6 @@ msgstr "Identifier simbolik ringkas opsional untuk genre ini."
 msgid "manager.setup.genres.key"
 msgstr "Key"
 
-msgid "manager.setup.genres.supplementary"
-msgstr ""
-"Tandai jenis file ini sebagai file pelengkap (misalnya, bukan isi naskah "
-"utama)"
-
-msgid "manager.setup.genres.dependent"
-msgstr ""
-"Tandai jenis file ini sebagai file dependen (misalnya, tidak ditampilkan "
-"pada konten yang diterbitkan)"
-
 msgid "grid.action.restoreGenres"
 msgstr "Pulihkan komponen ke pengaturan awal"
 
@@ -1124,9 +1111,6 @@ msgstr "Syarat Lisensi"
 
 msgid "manager.distribution.license.other"
 msgstr "URL lisensi lainnya"
-
-msgid "manager.distribution.license.success"
-msgstr "Rincian lisensi telah diperbaharui. "
 
 msgid "manager.distribution.license"
 msgstr "Lisensi"
@@ -1372,9 +1356,6 @@ msgstr "Pengguna Terdaftar"
 msgid "manager.siteAccessOptions.siteAccessOptions"
 msgstr "Pilihan Akses Situs"
 
-msgid "manager.setup.userAccess.success"
-msgstr "Rincian akses pengguna jurnal telah diperbaharui."
-
 msgid "manager.setup.theme.notFound"
 msgstr "Tema yang dipilih belum terinstal atau tidak aktif."
 
@@ -1383,11 +1364,6 @@ msgstr "Tema baru dapat diintal melalui tab Plugin di bagian atas halaman ini."
 
 msgid "manager.setup.theme"
 msgstr "Tema"
-
-msgid "manager.setup.theme.success"
-msgstr ""
-"Tema telah diperbaharui. <a href=\"{$url}\" target=\"_blank\">Lihat "
-"Sekarang</a>"
 
 msgid "manager.setup.technicalSupportContactDescription"
 msgstr ""
@@ -1410,10 +1386,10 @@ msgstr ""
 msgid "manager.setup.sponsors.note"
 msgstr "Hubungan Sponsor dan Uraian Kebijakan"
 
-msgid "manager.setup.reviewOptions.showBlindReviewLink"
+msgid "manager.setup.reviewOptions.showAnonymousReviewLink"
 msgstr ""
-"Tampilkan tautan ke <button type=\"button\">Pastikan Blind Review</button>  "
-"selama proses unggah"
+"Tampilkan tautan ke <button type=\"button\">bagaimana memastikan semua file "
+"tetap anomim</button>  selama proses unggah"
 
 msgid "manager.setup.reviewOptions.reviewMode"
 msgstr "Cara Mereview Bawaan"
@@ -1529,9 +1505,6 @@ msgstr "Unggah gambar untu ditampilkan pada halaman beranda."
 msgid "manager.setup.homepageImage"
 msgstr "Gambar Beranda"
 
-msgid "manager.setup.groupType"
-msgstr "Pengelompokan jenis file"
-
 msgid "manager.setup.favicon"
 msgstr "Favicon"
 
@@ -1540,9 +1513,6 @@ msgstr "Kepentingan Persaingan"
 
 msgid "manager.setup.checklist"
 msgstr "Daftar Cek"
-
-msgid "manager.setup.authorGuidelines.success"
-msgstr "Pedoman penulis telah berhasil diperbaharui."
 
 msgid "manager.setup.authorGuidelines.description"
 msgstr ""
@@ -1559,12 +1529,6 @@ msgstr ""
 
 msgid "manager.setup.copyrightNotice"
 msgstr "Pemberitahuan Hak Cipta"
-
-msgid "manager.setup.contact.success"
-msgstr "Rincian narahubung telah diperbaharui."
-
-msgid "manager.setup.appearance.success"
-msgstr "Pengaturan tampilan telah diperbaharui."
 
 msgid "manager.setup.advanced"
 msgstr "Tingkat Lanjut"
@@ -1695,6 +1659,7 @@ msgstr ""
 "dihasikan dalam format CSV yang membutuhkan aplikasi spreadsheet (misalnya, "
 "excel) untuk membukanya."
 
+#, fuzzy
 msgid "manager.statistics.reports"
 msgstr "Pembuat Laporan"
 
@@ -1787,9 +1752,6 @@ msgstr ""
 msgid "manager.emails.emailKey.description"
 msgstr "Key surel hanya boleh mengandung huruf, angka dan garis bawah."
 
-msgid "manager.emails.editEmail.success"
-msgstr "Template surel telah diubah."
-
 msgid "manager.emails.disable.message"
 msgstr ""
 "Anda akan menonaktifkan template surel. Jika template sedang digunakan oleh "
@@ -1804,9 +1766,6 @@ msgstr "Data Pesan Template"
 
 msgid "manager.emails.customTemplate"
 msgstr "Template Baru"
-
-msgid "manager.emails.addEmail.success"
-msgstr "Template surel telah ditambahkan."
 
 msgid "manager.emails.addEmail"
 msgstr "Tambahkan Template"
@@ -1915,17 +1874,8 @@ msgstr "Tautan ke halaman yang menampilkan pengumuman."
 msgid "manager.navigationMenus.archives.description"
 msgstr "Tautan ke arsip terbitan."
 
-msgid "manager.publication.reviewSetup.success"
-msgstr "Pengaturan review talah diperbaharui."
-
-msgid "manager.publication.reviewerGuidance.success"
-msgstr "Pedoman review telah diperbaharui."
-
 msgid "manager.publication.reviewerGuidance"
 msgstr "Petunjuk Review"
-
-msgid "manager.publication.emailSetup.success"
-msgstr "Pengaturan surel telah diperbaharui."
 
 msgid "manager.publication.emails"
 msgstr "Surel"
@@ -2224,3 +2174,127 @@ msgstr "Semua Pengguna"
 
 msgid "grid.category.categoryDetails"
 msgstr "Rincian kategori"
+
+msgid "manager.statistics.reports.customReportGenerator"
+msgstr "Pembuat Laporan Kastem"
+
+msgid "stats.countWithYearlyAverage"
+msgstr "{$count} ({$average}/tahun)"
+
+msgid "plugins.importexport.native.error.submissionFileSkipped"
+msgstr ""
+"File naskah {$id} telah diloncati karena dilampirkan ke rekaman yang tidak "
+"akan diimpor, seperti tugas review atau diskusi."
+
+msgid "manager.setup.genres.metatadata.description"
+msgstr ""
+"Pilih jenis metadata yang dapat diterima file ini. Dokumen harus dipilih "
+"untuk file publikasi utama, seperti PDF yang dapat diunduh, sehingga file "
+"ini mewarisi metadatanya dari publikasi. Jika tidak, pilih Konten Pendukung "
+"untuk sebagian besar jenis file. Untuk jenis karya seni cocok dipilih untuk "
+"file yang memerlukan kredit, teks, dan metadata lisensi yang berbeda."
+
+msgid "manager.setup.genres.metatadata"
+msgstr "Metadata File"
+
+msgid "manager.setup.genres.supplementary"
+msgstr ""
+"Ini adalah file tambahan, seperti data set dan bahan penelitian, dan akan "
+"ditampilkan secara terpisah dari file publikasi utama."
+
+msgid "manager.setup.genres.dependent"
+msgstr ""
+"Ini adalah file dependen, seperti gambar yang ditampilkan melalui file HTML, "
+"dan tidak akan ditampilkan dengan konten yang diterbitkan."
+
+msgid "manager.setup.genres.label"
+msgstr "Tipe File"
+
+msgid "manager.sections.confirmActivateSection"
+msgstr "Yakin ingin mengaktifkan bagian ini?"
+
+msgid "manager.sections.confirmDeactivateSection"
+msgstr "Yakin ingin menonaktifkan bagian ini?"
+
+msgid "manager.sections.form.deactivateSection"
+msgstr ""
+"Nonaktifkan bagian ini dan jangan izinkan pengiriman baru untuk seksi ini."
+
+msgid "manager.setup.dateTime.custom"
+msgstr "Ubah"
+
+msgid "manager.setup.dateTime.shortDateTime"
+msgstr "Tanggal & Waktu (Singkat)"
+
+msgid "manager.setup.dateTime.longDateTime"
+msgstr "Tanggal & Waktu"
+
+msgid "manager.setup.dateTime.time"
+msgstr "Waktu"
+
+msgid "manager.setup.dateTime.shortDate"
+msgstr "Tanggal (Singkat)"
+
+msgid "manager.setup.dateTime.longDate"
+msgstr "Tanggal"
+
+msgid "manager.setup.dateTime.description"
+msgstr ""
+"Pilih format yang disukai untuk tanggal dan waktu. Format kustom dapat "
+"dimasukkan menggunakan karakter <a href='http://php.net/manual/en/"
+"function.strftime.php#refsect1-function.strftime-parameters'>format "
+"khusus</a>."
+
+msgid "manager.setup.dateTime.descriptionTitle"
+msgstr "Format Tanggal dan Waktu"
+
+msgid "manager.setup.dateTime"
+msgstr "Tanggal & Waktu"
+
+msgid "manager.setup.notifyUsers.sendAnother"
+msgstr "Kirim surel lain"
+
+msgid "manager.setup.notifyUsers.sent"
+msgstr "Surel berhasil dikirim ke semua penerima."
+
+msgid "manager.setup.notifyUsers.sending"
+msgstr ""
+"Mengirim email. Harap jangan buka halaman lain sebelum pengiriman selesai."
+
+msgid "manager.setup.notifyUsers.confirm"
+msgstr ""
+"Anda akan mengirim email ke {$total} pengguna. Apakah Anda yakin ingin "
+"mengirim email ini?"
+
+msgid "manager.setup.notifyUsers.send"
+msgstr "Kirim Surel"
+
+msgid "manager.setup.notifyUsers.copyDetails"
+msgstr "Kirim salinan surel ini ke saya pada {$email}."
+
+msgid "manager.setup.notifyUsers.description"
+msgstr "Pilih user yang akan menerima pemberitahuan surel Anda."
+
+msgid "manager.setup.notifyUsers"
+msgstr "Beri tahu"
+
+msgid "manager.setup.disableSubmissions"
+msgstr "Nonaktifkan pengiriman naskah"
+
+msgid "manager.people.signedInAs"
+msgstr "Anda login sebagai {$username} saat ini"
+
+msgid "manager.export.usersToCsv.description"
+msgstr "Pilih user untuk diekspor ke file Ecel/CSV."
+
+msgid "manager.export.usersToCsv.label"
+msgstr "Ekspor ke Excel/CSV"
+
+msgid "manager.emails.resetComplete"
+msgstr "Template surel telah berhasil direst."
+
+msgid "manager.emails.resetAll.complete"
+msgstr "Template surel bawaan telah dipulihkan."
+
+msgid "manager.announcements.deleteAnnouncement"
+msgstr "Hapus Pengumuman"

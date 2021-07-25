@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/subscriptions/SubscriptionTypesGridHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SubscriptionTypesGridHandler
@@ -149,7 +149,7 @@ class SubscriptionTypesGridHandler extends GridHandler {
 
 		$subscriptionTypeDao = DAORegistry::getDAO('SubscriptionTypeDAO'); /* @var $subscriptionTypeDao SubscriptionTypeDAO */
 		$rangeInfo = $this->getGridRangeInfo($request, $this->getId());
-		return $subscriptionTypeDao->getByJournalId($journal->getId());
+		return $subscriptionTypeDao->getByJournalId($journal->getId(), $rangeInfo);
 	}
 
 

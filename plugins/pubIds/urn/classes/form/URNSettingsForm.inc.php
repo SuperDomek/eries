@@ -3,8 +3,8 @@
 /**
  * @file plugins/pubIds/urn/classes/form/URNSettingsForm.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class URNSettingsForm
@@ -109,6 +109,7 @@ class URNSettingsForm extends Form {
 			'urn:nbn:de' => 'urn:nbn:de',
 			'urn:nbn:at' => 'urn:nbn:at',
 			'urn:nbn:ch' => 'urn:nbn:ch',
+			'urn:nbn:fi' => 'urn:nbn:fi',
 			'urn:nbn' => 'urn:nbn',
 			'urn' => 'urn'
 		);

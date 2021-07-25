@@ -3,8 +3,8 @@
 /**
  * @file classes/plugins/ImportExportPlugin.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ImportExportPlugin
@@ -64,6 +64,20 @@ abstract class ImportExportPlugin extends Plugin {
 		$templateMgr = TemplateManager::getManager($request);
 		$templateMgr->registerPlugin('function', 'plugin_url', array($this, 'pluginUrl'));
 		$this->_request = $request; // Store this for use by the pluginUrl function
+		$templateMgr->assign([
+			'breadcrumbs' => [
+				[
+					'id' => 'tools',
+					'name' => __('navigation.tools'),
+					'url' => $request->getRouter()->url($request, null, 'management', 'tools'),
+				],
+				[
+					'id' => $this->getPluginPath(),
+					'name' => $this->getDisplayName()
+				],
+			],
+			'pageTitle' => $this->getDisplayName(),
+		]);
 	}
 
 	/**
@@ -164,7 +178,7 @@ abstract class ImportExportPlugin extends Plugin {
 			echo '<p><pre>' . htmlspecialchars($xml) . '</pre></p>';
 			echo '</body></html>';
 		}
-		fatalError(__('plugins.importexport.common.error.validation'));
+		throw new Exception(__('plugins.importexport.common.error.validation'));
 	}
 
 }

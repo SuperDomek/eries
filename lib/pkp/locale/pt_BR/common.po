@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-09-30T11:54:13-07:00\n"
-"PO-Revision-Date: 2020-06-23 05:39+0000\n"
-"Last-Translator: Diego José Macêdo <diegojmacedo@gmail.com>\n"
+"PO-Revision-Date: 2021-02-06 03:57+0000\n"
+"Last-Translator: Alex Mendonça <alex.mendonca@scielo.org>\n"
 "Language-Team: Portuguese (Brazil) <http://translate.pkp.sfu.ca/projects/"
 "pkp-lib/common/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -57,16 +57,16 @@ msgid "about.siteMap"
 msgstr "Mapa do Portal"
 
 msgid "announcement.announcements"
-msgstr "Notícias"
+msgstr "Anúncios"
 
 msgid "announcement.announcementsHome"
-msgstr "Notícias"
+msgstr "Anúncios"
 
 msgid "announcement.moreAnnouncements"
-msgstr "Outras notícias..."
+msgstr "Mais anúncios..."
 
 msgid "announcement.noneExist"
-msgstr "Nenhuma notícia publicada."
+msgstr "Nenhum anúncio foi publicado."
 
 msgid "announcement.posted"
 msgstr "Publicado"
@@ -75,7 +75,7 @@ msgid "announcement.postedOn"
 msgstr "Postado em {$postDate}"
 
 msgid "announcement.view"
-msgstr "Ler notícia"
+msgstr "Visualizar Anúncio"
 
 msgid "common.navigation.sidebar"
 msgstr "Barra lateral"
@@ -684,6 +684,9 @@ msgstr "Tipo"
 msgid "common.uninitiated"
 msgstr "Não iniciado"
 
+msgid "common.unknownError"
+msgstr "Ocorreu um erro não esperado. Por favor recarregue a página e tente novamente. Se o erro persistir contacte o suporte técnico."
+
 msgid "common.unread"
 msgstr "Não lido"
 
@@ -1170,12 +1173,6 @@ msgstr "Tipo de notícia editado."
 msgid "notification.removedAnnouncementType"
 msgstr "Tipo de notícia removido."
 
-msgid "notification.addedAnnouncement"
-msgstr "Notícia adicionada."
-
-msgid "notification.editedAnnouncement"
-msgstr "Notícia editada."
-
 msgid "notification.removedAnnouncement"
 msgstr "Notícia removida."
 
@@ -1290,9 +1287,6 @@ msgstr "Todos os campos de índices"
 msgid "search.matchAll"
 msgstr "Encontrar em todas as categorias"
 
-msgid "search.noKeywordError"
-msgstr "Informe pelo menos um termo para pesquisa."
-
 msgid "search.noResults"
 msgstr "Nenhum resultado encontrado"
 
@@ -1326,7 +1320,8 @@ msgstr "Baixar este arquivo"
 msgid "context.path"
 msgstr "Caminho"
 
-msgid "review.ensuringBlindReview"
+#, fuzzy
+msgid "review.ensuringAnonymousReview"
 msgstr "Garantindo o Blind Review"
 
 msgid "grid.action.showReviewPolicy"
@@ -1350,7 +1345,8 @@ msgstr "Tarefas"
 msgid "dashboard.myQueue"
 msgstr "Fila"
 
-msgid "review.blindPeerReview"
+#, fuzzy
+msgid "review.anonymousPeerReview"
 msgstr ""
 "<p>Para garantir a integridade da avaliação por pares cega para a submissão "
 "a esta editora, todo esforço deve ser feito para evitar que as identidades "
@@ -1874,7 +1870,7 @@ msgid "notification.reviewerThankedEmail"
 msgstr "E-mail de agradecimento enviado ao avaliador."
 
 msgid "navigation.skip.announcements"
-msgstr "Pular para as notícias"
+msgstr "Pular para os anúncios"
 
 msgid "stageParticipants.noOptionsToHandle"
 msgstr "Alterações não podem ser feitas neste participante"
@@ -1919,14 +1915,6 @@ msgid "form.csrfInvalid"
 msgstr ""
 "O formulário não pôde ser submetido. Você pode ter saído do sistema. Por "
 "favor recarregue a página e tente novamente."
-
-msgid "form.missingRequired"
-msgstr "Este campo é obrigatório."
-
-msgid "form.errorUnknown"
-msgstr ""
-"Um erro inesperado ocorreu. Você pode ter saído do sistema. Por favor "
-"recarregue a página e tente novamente."
 
 msgid "form.errors"
 msgstr ""

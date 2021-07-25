@@ -3,10 +3,10 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-19T10:49:41+00:00\n"
-"PO-Revision-Date: 2020-06-04 18:39+0000\n"
-"Last-Translator: Michal Jelínek <jelinek@synetix.cz>\n"
+"PO-Revision-Date: 2021-01-03 17:40+0000\n"
+"Last-Translator: Jiří Dlouhý <jiri.dlouhy@czp.cuni.cz>\n"
 "Language-Team: Czech <http://translate.pkp.sfu.ca/projects/pkp-lib/manager/"
-"cs/>\n"
+"cs_CZ/>\n"
 "Language: cs_CZ\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -18,7 +18,7 @@ msgid "manager.announcements"
 msgstr "Oznámení"
 
 msgid "manager.announcements.confirmDelete"
-msgstr "Jste si jisti, že chcete trvale odstranit toto oznámení?"
+msgstr "Jste si jisti, že chcete trvale odstranit oznámení  {$title}?"
 
 msgid "manager.announcements.create"
 msgstr "Vytvořit nové oznámení"
@@ -54,7 +54,7 @@ msgid "manager.announcements.form.dateExpireYearIncompleteDate"
 msgstr "Zvolte, prosím, měsíc a/nebo den ke zvolenému roku vypršení."
 
 msgid "manager.announcements.form.description"
-msgstr "Popis"
+msgstr "Oznámení"
 
 msgid "manager.announcements.form.descriptionInstructions"
 msgstr "Celý text oznámení."
@@ -408,7 +408,7 @@ msgid "manager.statistics"
 msgstr "Statistiky &amp; Zprávy"
 
 msgid "manager.statistics.statistics.count.value"
-msgstr "{$count} ({$percentage}%)"
+msgstr "{$count} ({$percentage} %)"
 
 msgid "manager.statistics.statistics.totalNewValue"
 msgstr "{$numTotal} ({$numNew} nových)"
@@ -698,6 +698,7 @@ msgstr "Město"
 msgid "manager.statistics.region"
 msgstr "Region"
 
+#, fuzzy
 msgid "manager.statistics.reports"
 msgstr "Generátor přehledu"
 
@@ -864,7 +865,7 @@ msgid "manager.website.title"
 msgstr "Nastavení webových stránek"
 
 msgid "manager.workflow"
-msgstr "Workflow"
+msgstr "Pracovní postup"
 
 msgid "manager.workflow.title"
 msgstr "Nastavení workflow"
@@ -877,12 +878,6 @@ msgstr "Nastavení distribuce"
 
 msgid "manager.reviewForms.confirmActivate"
 msgstr "Jste si jisti, že chcete povolit tento formulář recenzenta? Jakmile bude přiřazen k jakékoliv recenzi, nebude možné ho zakázat."
-
-msgid "manager.setup.genres.dependent"
-msgstr "Označte soubory tohoto typu jako závislé soubory (např. nezobrazované s publikovaným obsahem)"
-
-msgid "manager.setup.genres.supplementary"
-msgstr "Označit soubory tohoto typu jako doplňkové soubory (např. ty, co neobsahují primární obsah článku)"
 
 msgid "manager.settings.wizard"
 msgstr "Průvodce nastavením"
@@ -951,7 +946,7 @@ msgid "settings.libraryFiles.category.marketing"
 msgstr "Marketing"
 
 msgid "settings.libraryFiles.category.permissions"
-msgstr "Přístupová práva"
+msgstr "Oprávnění"
 
 msgid "settings.libraryFiles.category.reports"
 msgstr "Zprávy"
@@ -1055,9 +1050,6 @@ msgstr "Nikdy nepřipomínat"
 msgid "manager.setup.reviewOptions.noteOnModification"
 msgstr "Výchozí hodnoty lze upravit pro každou recenzi během redakčního procesu."
 
-msgid "manager.setup.groupType"
-msgstr "Seskupení podle typu souboru"
-
 msgid "manager.setup.homepageImage"
 msgstr "Obrázek na domácí stránku"
 
@@ -1071,7 +1063,9 @@ msgid "manager.setup.theme"
 msgstr "Téma"
 
 msgid "manager.setup.theme.description"
-msgstr "Nová témata mohou být nainstalována v rámci ouška \"Pluginy\" na vršku této stránky."
+msgstr ""
+"Nová témata mohou být nainstalována v pomocí ouška \"Pluginy\" v horní části "
+"této stránky."
 
 msgid "manager.setup.layout.sidebar"
 msgstr "Postranní sloupec"
@@ -1153,7 +1147,7 @@ msgid "manager.plugins.uploadFailed"
 msgstr "Ujistěte se, prosím, zda byl vybraný soubor nahrán."
 
 msgid "manager.plugins.installed"
-msgstr "Plugin byl nainstalován"
+msgstr "Nainstalované pluginy"
 
 msgid "manager.plugins.pluginGallery"
 msgstr "Galerie pluginů"
@@ -1834,12 +1828,12 @@ msgstr ""
 
 msgid "manager.setup.metadata.rights.require"
 msgstr ""
-"Před přijetím žádosti požádejte autora, aby prozradil veškerá předchozí "
+"Před přijetím žádosti požádejte autora, aby uvedl veškerá předchozí "
 "přístupová práva."
 
 msgid "manager.setup.metadata.rights.request"
 msgstr ""
-"Požádejte autora, aby zveřejnil veškerá předchozí přístupová práva během "
+"Požádejte autora, aby zveřejnil veškerá předchozí oprávnění k článku během "
 "odesílání."
 
 msgid "manager.setup.metadata.rights.noRequest"
@@ -1945,9 +1939,6 @@ msgstr "Licence"
 msgid "manager.statistics.statistics.registeredUsers"
 msgstr "Registrovaní uživatelé"
 
-msgid "manager.setup.userAccess.success"
-msgstr "Údaje o přístupu uživatelů pro tento výtisk byly aktualizovány."
-
 msgid "manager.setup.theme.notFound"
 msgstr "Vybrané téma není nainstalováno ani povoleno."
 
@@ -1956,10 +1947,10 @@ msgstr ""
 "Téma bylo aktualizováno. <a href=\"{$url}\" target=\"_blank\">Zobrazit "
 "nyní</a>"
 
-msgid "manager.setup.reviewOptions.showBlindReviewLink"
+msgid "manager.setup.reviewOptions.showAnonymousReviewLink"
 msgstr ""
-"Během nahrávání uveďte odkaz na <button type=\"button\"> zajištění slepého "
-"náhledu </button>"
+"Představte odkaz na <button type = \"button\"> jak zajistit, aby byly "
+"všechny soubory během nahrávání anonymizovány </button>"
 
 msgid "manager.setup.reviewOptions.reviewMode"
 msgstr "Výchozí režim recenze"
@@ -1988,9 +1979,6 @@ msgstr "Kontrolní seznam"
 
 msgid "manager.setup.authorGuidelines.success"
 msgstr "Pokyny pro autory byly úspěšně aktualizovány."
-
-msgid "manager.setup.contact.success"
-msgstr "Kontaktní údaje pro tento výtisk byly aktualizovány."
 
 msgid "manager.setup.appearance.success"
 msgstr "Nastavení vzhledu bylo aktualizováno."
@@ -2056,3 +2044,125 @@ msgstr "Nastavení e-mailu bylo aktualizováno."
 
 msgid "stats.countWithYearlyAverage"
 msgstr "{$count} ({$average}/rok)"
+
+msgid "plugins.importexport.native.error.submissionFileSkipped"
+msgstr ""
+"Soubor příspěvku {$id} byl přeskočen, protože je připojen k záznamu, který "
+"nebude importován, jako je například přiřazení recenze nebo diskuse."
+
+msgid "manager.setup.genres.metatadata.description"
+msgstr ""
+"Vyberte typ metadat, která mohou tyto soubory obdržet. Dokument by měl být "
+"vybrán pro hlavní soubory příspěvku, jako je soubor PDF ke stažení, aby tyto "
+"soubory zdědily svá metadata z příspěvku. Pro většiny ostatních typů souborů "
+"vyberte Doplňkový obsah. Umělecké dílo je vhodné pro soubory, které vyžadují "
+"odlišná metadata kreditu, titulků a licencí."
+
+msgid "manager.setup.genres.metatadata"
+msgstr "Metadata souboru"
+
+msgid "manager.setup.genres.supplementary"
+msgstr ""
+"Jedná se o doplňkové soubory, jako jsou soubory dat a výzkumné materiály, a "
+"budou zobrazeny odděleně od hlavních souborů příspěvku."
+
+msgid "manager.setup.genres.dependent"
+msgstr ""
+"Tyto soubory jsou závislé soubory, například obrázky zobrazené souborem "
+"HTML, a nebudou se zobrazovat s publikovaným obsahem."
+
+msgid "manager.setup.genres.label"
+msgstr "Typ souboru"
+
+msgid "manager.sections.confirmActivateSection"
+msgstr "Opravdu chcete aktivovat tuto sekci?"
+
+msgid "manager.sections.confirmDeactivateSection"
+msgstr "Opravdu chcete tuto sekci deaktivovat?"
+
+msgid "manager.sections.form.deactivateSection"
+msgstr ""
+"Deaktivujte tuto sekce a nedovolte, aby do ní bylo možné odesílat nové "
+"příspěvky."
+
+msgid "manager.setup.dateTime.custom"
+msgstr "Vlastní"
+
+msgid "manager.setup.dateTime.shortDateTime"
+msgstr "Datum a čas (Krátký formát)"
+
+msgid "manager.setup.dateTime.longDateTime"
+msgstr "Datum a čas"
+
+msgid "manager.setup.dateTime.time"
+msgstr "Čas"
+
+msgid "manager.setup.dateTime.shortDate"
+msgstr "Datum (Krátký formát)"
+
+msgid "manager.setup.dateTime.longDate"
+msgstr "Datum"
+
+msgid "manager.setup.dateTime.description"
+msgstr ""
+"Zvolte preferovaný formát pro datum a čas. Vlastní formát lze zadat pomocí "
+"speciálních <a href='http://php.net/manual/en/"
+"function.strftime.php#refsect1-function.strftime-parameters'> formátovacích "
+"znaků </a>."
+
+msgid "manager.setup.dateTime.descriptionTitle"
+msgstr "Formát data a času"
+
+msgid "manager.setup.dateTime"
+msgstr "Datum a čas"
+
+msgid "manager.setup.notifyUsers.sendAnother"
+msgstr "Poslat další email"
+
+msgid "manager.setup.notifyUsers.sent"
+msgstr "E-mail byl úspěšně odeslán všem příjemcům."
+
+msgid "manager.setup.notifyUsers.sending"
+msgstr "Odesílání e-mailu. Dokud není odesílání dokončeno, neodcházejte."
+
+msgid "manager.setup.notifyUsers.confirm"
+msgstr ""
+"Chystáte se odeslat e-mail {$total} uživatelům. Opravdu chcete odeslat tento "
+"e-mail?"
+
+msgid "manager.setup.notifyUsers.send"
+msgstr "Poslat email"
+
+msgid "manager.setup.notifyUsers.copyDetails"
+msgstr "Zašlete mi kopii tohoto e-mailu na adresu {$email}."
+
+msgid "manager.setup.notifyUsers.description"
+msgstr "Vyberte uživatele, kteří by měli dostávat vaše e-mailová upozornění."
+
+msgid "manager.setup.notifyUsers"
+msgstr "Oznámit"
+
+msgid "manager.setup.disableSubmissions"
+msgstr "Zakázat příspěvky"
+
+msgid "manager.statistics.reports.customReportGenerator"
+msgstr "Generátor vlastních sestav"
+
+msgid "manager.people.signedInAs"
+msgstr "Aktuálně jste přihlášeni jako {$username}"
+
+msgid "manager.export.usersToCsv.description"
+msgstr ""
+"Vyberte uživatele, které chcete exportovat do souboru formátu Excel/CSV."
+
+msgid "manager.export.usersToCsv.label"
+msgstr "Export do formátu Excel/CSV"
+
+msgid "manager.emails.resetComplete"
+msgstr "Šablona e-mailu byla úspěšně obnovena."
+
+msgid "manager.emails.resetAll.complete"
+msgstr "Výchozí e-mailové šablony byly obnoveny."
+
+msgid "manager.announcements.deleteAnnouncement"
+msgstr "Smazat oznámení"

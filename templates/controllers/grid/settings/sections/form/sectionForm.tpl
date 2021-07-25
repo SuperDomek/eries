@@ -1,8 +1,8 @@
 {**
  * templates/controllers/grid/settings/section/form/sectionForm.tpl
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Section form under journal management.
@@ -20,10 +20,6 @@
 	<input type="hidden" name="sectionId" value="{$sectionId|escape}"/>
 
 	{include file="controllers/notification/inPlaceNotification.tpl" notificationId="sectionFormNotification"}
-
-	{if !$hasSubEditors}
-		<span class="pkp_form_error"><p>{translate key="manager.section.noSectionEditors"}</p></span>
-	{/if}
 
 	{fbvFormArea id="sectionInfo"}
 		{fbvFormSection}
@@ -52,6 +48,7 @@
 
 	{fbvFormArea id="indexingInfo" title="submission.sectionOptions"}
 		{fbvFormSection list=true}
+			{fbvElement type="checkbox" id="isInactive" checked=$isInactive label="manager.sections.form.deactivateSection"}
 			{fbvElement type="checkbox" id="metaReviewed" checked=$metaReviewed label="manager.sections.submissionReview"}
 			{fbvElement type="checkbox" id="abstractsNotRequired" checked=$abstractsNotRequired label="manager.sections.abstractsNotRequired"}
 			{fbvElement type="checkbox" id="metaIndexed" checked=$metaIndexed label="manager.sections.submissionIndexing"}
@@ -65,20 +62,15 @@
 		{/fbvFormSection}
 	{/fbvFormArea}
 
-	{if $hasSubEditors}
-		{fbvFormSection}
-			{assign var="uuid" value=""|uniqid|escape}
-			<div id="subeditors-{$uuid}">
-				<list-panel
-					v-bind="components.subeditors"
-					@set="set"
-				/>
-			</div>
-			<script type="text/javascript">
-				pkp.registry.init('subeditors-{$uuid}', 'Container', {$subEditorsListData|json_encode});
-			</script>
-		{/fbvFormSection}
-	{/if}
+	{fbvFormSection list=true title="user.role.subEditors"}
+		{if count($subeditors)}
+			{foreach from=$subeditors item="subeditor" key="id"}
+				{fbvElement type="checkbox" id="subEditors[]" value=$id checked=in_array($id, $assignedSubeditors) label=$subeditor translate=false}
+			{/foreach}
+		{else}
+			<span class="pkp_form_error"><p>{translate key="manager.section.noSectionEditors"}</p></span>
+		{/if}
+	{/fbvFormSection}
 
 	{fbvFormButtons submitText="common.save"}
 </form>

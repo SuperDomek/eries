@@ -2,8 +2,8 @@
 /**
  * @file classes/components/form/publication/IssueEntryForm.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class IssueEntryForm
@@ -41,31 +41,30 @@ class IssueEntryForm extends FormComponent {
 	 */
 	public function __construct($action, $locales, $publication, $publicationContext, $baseUrl, $temporaryFileApiUrl) {
 		$this->action = $action;
-		$this->successMessage = __('publication.issue.success');
 		$this->locales = $locales;
 
 		// Issue options
 		$issueOptions = [['value' => '', 'label' => '']];
-		$unpublishedIterator = \Services::get('issue')->getMany([
+		$unpublishedIssues = iterator_to_array(\Services::get('issue')->getMany([
 			'contextId' => $publicationContext->getId(),
 			'isPublished' => false,
-		]);
-		if (count($unpublishedIterator)) {
+		]));
+		if (count($unpublishedIssues)) {
 			$issueOptions[] = ['value' => '', 'label' => '--- ' . __('editor.issues.futureIssues') . ' ---'];
-			foreach ($unpublishedIterator as $issue) {
+			foreach ($unpublishedIssues as $issue) {
 				$issueOptions[] = [
 					'value' => (int) $issue->getId(),
 					'label' => $issue->getIssueIdentification(),
 				];
 			}
 		}
-		$publishedIterator = \Services::get('issue')->getMany([
+		$publishedIssues = iterator_to_array(\Services::get('issue')->getMany([
 			'contextId' => $publicationContext->getId(),
 			'isPublished' => true,
-		]);
-		if (count($publishedIterator)) {
+		]));
+		if (count($publishedIssues)) {
 			$issueOptions[] = ['value' => '', 'label' => '--- ' . __('editor.issues.backIssues') . ' ---'];
-			foreach ($publishedIterator as $issue) {
+			foreach ($publishedIssues as $issue) {
 				$issueOptions[] = [
 					'value' => (int) $issue->getId(),
 					'label' => $issue->getIssueIdentification(),
@@ -78,7 +77,7 @@ class IssueEntryForm extends FormComponent {
 		$sectionOptions = [];
 		foreach ($sections as $section) {
 			$sectionOptions[] = [
-				'label' => $section['title'],
+				'label' => (($section['group'])? __('publication.inactiveSection', ['section' => $section['title']]) : $section['title']),
 				'value' => (int) $section['id'],
 			];
 		}

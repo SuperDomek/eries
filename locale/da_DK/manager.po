@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-19T10:49:19+00:00\n"
-"PO-Revision-Date: 2020-05-15 08:54+0000\n"
+"PO-Revision-Date: 2020-11-26 18:19+0000\n"
 "Last-Translator: Niels Erik Frederiksen <nef@kb.dk>\n"
 "Language-Team: Danish <http://translate.pkp.sfu.ca/projects/ojs/manager/"
 "da_DK/>\n"
@@ -82,9 +82,7 @@ msgid "manager.payment.generalFees"
 msgstr "Generelle gebyrer"
 
 msgid "manager.payment.generalFeesDescription"
-msgstr ""
-"Foreningsmedlemskab vises under 'Om tidsskriftet' under 'Politikker', og "
-"donationslinket vises oven over søgefunktionen i rammen til højre."
+msgstr "Foreningsmedlemskab vises under 'Om tidsskriftet' under 'Politikker'."
 
 msgid "manager.payment.generalOptions"
 msgstr "Generelle indstillinger"
@@ -279,7 +277,7 @@ msgid "manager.sections.unassigned"
 msgstr "Tilgængelige sektionsredaktører"
 
 msgid "manager.setup"
-msgstr "Konfiguration"
+msgstr "Tidsskriftskonfiguration"
 
 msgid "manager.setup.aboutItemContent"
 msgstr "Indhold"
@@ -698,9 +696,6 @@ msgstr ""
 "aktivere indstillingen <tt>scheduled_tasks</tt> i OJS-konfigurationsfilen. "
 "Yderligere serverkonfiguration kan være påkrævet som angivet i OJS-"
 "dokumentationen."
-
-msgid "manager.setup.reviewOptions.blindReview"
-msgstr "Blind review"
 
 msgid "manager.setup.reviewOptions.numWeeksPerReview"
 msgstr "Antal uger afsat til bedømmelse"
@@ -1226,7 +1221,7 @@ msgid "manager.language.ui"
 msgstr "UI"
 
 msgid "manager.language.submissions"
-msgstr "Indleveringer"
+msgstr "Indsendelser"
 
 msgid "manager.language.forms"
 msgstr "Formularer"
@@ -1396,6 +1391,7 @@ msgstr "Kategorier"
 msgid "manager.payment.options.purchaseIssueFee"
 msgstr "Køb nummer"
 
+#, fuzzy
 msgid "manager.sections.alertDelete"
 msgstr "Før denne sektion kan slettes, skal de artikler, der er publiceret i sektionen overføres til andre sektioner."
 
@@ -1676,7 +1672,11 @@ msgid "manager.setup.plnPluginArchiving"
 msgstr "PKP Preservation Network (PN)"
 
 msgid "manager.setup.plnPluginNotInstalled"
-msgstr "The PKP Preservation Network (PN) stiller en gratis bevaringstjenester til rådighed for ethvert OJS-tidsskrift, der opfylder nogle få grundlæggende kriterier. PKP PN plug-in til OJS 3 er i øjeblikket under udvikling og vil snart være tilgængeligt i plug-in-galleriet."
+msgstr ""
+"The PKP Preservation Network (PN) stiller en gratis bevaringstjeneste til "
+"rådighed for ethvert OJS-tidsskrift, der opfylder nogle få grundlæggende "
+"kriterier. PKP PN plug-in til OJS 3 er i øjeblikket under udvikling og vil "
+"snart være tilgængeligt i plug-in-galleriet."
 
 msgid "manager.setup.otherLockss"
 msgstr "Alternative arkiveringsmuligheder"
@@ -1780,9 +1780,6 @@ msgstr "Dette er en abonnementstype, der ikke udløber; angiv ikke en startdato.
 msgid "manager.setup.userRegistration"
 msgstr "Brugerregistrering"
 
-msgid "manager.setup.userAccess.success"
-msgstr "Oplysninger om brugeradgang til dette tidsskrift er blevet opdateret."
-
 msgid "manager.setup.enableOai.description"
 msgstr ""
 "Levér metadata til tredjeparts indekseringstjenester gennem <a href=\""
@@ -1802,10 +1799,6 @@ msgstr ""
 "Giv en kort beskrivelse (50-300 tegn) af tidsskriftet, som søgemaskinerne "
 "kan fremhæve, når tidsskriftet vises blandt søgeresultaterne."
 
-msgid "manager.setup.searchEngineIndexing.success"
-msgstr ""
-"Indstillingerne i forbindelse med søgemaskineindekset er blevet opdateret."
-
 msgid "manager.setup.reviewOptions.reviewerAccessKeysEnabled.label"
 msgstr "Inkludér et sikkert link i e-mail-invitationen til bedømmere."
 
@@ -1815,19 +1808,10 @@ msgstr "Begræns filadgang"
 msgid "manager.setup.publishing"
 msgstr "Publiceringsoplysninger"
 
-msgid "manager.setup.privacyStatement.success"
-msgstr "Erklæring om beskyttelse af personlige oplysninger er blevet opdateret."
-
 msgid "manager.setup.numPageLinks.description"
 msgstr ""
 "Begræns antallet af links, der skal vises til efterfølgende sider på en "
 "liste."
-
-msgid "manager.setup.masthead.success"
-msgstr "Dette tidsskrifts kolofonoplysninger er blevet opdateret."
-
-msgid "manager.setup.lists.success"
-msgstr "Dette tidsskrifts listeindstillingerne er blevet opdateret."
 
 msgid "manager.setup.keyInfo.description"
 msgstr ""
@@ -1843,9 +1827,6 @@ msgstr ""
 "redigeringsopgaver), der skal vises på en liste, før de efterfølgende poster "
 "vises på en anden side."
 
-msgid "manager.setup.information.success"
-msgstr "Oplysningerne i forbindelse med dette tidsskrift blev opdateret."
-
 msgid "manager.setup.identity"
 msgstr "Tidsskriftsidentitet"
 
@@ -1857,23 +1838,8 @@ msgstr ""
 msgid "manager.setup.numAnnouncementsHomepage"
 msgstr "Vis på hjemmeside"
 
-msgid "manager.setup.contact.success"
-msgstr "Dette tidsskrifts kontaktoplysninger er blevet opdateret."
-
-msgid "manager.setup.archiving.success"
-msgstr "Dette tidsskrifts arkiveringsoplysninger er blevet opdateret."
-
 msgid "manager.setup.announcementsIntroduction"
 msgstr "Introduktion"
-
-msgid "manager.setup.announcements.success"
-msgstr "Indstillingerne i forbindelse med meddelelser er blevet opdateret."
-
-msgid "manager.payment.success"
-msgstr "Betalingsindstillingerne er blevet opdateret."
-
-msgid "manager.distribution.publishingMode.success"
-msgstr "Publiceringsoplysningerne er blevet opdateret."
 
 msgid "manager.distribution.publishingMode"
 msgstr "Publiceringsform"
@@ -1893,3 +1859,25 @@ msgstr ""
 "standardindstilling kan tilsidesættes fra sag til sag. Hvis du har valgt at "
 "publicere artiklerne løbende \"publish as you go\", skal du ikke anvende "
 "nummerets publiceringsdato."
+
+msgid "plugins.importexport.common.validation.fail"
+msgstr "Validering fejlede."
+
+msgid "plugins.importexport.common.validation.success"
+msgstr "Validering gennemført!"
+
+msgid "manager.setup.disableSubmissions.notAccepting"
+msgstr ""
+"Dette tidsskrift tager ikke imod indsendelser på nuværende tidspunkt. Gå til "
+"workflow-indstillingerne for at acceptere indsendelser."
+
+msgid "manager.setup.disableSubmissions.description"
+msgstr ""
+"Undgå at brugere indsender nye artikler til tidsskriftet. Indsendelser kan "
+"deaktiveres i de enkelte tidsskriftssektioner på siden <a href=\"{$url}\"> "
+"tidsskriftssektioner </a>."
+
+msgid "manager.sections.confirmDeactivateSection.error"
+msgstr ""
+"Mindst en sektion skal være aktiv. Gå til workflow-indstillingerne og "
+"deaktiver alle indsendelser til dette tidsskrift."

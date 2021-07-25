@@ -102,18 +102,20 @@ class CustomBlockPlugin extends BlockPlugin {
 		$contextId = $context ? $context->getId() : 0;
 
 		// Get the block contents.
+		$customBlockTitle = $this->getSetting($contextId, 'blockTitle');
 		$customBlockContent = $this->getSetting($contextId, 'blockContent');
-		$customBlockName = $this->getName();
 		$currentLocale = AppLocale::getLocale();
 		$contextPrimaryLocale = $context?$context->getPrimaryLocale():$request->getSite()->getPrimaryLocale();
 
 		$divCustomBlockId = 'customblock-'.preg_replace('/\W+/', '-', $this->getName());
 		$templateMgr->assign('customBlockId', $divCustomBlockId);
-		$templateMgr->assign('customBlockName', $customBlockName);
 
+		$title = $customBlockTitle[$currentLocale] ? $customBlockTitle[$currentLocale] : $customBlockTitle[$contextPrimaryLocale];
 		$content = $customBlockContent[$currentLocale] ? $customBlockContent[$currentLocale] : $customBlockContent[$contextPrimaryLocale];
 
+		$templateMgr->assign('customBlockTitle', $title);
 		$templateMgr->assign('customBlockContent', $content);
+		$templateMgr->assign('showName', $this->getSetting($contextId, 'showName'));
 		return parent::getContents($templateMgr, $request);
 
 	}

@@ -119,6 +119,9 @@ msgstr "Activate"
 msgid "common.active"
 msgstr "Active"
 
+msgid "common.inactive"
+msgstr "Inactive"
+
 msgid "common.add"
 msgstr "Add"
 
@@ -350,6 +353,9 @@ msgstr "Download PDF"
 
 msgid "common.edit"
 msgstr "Edit"
+
+msgid "common.editItem"
+msgstr "Edit {$name}"
 
 msgid "common.enable"
 msgstr "Enable"
@@ -729,6 +735,9 @@ msgstr "Select None"
 msgid "common.select"
 msgstr "Select"
 
+msgid "common.selectWithName"
+msgstr "Select {$name}"
+
 msgid "common.sendEmail"
 msgstr "Send Email"
 
@@ -759,6 +768,9 @@ msgstr "Suggest"
 msgid "common.title"
 msgstr "Title"
 
+msgid "common.titleSeparator"
+msgstr " | "
+
 msgid "common.top"
 msgstr "Top"
 
@@ -776,6 +788,9 @@ msgstr "Component"
 
 msgid "common.uninitiated"
 msgstr "Uninitiated"
+
+msgid "common.unknownError"
+msgstr "An unexpected error has occurred. Please reload the page and try again."
 
 msgid "common.unread"
 msgstr "Unread"
@@ -798,6 +813,9 @@ msgstr "The file could not be uploaded or revised."
 msgid "common.up"
 msgstr "Up"
 
+msgid "common.addFile"
+msgstr "Add File"
+
 msgid "common.upload.addFile"
 msgstr "Upload File"
 
@@ -819,8 +837,14 @@ msgstr "URL"
 msgid "common.user"
 msgstr "User"
 
+msgid "common.user.nonexistent"
+msgstr "[Nonexistent user]"
+
 msgid "common.view"
 msgstr "View"
+
+msgid "common.viewWithName"
+msgstr "View {$name}"
 
 msgid "common.viewProfile"
 msgstr "View Profile"
@@ -1038,9 +1062,6 @@ msgstr "Please correct {$count} errors."
 msgid "form.errors"
 msgstr "The form was not saved because {$count} error(s) were encountered. Please correct these errors and try again."
 
-msgid "form.errorUnknown"
-msgstr "An unexpected error occurred. You may have been logged out. Please reload the page and try again."
-
 msgid "form.errorsOccurred"
 msgstr "Errors occurred processing this form"
 
@@ -1055,9 +1076,6 @@ msgstr "contains"
 
 msgid "form.is"
 msgstr "is"
-
-msgid "form.missingRequired"
-msgstr "This field is required."
 
 msgid "form.startsWith"
 msgstr "starts with"
@@ -1082,6 +1100,9 @@ msgstr "You must provide a valid ID."
 
 msgid "form.resubmit"
 msgstr "Resubmit"
+
+msgid "form.saved"
+msgstr "Saved"
 
 msgid "form.saveToUpload"
 msgstr "Use Save to upload file."
@@ -1231,7 +1252,7 @@ msgid "locale.supported"
 msgstr "Supported locales"
 
 msgid "navigation.access"
-msgstr "Users &amp; Roles"
+msgstr "Users & Roles"
 
 msgid "navigation.about"
 msgstr "About"
@@ -1259,6 +1280,9 @@ msgstr "Statistics"
 
 msgid "navigation.browse"
 msgstr "Browse"
+
+msgid "navigation.backTo"
+msgstr "⟵ Back to {$page}"
 
 msgid "navigation.browseByAuthor"
 msgstr "By Author"
@@ -1386,12 +1410,6 @@ msgstr "Announcement type edited."
 msgid "notification.removedAnnouncementType"
 msgstr "Announcement type removed."
 
-msgid "notification.addedAnnouncement"
-msgstr "Announcement added."
-
-msgid "notification.editedAnnouncement"
-msgstr "Announcement edited."
-
 msgid "notification.removedAnnouncement"
 msgstr "Announcement removed."
 
@@ -1450,7 +1468,7 @@ msgid "notification.savedSubmissionMetadata"
 msgstr "Submission metadata saved."
 
 msgid "notification.sendNotificationConfirmation"
-msgstr "Send notification email to all registered users"
+msgstr "Send an email about this to all registered users."
 
 msgid "search.author"
 msgstr "By Author"
@@ -1512,9 +1530,6 @@ msgstr "All index term fields"
 msgid "search.matchAll"
 msgstr "Match all categories"
 
-msgid "search.noKeywordError"
-msgstr "You must enter at least one search keyword."
-
 msgid "search.noResults"
 msgstr "No Results"
 
@@ -1532,6 +1547,12 @@ msgstr "Search for"
 
 msgid "search.searchResults"
 msgstr "Search Results"
+
+msgid "search.searchResults.foundSingle"
+msgstr "Found one item."
+
+msgid "search.searchResults.foundPlural"
+msgstr "Found {$count} items."
 
 msgid "search.subject"
 msgstr "Keyword(s)"
@@ -1551,8 +1572,8 @@ msgstr "Download this file"
 msgid "context.path"
 msgstr "Path"
 
-msgid "review.ensuringBlindReview"
-msgstr "Ensuring a Blind Review"
+msgid "review.ensuringAnonymousReview"
+msgstr "How to ensure all files are anonymized"
 
 msgid "grid.action.showReviewPolicy"
 msgstr "Read the current review policy"
@@ -1572,9 +1593,12 @@ msgstr "Tasks"
 msgid "dashboard.myQueue"
 msgstr "My Queue"
 
-msgid "review.blindPeerReview"
+msgid "review.anonymousPeerReview.title"
+msgstr "How to ensure all files are anonymized"
+
+msgid "review.anonymousPeerReview"
 msgstr ""
-"<p>To ensure the integrity of the blind peer-review for submission to this press, every effort should be made to prevent the identities of the authors and reviewers from being known to each other. This involves the authors, editors, and reviewers (who upload documents as part of their review) checking to see if the following steps have been taken with regard to the text and the file properties:</p>\n"
+"<p>To ensure the integrity of anonymous peer-review, every effort should be made to prevent the identities of the authors and reviewers from being known to each other. This involves the authors, editors, and reviewers (who upload documents as part of their review) checking to see if the following steps have been taken with regard to the text and the file properties:</p>\n"
 "<ul><li>The authors of the document have deleted their names from the text, with \"Author\" and year used in the references and footnotes, instead of the authors' name, article title, etc.</li>\n"
 "<li>The authors of the document have removed personal information from the file properties by taking the following steps:\n"
 "<ul><li>Microsoft Word for Windows:\n"
@@ -1670,6 +1694,9 @@ msgstr "A reviewer has commented on \"{$title}\"."
 msgid "notification.signedFile"
 msgstr "File considered."
 
+msgid "user.email"
+msgstr "Email address"
+
 msgid "user.authorization.submissionFile"
 msgstr "The current user is not authorized to access the specified submission file."
 
@@ -1682,11 +1709,26 @@ msgstr "Invalid submission."
 msgid "user.authorization.invalidRepresentation"
 msgstr "Invalid representation."
 
+msgid "user.authorization.invalidReviewRound"
+msgstr "Invalid review round."
+
+msgid "user.authorization.invalidQuery"
+msgstr "Invalid discussion."
+
+msgid "user.authorization.unauthorizedNote"
+msgstr "You do not have access to this discussion message."
+
+msgid "user.authorization.unauthorizedReviewAssignment"
+msgstr "You do not have access to this review assignment."
+
 msgid "user.authorization.authorRoleMissing"
 msgstr "You do not currently have sufficient privileges to view the submission. Please edit your profile to ensure that you have been granted the appropriate roles under \"Register As\"."
 
 msgid "user.authorization.submissionAuthor"
 msgstr "The current user is not the author of the requested submission. Please verify that you are logged in with the correct user account."
+
+msgid "user.register.form.privacyConsentLabel"
+msgstr "Privacy Options"
 
 msgid "notification.type.queryActivity"
 msgstr "Discussion activity."

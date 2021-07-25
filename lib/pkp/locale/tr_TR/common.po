@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-19T10:50:07+00:00\n"
-"PO-Revision-Date: 2020-06-20 11:39+0000\n"
-"Last-Translator: Hüseyin Körpeoğlu <yoruyenturk@hotmail.com>\n"
+"PO-Revision-Date: 2020-12-18 16:52+0000\n"
+"Last-Translator: Sönmez Çelik <snmzclk@gmail.com>\n"
 "Language-Team: Turkish <http://translate.pkp.sfu.ca/projects/pkp-lib/common/"
 "tr_TR/>\n"
 "Language: tr_TR\n"
@@ -162,7 +162,7 @@ msgid "common.closeWindow"
 msgstr "Pencereyi Kapat"
 
 msgid "common.complete"
-msgstr "Tamamlamak"
+msgstr "Tamamlama"
 
 msgid "common.completed"
 msgstr "Tamamlanmış"
@@ -469,6 +469,10 @@ msgstr "Tür"
 
 msgid "common.uninitiated"
 msgstr "Başlatılmamış"
+
+msgid "common.unknownError"
+msgstr ""
+"Beklenmeyen bir hata oluştu. Lütfen sayfayı yenileyin ve tekrar deneyin."
 
 msgid "common.untitled"
 msgstr "Başlıksız"
@@ -802,9 +806,6 @@ msgstr "İndeks terimleri"
 
 msgid "search.matchAll"
 msgstr "Tüm kategorileri eşle"
-
-msgid "search.noKeywordError"
-msgstr "En az bir adet anahtar kelime girmelisiniz."
 
 msgid "search.noResults"
 msgstr "Sonuç bulunamadı"
@@ -1161,7 +1162,7 @@ msgid "notification.savedSubmissionMetadata"
 msgstr "Gönderi üst verisi kaydedildi."
 
 msgid "notification.sendNotificationConfirmation"
-msgstr "Tüm kayıtlı kullanıcılara bilgilendirme e-postası gönder"
+msgstr "Tüm kayıtlı kullanıcılara bilgilendirme e-postası gönder."
 
 msgid "search.advancedFilters"
 msgstr "Gelişmiş filtreler"
@@ -1421,12 +1422,6 @@ msgstr "Duyuru türü düzeltildi."
 msgid "notification.removedAnnouncementType"
 msgstr "Duyuru türü kaldırıldı."
 
-msgid "notification.addedAnnouncement"
-msgstr "Duyuru eklendi."
-
-msgid "notification.editedAnnouncement"
-msgstr "Duyuru düzenlendi."
-
 msgid "notification.removedAnnouncement"
 msgstr "Duyuru kaldırıldı."
 
@@ -1466,8 +1461,8 @@ msgstr "Ana yönlendirme menüsünü atla"
 msgid "navigation.skip.footer"
 msgstr "Site alt kısmını atla"
 
-msgid "review.ensuringBlindReview"
-msgstr "Kör Hakemlik Sağla"
+msgid "review.ensuringAnonymousReview"
+msgstr "Tüm dosyaların anonim olduğundan nasıl emin olunur"
 
 msgid "grid.action.showReviewPolicy"
 msgstr "Mevcut inceleme politikasını okuyun"
@@ -1765,7 +1760,7 @@ msgstr "Hakem yeniden atandı."
 msgid "notification.cancelledReviewer"
 msgstr "Hakem iptal edildi."
 
-msgid "review.blindPeerReview"
+msgid "review.anonymousPeerReview"
 msgstr ""
 "<p>Bu yayına sunulmak üzere kör hakem değerlendirmesinin bütünlüğünü "
 "sağlamak için yazarların ve hakemlerin kimliklerinin birbirleriyle "
@@ -1971,3 +1966,57 @@ msgstr "Daha fazla"
 
 msgid "common.lessThanOnly"
 msgstr "Daha az"
+
+msgid "user.register.form.privacyConsentLabel"
+msgstr "Gizlilik Seçenekleri"
+
+msgid "user.authorization.unauthorizedReviewAssignment"
+msgstr "Hakem atama yetkiniz yok."
+
+msgid "user.authorization.unauthorizedNote"
+msgstr "Bu tartışma mesajına erişme yetkiniz yok."
+
+msgid "user.authorization.invalidQuery"
+msgstr "Geçersiz tartışma."
+
+msgid "user.authorization.invalidReviewRound"
+msgstr "Geçersiz değerlendirme turu."
+
+msgid "user.email"
+msgstr "E-posta"
+
+msgid "review.anonymousPeerReview.title"
+msgstr "Tüm dosyaların anonim olduğundan nasıl emin olunur"
+
+msgid "search.searchResults.foundPlural"
+msgstr "{$count} adet öge bulundu."
+
+msgid "search.searchResults.foundSingle"
+msgstr "Bir öğe bulundu."
+
+msgid "navigation.backTo"
+msgstr "⟵ {$page}'e Dön"
+
+msgid "form.saved"
+msgstr "Kaydedildi"
+
+msgid "common.viewWithName"
+msgstr "{$name} Görüntüle"
+
+msgid "common.user.nonexistent"
+msgstr "[Varolmayan kullanıcı]"
+
+msgid "common.addFile"
+msgstr "Dosya Ekle"
+
+msgid "common.titleSeparator"
+msgstr " | "
+
+msgid "common.selectWithName"
+msgstr "{$name} Seç"
+
+msgid "common.editItem"
+msgstr "{$name} Düzenle"
+
+msgid "common.inactive"
+msgstr "Pasif"

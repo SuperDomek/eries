@@ -3,8 +3,8 @@
 /**
  * @file pages/sitemap/SitemapHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SitemapHandler
@@ -40,7 +40,9 @@ class SitemapHandler extends PKPSitemapHandler {
 				$root->appendChild($this->_createUrlTree($doc, $request->url($journal->getPath(), 'issue', 'view', $issue->getId())));
 				// Articles for issue
 				$submissionsIterator = Services::get('submission')->getMany([
-					'issueIds' => $issue->getId(),
+					'issueIds' => [$issue->getId()],
+					'contextId' => $journal->getId(),
+					'status' => STATUS_PUBLISHED,
 				]);
 				foreach($submissionsIterator as $submission) {
 					// Abstract

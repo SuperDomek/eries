@@ -1,8 +1,8 @@
 {**
  * templates/user/apiProfileForm.tpl
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Public user profile form.
@@ -34,10 +34,10 @@
 		{fbvElement id=apiKey type="text" label="user.apiKey" readonly="true" value=$apiKey size=$fbvStyles.size.MEDIUM}
 	{/fbvFormSection}
 
-	{fbvFormButtons hideCancel=true submitText="common.save"}
-
 	<p>
 		{capture assign="privacyUrl"}{url router=$smarty.const.ROUTE_PAGE page="about" op="privacy"}{/capture}
 		{translate key="user.privacyLink" privacyUrl=$privacyUrl}
 	</p>
+
+	{fbvFormButtons hideCancel=true submitText="common.save"}
 </form>
