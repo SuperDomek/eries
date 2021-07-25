@@ -2,8 +2,8 @@
 /**
  * @file components/PKPStatsComponent.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPStatsComponent
@@ -33,9 +33,6 @@ class PKPStatsComponent {
 
 	/** @var array|null Configuration assoc array for available filters */
 	public $filters = null;
-
-	/** @var array Localized strings to pass to the component */
-	public $i18n = [];
 
 	/**
 	 * Constructor
@@ -82,28 +79,6 @@ class PKPStatsComponent {
 			'activeFilters' => [],
 			'isLoadingItems' => false,
 			'isSidebarVisible' => false,
-			'i18n' => array_merge(
-				[
-					'filter' => __('common.filter'),
-					'filterRemove' => __('common.filterRemove'),
-					'dateRange' => __('stats.dateRange'),
-					'dateFormatInstructions' => __('stats.dateRange.instructions'),
-					'changeDateRange' => __('stats.dateRange.change'),
-					'sinceDate' => __('stats.dateRange.sinceDate'),
-					'untilDate' => __('stats.dateRange.untilDate'),
-					'allDates' => __('stats.dateRange.allDates'),
-					'customRange' => __('stats.dateRange.customRange'),
-					'fromDate' => __('stats.dateRange.from'),
-					'toDate' => __('stats.dateRange.to'),
-					'apply' => __('stats.dateRange.apply'),
-					'invalidDate' => __('stats.dateRange.invalidDate'),
-					'dateDoesNotExist' => __('stats.dateRange.dateDoesNotExist'),
-					'invalidDateRange' => __('stats.dateRange.invalidDateRange'),
-					'invalidEndDateMax' => __('stats.dateRange.invalidEndDateMax'),
-					'invalidStartDateMin' => __('stats.dateRange.invalidStartDateMin'),
-				],
-				$this->i18n
-			),
 		];
 
 		if ($this->filters) {

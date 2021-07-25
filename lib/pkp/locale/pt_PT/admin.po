@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-19T10:49:58+00:00\n"
-"PO-Revision-Date: 2020-02-04 14:32+0000\n"
-"Last-Translator: Carla Marques <carla.marques@sdum.uminho.pt>\n"
+"PO-Revision-Date: 2021-01-21 12:53+0000\n"
+"Last-Translator: Carla Marques <carla.marques@usdb.uminho.pt>\n"
 "Language-Team: Portuguese (Portugal) <http://translate.pkp.sfu.ca/projects/"
 "pkp-lib/admin/pt_PT/>\n"
 "Language: pt_PT\n"
@@ -197,18 +197,6 @@ msgstr "Nome configuração"
 msgid "admin.systemInfo.settingValue"
 msgstr "Valor configuração"
 
-msgid "admin.languages.download"
-msgstr "Download idioma"
-
-msgid "admin.languages.downloadLocales"
-msgstr "Download idioma"
-
-msgid "admin.languages.download.cannotOpen"
-msgstr "Não é possível abrir o descritor de idioma a partir do site PKP."
-
-msgid "admin.languages.download.cannotModifyRegistry"
-msgstr "Não é possível adicionar o novo idioma ao ficheiro de registos de idiomas, disponível em \"registry/locales.xml\"."
-
 msgid "admin.languages.cantDisable"
 msgstr "Este é o principal idioma do portal. Não é possível desactivá-lo, a não ser que escolha outro idioma."
 
@@ -331,3 +319,15 @@ msgstr ""
 "Deseja realmente alterar o idioma principal? Os nomes de utilizadores, que "
 "são necessários para o idioma principal do site, serão copiados do idioma "
 "principal existente onde estes não existirem."
+
+msgid "admin.settings.disableBulkEmailRoles.adminOnly"
+msgstr "Apenas o administrador pode alterar esta configuração."
+
+msgid "admin.settings.disableBulkEmailRoles.label"
+msgstr "Desativar Papéis"
+
+msgid "admin.settings.restrictBulkEmails"
+msgstr "Restringir E-mails em massa"
+
+msgid "admin.settings.enableBulkEmails.label"
+msgstr "E-mails em massa"

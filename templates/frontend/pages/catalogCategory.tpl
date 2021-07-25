@@ -1,8 +1,8 @@
 {**
  * templates/frontend/pages/catalogCategory.tpl
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @brief Display the page to view a category of the catalog.
@@ -46,19 +46,19 @@
 		</div>
 	</div>
 
-	{if !$subcategories->wasEmpty()}
+	{if $subcategories|@count}
 	<nav class="subcategories" role="navigation">
 		<h2>
 			{translate key="catalog.category.subcategories"}
 		</h2>
 		<ul>
-			{iterate from=subcategories item=subcategory}
+			{foreach from=$subcategories item=subcategory}
 				<li>
 					<a href="{url op="category" path=$subcategory->getPath()}">
 						{$subcategory->getLocalizedTitle()|escape}
 					</a>
 				</li>
-			{/iterate}
+			{/foreach}
 		</ul>
 	</nav>
 	{/if}
@@ -74,7 +74,7 @@
 		<ul class="cmp_article_list articles">
 			{foreach from=$publishedSubmissions item=article}
 				<li>
-					{include file="frontend/objects/article_summary.tpl" article=$article hideGalleys=true}
+					{include file="frontend/objects/article_summary.tpl" article=$article hideGalleys=true heading="h3"}
 				</li>
 			{/foreach}
 		</ul>

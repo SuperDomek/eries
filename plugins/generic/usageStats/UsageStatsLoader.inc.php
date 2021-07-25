@@ -314,8 +314,7 @@ class UsageStatsLoader extends FileLoader {
 		$file = null;
 		$type = null;
 		if ($assocType == ASSOC_TYPE_SUBMISSION_FILE || $assocType == ASSOC_TYPE_SUBMISSION_FILE_COUNTER_OTHER) {
-			$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO'); /* @var $submissionFileDao SubmissionFileDAO */
-			$file = $submissionFileDao->getLatestRevision($assocId);
+			$file = Services::get('submissionFile')->get($assocId);
 		}
 
 		if ($file) $type = $this->getFileTypeFromFile($file);
@@ -359,12 +358,17 @@ class UsageStatsLoader extends FileLoader {
 	 * @return int One of the file type constants STATISTICS_FILE_TYPE...
 	 */
 	protected function getFileTypeFromFile($file) {
-		if (!is_a($file, 'PKPFile')) {
-			throw new Exception('Wrong object type, expected PKPFile.');
+		if (is_a($file, 'SubmissionFile')) {
+			$path = $file->getData('path');
+			$mimetype = $file->getData('mimetype');
+			$fileExtension = pathinfo($path, PATHINFO_EXTENSION);
+		} elseif (is_a($file, 'PKPFile')) {
+			$mimetype = $file->getFileType();
+			$fileExtension = pathinfo($file->getOriginalFileName(), PATHINFO_EXTENSION);
+		} else {
+			throw new Exception('Wrong object type. Expected SubmissionFile or PKPFile. Got ' . get_class($file));
 		}
-		$fileType = $file->getFileType();
-		$fileExtension = pathinfo($file->getOriginalFileName(), PATHINFO_EXTENSION);
-		switch ($fileType) {
+		switch ($mimetype) {
 			case 'application/pdf':
 			case 'application/x-pdf':
 			case 'text/pdf':
@@ -412,11 +416,25 @@ class UsageStatsLoader extends FileLoader {
 		$assocId = $assocTypeToReturn = null;
 		switch ($assocType) {
 			case ASSOC_TYPE_SUBMISSION:
+				$publicationId = null;
 				if (!isset($args[0])) break;
+				// If the operation is 'view' and the arguments count > 1
+				// the arguments must be: $submissionId/version/$publicationId.
+				// Else, it is not considered hier, as submission abstract count.
+				if ($op == 'view' && count($args) > 1) {
+					if ($args[1] !== 'version') break;
+					else if (count($args) != 3) break;
+					$publicationId = (int) $args[2];
+				}
 				$submissionId = $args[0];
 				$submissionDao = DAORegistry::getDAO('SubmissionDAO'); /* @var $submissionDao SubmissionDAO */
 				$submission = $submissionDao->getById($submissionId);
 				if ($submission) {
+					if ($publicationId) {
+						$publicationDao = DAORegistry::getDAO('PublicationDAO'); /* @var $publicationDao PublicationDAO */
+						$publicationExists = $publicationDao->exists($publicationId, $submissionId);
+						if (!$publicationExists) break;
+					}
 					$assocId = $submission->getId();
 					$assocTypeToReturn = $assocType;
 				}
@@ -473,11 +491,10 @@ class UsageStatsLoader extends FileLoader {
 
 				if (!isset($args[2])) break;
 				$fileId = $args[2];
-				$articleFileDao = DAORegistry::getDAO('SubmissionFileDAO');
-				$articleFile = $articleFileDao->getLatestRevision($fileId);
+				$articleFile = Services::get('submissionFile')->get($fileId);
 				if (!$articleFile) break;
 
-				$assocId = $articleFile->getFileId();
+				$assocId = $articleFile->getId();
 
 				// is the file article full text
 				$genreDao = DAORegistry::getDAO('GenreDAO');
@@ -536,21 +553,15 @@ class UsageStatsLoader extends FileLoader {
 		switch ($assocType) {
 			case ASSOC_TYPE_SUBMISSION_FILE:
 				if (!isset($args[0])) break;
-				$submissionId = $args[0];
-				$submissionDao = DAORegistry::getDAO('SubmissionDAO'); /* @var $submissionDao SubmissionDAO */
-				$monograph = $submissionDao->getById($submissionId);
-				if (!$monograph) break;
+				$submission = Services::get('submission')->get($args[0]);
+				if (!$submission) break;
 
 				if (!isset($args[2])) break;
-				$fileIdAndRevision = $args[2];
-				list($fileId, $revision) = array_map(function($a) {
-					return (int) $a;
-				}, preg_split('/-/', $fileIdAndRevision));
-
-				$monographFileDao = DAORegistry::getDAO('SubmissionFileDAO'); /* @var $monographFileDao SubmissionFileDAO */
-				$monographFile = $monographFileDao->getRevision($fileId, $revision);
-				if ($monographFile) {
-					$assocId = $monographFile->getFileId();
+				$fileId = $args[2];
+				$file = Services::get('submissionFile')->get($fileId);
+				if (!$file) break;
+				if ($file) {
+					$assocId = $file->getId();
 				}
 
 				$assocTypeToReturn = $assocType;
@@ -596,11 +607,10 @@ class UsageStatsLoader extends FileLoader {
 
 				if (!isset($args[2])) break;
 				$fileId = $args[2];
-				$articleFileDao = DAORegistry::getDAO('SubmissionFileDAO');
-				$articleFile = $articleFileDao->getLatestRevision($fileId);
+				$articleFile = Services::get('submissionFile')->get($fileId);
 				if (!$articleFile) break;
 
-				$assocId = $articleFile->getFileId();
+				$assocId = $articleFile->getId();
 
 				// is the file article full text
 				$genreDao = DAORegistry::getDAO('GenreDAO');
@@ -818,7 +828,9 @@ class UsageStatsLoader extends FileLoader {
 		$metricsDao = DAORegistry::getDAO('MetricsDAO'); /* @var $metricsDao PKPMetricsDAO */
 		$metricsDao->purgeLoadBatch($loadId);
 
-		while ($record = $statsDao->getNextByLoadId($loadId)) {
+		$records = $statsDao->getByLoadId($loadId);
+		foreach ($records as $record) {
+			$record = (array) $record;
 			$record['metric_type'] = $this->getMetricType();
 			$metricsDao->insertRecord($record);
 		}

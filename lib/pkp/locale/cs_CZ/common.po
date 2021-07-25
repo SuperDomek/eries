@@ -3,10 +3,10 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-19T10:49:40+00:00\n"
-"PO-Revision-Date: 2020-06-04 18:39+0000\n"
-"Last-Translator: Michal Jelínek <jelinek@synetix.cz>\n"
-"Language-Team: Czech <http://translate.pkp.sfu.ca/projects/pkp-lib/common/cs/"
-">\n"
+"PO-Revision-Date: 2021-01-03 17:40+0000\n"
+"Last-Translator: Jiří Dlouhý <jiri.dlouhy@czp.cuni.cz>\n"
+"Language-Team: Czech <http://translate.pkp.sfu.ca/projects/pkp-lib/common/"
+"cs_CZ/>\n"
 "Language: cs_CZ\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -33,7 +33,7 @@ msgid "about.contact.supportContact"
 msgstr "Technický kontakt"
 
 msgid "about.other"
-msgstr "Jiné"
+msgstr "Ostatní"
 
 msgid "about.people"
 msgstr "Lidé"
@@ -165,7 +165,7 @@ msgid "common.complete"
 msgstr "Dokončit"
 
 msgid "common.completed"
-msgstr "Dokončený"
+msgstr "Dokončeno"
 
 msgid "common.continue"
 msgstr "Pokračovat"
@@ -360,7 +360,7 @@ msgid "common.or"
 msgstr "nebo"
 
 msgid "common.other"
-msgstr "Jiný"
+msgstr "Ostatní"
 
 msgid "common.plugin"
 msgstr "Plugin"
@@ -779,9 +779,6 @@ msgstr "Výrazy indexu"
 msgid "search.matchAll"
 msgstr "Zahrnout všechny kategorie"
 
-msgid "search.noKeywordError"
-msgstr "Musíte vložit alespoň jedno slovo pro vyhledávání."
-
 msgid "search.noResults"
 msgstr "Žádné výsledky"
 
@@ -881,8 +878,8 @@ msgstr "Stáhnout tento soubor"
 msgid "context.path"
 msgstr "Cesta"
 
-msgid "review.ensuringBlindReview"
-msgstr "Zajištění  anonymní recenze"
+msgid "review.ensuringAnonymousReview"
+msgstr "Jak zajistit, aby byly všechny soubory anonymizovány"
 
 msgid "grid.action.showReviewPolicy"
 msgstr "Přečtěte si současné zásady recenzního procesu"
@@ -1011,7 +1008,7 @@ msgid "common.pageNumber"
 msgstr "Strana {$pageNumber}"
 
 msgid "common.percentage"
-msgstr "{$percentage}%"
+msgstr "{$percentage} %"
 
 msgid "common.pluginEnabled"
 msgstr "Plugin  \"{$pluginName}\" byl povolen."
@@ -1032,7 +1029,7 @@ msgid "common.queue.long.active"
 msgstr "Všechny aktivní"
 
 msgid "common.range"
-msgstr "{$min}-{$max}"
+msgstr "{$min}–{$max}"
 
 msgid "common.readMore"
 msgstr "Číst dále"
@@ -1209,7 +1206,7 @@ msgid "stageParticipants.notify.warning"
 msgstr "Ujistěte se, prosím, zda jste vyplnili obsah zprávy a vybrali alespoň jednoho adresáta."
 
 msgid "navigation.access"
-msgstr "Uživatelé &amp; Role"
+msgstr "Uživatelé a role"
 
 msgid "navigation.admin"
 msgstr "Administrace"
@@ -1245,7 +1242,7 @@ msgid "navigation.settings"
 msgstr "Nastavení"
 
 msgid "navigation.setup"
-msgstr "Založit"
+msgstr "Nastavit"
 
 msgid "navigation.sitemap"
 msgstr "Mapa stránek"
@@ -1284,7 +1281,7 @@ msgid "notification.reviewAcknowledged"
 msgstr "Recenze byla označena jako potvrzená. E-mail nebyl odeslán."
 
 msgid "notification.updatedReviewFiles"
-msgstr "Soubory recenzí aktualizovány."
+msgstr "Soubory pro recenzi aktualizovány."
 
 msgid "notification.addedAnnouncementType"
 msgstr "Přidán typ oznámení."
@@ -1294,12 +1291,6 @@ msgstr "Upraven typ oznámení."
 
 msgid "notification.removedAnnouncementType"
 msgstr "Odebrán typ oznámení."
-
-msgid "notification.addedAnnouncement"
-msgstr "Přidáno oznámení."
-
-msgid "notification.editedAnnouncement"
-msgstr "Upraveno oznámení."
 
 msgid "notification.removedAnnouncement"
 msgstr "Odebráno oznámení."
@@ -1449,9 +1440,9 @@ msgid "notification.type.awaitingCopyedits"
 msgstr "Čeká se na redakci."
 
 msgid "notification.type.roundStatusTitle"
-msgstr "Status fáze {$round}"
+msgstr "Status kola {$round}"
 
-msgid "review.blindPeerReview"
+msgid "review.anonymousPeerReview"
 msgstr ""
 "<p>Pro zajištění integrity anonymního recenzního procesu při podání "
 "příspěvku do našeho časopisu, je třeba vynaložit veškeré úsilí, aby se "
@@ -1534,7 +1525,7 @@ msgid "notification.removedNavigationMenu"
 msgstr "Navigační menu bylo úspěšně odebráno"
 
 msgid "notification.sendNotificationConfirmation"
-msgstr "Odeslání emailu s upozorněním všem zaregistrovaným uživatelům"
+msgstr "Odeslání emailu o této skutečnosti všem zaregistrovaným uživatelům."
 
 msgid "common.filter"
 msgstr "Filtry"
@@ -1968,3 +1959,61 @@ msgstr "Více než"
 
 msgid "common.lessThanOnly"
 msgstr "Méně než"
+
+msgid "common.titleSeparator"
+msgstr " | "
+
+msgid "user.register.form.privacyConsentLabel"
+msgstr "Zásady ochrany osobních údajů"
+
+msgid "user.authorization.unauthorizedReviewAssignment"
+msgstr "Nemáte přístup k tomuto zadání recenze."
+
+msgid "user.authorization.unauthorizedNote"
+msgstr "Nemáte přístup k této zprávě v rámci diskuse."
+
+msgid "user.authorization.invalidQuery"
+msgstr "Neplatná diskuse."
+
+msgid "user.authorization.invalidReviewRound"
+msgstr "Neplatné kolo recenzí."
+
+msgid "user.email"
+msgstr "Emailová adresa"
+
+msgid "review.anonymousPeerReview.title"
+msgstr "Jak zajistit, aby byly všechny soubory anonymizovány"
+
+msgid "search.searchResults.foundPlural"
+msgstr "Nelezeno {$count} položek."
+
+msgid "search.searchResults.foundSingle"
+msgstr "Nalezena jedna položka."
+
+msgid "navigation.backTo"
+msgstr "⟵ Zpět na {$page}"
+
+msgid "form.saved"
+msgstr "Uloženo"
+
+msgid "common.viewWithName"
+msgstr "Zobrazit {$name}"
+
+msgid "common.user.nonexistent"
+msgstr "[Neexistující uživatel]"
+
+msgid "common.addFile"
+msgstr "Přidat soubor"
+
+msgid "common.unknownError"
+msgstr ""
+"Objevila se neočekávaná chyba. Obnovte, prosím, stránku a zkuste to znovu."
+
+msgid "common.selectWithName"
+msgstr "Vybrat {$name}"
+
+msgid "common.editItem"
+msgstr "Editovat {$name}"
+
+msgid "common.inactive"
+msgstr "Neaktivní"

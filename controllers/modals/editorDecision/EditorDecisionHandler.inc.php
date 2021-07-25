@@ -3,8 +3,8 @@
 /**
  * @file controllers/modals/editorDecision/EditorDecisionHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class EditorDecisionHandler
@@ -31,6 +31,7 @@ class EditorDecisionHandler extends PKPEditorDecisionHandler {
 				'externalReview', 'saveExternalReview',
 				'sendReviews', 'saveSendReviews',
 				'promote', 'savePromote',
+				'revertDecline', 'saveRevertDecline',
 			), $this->_getReviewRoundOps())
 		);
 	}
@@ -122,6 +123,8 @@ class EditorDecisionHandler extends PKPEditorDecisionHandler {
 			case SUBMISSION_EDITOR_DECISION_DECLINE:
 			case SUBMISSION_EDITOR_DECISION_INITIAL_DECLINE:
 				return NOTIFICATION_TYPE_EDITOR_DECISION_DECLINE;
+			case SUBMISSION_EDITOR_DECISION_REVERT_DECLINE:
+				return NOTIFICATION_TYPE_EDITOR_DECISION_REVERT_DECLINE;
 			case SUBMISSION_EDITOR_DECISION_SEND_TO_PRODUCTION:
 				return NOTIFICATION_TYPE_EDITOR_DECISION_SEND_TO_PRODUCTION;
 		}

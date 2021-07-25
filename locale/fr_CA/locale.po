@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-10-15T14:05:03-07:00\n"
-"PO-Revision-Date: 2020-06-04 19:54+0000\n"
+"PO-Revision-Date: 2020-12-09 14:51+0000\n"
 "Last-Translator: Marie-Hélène Vézina [UdeMontréal] <marie-"
 "helene.vezina@umontreal.ca>\n"
 "Language-Team: French (Canada) <http://translate.pkp.sfu.ca/projects/ojs/"
@@ -15,7 +15,9 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 3.9.1\n"
 
-# localization file for fr_CA. Last revision 2019-10-22T10:57:22 by Marie-Hélène Vézina, Bibliothèques, Université de Montréal.
+msgid "user.authorization.journalDoesNotPublish"
+msgstr "La revue ne publie pas ses contenus en ligne."
+
 msgid "context.current"
 msgstr "Revue sélectionnée :"
 
@@ -1481,7 +1483,7 @@ msgid "archive.archivesPageNumber"
 msgstr "Archives - Page {$pageNumber}"
 
 msgid "archive.browse"
-msgstr "Parcourir les anciens numéros"
+msgstr "Parcourir les numéros antérieurs"
 
 msgid "archive.issueUnavailable"
 msgstr "Numéro non disponible"
@@ -1620,8 +1622,16 @@ msgid "about.aboutThisPublishingSystem.altText"
 msgstr "Processus d'édition et de publication d'OJS"
 
 msgid "about.aboutOJSJournal"
-msgstr "Cette revue utilise Open Journal Systems {$ojsVersion}, un logiciel de gestion et d'édition de revues à code source libre développé, pris en charge et distribué librement par le <a href=\"http://pkp.sfu.ca/\">Public Knowledge Project</a> sous la license publique générale GNU."
+msgstr ""
+"Cette revue utilise Open Journal Systems {$ojsVersion}, un logiciel de "
+"gestion et d'édition de revues à code source libre développé, pris en charge "
+"et distribué librement par le <a href=\"http://pkp.sfu.ca/\">Public "
+"Knowledge Project</a> sous la license publique générale GNU. Visiter le site "
+"Web de PKP pour <a href=\"http://pkp.sfu.ca/\"> en apprendre plus sur "
+"l'application </a>. Veuillez <a href=\"{$contactUrl}\"> contacter la revue "
+"</a> directement pour toute question sur la revue et les soumissions."
 
+#, fuzzy
 msgid "about.aboutOJSSite"
 msgstr "Ce site utilise Open Journal Systems {$ojsVersion}, un logiciel de gestion et d'édition de revues à code source libre développé, pris en charge et distribué librement par le <a href=\"http://pkp.sfu.ca/\">Public Knowledge Project</a> sous la license publique générale GNU."
 
@@ -1748,6 +1758,7 @@ msgstr "Installation d'OJS"
 msgid "installer.ojsUpgrade"
 msgstr "Mise à jour d'OJS"
 
+#, fuzzy
 msgid "installer.installationInstructions"
 msgstr ""
 "<h4>Version {$version} d'OJS</h4>\n"
@@ -1943,7 +1954,10 @@ msgid "log.review.reviewAcceptedByProxy"
 msgstr "{$userName} a accepté le cycle {$round} d'évaluation de la soumission {$submissionId} au nom de {$reviewerName}."
 
 msgid "log.review.reviewFileByProxy"
-msgstr "Le,La rédacteur-trice, {$userName}, a téléversé le fichier d'évaluation pour le cycle {$round} de la soumission {$submissionId} au nom de l'évaluateur-trice, {$reviewerName}."
+msgstr ""
+"Le,La rédacteur-trice, {$userName}, a téléversé le fichier à évaluer pour le "
+"cycle {$round} de la soumission {$submissionId} au nom de l'évaluateur-"
+"trice, {$reviewerName}."
 
 msgid "log.review.reviewerFile"
 msgstr "Le fichier d'un-e évaluateur-trice a été téléversé."
@@ -2077,9 +2091,6 @@ msgstr "Numéro demandé invalide !"
 msgid "user.authorization.invalidCopyditorSubmission"
 msgstr "Soumission du,de la correcteur-trice d'épreuves non valide ou non requise !"
 
-msgid "debug.notes.currencyListLoad"
-msgstr "Liste des devises « {$filename} » chargée à partir du XML"
-
 msgid "grid.action.createContext"
 msgstr "Créer une nouvelle revue"
 
@@ -2148,3 +2159,12 @@ msgstr "Afficher {$identification}"
 
 msgid "submissionGroup.assignedSubEditors"
 msgstr "Rédacteurs-trices assignés-ées"
+
+msgid "about.aboutSoftware"
+msgstr "À propos de Open Journal Systems"
+
+msgid "user.authorization.representationNotFound"
+msgstr "Les épreuves demandées n'ont pas pu être trouvées."
+
+msgid "category.category"
+msgstr "Catégories"

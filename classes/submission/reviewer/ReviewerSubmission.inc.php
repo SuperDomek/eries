@@ -3,8 +3,8 @@
 /**
  * @file classes/submission/reviewer/ReviewerSubmission.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ReviewerSubmission
@@ -306,7 +306,7 @@ class ReviewerSubmission extends Submission {
 	}
 
 	/**
-	 * Get the method of the review (open, blind, or double-blind).
+	 * Get the method of the review (open, anonymous, or double-anonymous).
 	 * @return int
 	 */
 	public function getReviewMethod() {

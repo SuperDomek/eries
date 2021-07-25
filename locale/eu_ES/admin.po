@@ -2,14 +2,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"Last-Translator: \n"
-"Language-Team: \n"
+"POT-Creation-Date: 2019-11-19T10:49:20+00:00\n"
+"PO-Revision-Date: 2020-06-29 18:24+0000\n"
+"Last-Translator: Aitor Cuartango Berrendo <aitor.cuartango@ehu.eus>\n"
+"Language-Team: Basque <http://translate.pkp.sfu.ca/projects/ojs/admin/eu/>\n"
+"Language: eu_ES\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2019-11-19T10:49:20+00:00\n"
-"PO-Revision-Date: 2019-11-19T10:49:20+00:00\n"
-"Language: \n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.9.1\n"
 
 msgid "admin.hostedContexts"
 msgstr "Aldizkari ostatatuak"
@@ -28,21 +30,6 @@ msgstr "Hautatu gunean onartu nahi dituzun hizkuntza-pakete guztiak. Hautatutako
 
 msgid "admin.languages.confirmUninstall"
 msgstr "Ziur zaude hizkuntza hau desinstalatu nahi duzula? Eragina izango du hizkuntza hau erabiltzen duten aldizkari ostatatu guztietan."
-
-msgid "admin.languages.downloadFailed"
-msgstr "Hizkuntza deskargatzeak huts egin du. Beheko errore-mezuan azaltzen da hutsegitea."
-
-msgid "admin.languages.localeInstalled"
-msgstr "\"{$locale}\" hizkuntza instalatu da."
-
-msgid "admin.languages.download"
-msgstr "Deskargatu hizkuntza-paketea"
-
-msgid "admin.languages.download.cannotOpen"
-msgstr "Ezin da ireki PKP webguneko hizkuntza-deskriptorea."
-
-msgid "admin.languages.download.cannotModifyRegistry"
-msgstr "Ezin da hizkuntza-pakete berria gehitu localeen erregistro-fitxategian (normalean \"registry/locales.xml\"."
 
 msgid "admin.auth.ojs"
 msgstr "OJS erabiltzaileen datu-basea"
@@ -142,3 +129,29 @@ msgstr "Hauta itzazu locale osagarriak sistema horretarako laguntzailea instalat
 
 msgid "admin.journals.createInstructions"
 msgstr "Aldizkari honen kudeatzaile gisa emango duzu izena automatikoki. Aldizkari berria sortu ondoren, bertara kudeatzaile gisa sartu haren ezarpenarekin eta erabiltzailearen izen-ematearekin jarraitzeko."
+
+msgid "admin.scheduledTask.subscriptionExpiryReminder"
+msgstr "Harpidetza iraungitze abisua"
+
+msgid "admin.contexts.form.edit.success"
+msgstr "{$name} ondo editatu egin da."
+
+msgid "admin.contexts.form.create.success"
+msgstr "{$name} ondo sortu egin da."
+
+msgid "admin.contexts.form.titleRequired"
+msgstr "Titulu bat behar da."
+
+msgid "admin.languages.confirmDisable"
+msgstr ""
+"Ziur zaude hizkuntza hau kendu nahi duzula? Gerta daiteke aldizkari bat "
+"erabiltzen duela."
+
+msgid "admin.settings.info.success"
+msgstr "Guneko informazioa ondo eguneratu egin da."
+
+msgid "admin.settings.config.success"
+msgstr "Konfigurazioa ondo eguneratu egin da."
+
+msgid "admin.settings.appearance.success"
+msgstr "Itxura konfigurazioa ondo eguneratu egin da."

@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/subscriptions/InstitutionalSubscriptionsGridHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class InstitutionalSubscriptionsGridHandler
@@ -95,34 +95,29 @@ class InstitutionalSubscriptionsGridHandler extends SubscriptionsGridHandler {
 	/**
 	 * @copydoc GridHandler::renderFilter()
 	 */
-	function renderFilter($request) {
-		$context = $request->getContext();
-
+	function renderFilter($request, $filterData = []) {
 		// Import field constants.
 		import('lib.pkp.classes.user.UserDAO');
 		import('classes.subscription.InstitutionalSubscriptionDAO');
-		$fieldOptions = array(
-			IDENTITY_SETTING_GIVENNAME => 'user.givenName',
-			IDENTITY_SETTING_FAMILYNAME => 'user.familyName',
-			USER_FIELD_USERNAME => 'user.username',
-			USER_FIELD_EMAIL => 'user.email',
-			SUBSCRIPTION_MEMBERSHIP => 'user.subscriptions.form.membership',
-			SUBSCRIPTION_REFERENCE_NUMBER => 'manager.subscriptions.form.referenceNumber',
-			SUBSCRIPTION_NOTES => 'manager.subscriptions.form.notes',
-			SUBSCRIPTION_INSTITUTION_NAME => 'manager.subscriptions.form.institutionName',
-			SUBSCRIPTION_DOMAIN => 'manager.subscriptions.form.domain',
-			SUBSCRIPTION_IP_RANGE => 'manager.subscriptions.form.ipRange',
-		);
 
-		$matchOptions = array(
-			'contains' => 'form.contains',
-			'is' => 'form.is'
-		);
-
-		$filterData = array(
-			'fieldOptions' => $fieldOptions,
-			'matchOptions' => $matchOptions
-		);
+		$filterData = array_merge($filterData, [
+			'fieldOptions' => [
+				IDENTITY_SETTING_GIVENNAME => 'user.givenName',
+				IDENTITY_SETTING_FAMILYNAME => 'user.familyName',
+				USER_FIELD_USERNAME => 'user.username',
+				USER_FIELD_EMAIL => 'user.email',
+				SUBSCRIPTION_MEMBERSHIP => 'user.subscriptions.form.membership',
+				SUBSCRIPTION_REFERENCE_NUMBER => 'manager.subscriptions.form.referenceNumber',
+				SUBSCRIPTION_NOTES => 'manager.subscriptions.form.notes',
+				SUBSCRIPTION_INSTITUTION_NAME => 'manager.subscriptions.form.institutionName',
+				SUBSCRIPTION_DOMAIN => 'manager.subscriptions.form.domain',
+				SUBSCRIPTION_IP_RANGE => 'manager.subscriptions.form.ipRange',
+			],
+			'matchOptions' => [
+				'contains' => 'form.contains',
+				'is' => 'form.is'
+			],
+		]);
 
 		return parent::renderFilter($request, $filterData);
 	}

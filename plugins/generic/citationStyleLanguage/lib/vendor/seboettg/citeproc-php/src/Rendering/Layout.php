@@ -34,7 +34,6 @@ use stdClass;
  */
 class Layout implements Rendering
 {
-
     private static $numberOfCitedItems = 0;
 
     use AffixesTrait,
@@ -92,7 +91,8 @@ class Layout implements Rendering
         }
 
         if (CiteProc::getContext()->isModeBibliography()) {
-            foreach ($data as $citationNumber => $item) {++self::$numberOfCitedItems;
+            foreach ($data as $citationNumber => $item) {
+                ++self::$numberOfCitedItems;
                 CiteProc::getContext()->getResults()->append(
                     $this->wrapBibEntry($item, $this->renderSingle($item, $citationNumber))
                 );
@@ -123,7 +123,6 @@ class Layout implements Rendering
      */
     private function renderSingle($data, $citationNumber = null)
     {
-
         $bibliographyOptions = CiteProc::getContext()->getBibliographySpecificOptions();
         $inMargin = [];
         $margin = [];
@@ -142,16 +141,16 @@ class Layout implements Rendering
                 $inMargin[] = $rendered;
             }
         }
-
-
+        $inMargin = array_filter($inMargin);
+        $margin = array_filter($margin);
         if (!empty($inMargin) && !empty($margin) && CiteProc::getContext()->isModeBibliography()) {
             $leftMargin = $this->removeConsecutiveChars($this->htmlentities($this->format(implode("", $inMargin))));
             $rightInline = $this->removeConsecutiveChars(
                 $this->htmlentities($this->format(implode("", $margin))).
                 $this->suffix
             );
-            $res  = '<div class="csl-left-margin">'.$leftMargin.'</div>';
-            $res .= '<div class="csl-right-inline">'.$rightInline.'</div>';
+            $res  = '<div class="csl-left-margin">' . trim($leftMargin) . '</div>';
+            $res .= '<div class="csl-right-inline">' . trim($rightInline) . '</div>';
             return $res;
         } elseif (!empty($inMargin)) {
             $res = $this->format(implode("", $inMargin));
@@ -177,8 +176,8 @@ class Layout implements Rendering
     {
         $value = $this->addAffixes($value);
         return "\n  ".
-            "<div class=\"csl-entry\">".
-            $renderedItem = CiteProcHelper::applyAdditionMarkupFunction($dataItem, "csl-entry", $value).
+            "<div class=\"csl-entry\">" .
+            $renderedItem = CiteProcHelper::applyAdditionMarkupFunction($dataItem, "csl-entry", $value) .
             "</div>";
     }
 
@@ -204,6 +203,7 @@ class Layout implements Rendering
             $renderedItem = $this->renderSingle($item, $citationNumber);
             $renderedItem = CiteProcHelper::applyAdditionMarkupFunction($item, "csl-entry", $renderedItem);
             CiteProc::getContext()->getResults()->append($renderedItem);
+            CiteProc::getContext()->appendCitedItem($item);
         }
         $ret .= implode($this->delimiter, CiteProc::getContext()->getResults()->toArray());
         return $ret;
@@ -218,7 +218,7 @@ class Layout implements Rendering
     {
         $arr = $data->toArray();
 
-        $arr_ = array_filter($arr, function($dataItem) use ($citationItems) {
+        $arr_ = array_filter($arr, function ($dataItem) use ($citationItems) {
             foreach ($citationItems as $citationItem) {
                 if ($dataItem->id === $citationItem->id) {
                     return true;
@@ -253,7 +253,7 @@ class Layout implements Rendering
         $group = [];
         foreach ($citationItems as $citationItemGroup) {
             $data_ = $this->filterCitationItems(clone $data, $citationItemGroup);
-            CiteProc::getContext()->setCitationItems($data_);
+            CiteProc::getContext()->setCitationData($data_);
             $group[] = $this->addAffixes(StringHelper::clearApostrophes($this->renderCitations($data_, "")));
         }
         if (CiteProc::getContext()->isCitationsAsArray()) {

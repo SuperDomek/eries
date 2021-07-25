@@ -2,14 +2,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"Last-Translator: \n"
-"Language-Team: \n"
+"POT-Creation-Date: 2019-11-19T10:49:19+00:00\n"
+"PO-Revision-Date: 2020-07-15 12:45+0000\n"
+"Last-Translator: Manolis Saldaris <omanos@gmail.com>\n"
+"Language-Team: Greek <http://translate.pkp.sfu.ca/projects/ojs/admin/el/>\n"
+"Language: el_GR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2019-11-19T10:49:19+00:00\n"
-"PO-Revision-Date: 2019-11-19T10:49:19+00:00\n"
-"Language: \n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.9.1\n"
 
 msgid "admin.hostedContexts"
 msgstr "Φιλοξενούμενα περιοδικά"
@@ -34,15 +36,6 @@ msgstr ""
 msgid "admin.languages.confirmDisable"
 msgstr "Επιβεβαιώνετε την απενεργοποίηση αυτής της γλώσσας; Η επιλογή σας μπορεί να επηρεάσει τη λειτουργία όσων περιοδικών χρησιμοποιούν τη συγκεκριμένη γλώσσα."
 
-msgid "admin.languages.downloadUnavailable"
-msgstr ""
-"<p>Η μεταφόρτωση γλωσσών από τον διακομιστή web του Public Knowledge Project δεν είναι δυνατή διότι:</p>\n"
-"\t<ul>\n"
-"\t\t<li>Ο διακομιστής σας δεν έχει ή δεν επιτρέπει εκτέλεση του βοηθητικού προγράμματος GNU \"tar\".</li>\n"
-"\t\t<li>Το OJS δε μπορεί να τροποποιήσει το αρχείο μητρώου γλωσσών, συνήθως \"registry/locales.xml\".</li>\n"
-"\t</ul>\n"
-"<p>Τα πακέτα γλωσσών μπορούν να μεταφορτωθούν από τον δικτυακό τόπο του PKP <a href=\"http://pkp.sfu.ca\"></a>.</p>"
-
 msgid "admin.languages.primaryLocaleInstructions"
 msgstr "Αυτή θα είναι η προκαθορισμένη γλώσσα του ιστοτόπου και όλων των φιλοξενούμενων περιοδικών."
 
@@ -57,21 +50,6 @@ msgstr "Επιβεβαιώνετε την απεγκατάσταση αυτής 
 
 msgid "admin.languages.installNewLocalesInstructions"
 msgstr "Επιλέξτε τις πρόσθετες γλώσσες προς εγκατάσταση. Η εγκατάσταση γλωσσών είναι προαπαιτούμενο για τη χρήση τους στα περιοδικά. Για πληροφορίες σχετικά με την υποστήριξη νέων γλωσσών, ανατρέξτε στο τεκμηριωτικό υλικό του OJS."
-
-msgid "admin.languages.downloadFailed"
-msgstr "Η μεταφόρτωση της γλώσσας απέτυχε. Ακολουθεί η περιγραφή του σφάλματος."
-
-msgid "admin.languages.localeInstalled"
-msgstr "Η γλώσσα \"{$locale}\" εγκαταστάθηκε."
-
-msgid "admin.languages.download"
-msgstr "Μεταφόρτωση γλώσσας"
-
-msgid "admin.languages.download.cannotOpen"
-msgstr "Το άνοιγμα του αρχείου τεκμηρίωσης της γλώσσας από τον ιστότοπο του PKP δεν είναι εφικτό."
-
-msgid "admin.languages.download.cannotModifyRegistry"
-msgstr "Δεν είναι δυνατή η προσθήκη της γλώσσας στο αρχείο μητρώου γλωσσών, συνήθως \"registry/locales.xml\"."
 
 msgid "admin.auth.ojs"
 msgstr "Βάση δεδομένων Χρηστών του OJS"
@@ -210,3 +188,21 @@ msgstr "Γνωστοποίηση ανοικτής πρόσβασης"
 
 msgid "admin.scheduledTask.reviewReminder"
 msgstr "Υπενθύμιση αξιολόγησης"
+
+msgid "admin.contexts.contextDescription"
+msgstr "Περιγραφή του Περιοδικού"
+
+msgid "admin.contexts.form.edit.success"
+msgstr "Επιτυχής επεξεργασία του {$name}."
+
+msgid "admin.contexts.form.create.success"
+msgstr "Το {$name} δημιουργήθηκε επιτυχώς."
+
+msgid "admin.settings.info.success"
+msgstr "Οι πληροφορίες του ιστότοπου έχουν ενημερωθεί επιτυχώς."
+
+msgid "admin.settings.config.success"
+msgstr "Οι ρυθμίσεις διαμόρφωσης του ιστότοπου έχουν ενημερωθεί επιτυχώς."
+
+msgid "admin.settings.appearance.success"
+msgstr "Οι ρυθμίσεις εμφάνισης του ιστότοπου έχουν ενημερωθεί επιτυχώς."

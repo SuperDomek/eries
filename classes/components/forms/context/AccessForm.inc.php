@@ -2,8 +2,8 @@
 /**
  * @file classes/components/form/context/AccessForm.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class AccessForm
@@ -37,10 +37,9 @@ class AccessForm extends FormComponent {
 	 */
 	public function __construct($action, $locales, $context) {
 		$this->action = $action;
-		$this->successMessage = __('manager.distribution.publishingMode.success');
 		$this->locales = $locales;
 
-		$validDelayedOpenAccessDuration[] = ['value' => 0, 'label' => __('common.disabled')]; 
+		$validDelayedOpenAccessDuration[] = ['value' => 0, 'label' => __('common.disabled')];
 		for ($i=SUBSCRIPTION_OPEN_ACCESS_DELAY_MIN; $i<=SUBSCRIPTION_OPEN_ACCESS_DELAY_MAX; $i++) {
 			$validDelayedOpenAccessDuration[] = [
 				'value' => $i,
@@ -63,7 +62,7 @@ class AccessForm extends FormComponent {
 				'options' => $validDelayedOpenAccessDuration,
 				'value' => $context->getData('delayedOpenAccessDuration'),
 				'showWhen' => ['publishingMode', PUBLISHING_MODE_SUBSCRIPTION],
-			]))	
+			]))
 			->addField(new FieldOptions('enableOai', [
 				'label' => __('manager.setup.enableOai'),
 				'description' => __('manager.setup.enableOai.description'),

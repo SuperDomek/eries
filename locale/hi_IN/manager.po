@@ -139,6 +139,7 @@ msgid "manager.payment.generalFees"
 msgstr "सामान्य शुल्क"
 
 # (pofilter) endpunc: Different punctuation at the end
+#, fuzzy
 msgid "manager.payment.generalFeesDescription"
 msgstr ""
 "एसोसिएशन सदस्यता नीतियों के तहत जर्नल के बारे में दिखाई देगा, और दान लिंक "
@@ -313,6 +314,7 @@ msgstr "क्या आप वाकई इस अनुभाग को स्
 
 # (pofilter) endpunc: Different punctuation at the end
 # (pofilter) simplecaps: Different capitalization
+#, fuzzy
 msgid "manager.sections.alertDelete"
 msgstr ""
 "इस खंड को हटाए जाने से पहले, आपको इसके भीतर प्रकाशित लेखों को अन्य अनुभागों "
@@ -2097,7 +2099,7 @@ msgstr ""
 "आंतरिक समीक्षा, समीक्षा, संपादकीय, और उत्पादन।"
 
 # (pofilter) untranslated: Checks whether a string has been translated at all.
-# 
+#
 # This check is really only useful if you want to extract untranslated
 # strings so that they can be translated independently of the main work.
 msgid "manager.setup.copyrightYearBasis"
@@ -2637,9 +2639,6 @@ msgstr "फ़ाइल एक्सेस को प्रतिबंधित
 
 msgid "manager.setup.reviewOptions.numWeeksPerReview"
 msgstr "सप्ताह की समीक्षा पूरी करने की अनुमति दी"
-
-msgid "manager.setup.reviewOptions.blindReview"
-msgstr "ब्लाइंड रिव्यू"
 
 msgid "manager.setup.reviewOptions.automatedReminders"
 msgstr "स्वचालित ईमेल स्मरणपत्र"

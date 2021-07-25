@@ -95,9 +95,6 @@ msgstr "Имя"
 msgid "user.interests"
 msgstr "Интересы как рецензента"
 
-msgid "user.interests.description"
-msgstr "(Разделяйте интересы запятой или нажимайте «Enter»)"
-
 msgid "user.gossip"
 msgstr "Заметки редакции"
 
@@ -183,7 +180,7 @@ msgid "user.logOut"
 msgstr "Выйти из системы"
 
 msgid "user.logOutAs"
-msgstr "Выйти из системы как"
+msgstr "Выйти из системы как «{$username}»"
 
 msgid "user.hello"
 msgstr "Добро пожаловать, "
@@ -223,9 +220,6 @@ msgstr "Страна обязательна."
 
 msgid "user.profile.form.emailRequired"
 msgstr "Правильный адрес электронной почты обязателен."
-
-msgid "user.profile.form.affiliationRequired"
-msgstr "Организация обязательна."
 
 msgid "user.profile.form.givenNameRequired"
 msgstr "Имя обязательно."

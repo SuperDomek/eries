@@ -1627,9 +1627,11 @@ msgstr "Про цю видавничу систему"
 msgid "about.aboutThisPublishingSystem.altText"
 msgstr "Редакційно-видавничий процес OJS"
 
+#, fuzzy
 msgid "about.aboutOJSJournal"
 msgstr "Цей журнал використовує Open Journal Systems {$ojsVersion} - програмний пакет з відкритим вихідним кодом, який підтримує процеси менеджменту та публікації журналу. Пакет розробляється, підтримується та вільно розповсюджується <a href=\"http://pkp.sfu.ca/\">Public Knowledge Project</a> на умовах ліцензії GNU General Public License."
 
+#, fuzzy
 msgid "about.aboutOJSSite"
 msgstr "Цей сайт використовує Open Journal Systems {$ojsVersion} - програмний пакет з відкритим вихідним кодом, який підтримує процеси менеджменту та публікації журналів. Пакет розробляється, підтримується та вільно розповсюджується <a href=\"http://pkp.sfu.ca/\">Public Knowledge Project</a> на умовах ліцензії GNU General Public License."
 
@@ -1861,6 +1863,7 @@ msgstr "Встановлення OJS"
 msgid "installer.ojsUpgrade"
 msgstr "Оновлення OJS"
 
+#, fuzzy
 msgid "installer.installationInstructions"
 msgstr ""
 "<h4>Версія OJS {$version}</h4>\n"
@@ -2234,9 +2237,6 @@ msgstr "Вказаний неправильний випуск!"
 
 msgid "user.authorization.invalidCopyditorSubmission"
 msgstr "Помилка призначення літературного редактора подання або запиту на літературне редагування!"
-
-msgid "debug.notes.currencyListLoad"
-msgstr "З XML-файлу завантажений список валют \"{$filename}\""
 
 msgid "grid.action.createContext"
 msgstr "Створити новий журнал"

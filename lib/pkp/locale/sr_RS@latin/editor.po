@@ -11,6 +11,9 @@ msgstr ""
 "PO-Revision-Date: 2019-11-19T10:50:04+00:00\n"
 "Language: \n"
 
+msgid "editor.submissionArchive.confirmDelete"
+msgstr "Da li želite da trajno obrišete predaje?"
+
 msgid "editor.submissionLibrary"
 msgstr "Biblioteka predaja"
 
@@ -83,10 +86,12 @@ msgstr "Ne šalji imejl autoru"
 msgid "editor.submissionReview.open"
 msgstr "Otvorena"
 
-msgid "editor.submissionReview.blind"
+#, fuzzy
+msgid "editor.submissionReview.anonymous"
 msgstr "Slepa"
 
-msgid "editor.submissionReview.doubleBlind"
+#, fuzzy
+msgid "editor.submissionReview.doubleAnonymous"
 msgstr "Dvostruka slepa"
 
 msgid "editor.submissionReview.restrictFiles"

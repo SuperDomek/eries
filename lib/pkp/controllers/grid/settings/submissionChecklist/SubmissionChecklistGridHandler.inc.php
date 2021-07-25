@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/settings/submissionChecklist/SubmissionChecklistGridHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SubmissionChecklistGridHandler
@@ -95,7 +95,6 @@ class SubmissionChecklistGridHandler extends SetupGridHandler {
 		$router = $request->getRouter();
 		$context = $router->getContext($request);
 		$submissionChecklist = $context->getData('submissionChecklist');
-
 		return $submissionChecklist[AppLocale::getLocale()];
 	}
 
@@ -222,6 +221,8 @@ class SubmissionChecklistGridHandler extends SetupGridHandler {
 			}
 		}
 
+		// Update both the in-memory value and database setting.
+		$context->setData('submissionChecklist', $orderedChecklistItems);
 		$context->updateSetting('submissionChecklist', $orderedChecklistItems, 'object', true);
 	}
 }

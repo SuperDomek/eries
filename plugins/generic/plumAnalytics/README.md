@@ -4,8 +4,7 @@ This plugin provides display of PlumX Metrics from [Plum Analytics](http://pluma
 
 ## Requirements
 
-* OJS 3.x
-  * for 2.x, see the [ojs-dev-2_4 branch](https://github.com/ulsdevteam/ojs-plum-plugin/tree/ojs-dev-2_4)
+* OJS 3.2 or later
 * Article level DOIs
   * see: Login -> Settings -> Website -> Plugins -> DOI
 * PlumX tracking of the artifacts with those DOIs
@@ -17,9 +16,27 @@ This plugin provides display of PlumX Metrics from [Plum Analytics](http://pluma
 
 ## Configuration
 
-Install this as a "generic" plugin in OJS.  The preferred installation method is through the Plugin Gallery.  To install manually via the filesystem, extract the contents of this archive to a "plumAnalytics" directory under "plugins/generic" in your OJS root.  To install via Git submodule, target that same directory path: `git submodule add https://github.com/ulsdevteam/ojs-plum-plugin plugins/generic/plumAnalytics` and `git submodule update --init --recursive plugins/generic/plumAnalytics`.  Run the upgrade script to register this plugin, e.g.: `php tools/upgrade.php upgrade`
+### Plugin Gallery installation
 
-Login as a Journal Manger and navigate to the Journal for which you wish to use the Widget.  Enable the plugin via Login -> Settings -> Website -> Plugins -> Plum Analytics Artifact Widget -> Enable.
+Install this as a "generic" plugin in OJS.  The preferred installation method is through the Plugin Gallery.
+
+### Manual installation
+
+To install manually via the filesystem, extract the contents of this archive to a "plumAnalytics" directory under "plugins/generic" in your OJS root.
+
+To install via Git submodule, target that same directory path: 
+```
+git submodule add https://github.com/ulsdevteam/ojs-plum-plugin plugins/generic/plumAnalytics
+```
+
+Installation via the Plugin Gallery will automatically register the plugin.  If not installed via the Plugin Gallery, run the install or upgrade script to register the plugin, e.g.: 
+```
+php lib/pkp/tools/installPluginVersion.php plugins/generic/plumAnalytics/version.xml
+```
+
+### Enable and Setup
+
+Login as a Journal Manager and navigate to the Journal for which you wish to use the Widget.  Enable the plugin via Login -> Settings -> Website -> Plugins -> Plum Analytics Artifact Widget -> Enable.
 
 To configure the plugin, you will need to select what type of widget you want, and where it will display.  Additional options may apply to specific widget types.  See the [PlumX Widgets page](https://plu.mx/developers/widgets) for an overview of the different widget types and options.
 

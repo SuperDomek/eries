@@ -2,8 +2,8 @@
 /**
  * @file classes/components/form/context/ArchivingLockssForm.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ArchivingLockssForm
@@ -35,7 +35,6 @@ class ArchivingLockssForm extends FormComponent {
 	 */
 	public function __construct($action, $locales, $context, $lockssUrl, $clockssUrl) {
 		$this->action = $action;
-		$this->successMessage = __('manager.setup.archiving.success');
 		$this->locales = $locales;
 
 		$this->addField(new FieldOptions('enableLockss', [

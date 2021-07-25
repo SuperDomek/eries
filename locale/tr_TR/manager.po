@@ -3,10 +3,10 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-19T10:49:36+00:00\n"
-"PO-Revision-Date: 2020-04-29 19:12+0000\n"
+"PO-Revision-Date: 2020-11-26 18:19+0000\n"
 "Last-Translator: Hüseyin Körpeoğlu <yoruyenturk@hotmail.com>\n"
-"Language-Team: Turkish <http://translate.pkp.sfu.ca/projects/ojs/manager/tr/>"
-"\n"
+"Language-Team: Turkish <http://translate.pkp.sfu.ca/projects/ojs/manager/"
+"tr_TR/>\n"
 "Language: tr_TR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -108,8 +108,7 @@ msgstr "Genel Ücretler"
 
 msgid "manager.payment.generalFeesDescription"
 msgstr ""
-"Dernek Üyeliği, Dergi Hakkında sayfasında Politikalar altında, bağış "
-"linkleri de sağ taraf çerçevede arama seçeneği üzerinde görülür."
+"Dernek Üyeliği, Dergi Hakkında sayfasında Politikalar altında yer alacaktır."
 
 msgid "manager.payment.generalOptions"
 msgstr "Genel Seçenekler"
@@ -796,9 +795,6 @@ msgstr ""
 "gerekir. Bu iş için sunucuda da ayarlar yapmak gerekebilir ve her sunucuda "
 "bu işlev çalışmayabilir. Daha fazla bilgi için ADS rehberlerine bakınız."
 
-msgid "manager.setup.reviewOptions.blindReview"
-msgstr "Kör Hakemlik"
-
 msgid "manager.setup.reviewOptions.numWeeksPerReview"
 msgstr "Hakem değerlendirmesini tamamlamak için verilen süre"
 
@@ -831,9 +827,6 @@ msgstr "Hakem Puanlama"
 
 msgid "manager.setup.reviewOptions.reviewerReminders"
 msgstr "Hakem Hatırlatıcıları"
-
-msgid "manager.setup.reviewOptions.showEnsuringLink"
-msgstr "Yazarlara ve hakemlere dosya yükleme sayfalarında <a href=\"javascript:openHelp('{$blindReviewHelpId}')\" class=\"action\">Kör Hakemlik Güvencesi</a> için bağlantılar sağlayın."
 
 msgid "manager.setup.reviewPolicy"
 msgstr "Değerlendirme Politikası"
@@ -1483,6 +1476,7 @@ msgstr "Herhangi bir abonelik türü oluşturulmadı."
 msgid "manager.subscriptionTypes.subscriptionTypeCreatedSuccessfully"
 msgstr "Abonelik türü başarıyla oluşturuldu."
 
+#, fuzzy
 msgid "manager.sections.alertDelete"
 msgstr ""
 "Bu bölümü silmeden önce, bu bölümde yayımlanmış makaleleri diğer bölümlere "
@@ -1880,20 +1874,8 @@ msgstr "Portico"
 msgid "manager.setup.Issn"
 msgstr "ISSN"
 
-msgid "manager.setup.contact.success"
-msgstr "Bu dergi için iletişim detayları güncellendi."
-
-msgid "manager.setup.archiving.success"
-msgstr "Bu dergi için arşivleme detayları güncellendi."
-
 msgid "manager.setup.announcementsIntroduction"
 msgstr "Giriş"
-
-msgid "manager.setup.announcements.success"
-msgstr "Duyuru ayarları güncellendi."
-
-msgid "manager.payment.success"
-msgstr "Ödeme ayarları güncellendi."
 
 msgid "manager.website.archiving"
 msgstr "Arşivleme"
@@ -1914,9 +1896,6 @@ msgstr ""
 msgid "manager.setup.keyInfo"
 msgstr "Temel Bilgi"
 
-msgid "manager.setup.information.success"
-msgstr "Bu derginin \"Bilgi\"si güncellendi."
-
 msgid "manager.setup.identity"
 msgstr "Dergi Kimliği"
 
@@ -1928,20 +1907,11 @@ msgstr ""
 msgid "manager.setup.numAnnouncementsHomepage"
 msgstr "Anasayfada Göster"
 
-msgid "manager.setup.lists.success"
-msgstr "Derginin liste ayarları güncellendi."
-
-msgid "manager.distribution.publishingMode.success"
-msgstr "Yayınlama detayları güncellendi."
-
 msgid "manager.distribution.publishingMode"
 msgstr "Yayınlama Şekli"
 
 msgid "manager.distribution.publication"
 msgstr "Yayınlama"
-
-msgid "manager.setup.userAccess.success"
-msgstr "Dergi kullanıcı erişim ayarları güncellendi."
 
 msgid "manager.setup.enableOai.description"
 msgstr ""
@@ -1956,9 +1926,6 @@ msgstr "Makale İçeriğini Göster"
 
 msgid "manager.setup.siteAccess.view"
 msgstr "Site Erişimi"
-
-msgid "manager.setup.searchEngineIndexing.success"
-msgstr "Arama motoru dizinlemesi ayarları güncellendi."
 
 msgid "manager.setup.reviewOptions.reviewerAccessKeysEnabled.label"
 msgstr ""
@@ -2034,3 +2001,25 @@ msgstr ""
 "Başka bir sayfada, sonraki öğeleri göstermeden önce listede görüntülenecek "
 "öğe sayısını (örneğin, gönderiler, kullanıcılar veya düzenleme atamaları) "
 "sınırlayın."
+
+msgid "plugins.importexport.common.validation.fail"
+msgstr "Doğrulama başarısız."
+
+msgid "plugins.importexport.common.validation.success"
+msgstr "Doğrulama başarılı!"
+
+msgid "manager.setup.disableSubmissions.notAccepting"
+msgstr ""
+"Dergi şu anda makale gönderimi kabul etmiyor. İzin vermek için iş akışı "
+"ayarlarını ziyaret edin."
+
+msgid "manager.setup.disableSubmissions.description"
+msgstr ""
+"Makale gönderimini devre dışı bırak. Makale gönderimini derginin bölümlerine "
+"göre devre dışı bırakmak için <a href=\"{$url}\">dergi bölümleri</a> "
+"sayfasına gidiniz."
+
+msgid "manager.sections.confirmDeactivateSection.error"
+msgstr ""
+"En az bir bölüm aktif olmalıdır. Bu dergiye makale gönderimini devre dışı "
+"bırakmak için iş akışı ayarlarını ziyaret edin."

@@ -2,14 +2,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"Last-Translator: \n"
-"Language-Team: \n"
+"POT-Creation-Date: 2019-11-19T10:49:48+00:00\n"
+"PO-Revision-Date: 2020-12-12 08:52+0000\n"
+"Last-Translator: Antti-Jussi Nygård <ajnyga@gmail.com>\n"
+"Language-Team: Finnish <http://translate.pkp.sfu.ca/projects/pkp-lib/"
+"submission/fi_FI/>\n"
+"Language: fi_FI\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2019-11-19T10:49:48+00:00\n"
-"PO-Revision-Date: 2019-11-19T10:49:48+00:00\n"
-"Language: \n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.9.1\n"
 
 msgid "author.submit.submissionCitations"
 msgstr "Anna muotoiltu lähdeluettelo, joka sisältää työt, joihin tässä käsikirjoituksessa viitataan. Erottele lähteet toisistaan yhdellä tyhjällä rivillä."
@@ -111,7 +114,7 @@ msgid "metadata.property.validationMessage.article-title"
 msgstr "Anna kelvollinen artikkelin/työn otsikko."
 
 msgid "metadata.property.displayName.source"
-msgstr "Julkaisun nimi"
+msgstr "Julkaistun version otsikko"
 
 msgid "metadata.property.validationMessage.source"
 msgstr "Anna kelvollinen julkaisun nimi."
@@ -120,13 +123,15 @@ msgid "metadata.property.displayName.date"
 msgstr "Julkaisupäivämäärä"
 
 msgid "metadata.property.validationMessage.date"
-msgstr "Anna kelvollinen julkaisupäivämäärä (muodossa: VVVV-KK-PP). "
+msgstr "Anna kelvollinen julkaisupäivämäärä (muodossa: VVVV-KK-PP)."
 
 msgid "metadata.property.displayName.access-date"
 msgstr "Saatavilla (pvm)"
 
 msgid "metadata.property.validationMessage.access-date"
-msgstr "Anna kelvollinen päivämäärä, jolloin julkaisu on saatavilla (muodossa: VVVV-KK-PP). "
+msgstr ""
+"Anna kelvollinen päivämäärä, jolloin julkaisu on saatavilla (muodossa: VVVV-"
+"KK-PP)."
 
 msgid "metadata.property.displayName.issue"
 msgstr "Numero"
@@ -174,7 +179,7 @@ msgid "metadata.property.displayName.conf-date"
 msgstr "Konferenssin päivämäärä"
 
 msgid "metadata.property.validationMessage.conf-date"
-msgstr "Anna kelvollinen konferenssin päivämäärä (muodossa: VVVV-KK-PP). "
+msgstr "Anna kelvollinen konferenssin päivämäärä (muodossa: VVVV-KK-PP)."
 
 msgid "metadata.property.displayName.conf-loc"
 msgstr "Konferenssipaikka"
@@ -380,9 +385,6 @@ msgstr "Hyväksytty"
 msgid "submission.acknowledge"
 msgstr "Kuittaa vastaanotetuksi"
 
-msgid "submission.addSuppFile"
-msgstr "Lisää liitetiedosto"
-
 msgid "submission.ask"
 msgstr "Kysy"
 
@@ -507,7 +509,9 @@ msgid "submission.event.submissionSubmitted"
 msgstr "Käsikirjoituksen ensimmäinen lähetys suoritettu."
 
 msgid "submission.event.fileRevised"
-msgstr "Korjaus \"{$name}\" (tiedoston tunniste {$fileId}-{$fileRevision}) ladattiin."
+msgstr ""
+"Korjattu tiedostoversio \"{$name}\" ladattiin tiedostolle "
+"{$submissionFileId}."
 
 msgid "submission.event.general.metadataUpdated"
 msgstr "Käsikirjoituksen metatiedot päivitetty"
@@ -609,7 +613,7 @@ msgid "submission.identifiers"
 msgstr "Tunnisteet"
 
 msgid "submission.publisherId"
-msgstr "Julkinen URL-tunniste"
+msgstr "Julkaisijan tunnus"
 
 msgid "submission.informationCenter.submissionInfo"
 msgstr "Käsikirjoituksen tiedot"
@@ -640,9 +644,6 @@ msgstr "Haluatko varmasti poistaa tämän julkaistavan tiedoston pysyvästi?"
 
 msgid "submission.layout.confirmDeleteGalleyImage"
 msgstr "Haluatko varmasti poistaa tämän kuvan julkaistavasta tiedostosta?"
-
-msgid "submission.layout.confirmDeleteSupplementaryFile"
-msgstr "Haluatko varmasti poistaa tämän liitetiedoston pysyvästi?"
 
 msgid "submission.layout.deleteGalleyStylesheet"
 msgstr "Poista tämä tyylitiedosto."
@@ -707,14 +708,8 @@ msgstr "Taittoversio"
 msgid "submission.layout.newGalley"
 msgstr "Luo uusi julkaistava tiedosto"
 
-msgid "submission.layout.newSupplementaryFile"
-msgstr "Lataa uusi liitetiedosto"
-
 msgid "submission.layout.noStyleFile"
 msgstr "Tyylitiedostoa ei ole lisätty tähän julkaistavaan tiedostoon."
-
-msgid "submission.layout.supplementaryFiles"
-msgstr "Liitetiedoston arviointi"
 
 msgid "submission.layout.viewingGalley"
 msgstr "Julkaistavan tiedoston katselu"
@@ -864,7 +859,7 @@ msgid "submissions.queued"
 msgstr "Jonossa"
 
 msgid "submissions.queuedUnassigned"
-msgstr "Odottaa osoittamista"
+msgstr "Odottaa toimittajan osoittamista."
 
 msgid "submissions.ruling"
 msgstr "Määräys"
@@ -950,9 +945,6 @@ msgstr "Lataa keskustelutiedosto"
 msgid "submission.summary"
 msgstr "Yhteenveto"
 
-msgid "submission.supplementaryFiles"
-msgstr "Liitetiedostot"
-
 msgid "submission.supportingAgencies"
 msgstr "Kannattajajärjestöt"
 
@@ -990,7 +982,7 @@ msgid "submission.loadMessage"
 msgstr "Odota, kunnes tiedosto on ladattu palvelimelle."
 
 msgid "submission.artworkFileDetails"
-msgstr "Kuvamateriaalitiedoston tiedot"
+msgstr "Teostiedoston tiedot"
 
 msgid "submission.fileDetails"
 msgstr "Tiedoston tiedot"
@@ -1102,9 +1094,6 @@ msgstr "Lataa tiedosto"
 
 msgid "submission.upload.copyeditedVersion"
 msgstr "Lataa teknisesti toimitettu tiedosto"
-
-msgid "submission.upload.fairCopy"
-msgstr "Lataa puhtaaksikirjoitettu teksti"
 
 msgid "submission.upload.uploadFiles"
 msgstr "Lataa tiedostot"
@@ -1320,7 +1309,7 @@ msgid "submission.document"
 msgstr "Asiakirja"
 
 msgid "submission.art"
-msgstr "Kuvamateriaali"
+msgstr "Teos"
 
 msgid "submission.supplementary"
 msgstr "Lisäsisältö"
@@ -1433,9 +1422,6 @@ msgstr "Arviointiin liittyvät keskustelut"
 msgid "submission.queries.editorial"
 msgstr "Tekniseen toimittamiseen liittyvät keskustelut"
 
-msgid "submission.queries.production"
-msgstr "Tuotantoon liittyvät keskustelut"
-
 msgid "submission.query.subject"
 msgstr "Aihe"
 
@@ -1512,10 +1498,10 @@ msgid "submission.list.viewSubmission"
 msgstr "Katso käsikirjoitusta"
 
 msgid "submission.list.responseDue"
-msgstr "Vastausaika umpeutuu"
+msgstr "Vastausaika umpeutuu {$date}"
 
 msgid "submission.list.reviewDue"
-msgstr "Arviointiaika umpeutuu"
+msgstr "Arviointiaika umpeutuu {$date}"
 
 msgid "submission.query.noParticipantOptions"
 msgstr "Käsikirjoitukseen pitää lisätä vähintään yksi osallistuja ennen keskustelun aloittamista."
@@ -1530,7 +1516,7 @@ msgid "submission.review.status.reviewOverdue"
 msgstr "Arvioija ei ole tehnyt arviota määräaikaan mennessä."
 
 msgid "submission.review.status.accepted"
-msgstr "Tämä arviopyyntö on hyväksytty"
+msgstr "Tämä arviointipyyntö on hyväksytty."
 
 msgid "submission.review.status.received"
 msgstr "Arvioija on lähettänyt arvionsa."
@@ -1617,37 +1603,37 @@ msgid "submission.parsedAndSaveCitations"
 msgstr "Erottele ja tallenna viitteitä"
 
 msgid "submission.submit.form.languagesRequired"
-msgstr "Anna kieli"
+msgstr "Anna kieli."
 
 msgid "submission.submit.form.subjectsRequired"
-msgstr "Anna aihe"
+msgstr "Anna aihe."
 
 msgid "submission.submit.form.disciplinesRequired"
-msgstr "Anna tieteenala"
+msgstr "Anna tieteenala."
 
 msgid "submission.submit.form.keywordsRequired"
-msgstr "Anna avainsana"
+msgstr "Anna avainsana."
 
 msgid "submission.submit.form.coverageRequired"
-msgstr "Anna kattavuustiedot"
+msgstr "Anna kattavuustiedot."
 
 msgid "submission.submit.form.typeRequired"
-msgstr "Anna tyyppi"
+msgstr "Anna tyyppi."
 
 msgid "submission.submit.form.sourceRequired"
-msgstr "Anna lähde"
+msgstr "Anna lähde."
 
 msgid "submission.submit.form.rightsRequired"
-msgstr "Anna oikeudet"
+msgstr "Anna oikeudet."
 
 msgid "submission.submit.form.citationsRequired"
-msgstr "Anna viitteet"
+msgstr "Anna viitteet."
 
 msgid "editor.submission.roundStatus.resubmitForReview"
-msgstr "Käsikirjoitus pitää lähettää uudelle arviointikierrokselle"
+msgstr "Käsikirjoitus pitää lähettää uudelle arviointikierrokselle."
 
 msgid "editor.submission.roundStatus.submissionResubmitted"
-msgstr "Käsikirjoitus on lähetetty uudelle arviointikierrokselle"
+msgstr "Käsikirjoitus on lähetetty uudelle arviointikierrokselle."
 
 msgid "submission.query.participantTitle"
 msgstr "{$fullName}, {$userGroup}"
@@ -1665,7 +1651,9 @@ msgid "submission.list.reviewComplete"
 msgstr "Arvio lähetetty"
 
 msgid "editor.submission.addStageParticipant.form.reviewerWarning"
-msgstr "Valitsemasi käyttäjä tekee käsikirjoituksessa sokkoarviointia. Mikäli lisäät hänet osallistujaksi, käyttäjä näkee kirjoittajan nimen."
+msgstr ""
+"Valitsemasi käyttäjä tekee käsikirjoituksessa anonyymia arviointia. Mikäli "
+"lisäät hänet osallistujaksi, käyttäjä näkee kirjoittajan nimen."
 
 msgid "submission.submit.availableUserGroups"
 msgstr "Käytä roolia"
@@ -1720,3 +1708,295 @@ msgstr "{$numTitles} nimikettä"
 
 msgid "catalog.noTitlesSection"
 msgstr "Osastoon ei ole lisätty vielä yhtään nimikettä."
+
+msgid "submission.event.removedStageToAllowedAuthorMetadataChange"
+msgstr ""
+"Kirjoittajat eivät voi muokata metadataa, kun käsikirjoitus on tilassa "
+"{stage}."
+
+msgid "submission.event.addedStageToAllowedAuthorMetadataChange"
+msgstr ""
+"Kirjoittajat eivät voi muokata metadataa, kun käsikirjoitus on tilassa "
+"{stage}."
+
+msgid "submission.downloads"
+msgstr "Tiedostolataukset"
+
+msgid "submission.additionalFiles"
+msgstr "Lisätiedostot"
+
+msgid "metadata.property.displayName.abstract"
+msgstr "Tiivistelmä"
+
+msgid "author.publicationNotFound"
+msgstr "Tämän kirjoittajan julkaistua versiota ei löytynyt."
+
+msgid "author.editPublishedDisabled"
+msgstr ""
+"Tämän julkaistun version kirjoittajia ei voi muokata, koska se on jo "
+"julkinen."
+
+msgid "publication.wordCount"
+msgstr "Sanoja: {$count}/{$limit}"
+
+msgid "publication.wordCountLong"
+msgstr ""
+"Tiivistelmä on liian pitkä. Oikea pituus on {$limit} sanaa tai vähemmän. "
+"Tiivistelmä on nyt {$count}  sanan pituinen."
+
+msgid "publication.version.confirm"
+msgstr "Oletko varma, että haluat luoda uuden version?"
+
+msgid "publication.version.all"
+msgstr "Kaikki versiot"
+
+msgid "publication.urlPath.numberInvalid"
+msgstr "URL-polku ei voi olla numero."
+
+msgid "publication.urlPath.duplicate"
+msgstr "Tämä URL-polku on jo käytössä."
+
+msgid "publication.urlPath.description"
+msgstr ""
+"Vaihtoehtoinen polku, jota käytetään artikkelin osoitteessa sen oman ID-"
+"tunnuksen sijaan."
+
+msgid "publication.urlPath"
+msgstr "URL-polku"
+
+msgid "publication.unschedule"
+msgstr "Peru ajoitus"
+
+msgid "publication.titleAbstract.success"
+msgstr "Otsikko ja tiivistelmä on päivitetty."
+
+msgid "publication.titleAbstract"
+msgstr "Otsikko ja tiivistelmä"
+
+msgid "publication.status.unpublished"
+msgstr "Julkaisu peruttu"
+
+msgid "publication.status.scheduled"
+msgstr "Ajoitettu"
+
+msgid "publication.publish.success"
+msgstr "Julkaistun version tila muutettiin onnistuneesti."
+
+msgid "publication.publicationLicense.success"
+msgstr "Tekijänoikeuteen ja lisensseihin liittyvät tiedot on päivitetty."
+
+msgid "publication.publicationLicense"
+msgstr "Luvat ja saatavuus"
+
+msgid "publication.publicationIdentifiers.success"
+msgstr "Tunnisteet päivitetty."
+
+msgid "publication.metadata.success"
+msgstr "Kuvailutiedot päivitetty."
+
+msgid "publication.event.versionCreated"
+msgstr "Uusi versio luotiin."
+
+msgid "publication.datePublished.errorFormat"
+msgstr "Päivämäärän pitää olla muodossa YYYY-MM-DD, esimerkiksi 2019-09-19."
+
+msgid "publication.createVersion"
+msgstr "Luo uusi versio"
+
+msgid "publication.contributors"
+msgstr "Tekijät"
+
+msgid "publication.citations.success"
+msgstr "Viitteet on päivitetty."
+
+msgid "catalog.category.subcategories"
+msgstr "Alakategoriat"
+
+msgid "catalog.category.noItems"
+msgstr "Tässä kategoriassa ei ole vielä julkaistu mitään."
+
+msgid "submission.list.daysSinceLastActivity"
+msgstr "Päivää edellisestä toiminnasta"
+
+msgid "submission.list.activity"
+msgstr "Toiminta"
+
+msgid "submission.list.reviewCancelled"
+msgstr "Arviointi peruttu"
+
+msgid "submission.list.reviewAssignment"
+msgstr "Arviointipyyntö"
+
+msgid "submission.list.empty"
+msgstr "Käsikirjoituksia ei löytynyt."
+
+msgid "submission.query.leaveQuery.confirm"
+msgstr ""
+"Jos poistut tästä keskustelusta, et saa enää ilmoitusta uusista viesteistä. "
+"Haluat poistua keskustelusta?"
+
+msgid "submission.query.leaveQuery"
+msgstr "Poistu keskustelusta"
+
+msgid "submission.license.cc.by-sa3.footer"
+msgstr ""
+"<a rel=\"license\" href=\"https://creativecommons.org/licenses/by-sa/3.0/\"><"
+"img alt=\"Creative Commons License\" src=\"//i.creativecommons.org/l/by-sa/3."
+"0/88x31.png\" /></a><p>Tämä työ on lisensoitu <a rel=\"license\" href=\""
+"https://creativecommons.org/licenses/by-sa/3.0/\">Creative Commons Nimeä-"
+"JaaSamoin 3.0 Kansainvälinen -lisenssillä</a>.</p>"
+
+msgid "submission.license.cc.by3.footer"
+msgstr ""
+"<a rel=\"license\" href=\"https://creativecommons.org/licenses/by/3.0/\"><"
+"img alt=\"Creative Commons License\" src=\"//i.creativecommons.org/l/by/3.0/"
+"88x31.png\" /></a><p>Tämä työ on lisensoitu <a rel=\"license\" href=\""
+"https://creativecommons.org/licenses/by/3.0/\">Creative Commons Nimeä 3.0 "
+"Kansainvälinen -lisenssillä</a>.</p>"
+
+msgid "submission.license.cc.by-nd3.footer"
+msgstr ""
+"<a rel=\"license\" href=\"https://creativecommons.org/licenses/by-nd/3.0/\"><"
+"img alt=\"Creative Commons License\" src=\"//i.creativecommons.org/l/by-nd/3."
+"0/88x31.png\" /></a><p>Tämä työ on lisensoitu <a rel=\"license\" href=\""
+"https://creativecommons.org/licenses/by-nd/3.0/\">Creative Commons Nimeä-"
+"EiMuutoksia 4.0 Kansainvälinen -lisenssi</a>.</p>"
+
+msgid "submission.license.cc.by-nc-sa3.footer"
+msgstr ""
+"<a rel=\"license\" href=\"https://creativecommons.org/licenses/by-nc-sa/3.0/"
+"\"><img alt=\"Creative Commons License\" src=\"//i.creativecommons.org/l/"
+"by-nc-sa/3.0/88x31.png\" /></a><p>Tämä työ on lisensoitu <a rel=\"license\" "
+"href=\"https://creativecommons.org/licenses/by-nc-sa/3.0/\">Creative Commons "
+"Nimeä-EiKaupallinen-JaaSamoin 3.0 kansainvälinen -lisenssillä</a>.</p>"
+
+msgid "submission.license.cc.by-nc3.footer"
+msgstr ""
+"<a rel=\"license\" href=\"https://creativecommons.org/licenses/by-nc-nd/3.0/"
+"\"><img alt=\"Creative Commons License\" src=\"//i.creativecommons.org/l/"
+"by-nc-nd/3.0/88x31.png\" /></a><p>Tämä työ on lisensoitu <a rel=\"license\" "
+"href=\"https://creativecommons.org/licenses/by-nc-nd/3.0/\">Creative Commons "
+"Nimeä-EiKaupallinen 3.0 kansainvälinen -lisenssillä</a>.</p>"
+
+msgid "submission.license.cc.by-nc-nd3.footer"
+msgstr ""
+"<a rel=\"license\" href=\"https://creativecommons.org/licenses/by-nc-nd/3.0/"
+"\"><img alt=\"Creative Commons License\" src=\"//i.creativecommons.org/l/"
+"by-nc-nd/3.0/88x31.png\" /></a><p>Tämä työ on lisensoitu <a rel=\"license\" "
+"href=\"https://creativecommons.org/licenses/by-nc-nd/3.0/\">Creative Commons "
+"Nimeä-EiKaupallinen-EiMuutoksia 3.0 kansainvälinen -lisenssillä</a>.</p>"
+
+msgid "submission.copyrightOther"
+msgstr "Tekijänoikeuslauseke"
+
+msgid "submission.copyrightHolder.other"
+msgstr "Mukautettu tekijänoikeuslauseke"
+
+msgid "log.review.reviewReady"
+msgstr ""
+"{$reviewerName} on saanut valmiiksi arvion käsikirjoitukselle {$submissionId}"
+" kierroksella {$round}."
+
+msgid "log.review.reviewConfirmed"
+msgstr ""
+"Toimittaja {$userName} on vahvistanut arvion käsikirjoitukselle "
+"{$submissionId} kierroksella {$round}."
+
+msgid "notification.type.submissionNewVersion"
+msgstr "Uusi käsikirjoituksen versio luotiin"
+
+msgid "notification.type.editorDecisionNewRound"
+msgstr "Uusi arviointikierros aloitettiin."
+
+msgid "editor.submission.decision.newRound"
+msgstr "Uusi arvointikierros"
+
+msgid "editor.submission.addPermissionToEditDescription"
+msgstr ""
+"Oletko varma, että haluat antaa kirjoittajien muokata käsikirjoituksen "
+"kuvailutietoja tässä työvaiheessa?"
+
+msgid "editor.submission.removePermissionToEditDescription"
+msgstr ""
+"Oletko varma, että et halua antaa kirjoittajien muokata käsikirjoituksen "
+"kuvailutietoja tässä työvaiheessa?"
+
+msgid "editor.submission.addPermissionToEdit"
+msgstr "Salli kuvailutietojen muokkaus"
+
+msgid "editor.submission.removePermissionToEdit"
+msgstr "Älä salli kuvailutietojen muokkausta"
+
+msgid "editor.submission.editStageParticipant"
+msgstr "Muokkaa osoitusta"
+
+msgid "submission.publisherId.enable"
+msgstr "Käytä kohteille {$objects}"
+
+msgid "submission.publisherId.description"
+msgstr ""
+"Julkaisijan tunnukseen voidaan tallentaa tunnus, jota on käytetty toisessa "
+"tietokannassa. Esimerkiksi PubMed-palveluun vietävät kohteet voivat sisältää "
+"julkaisijan tunnuksen. Tätä asetusta ei pidä käyttää DOI-tunnuksen "
+"tallentamiseen."
+
+msgid "submission.outdatedVersion"
+msgstr ""
+"Tämä on vanha versio, joka on julkaistu {$datePublished}. Katso <a href=\""
+"{$urlRecentVersion}\">uusin versio</a>."
+
+msgid "submission.versionIdentity"
+msgstr "{$datePublished} ({$version})"
+
+msgid "submission.versions"
+msgstr "Versiot"
+
+msgid "submission.updatedOn"
+msgstr "{$datePublished} — Päivitetty {$dateUpdated}"
+
+msgid "submission.representationOfTitle"
+msgstr "{$representation} - {$title}"
+
+msgid "notification.type.revertDecline"
+msgstr "Päätös hylätä tämä käsikirjoitus peruttiin."
+
+msgid "notification.type.editorDecisionRevertDecline"
+msgstr "Hylätty käsikirjoitus palautettu."
+
+msgid "submission.event.fileEdited"
+msgstr ""
+"Käyttäjä {$username} muokkasi tiedoston  \"{$originalFileName}\" "
+"kuvailutietoja."
+
+msgid "editor.submission.decision.revertDecline"
+msgstr "Peru hylkäys"
+
+msgid "submission.upload.percentComplete"
+msgstr "Ladataan {$percent}% valmiina"
+
+msgid "submission.upload.instructions"
+msgstr "Lataa kaikki käsikirjoitukseesi käsittelyyn tarvittavat tiedostot."
+
+msgid "submission.file.notAllowedUploaderUserId"
+msgstr ""
+"Tiedoston lataaja tallennetaan, kun tiedosto siirretään ja sitä ei voi "
+"muuttaa."
+
+msgid "submission.submit.removeConfirm"
+msgstr "Oletko varma, että haluat poistaa tämän tiedoston?"
+
+msgid "submission.submit.genre.error"
+msgstr "Ole hyvä ja valitse tiedoston tyyppi jokaiselle ladatulle tiedostolle."
+
+msgid "submission.submit.genre.description"
+msgstr "Valitse vaihtoehto, joka kuvaa tiedostoa parhaiten."
+
+msgid "submission.submit.genre.label"
+msgstr "Millainen tiedosto tämä on?"
+
+msgid "author.submission.roundStatus.reviewOverdue"
+msgstr ""
+"Yhden tai useamman arvioijan arvio on myöhässä. Toimittajat pyrkivät "
+"keräämään puuttuvat arviot mahdollisimman nopeasti. Sinun ei tässä vaiheessa "
+"tarvitse ryhtyä mihinkään toimenpiteisiin. Sinulle ilmoitetaan heti, kun "
+"arviot ovat valmiina ja toimittaja tekee päätöksen käsikirjoituksesi suhteen."

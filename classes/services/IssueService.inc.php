@@ -3,8 +3,8 @@
 /**
  * @file classes/services/IssueService.php
 *
-* Copyright (c) 2014-2020 Simon Fraser University
-* Copyright (c) 2000-2020 John Willinsky
+* Copyright (c) 2014-2021 Simon Fraser University
+* Copyright (c) 2000-2021 John Willinsky
 * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
 *
 * @class IssueService
@@ -110,6 +110,7 @@ class IssueService implements EntityPropertyInterface, EntityReadInterface {
 			'volumes' => null,
 			'numbers' => null,
 			'years' => null,
+			'searchPhrase' => '',
 		);
 
 		$args = array_merge($defaultArgs, $args);
@@ -121,7 +122,8 @@ class IssueService implements EntityPropertyInterface, EntityReadInterface {
 			->filterByPublished($args['isPublished'])
 			->filterByVolumes($args['volumes'])
 			->filterByNumbers($args['numbers'])
-			->filterByYears($args['years']);
+			->filterByYears($args['years'])
+			->searchPhrase($args['searchPhrase']);
 
 			if (isset($args['count'])) {
 				$issueListQB->limitTo($args['count']);
@@ -131,7 +133,7 @@ class IssueService implements EntityPropertyInterface, EntityReadInterface {
 				$issueListQB->offsetBy($args['count']);
 			}
 
-		\HookRegistry::call('Issue::getMany::queryBuilder', array($issueListQB, $args));
+		\HookRegistry::call('Issue::getMany::queryBuilder', array(&$issueListQB, $args));
 
 		return $issueListQB;
 	}

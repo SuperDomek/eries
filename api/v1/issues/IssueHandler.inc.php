@@ -3,8 +3,8 @@
 /**
  * @file api/v1/issues/IssueHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class IssueHandler
@@ -140,7 +140,7 @@ class IssueHandler extends APIHandler {
 						$param .= 's';
 					}
 
-					if (is_string($val) && strpos($val, ',') > -1) {
+					if (is_string($val)) {
 						$val = explode(',', $val);
 					} elseif (!is_array($val)) {
 						$val = array($val);
@@ -150,6 +150,10 @@ class IssueHandler extends APIHandler {
 
 				case 'isPublished':
 					$params[$param] = $val ? true : false;
+					break;
+
+				case 'searchPhrase':
+					$params[$param] = $val;
 					break;
 			}
 		}
@@ -168,14 +172,12 @@ class IssueHandler extends APIHandler {
 
 		$items = array();
 		$issuesIterator = Services::get('issue')->getMany($params);
-		if (count($issuesIterator)) {
-			$propertyArgs = array(
-				'request' => $request,
-				'slimRequest' => $slimRequest,
-			);
-			foreach ($issuesIterator as $issue) {
-				$items[] = Services::get('issue')->getSummaryProperties($issue, $propertyArgs);
-			}
+		$propertyArgs = array(
+			'request' => $request,
+			'slimRequest' => $slimRequest,
+		);
+		foreach ($issuesIterator as $issue) {
+			$items[] = Services::get('issue')->getSummaryProperties($issue, $propertyArgs);
 		}
 
 		$data = array(

@@ -10,14 +10,15 @@
 # Nilgün Belma Bugüner <nilgun@fide.org>, 2001.
 # Oguz Ersen <oguzersen@protonmail.com>, 2019.
 # Oğuz Ersen <oguzersen@protonmail.com>, 2019.
+# EminUZUN <eminuzunn@gmail.com>, 2020.
 msgid ""
 msgstr ""
 "Project-Id-Version: iso_3166-2\n"
 "Report-Msgid-Bugs-To: https://salsa.debian.org/iso-codes-team/iso-codes/"
 "issues\n"
-"POT-Creation-Date: 2019-10-03 13:00+0200\n"
-"PO-Revision-Date: 2019-11-14 16:04+0000\n"
-"Last-Translator: Oğuz Ersen <oguzersen@protonmail.com>\n"
+"POT-Creation-Date: 2020-05-19 14:57+0200\n"
+"PO-Revision-Date: 2020-08-11 14:33+0000\n"
+"Last-Translator: EminUZUN <eminuzunn@gmail.com>\n"
 "Language-Team: Turkish <https://hosted.weblate.org/projects/iso-codes/"
 "iso-3166-2/tr/>\n"
 "Language: tr\n"
@@ -25,7 +26,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 3.10-dev\n"
+"X-Generator: Weblate 4.2-dev\n"
 
 #. Name for AD-02
 msgid "Canillo"
@@ -641,11 +642,11 @@ msgstr "Wien"
 
 #. Name for AU-ACT
 msgid "Australian Capital Territory"
-msgstr ""
+msgstr "Avustralya Başkent Bölgesi"
 
 #. Name for AU-NSW
 msgid "New South Wales"
-msgstr ""
+msgstr "Yeni Güney Galler"
 
 #. Name for AU-NT
 msgid "Northern Territory"
@@ -673,7 +674,7 @@ msgstr "Batı Avustralya"
 
 #. Name for AZ-ABS
 msgid "Abşeron"
-msgstr ""
+msgstr "Abşeron"
 
 #. Name for AZ-AGA
 msgid "Ağstafa"
@@ -681,7 +682,7 @@ msgstr "Ağstafa"
 
 #. Name for AZ-AGC
 msgid "Ağcabədi"
-msgstr ""
+msgstr "Ağcabedi"
 
 #. Name for AZ-AGM
 msgid "Ağdam"
@@ -689,11 +690,11 @@ msgstr "Ağdam"
 
 #. Name for AZ-AGS
 msgid "Ağdaş"
-msgstr ""
+msgstr "Ağdaş"
 
 #. Name for AZ-AGU
 msgid "Ağsu"
-msgstr ""
+msgstr "Ağsu"
 
 #. Name for AZ-AST
 msgid "Astara"
@@ -2244,7 +2245,7 @@ msgid "Southern"
 msgstr "Güney"
 
 #. Name for BY-BR
-msgid "Brèsckaja voblasc'"
+msgid "Bresckaja voblasć"
 msgstr ""
 
 #. Name for BY-HM
@@ -2252,23 +2253,23 @@ msgid "Horad Minsk"
 msgstr ""
 
 #. Name for BY-HO
-msgid "Homel'skaja voblasc'"
+msgid "Homieĺskaja voblasć"
 msgstr ""
 
 #. Name for BY-HR
-msgid "Hrodzenskaja voblasc'"
+msgid "Hrodzienskaja voblasć"
 msgstr ""
 
 #. Name for BY-MA
-msgid "Mahilëuskaja voblasc'"
+msgid "Mahilioŭskaja voblasć"
 msgstr ""
 
 #. Name for BY-MI
-msgid "Minskaja voblasc'"
+msgid "Minskaja voblasć"
 msgstr ""
 
 #. Name for BY-VI
-msgid "Vicebskaja voblasc'"
+msgid "Viciebskaja voblasć"
 msgstr ""
 
 #. Name for BZ-BZ
@@ -2309,7 +2310,7 @@ msgstr "Manitoba"
 
 #. Name for CA-NB
 msgid "New Brunswick"
-msgstr "New Brunswick"
+msgstr "Yeni Brunswick"
 
 #. Name for CA-NL
 msgid "Newfoundland and Labrador"
@@ -6325,11 +6326,11 @@ msgstr ""
 
 #. Name for GM-M
 msgid "Central River"
-msgstr ""
+msgstr "Central River"
 
 #. Name for GM-N
 msgid "North Bank"
-msgstr "North Bank"
+msgstr "Kuzey Kıyısı"
 
 #. Name for GM-U
 msgid "Upper River"
@@ -12867,14 +12868,6 @@ msgstr ""
 msgid "Møre og Romsdal"
 msgstr ""
 
-#. Name for NO-16
-msgid "Sør-Trøndelag"
-msgstr ""
-
-#. Name for NO-17
-msgid "Nord-Trøndelag"
-msgstr ""
-
 #. Name for NO-18
 msgid "Nordland"
 msgstr "Nordland"
@@ -12893,6 +12886,10 @@ msgstr ""
 
 #. Name for NO-22
 msgid "Jan Mayen (Arctic Region)"
+msgstr ""
+
+#. Name for NO-50
+msgid "Trøndelag"
 msgstr ""
 
 #. Name for NP-1

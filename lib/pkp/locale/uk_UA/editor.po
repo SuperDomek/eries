@@ -15,6 +15,9 @@ msgstr ""
 "4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 3.9.1\n"
 
+msgid "editor.submissionArchive.confirmDelete"
+msgstr "Ви впевнені, що хочете остаточно видалити це подання?"
+
 msgid "editor.submissionLibrary"
 msgstr "Бібліотека матеріалів"
 
@@ -93,10 +96,12 @@ msgstr "Не надсилати електронного листа автору
 msgid "editor.submissionReview.open"
 msgstr "Відкрите"
 
-msgid "editor.submissionReview.blind"
+#, fuzzy
+msgid "editor.submissionReview.anonymous"
 msgstr "Сліпе"
 
-msgid "editor.submissionReview.doubleBlind"
+#, fuzzy
+msgid "editor.submissionReview.doubleAnonymous"
 msgstr "Подвійне сліпе"
 
 msgid "editor.submissionReview.restrictFiles"
@@ -354,12 +359,6 @@ msgstr "Шаблон {$pattern} заборонено для відкритого
 msgid "editor.submission.schedulePublication"
 msgstr "Запланувати для публікації"
 
-msgid "reviewer.list.count"
-msgstr "{$count} рецензентів"
-
-msgid "reviewer.list.itemsOfTotal"
-msgstr "{$count} з {$total} рецензентів"
-
 msgid "reviewer.list.filterRating"
 msgstr "Найнижчі оцінки"
 
@@ -429,6 +428,7 @@ msgstr "Запити на рецензування відхилено"
 msgid "reviewer.list.cancelledReviews"
 msgstr "Запити на рецензування відмінено"
 
+#, fuzzy
 msgid "reviewer.list.warnOnAssign"
 msgstr "Цей рецензент заблокований через те, що вона/він має роль, яка дозволяє переглядати особисті дані автора. Сліпе рецензування не може бути гарантованим. Чи бажаєте Ви в будь-якому випадку розблокувати цього рецензента?"
 

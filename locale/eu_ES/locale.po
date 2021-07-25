@@ -530,15 +530,6 @@ msgstr "Artikulu honi buruzko iruzkinak"
 msgid "comments.authenticated"
 msgstr "<a href=\"{$publicProfileUrl}\" target=\"_parent\">{$userName}</a>"
 
-msgid "admin.languages.downloadUnavailable"
-msgstr ""
-"<p>Orain ezin da hizkuntza-paketerik deskargatu Public Knowledge Project web-zerbitzaritik:</p>\n"
-"\t<ul>\n"
-"\t\t<li>Zure zerbitzariak ez dauka edo ez du uzten exekutatzen GNUren \"tar\" utilitatea</li>\n"
-"\t\t<li>OJSk ezin du aldatu localeen erregistro-fitxategia, normalean \"registry/locales.xml\".</li>\n"
-"\t</ul>\n"
-"<p>Hizkuntza-paketeak eskuz deskarga daitezke <a href=\"http://pkp.sfu.ca\">PKP webgunetik</a>.</p>"
-
 msgid "admin.auth.defaultSourceDescription"
 msgstr ""
 "<p>OJS ez den autentifikazio-iturburu bat lehenetsi gisa ezartzeak, ondorio hauek izango ditu:</p>\n"
@@ -1193,9 +1184,11 @@ msgstr ""
 "OJSren\n"
 "Prozesu editoriala eta argitaratze-prozesua"
 
+#, fuzzy
 msgid "about.aboutOJSJournal"
 msgstr "Aldizkari honek Open Journal Systems {$ojsVersion} (OJS) erabiltzen du. Aldizkariak kudeatzeko eta argitaratzeko iturburu irekiko software bat da OJS; <a href=\"http://pkp.sfu.ca/\">Public Knowledge Project</a> proiektuak garatzen eta sostengatzen du, eta doan banatzen du GNUren lizentzia publiko orokorrarekin (General Public License)."
 
+#, fuzzy
 msgid "about.aboutOJSSite"
 msgstr "Gune honek Open Journal Systems {$ojsVersion} erabiltzen du (OJS). Aldizkariak kudeatzeko eta argitaratzeko iturburu irekiko software bat da OJS; <a href=\"http://pkp.sfu.ca/\">Public Knowledge Project</a> proiektuak garatzen eta sostengatzen du, eta doan banatzen du GNUren lizentzia publiko orokorrarekin (General Public License)."
 
@@ -1298,6 +1291,7 @@ msgstr "OJS instalazioa"
 msgid "installer.ojsUpgrade"
 msgstr "OJS bertsio-berritzea"
 
+#, fuzzy
 msgid "installer.installationInstructions"
 msgstr ""
 "<h4>OJS {$version} bertsioa</h4>\n"
@@ -1306,7 +1300,7 @@ msgstr ""
 "\n"
 "<h4>Bertsio-berritzea</h4>\n"
 "\n"
-"<p>Lehendik daukazun OJS 2.x bertsioa berritzera bazoaz, egin klik <a href=\"{$upgradeUrl}\">hemen</a>.</p>\n"
+"<p>Lehendik daukazun OJS bertsioa berritzera bazoaz, egin klik <a href=\"{$upgradeUrl}\">hemen</a>.</p>\n"
 "\n"
 "<h4>Gomendatutako sistema-eskakizunak</h4>\n"
 "\n"
@@ -1504,9 +1498,6 @@ msgstr "{$userName} erabiltzaileak {$submissionId} artikulua inportatu du."
 
 msgid "metadata.pkp.peerReviewed"
 msgstr "Adituek ebaluatutako artikulua"
-
-msgid "debug.notes.currencyListLoad"
-msgstr "{$filename} moneta-zerrenda XMLtik kargatu da"
 
 msgid "user.manageMySubscriptions"
 msgstr "Kudeatu nire harpidetzak"

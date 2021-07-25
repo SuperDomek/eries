@@ -14,6 +14,9 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 3.9.1\n"
 
+msgid "editor.submissionArchive.confirmDelete"
+msgstr "Biztos benne, hogy véglegesen törli az anyagot a rendszerből?"
+
 msgid "editor.submissionLibrary"
 msgstr "Beküldési könyvtár"
 
@@ -86,10 +89,12 @@ msgstr "Szerzői emailt ne küldjön"
 msgid "editor.submissionReview.open"
 msgstr "Nyitott"
 
-msgid "editor.submissionReview.blind"
+#, fuzzy
+msgid "editor.submissionReview.anonymous"
 msgstr "Vak"
 
-msgid "editor.submissionReview.doubleBlind"
+#, fuzzy
+msgid "editor.submissionReview.doubleAnonymous"
 msgstr "Kettős-vak"
 
 msgid "editor.submissionReview.restrictFiles"
@@ -362,9 +367,6 @@ msgstr "Lektorálási vita létrehozása erről az ajánlásról."
 msgid "editor.submissionReview.recordRecommendation.skipDiscussion"
 msgstr "Ne hozzon létre szakmai lektorálási vitát."
 
-msgid "reviewer.list.count"
-msgstr "{$count} szakmai lektor"
-
 msgid "reviewer.list.filterRating"
 msgstr "Értékelve legalább"
 
@@ -380,9 +382,7 @@ msgstr "Utolsó lektorálási felkérés óta eltelt napok"
 msgid "reviewer.list.averageCompletion"
 msgstr "Lektorálás megtétele átlagosan ennyi nap alatt"
 
-msgid "reviewer.list.itemsOfTotal"
-msgstr "{$count} a {$total} lektorból"
-
+#, fuzzy
 msgid "reviewer.list.warnOnAssign"
 msgstr "A lektor blokkolásra került, mert olyan szerep lett hozzárendelve amelyben megismerheti a szerző személyét. A vak lektorálási forma így nem garantálható. Szeretné ennek ellenére feloldani a lektor blokkolását?"
 

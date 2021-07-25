@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/articleGalleys/ArticleGalleyGridCellProvider.inc.php
  *
- * Copyright (c) 2016-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2016-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ArticleGalleyGridCellProvider
@@ -77,15 +77,9 @@ class ArticleGalleyGridCellProvider extends DataObjectGridCellProvider {
 		switch ($column->getId()) {
 			case 'label':
 				$element = $row->getData();
-				if ($element->getRemoteUrl() != '' || !$element->getFileId()) break;
+				if ($element->getRemoteUrl() != '' || !$element->getData('submissionFileId')) break;
 
-				$submissionFileDao = DAORegistry::getDAO('SubmissionFileDAO'); /* @var $submissionFileDao SubmissionFileDAO */
-				import('lib.pkp.classes.submission.SubmissionFile');
-				$submissionFile = $submissionFileDao->getLatestRevision(
-					$element->getFileId(),
-					null,
-					$this->_submission->getId()
-				);
+				$submissionFile = Services::get('submissionFile')->get($element->getData('submissionFileId'));
 				import('lib.pkp.controllers.api.file.linkAction.DownloadFileLinkAction');
 				return array(new DownloadFileLinkAction($request, $submissionFile, WORKFLOW_STAGE_ID_PRODUCTION, $element->getLabel()));
 		}

@@ -14,9 +14,6 @@ msgstr ""
 msgid "plugins.generic.webfeed.displayName"
 msgstr "Web Feed Plugin"
 
-msgid "plugins.generic.webfeed.displayBlockName"
-msgstr "Journal feed"
-
 msgid "plugins.generic.webfeed.description"
 msgstr "This plugin produces RSS/Atom web syndication feeds for the current issue."
 

@@ -3,8 +3,8 @@
 /**
  * @file PaypalPaymentForm.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PaypalPaymentForm
@@ -46,7 +46,7 @@ class PaypalPaymentForm extends Form {
 				'testMode' => $this->_paypalPaymentPlugin->getSetting($journal->getId(), 'testMode'),
 			));
 			$transaction = $gateway->purchase(array(
-				'amount' => number_format($this->_queuedPayment->getAmount(), 2),
+				'amount' => number_format($this->_queuedPayment->getAmount(), 2, '.', ''),
 				'currency' => $this->_queuedPayment->getCurrencyCode(),
 				'description' => $paymentManager->getPaymentName($this->_queuedPayment),
 				'returnUrl' => $request->url(null, 'payment', 'plugin', array($this->_paypalPaymentPlugin->getName(), 'return'), array('queuedPaymentId' => $this->_queuedPayment->getId())),

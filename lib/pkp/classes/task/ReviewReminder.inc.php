@@ -3,8 +3,8 @@
 /**
  * @file classes/task/ReviewReminder.inc.php
  *
- * Copyright (c) 2013-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2013-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ReviewReminder
@@ -81,7 +81,7 @@ class ReviewReminder extends ScheduledTask {
 
 		// Format the review due date
 		$reviewDueDate = strtotime($reviewAssignment->getDateDue());
-		$dateFormatShort = Config::getVar('general', 'date_format_short');
+		$dateFormatShort = $context->getLocalizedDateFormatShort();
 		if ($reviewDueDate === -1 || $reviewDueDate === false) {
 			// Default to something human-readable if no date specified
 			$reviewDueDate = '_____';

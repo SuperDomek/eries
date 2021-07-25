@@ -35,6 +35,7 @@ msgstr "Данас"
 msgid "manager.setup.categories"
 msgstr "Категорије"
 
+#, fuzzy
 msgid "manager.sections.alertDelete"
 msgstr "Пре него што обришете ову рубрику морате чланке претходно објављене у њој преместити у другу рубрику."
 
@@ -359,6 +360,7 @@ msgstr "Листе"
 msgid "manager.payment.authorFeesDescription"
 msgstr "Одабране опције са њиховим описима и накнадама (које могу бити измењене испод) ће се појавити у Корак 1 процесу пријаве чланка и у О часопису и Пријаве делу као и уделовима где је плаћање накнада назначено."
 
+#, fuzzy
 msgid "manager.payment.generalFeesDescription"
 msgstr "Чланство асоцијације ће се појавити у страници О часопису у делу Политике,а линк за донације ће се појавити изнад функције за претрагу у оквиру са десне стране."
 
@@ -1315,9 +1317,6 @@ msgstr "Опције за рецензију"
 
 msgid "manager.setup.reviewOptions.automatedReminders"
 msgstr "Аутоматски подсетници имејлом"
-
-msgid "manager.setup.reviewOptions.blindReview"
-msgstr "Слепа рецензија"
 
 msgid "manager.setup.reviewOptions.numWeeksPerReview"
 msgstr "Дозвољен број недеља да се заврши рецензија"

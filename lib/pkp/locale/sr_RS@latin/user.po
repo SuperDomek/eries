@@ -59,9 +59,6 @@ msgstr "Imejl"
 msgid "user.interests"
 msgstr "Recenzentski interesi"
 
-msgid "user.interests.description"
-msgstr "(odvojite interese pritiskom na enter ili zarezom)"
-
 msgid "user.gossip"
 msgstr "Privatne napomene"
 
@@ -130,9 +127,6 @@ msgstr "Izmeni profil"
 
 msgid "user.profile.form.emailRequired"
 msgstr "Ispravna imejl adresa je neophodna."
-
-msgid "user.profile.form.affiliationRequired"
-msgstr "Afilijacija je neophodna."
 
 msgid "user.profile.form.newPasswordRequired"
 msgstr "Morate uneti novu lozinku."

@@ -3,8 +3,8 @@
 /**
  * @file plugins/generic/driver/DRIVERDAO.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class DRIVERDAO
@@ -46,19 +46,18 @@ class DRIVERDAO extends OAIDAO {
 
 		$result = $this->_getRecordsRecordSet($setIds, $from, $until, null);
 
-		$total = $result->RecordCount();
-
-		$result->Move($offset);
-		for ($count = 0; $count < $limit && !$result->EOF; $count++) {
-			$row = $result->GetRowAssoc(false);
+		$total = 0;
+		for ($i=0; $i<$offset; $i++) {
+			if ($result->next()) $total++; // FIXME: This is inefficient
+		}
+		for ($count = 0; $count < $limit && $result->current(); $count++ && $total++) {
+			$row = (array) $result->current();
 			$record = $this->_returnRecordFromRow($row);
 			if(in_array('driver', $record->sets)){
 				$records[] = $record;
 			}
-			$result->MoveNext();
+			$result->next();
 		}
-
-		$result->Close();
 		return $records;
 	}
 

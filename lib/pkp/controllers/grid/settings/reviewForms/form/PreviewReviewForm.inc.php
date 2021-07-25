@@ -2,8 +2,8 @@
 /**
  * @file controllers/grid/settings/reviewForms/form/PKPPreviewReviewForm.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PreviewReviewForm
@@ -61,7 +61,6 @@ class PreviewReviewForm extends Form {
 			// Get review form elements
 			$reviewFormElementDao = DAORegistry::getDAO('ReviewFormElementDAO'); /* @var $reviewFormElementDao ReviewFormElementDAO */
 			$reviewFormElements = $reviewFormElementDao->getByReviewFormId($this->reviewFormId);
-			$count = count($reviewFormElements);
 
 			// Set data
 			$this->setData('title', $reviewForm->getLocalizedTitle(null));

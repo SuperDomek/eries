@@ -8,8 +8,8 @@
 /**
  * @file classes/mail/Mail.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class Mail
@@ -19,6 +19,11 @@
  */
 
 define('MAIL_WRAP', 76);
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\OAuth;
+use League\OAuth2\Client\Provider\Google;
 
 class Mail extends DataObject {
 	/** @var array List of key => value private parameters for this message */
@@ -152,7 +157,7 @@ class Mail extends DataObject {
 	}
 
 	/**
-	 * Add a blind carbon copy (BCC) recipient to the message.
+	 * Add a hidden carbon copy (BCC) recipient to the message.
 	 * @param $email string
 	 * @param $name optional
 	 */
@@ -166,7 +171,7 @@ class Mail extends DataObject {
 	}
 
 	/**
-	 * Get the blind carbon copy (BCC) recipients for the message
+	 * Get the hidden carbon copy (BCC) recipients for the message
 	 * @return array
 	 */
 	function getBccs() {
@@ -174,7 +179,7 @@ class Mail extends DataObject {
 	}
 
 	/**
-	 * Set the blind carbon copy (BCC) recipients for the message.
+	 * Set the hidden carbon copy (BCC) recipients for the message.
 	 * @param $bccs array
 	 */
 	function setBccs($bccs) {
@@ -397,7 +402,7 @@ class Mail extends DataObject {
 		$from = $this->getFrom();
 		if ($from == null) {
 			return null;
-		} 
+		}
 		return (self::encodeDisplayName($from['name'], $send) . ' <'.$from['email'].'>');
 	}
 
@@ -478,11 +483,28 @@ class Mail extends DataObject {
 			$mailer->Port = Config::getVar('email', 'smtp_port');
 			if (($s = Config::getVar('email', 'smtp_auth')) != '') {
 				$mailer->SMTPSecure = $s;
-				$mailer->SMTPAuth = true;
 			}
 			$mailer->Host = Config::getVar('email', 'smtp_server');
-			$mailer->Username = Config::getVar('email', 'smtp_username');
-			$mailer->Password = Config::getVar('email', 'smtp_password');
+			if (($s = Config::getVar('email', 'smtp_username')) != '') {
+				$mailer->SMTPAuth = true;
+				$mailer->Username = Config::getVar('email', 'smtp_username', '');
+				$mailer->Password = Config::getVar('email', 'smtp_password', '');
+			}
+			switch (strtolower(Config::getVar('email', 'smtp_oauth_provider'))) {
+				case 'google': $mailer->setOAuth(new OAuth([
+					'provider' => new Google([
+						'clientId' => Config::getVar('email', 'smtp_oauth_clientid'),
+						'clientSecret' => Config::getVar('email', 'smtp_oauth_clientsecret'),
+					]),
+					'clientId' => Config::getVar('email', 'smtp_oauth_clientid'),
+					'clientSecret' => Config::getVar('email', 'smtp_oauth_clientsecret'),
+					'refreshToken' => Config::getVar('email', 'smtp_oauth_refreshtoken'),
+					'userName' => Config::getVar('email', 'smtp_oauth_email'),
+				]));
+				case null: break; // No configured provider
+				default: throw new Exception('Unknown smtp_oauth_provider in config.inc.php!');
+			}
+			$mailer->AuthType = Config::getVar('email', 'smtp_authtype', '');
 			if (Config::getVar('debug', 'show_stacktrace')) {
 				// debug level 3 represents client and server interaction, plus initial connection debugging
 				$mailer->SMTPDebug = 3;

@@ -2,8 +2,8 @@
 /**
  * @file classes/components/form/context/PKPReviewSetupForm.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPReviewSetupForm
@@ -36,7 +36,6 @@ class PKPReviewSetupForm extends FormComponent {
 	 */
 	public function __construct($action, $locales, $context) {
 		$this->action = $action;
-		$this->successMessage = __('manager.publication.reviewSetup.success');
 		$this->locales = $locales;
 
 		// Load SUBMISSION_REVIEW_METHOD_... constants
@@ -47,8 +46,8 @@ class PKPReviewSetupForm extends FormComponent {
 				'type' => 'radio',
 				'value' => $context->getData('defaultReviewMode'),
 				'options' => [
-					['value' => SUBMISSION_REVIEW_METHOD_DOUBLEBLIND, 'label' => __('editor.submissionReview.doubleBlind')],
-					['value' => SUBMISSION_REVIEW_METHOD_BLIND, 'label' => __('editor.submissionReview.blind')],
+					['value' => SUBMISSION_REVIEW_METHOD_DOUBLEANONYMOUS, 'label' => __('editor.submissionReview.doubleAnonymous')],
+					['value' => SUBMISSION_REVIEW_METHOD_ANONYMOUS, 'label' => __('editor.submissionReview.anonymous')],
 					['value' => SUBMISSION_REVIEW_METHOD_OPEN, 'label' => __('editor.submissionReview.open')],
 				],
 			]))

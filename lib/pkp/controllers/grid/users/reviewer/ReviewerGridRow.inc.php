@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/users/reviewer/ReviewerGridRow.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ReviewerGridRow
@@ -47,10 +47,10 @@ class ReviewerGridRow extends GridRow {
 		$stageId = (int) $request->getUserVar('stageId');
 		$round = (int) $request->getUserVar('round');
 
-		// Authors can't perform any actions on blind reviews
+		// Authors can't perform any actions on anonymous reviews
 		$reviewAssignment = $this->getData();
-		$isReviewBlind = in_array($reviewAssignment->getReviewMethod(), array(SUBMISSION_REVIEW_METHOD_BLIND, SUBMISSION_REVIEW_METHOD_DOUBLEBLIND));
-		if ($this->_isCurrentUserAssignedAuthor && $isReviewBlind) {
+		$isReviewAnonymous = in_array($reviewAssignment->getReviewMethod(), array(SUBMISSION_REVIEW_METHOD_ANONYMOUS, SUBMISSION_REVIEW_METHOD_DOUBLEANONYMOUS));
+		if ($this->_isCurrentUserAssignedAuthor && $isReviewAnonymous) {
 			return;
 		}
 

@@ -3,8 +3,8 @@
 /**
  * @file classes/services/SectionService.php
 *
-* Copyright (c) 2014-2020 Simon Fraser University
-* Copyright (c) 2000-2020 John Willinsky
+* Copyright (c) 2014-2021 Simon Fraser University
+* Copyright (c) 2000-2021 John Willinsky
 * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
 *
 * @class SectionService
@@ -24,19 +24,24 @@ class SectionService implements EntityPropertyInterface {
 	 * Get array of sections
 	 *
 	 * @param int $contextId
+	 * @param boolean $activeOnly Exclude inactive sections 
+	 * 	from the section list that is returned
 	 *
 	 * @return array
 	 */
-	public function getSectionList($contextId) {
+	public function getSectionList($contextId, $activeOnly = false) {
 		$sectionDao = \DAORegistry::getDAO('SectionDAO'); /* $sectionDao SectionDAO */
 		$sectionIterator = $sectionDao->getByContextId($contextId);
 
 		$sections = array();
 		while ($section = $sectionIterator->next()) {
-			$sections[] = array(
-				'id' => $section->getId(),
-				'title' => $section->getLocalizedTitle(),
-			);
+			if (!$activeOnly || ($activeOnly && !$section->getIsInactive())) {
+				$sections[] = array(
+					'id' => $section->getId(),
+					'title' => $section->getLocalizedTitle(),
+					'group' => $section->getIsInactive(),
+				);
+			}
 		}
 
 		return $sections;

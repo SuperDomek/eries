@@ -2,14 +2,17 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"Last-Translator: \n"
-"Language-Team: \n"
+"POT-Creation-Date: 2019-11-19T10:49:44+00:00\n"
+"PO-Revision-Date: 2020-07-30 21:15+0000\n"
+"Last-Translator: Manolis Saldaris <omanos@gmail.com>\n"
+"Language-Team: Greek <http://translate.pkp.sfu.ca/projects/pkp-lib/user/"
+"el_GR/>\n"
+"Language: el_GR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2019-11-19T10:49:44+00:00\n"
-"PO-Revision-Date: 2019-11-19T10:49:44+00:00\n"
-"Language: \n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.9.1\n"
 
 msgid "user.accountInformation"
 msgstr "Πληροφορίες λογαριασμού"
@@ -18,7 +21,7 @@ msgid "user.affiliation"
 msgstr "Συνεργαζόμενο ίδρυμα"
 
 msgid "user.affiliation.description"
-msgstr "(Το ίδρυμά σας, π.χ. \"Πανεπιστήμιο Πατρών\")"
+msgstr "(Το ίδρυμά σας, π.χ. \"Πανεπιστήμιο Κρήτης\")"
 
 msgid "user.affiliations"
 msgstr "Συνεργαζόμενα ιδρύματα"
@@ -94,9 +97,6 @@ msgstr "Όνομα"
 
 msgid "user.interests"
 msgstr "Θεματικές ενδιαφέροντος για αξιολόγηση"
-
-msgid "user.interests.description"
-msgstr "(Διαχωρίστε τις θεματικές πατώντας enter ή με κόμμα"
 
 msgid "user.gossip"
 msgstr "Σημειώσεις"
@@ -223,9 +223,6 @@ msgstr "Απαιτείται η συμπλήρωση της χώρας εργα�
 
 msgid "user.profile.form.emailRequired"
 msgstr "Απαιτείται η συμπλήρωση μιας έγκυρης διεύθυνσης ηλεκτρονικού ταχυδρομείου."
-
-msgid "user.profile.form.affiliationRequired"
-msgstr "Θα πρέπει να δηλώσετε τη σχέση σας με έναν φορέα/οργανισμό/ίδρυμα."
 
 msgid "user.profile.form.givenNameRequired"
 msgstr "Απαραίτητο να συμπληρωθεί το όνομα."

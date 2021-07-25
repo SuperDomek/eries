@@ -14,9 +14,6 @@ msgstr ""
 msgid "user.gossip"
 msgstr "تێبینییەکانی سەرنوسەر"
 
-msgid "user.interests.description"
-msgstr "(پسپۆڕییەکان بە داگرتنی ئینتەر یان فاریزە لەیەکتر جیا بکەوە)"
-
 msgid "user.interests"
 msgstr "پسپۆڕی بۆ هەڵسەنگاندن"
 
@@ -351,9 +348,6 @@ msgstr ""
 
 msgid "user.profile.form.givenNameRequired"
 msgstr "ناوی یەکەم داوا کراوە."
-
-msgid "user.profile.form.affiliationRequired"
-msgstr "میلاک داوا کراوە."
 
 msgid "user.profile.form.emailRequired"
 msgstr "ئیمەیڵێکی دروست داوا کراوە."

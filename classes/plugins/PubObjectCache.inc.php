@@ -3,8 +3,8 @@
 /**
  * @file classes/plugins/PubObjectCache.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PubObjectCache
@@ -38,8 +38,11 @@ class PubObjectCache {
 		if (is_a($object, 'ArticleGalley')) {
 			assert(is_a($parent, 'Submission'));
 			$this->_insertInternally($object, 'galleys', $object->getId());
-			$this->_insertInternally($object, 'galleysByArticle', $object->getSubmissionId(), $object->getId());
+			$this->_insertInternally($object, 'galleysByArticle', $object->getData('submissionId'), $object->getId());
 			$this->_insertInternally($object, 'galleysByIssue', $parent->getIssueId(), $object->getId());
+		}
+		if (is_a($object, 'Genre')) {
+			$this->_insertInternally($object, 'genres', $object->getId());
 		}
 	}
 

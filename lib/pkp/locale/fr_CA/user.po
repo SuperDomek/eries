@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-10-15T13:36:56-07:00\n"
-"PO-Revision-Date: 2020-02-01 08:35+0000\n"
+"PO-Revision-Date: 2020-12-15 09:58+0000\n"
 "Last-Translator: Marie-Hélène Vézina [UdeMontréal] <marie-"
 "helene.vezina@umontreal.ca>\n"
 "Language-Team: French (Canada) <http://translate.pkp.sfu.ca/projects/pkp-lib/"
@@ -102,9 +102,6 @@ msgstr "Prénom"
 msgid "user.interests"
 msgstr "Champs d'intérêts pour les évaluations"
 
-msgid "user.interests.description"
-msgstr "(Séparer les champs intérêts en appuyant sur la touche « Entrée » ou en ajoutant une virgule)"
-
 msgid "user.gossip"
 msgstr "Notes privées"
 
@@ -190,7 +187,7 @@ msgid "user.logOut"
 msgstr "Se déconnecter"
 
 msgid "user.logOutAs"
-msgstr "Fermeture de session en tant que"
+msgstr "Fermeture de session en tant que {$username}"
 
 msgid "user.hello"
 msgstr "Bonjour, "
@@ -230,9 +227,6 @@ msgstr "Il faut indiquer un pays."
 
 msgid "user.profile.form.emailRequired"
 msgstr "Une adresse de courriel valide est obligatoire."
-
-msgid "user.profile.form.affiliationRequired"
-msgstr "L'affiliation est obligatoire."
 
 msgid "user.profile.form.givenNameRequired"
 msgstr "Un prénom est obligatoire."
@@ -328,7 +322,7 @@ msgid "user.register.form.passwordLengthRestriction"
 msgstr "Le mot de passe doit contenir au moins {$length} caractères."
 
 msgid "user.register.registerAs"
-msgstr "S'inscrire à {$contextName} en tant que..."
+msgstr "S'inscrire à la revue {$contextName} en tant que..."
 
 msgid "user.register"
 msgstr "S'inscrire"

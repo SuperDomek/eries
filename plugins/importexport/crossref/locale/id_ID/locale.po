@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-19T11:05:36+00:00\n"
-"PO-Revision-Date: 2020-02-09 18:35+0000\n"
+"PO-Revision-Date: 2020-12-19 09:52+0000\n"
 "Last-Translator: Ramli Baharuddin <ramli.baharuddin@relawanjurnal.id>\n"
 "Language-Team: Indonesian <http://translate.pkp.sfu.ca/projects/ojs/"
 "importexport-crossref/id/>\n"
@@ -55,6 +55,7 @@ msgstr "Tugas registrasi otomatis CrossRef"
 msgid "plugins.importexport.crossref.action.markRegistered"
 msgstr "Tandai sebagai aktif"
 
+#, fuzzy
 msgid "plugins.importexport.crossref.action.export"
 msgstr "Unduh XML"
 
@@ -159,3 +160,6 @@ msgstr ""
 
 msgid "plugins.importexport.crossref.requirements.satisfied"
 msgstr "Semua persyaratan plugin telah dipenuhi."
+
+msgid "plugins.importexport.crossref.settings.form.onlyValidateExport"
+msgstr "Hanya memvalidasi ekspor. Jangan unduk filenya."

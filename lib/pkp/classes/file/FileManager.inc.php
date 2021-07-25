@@ -9,8 +9,8 @@
 /**
  * @file classes/file/FileManager.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  * ePUB mime type added  Leah M Root (rootl) SUNY Geneseo
  * @class FileManager
@@ -24,12 +24,14 @@ define('FILE_MODE_MASK', 0666);
 define('DIRECTORY_MODE_MASK', 0777);
 
 define('DOCUMENT_TYPE_DEFAULT', 'default');
+define('DOCUMENT_TYPE_AUDIO', 'audio');
 define('DOCUMENT_TYPE_EXCEL', 'excel');
 define('DOCUMENT_TYPE_HTML', 'html');
 define('DOCUMENT_TYPE_IMAGE', 'image');
 define('DOCUMENT_TYPE_PDF', 'pdf');
 define('DOCUMENT_TYPE_WORD', 'word');
 define('DOCUMENT_TYPE_EPUB', 'epub');
+define('DOCUMENT_TYPE_VIDEO', 'video');
 define('DOCUMENT_TYPE_ZIP', 'zip');
 
 class FileManager {
@@ -172,7 +174,6 @@ class FileManager {
 	 * @return boolean returns true if successful
 	 */
 	function copyFile($source, $dest) {
-		$success = true;
 		$destDir = dirname($dest);
 		if (!$this->fileExists($destDir, 'dir')) {
 			// Try to create the destination directory

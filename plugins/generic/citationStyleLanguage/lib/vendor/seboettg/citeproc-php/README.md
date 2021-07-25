@@ -1,6 +1,5 @@
 # citeproc-php #
 [![Latest Stable Version](https://poser.pugx.org/seboettg/citeproc-php/v/stable)](https://packagist.org/packages/seboettg/citeproc-php) 
-[![Unstable Version](https://poser.pugx.org/seboettg/citeproc-php/v/unstable)](https://packagist.org/packages/seboettg/citeproc-php) 
 [![Total Downloads](https://poser.pugx.org/seboettg/citeproc-php/downloads)](https://packagist.org/packages/seboettg/citeproc-php/stats) 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://opensource.org/licenses/MIT)
 [![Build Status](https://scrutinizer-ci.com/g/seboettg/citeproc-php/badges/build.png?b=master)](https://scrutinizer-ci.com/g/seboettg/citeproc-php/build-status/master)
@@ -381,3 +380,15 @@ You can also run test cases without IDE:
 ```bash
 $ composer test
 ```
+
+## Known projects that use citeproc-php
+
+* [Citation Style Language plugin for Open Journal Systems 3](https://github.com/pkp/citationStyleLanguage)
+* [Islandora Scholar](https://github.com/Islandora/islandora_scholar)
+* [Grav Bibliography Plugin](https://github.com/OleVik/grav-plugin-bibliography)
+* [Bibcite Wordpress Plugin](https://github.com/ShadyChars/Bibcite)
+* [DKAN Science Metadata](https://github.com/GetDKAN/dkan_sci_metadata)
+* [Stud.IP](https://github.com/studip/studip)
+* [bibliography Plugin for DokuWiki](https://github.com/gyger/dokuwiki-bibliography)
+* [ldbase_citations (Plugin for LDbase)](https://github.com/ldbase/ldbase_citations)
+* [Citations - (Drupal module)](https://github.com/fsulib/citations)

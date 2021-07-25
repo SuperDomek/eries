@@ -3,10 +3,10 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-19T10:49:23+00:00\n"
-"PO-Revision-Date: 2020-03-18 07:36+0000\n"
+"PO-Revision-Date: 2020-12-12 08:52+0000\n"
 "Last-Translator: Antti-Jussi Nygård <ajnyga@gmail.com>\n"
-"Language-Team: Finnish <http://translate.pkp.sfu.ca/projects/ojs/locale/fi/>"
-"\n"
+"Language-Team: Finnish <http://translate.pkp.sfu.ca/projects/ojs/locale/"
+"fi_FI/>\n"
 "Language: fi_FI\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1400,7 +1400,7 @@ msgid "current.noCurrentIssue"
 msgstr "Ei uusinta numeroa"
 
 msgid "current.noCurrentIssueDesc"
-msgstr "Tämän julkaisu ei ole julkaissut yhtään numeroa."
+msgstr "Tässä julkaisussa ei ole yhtään numeroa."
 
 msgid "archive.archives"
 msgstr "Arkistot"
@@ -1535,14 +1535,22 @@ msgid "about.memberships"
 msgstr "Jäsenyydet"
 
 msgid "about.aboutThisPublishingSystem"
-msgstr "Tietoja julkaisujärjestelmästä"
+msgstr ""
+"Lisätietoja OJS/PKP:n julkaisujärjestelmästä, -alustasta ja työnkulusta."
 
 msgid "about.aboutThisPublishingSystem.altText"
 msgstr "OJS:n toimitus- ja julkaisuprosessit"
 
 msgid "about.aboutOJSJournal"
-msgstr "Tämä julkaisu käyttää Open Journal Systems {$ojsVersion} -järjestelmää, joka on <a href=\"http://pkp.sfu.ca/\">Public Knowledge Projectin</a> kehittämä, tukema ja GNU General Public License -lisenssillä vapaasti jakama avoimen lähdekoodin julkaisunhallinta- ja julkaisuohjelmisto."
+msgstr ""
+"Tämä julkaisu käyttää Open Journal Systems {$ojsVersion} -järjestelmää, joka "
+"on <a href=\"http://pkp.sfu.ca/\">Public Knowledge Projectin</a> kehittämä, "
+"tukema ja GNU General Public License -lisenssillä vapaasti jakama avoimen "
+"lähdekoodin julkaisunhallinta- ja julkaisuohjelmisto. Julkaisua ja "
+"käsikirjoituksia koskevissa kysymyksissä  tulee olla <a href=\"{$contactUrl}"
+"\">yhteydessä suoraan julkaisuun</a>."
 
+#, fuzzy
 msgid "about.aboutOJSSite"
 msgstr "Tämä sivusto käyttää Open Journal Systems {$ojsVersion} -järjestelmää, joka on <a href=\"http://pkp.sfu.ca/\">Public Knowledge Projectin</a> kehittämä, tukema ja GNU General Public License -lisenssillä vapaasti jakama avoimen lähdekoodin julkaisunhallinta- ja julkaisuohjelmisto."
 
@@ -1660,6 +1668,7 @@ msgstr "OJS:n asennus"
 msgid "installer.ojsUpgrade"
 msgstr "OJS:n päivitys"
 
+#, fuzzy
 msgid "installer.installationInstructions"
 msgstr ""
 "<h4>OJS:n versio {$version}</h4>\n"
@@ -1940,9 +1949,6 @@ msgstr "Pyyntöä vastaavaa numeroa ei ole!"
 msgid "user.authorization.invalidCopyditorSubmission"
 msgstr "Virheellinen teknisen toimittajan lähettämä käsikirjoitus tai teknisen toimittajan lähetystä ei pyydetty!"
 
-msgid "debug.notes.currencyListLoad"
-msgstr "XML-muodosta ladattu valuuttaluettelo \"{$filename}\""
-
 msgid "grid.action.createContext"
 msgstr "Luo uusi julkaisu"
 
@@ -2063,3 +2069,18 @@ msgstr "Siirry viimeisimpään numeroon"
 
 msgid "navigation.skip.about"
 msgstr "Siirry julkaisun kuvaukseen"
+
+msgid "issue.viewIssueIdentification"
+msgstr "Näytä {$identification}"
+
+msgid "submissionGroup.assignedSubEditors"
+msgstr "Osoitetut toimittajat"
+
+msgid "about.aboutSoftware"
+msgstr "Tietoa Open Journal Systems -järjestelmästä"
+
+msgid "user.authorization.representationNotFound"
+msgstr "Pyydettyä julkaistavaa tiedostoa ei löytynyt."
+
+msgid "category.category"
+msgstr "Kategoriat"

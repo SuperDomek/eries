@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-19T10:49:26+00:00\n"
-"PO-Revision-Date: 2020-03-06 07:53+0000\n"
-"Last-Translator: Fransisca H <sisca.ojs@gmail.com>\n"
+"PO-Revision-Date: 2020-12-19 09:52+0000\n"
+"Last-Translator: Ramli Baharuddin <ramli.baharuddin@relawanjurnal.id>\n"
 "Language-Team: Indonesian <http://translate.pkp.sfu.ca/projects/ojs/manager/"
 "id/>\n"
 "Language: id_ID\n"
@@ -99,7 +99,9 @@ msgid "manager.payment.generalFees"
 msgstr "Biaya Umum"
 
 msgid "manager.payment.generalFeesDescription"
-msgstr "Keanggotaan Asosiasi akan ditampilkan di Tentang Jurnal di bawah kebijakan, dan tautan donasi akan muncul di atas fungsi cari di frame sebelah kanan."
+msgstr ""
+"Keanggotaan Asosiasi akan ditampilkan pada Tentang Jurnal di bagian "
+"Kebijakan."
 
 msgid "manager.payment.generalOptions"
 msgstr "Opsi Umum"
@@ -224,6 +226,7 @@ msgstr "Editor Bagian ini"
 msgid "manager.sections.confirmDelete"
 msgstr "Apakah Anda yakin ingin menghapus bagian ini secara permanen?"
 
+#, fuzzy
 msgid "manager.sections.alertDelete"
 msgstr "Sebelum bagian ini dapat dihapus, Anda harus memindah artikel yang dipublikasikan di bagian ini ke bagian lain."
 
@@ -768,9 +771,6 @@ msgstr ""
 "mengaktifkan pilihan <tt>scheduled_tasks</tt> di file konfigurasi jurnal. "
 "Konfigurasi tambahan pada server mungkin diperlukan seperti ditunjukkan pada "
 "dokumentasi OJS."
-
-msgid "manager.setup.reviewOptions.blindReview"
-msgstr "Review Anonim"
 
 msgid "manager.setup.reviewOptions.numWeeksPerReview"
 msgstr "Jangka waktu review (dalam minggu)"
@@ -1630,9 +1630,6 @@ msgstr "Gunakan tanggal nomor terbitan"
 msgid "manager.setup.numPageLinks.description"
 msgstr "Batasi jumlah tautan yang tampil di daftar halaman berikutnya."
 
-msgid "manager.setup.masthead.success"
-msgstr "Rincian dewan redaksi jurnal telah diperbaharui."
-
 msgid "manager.setup.plnPluginEnable"
 msgstr "Aktifkan plugin PKP PN"
 
@@ -1729,9 +1726,6 @@ msgstr "{$x} Pekan"
 msgid "manager.subscriptionPolicies.xMonths"
 msgstr "{$x} Bulan"
 
-msgid "manager.setup.userAccess.success"
-msgstr "Rincian akses pengguna jurnal ini telah diperbaharui."
-
 msgid "manager.setup.enableOai.description"
 msgstr ""
 "Berikan metadata ke layanan pengindeks pihak ketiga melalui <a href=\""
@@ -1751,9 +1745,6 @@ msgstr ""
 "Tuliskan gambaran ringkas (50-300 karakter) tentang jurnal yang dapat "
 "ditampilkan oleh mesih pencarian saat mengurutkan jurnal di hasil pencarian."
 
-msgid "manager.setup.searchEngineIndexing.success"
-msgstr "Pengaturan indeks mesin pencarian telah diperbaharui."
-
 msgid "manager.setup.reviewOptions.reviewerAccessKeysEnabled.label"
 msgstr "Sertakan tautan aman dalam email undangan kepada reviewer."
 
@@ -1762,9 +1753,6 @@ msgstr "Batasi Akses File"
 
 msgid "manager.setup.publishing"
 msgstr "Rincian Terbitan"
-
-msgid "manager.setup.privacyStatement.success"
-msgstr "Pernyataan privasi telah diperbaharui."
 
 msgid "manager.setup.otherLockss"
 msgstr "LOCKSS dan CLOCKSS"
@@ -1786,9 +1774,6 @@ msgstr ""
 "PKP Preservation Network (PN) memberikan layanan penyimpanan gratis bagi "
 "setiap jurnal yang memenuhi sejumlah kriteria dasar."
 
-msgid "manager.setup.lists.success"
-msgstr "Pengaturan daftar pada jurnal ini telah diperbaharui."
-
 msgid "manager.setup.keyInfo.description"
 msgstr ""
 "Tuliskan gambaran singkat tentng jurnal Anda dan sebutkan editor, direktur "
@@ -1803,9 +1788,6 @@ msgstr ""
 "yang tampil dalam daftar sebelum menampilkan item berikutnya pada halaman "
 "lain."
 
-msgid "manager.setup.information.success"
-msgstr "Informasi tentang jurna ini telah diperbaharui."
-
 msgid "manager.setup.identity"
 msgstr "Identitas Jurnal"
 
@@ -1817,26 +1799,33 @@ msgstr ""
 msgid "manager.setup.numAnnouncementsHomepage"
 msgstr "Tampilkan di Halamam Beranda"
 
-msgid "manager.setup.contact.success"
-msgstr "Rincian narahubung jurna ini telah diperbaharui."
-
-msgid "manager.setup.archiving.success"
-msgstr "Rincian pengarsipan jurnl ini telah diperbaharui."
-
 msgid "manager.setup.announcementsIntroduction"
 msgstr "Pengantar"
-
-msgid "manager.setup.announcements.success"
-msgstr "Pengaturan pengumuman telah diperbaharui."
 
 msgid "manager.paymentTypes"
 msgstr "Jenis Pembayaran"
 
-msgid "manager.payment.success"
-msgstr "Pengaturan pembayaran telah diperbaharui."
-
 msgid "subscriptionManager.subscription.confirmRemove"
 msgstr "Yakin ingin menghapus langganan ini?"
 
-msgid "manager.distribution.publishingMode.success"
-msgstr "Ringkasan terbitan telah diperbaharui."
+msgid "plugins.importexport.common.validation.fail"
+msgstr "Validasi gagal."
+
+msgid "plugins.importexport.common.validation.success"
+msgstr "Validasi berhasil!"
+
+msgid "manager.setup.disableSubmissions.notAccepting"
+msgstr ""
+"Jurnal saat ini tidak menerima naskah. Buka pengaturan alur kerja untuk "
+"membuka penerimaan naskah."
+
+msgid "manager.setup.disableSubmissions.description"
+msgstr ""
+"Blok pengguna dari pengiriman artikel baru ke jurnal. Pengiriman naskah "
+"dapat dimatikan per seksi jurnal melalui halaman pengaturan <a href=\"{$url}"
+"\">seksi jurnal</a>."
+
+msgid "manager.sections.confirmDeactivateSection.error"
+msgstr ""
+"Minimal satu seksi sudah aktif. Kunjungi pengaturan alur kerja untuk menutup "
+"semua naskah masuk ke jurnal ini."

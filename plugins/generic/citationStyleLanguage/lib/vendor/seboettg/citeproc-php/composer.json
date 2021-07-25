@@ -16,7 +16,10 @@
     "autoload": {
         "psr-4": {
             "Seboettg\\CiteProc\\": "src/"
-        }
+        },
+        "files": [
+            "src/functions.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
@@ -24,15 +27,16 @@
         }
     },
     "require": {
-        "seboettg/collection": "^1.2",
+        "seboettg/collection": "^2.1",
         "myclabs/php-enum": "^1.5",
-        "symfony/polyfill-mbstring": "v1.10.*",
+        "symfony/polyfill-mbstring": "^1.10",
         "ext-simplexml": "*",
         "ext-json": "*",
-        "ext-intl": "*"
+        "ext-intl": "*",
+        "php": ">=7.1"
     },
     "require-dev": {
-        "satooshi/php-coveralls": "^1",
+        "php-coveralls/php-coveralls": "^1",
         "phpunit/phpunit": "^7.5",
         "squizlabs/php_codesniffer": "^3.5",
         "phpmd/phpmd": "^2.8"
@@ -42,21 +46,22 @@
         "post-install-cmd": [
             "./install.sh styles-distribution",
             "./install.sh locales",
-            "cd ./tests/fixtures/basic-tests/; ./processor.py -g",
+            "@compile-test-cases",
             "chmod +x vendor/bin/phpunit"
         ],
         "post-update-cmd": [
             "./install.sh styles-distribution",
             "./install.sh locales",
-            "cd ./tests/fixtures/basic-tests/; ./processor.py -g",
+            "@compile-test-cases",
             "chmod +x vendor/bin/phpunit"
         ],
-        "test": "vendor/bin/phpunit",
+        "test": "vendor/bin/phpunit -c phpunit.xml",
         "check": [
             "@cs-check",
             "@test"
         ],
         "cs-check": "phpcs",
-        "cs-fix": "phpcbf"
+        "cs-fix": "phpcbf",
+        "compile-test-cases": "cd ./tests/fixtures/basic-tests/; ./processor.py -g"
     }
 }

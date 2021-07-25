@@ -9,8 +9,8 @@
 /**
  * @file classes/submission/Submission.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class Submission
@@ -150,38 +150,6 @@ class Submission extends PKPSubmission {
 		if ($publication) {
 			$publication->setData('sectionId', $sectionId);
 		}
-	}
-
-	/**
-	 * Get title of article's section.
-	 * @return string
-	 */
-	function getSectionTitle() {
-		return $this->getData('sectionTitle');
-	}
-
-	/**
-	 * Set title of article's section.
-	 * @param $sectionTitle string
-	 */
-	function setSectionTitle($sectionTitle) {
-		return $this->setData('sectionTitle', $sectionTitle);
-	}
-
-	/**
-	 * Get section abbreviation.
-	 * @return string
-	 */
-	function getSectionAbbrev() {
-		return $this->getData('sectionAbbrev');
-	}
-
-	/**
-	 * Set section abbreviation.
-	 * @param $sectionAbbrev string
-	 */
-	function setSectionAbbrev($sectionAbbrev) {
-		return $this->setData('sectionAbbrev', $sectionAbbrev);
 	}
 
 	/**

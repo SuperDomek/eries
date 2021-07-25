@@ -3,8 +3,8 @@
 /**
  * @file includes/functions.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @ingroup index
@@ -166,7 +166,7 @@ function &instantiate($fullyQualifiedClassName, $expectedTypes = null, $expected
 	$errorFlag = false;
 
 	// Validate the class name
-	if (!preg_match('/^[a-zA-Z0-9.]+$/', $fullyQualifiedClassName)) {
+	if (!preg_match('/^[a-zA-Z0-9_.]+$/', $fullyQualifiedClassName)) {
 		return $errorFlag;
 	}
 
@@ -189,13 +189,14 @@ function &instantiate($fullyQualifiedClassName, $expectedTypes = null, $expected
 			// Construct meaningful error message.
 			$expectedPackageCount = count($expectedPackages);
 			$separator = '';
+			$expectedPackageString = '';
 			foreach($expectedPackages as $expectedPackageIndex => $expectedPackage) {
 				if ($expectedPackageIndex > 0) {
 					$separator = ($expectedPackageIndex == $expectedPackageCount-1 ? ' or ' : ', ' );
 				}
 				$expectedPackageString .= $separator.'"'.$expectedPackage.'"';
 			}
-			fatalError('Trying to instantiate class "'.$fullyQualifiedClassName.'" which is not in any of the expected packages '.$expectedPackageString.'.');
+			throw new Exception('Trying to instantiate class "'.$fullyQualifiedClassName.'" which is not in any of the expected packages '.$expectedPackageString.'.');
 		}
 	}
 
@@ -208,7 +209,7 @@ function &instantiate($fullyQualifiedClassName, $expectedTypes = null, $expected
 
 	// Type check I: The requested class should be declared by now.
 	if (!class_exists($className)) {
-		fatalError('Cannot instantiate class. Class "'.$className.'" is not declared in "'.$fullyQualifiedClassName.'".');
+		throw new Exception('Cannot instantiate class. Class "'.$className.'" is not declared in "'.$fullyQualifiedClassName.'".');
 	}
 
 	// Ensure all expected methods are declared.
@@ -227,7 +228,7 @@ function &instantiate($fullyQualifiedClassName, $expectedTypes = null, $expected
 
 	// Type check II: The object must conform to the given interface (if any).
 	if (!is_null($expectedTypes)) {
-		if (is_scalar($expectedTypes)) $expectedTypes = array($expectedTypes);
+		if (is_scalar($expectedTypes)) $expectedTypes = [$expectedTypes];
 		$validType = false;
 		foreach($expectedTypes as $expectedType) {
 			if (is_a($classInstance, $expectedType)) {

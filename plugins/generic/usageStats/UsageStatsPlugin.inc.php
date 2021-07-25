@@ -57,6 +57,28 @@ class UsageStatsPlugin extends GenericPlugin {
 	// Public methods.
 	//
 	/**
+	 * Determine whether the plugin can be enabled.
+	 *
+	 * Can only be enabled or disabled at the site-wide level.
+	 *
+	 * @return boolean
+	 */
+	function getCanEnable() {
+		return !((bool) Application::get()->getRequest()->getContext());
+	}
+
+	/**
+	 * Determine whether the plugin can be disabled.
+	 *
+	 * Can only be enabled or disabled at the site-wide level.
+	 *
+	 * @return boolean
+	 */
+	function getCanDisable() {
+		return !((bool) Application::get()->getRequest()->getContext());
+	}
+
+	/**
 	 * Get the report plugin object that implements
 	 * the metric type details.
 	 * @return UsageStatsReportPlugin
@@ -192,24 +214,30 @@ class UsageStatsPlugin extends GenericPlugin {
 	}
 
 	/**
-	 * @copydoc Plugin::getInstallSchemaFile()
+	 * @copydoc Plugin::getInstallMigration()
 	 */
-	function getInstallSchemaFile() {
-		return $this->getPluginPath() . DIRECTORY_SEPARATOR . 'schema.xml';
+	function getInstallMigration() {
+		$this->import('UsageStatsMigration');
+		return new UsageStatsMigration();
 	}
 
 	/**
 	 * @copydoc Plugin::manage()
 	 */
 	function manage($args, $request) {
-		$this->import('UsageStatsSettingsForm');
+		$singleContextSite = (Services::get('context')->getCount() == 1);
+		if ($request->getContext() && !$singleContextSite) {
+			$this->import('UsageStatsSettingsForm');
+			$settingsForm = new UsageStatsSettingsForm($this);
+		} else {
+			$this->import('UsageStatsSiteSettingsForm');
+			$settingsForm = new UsageStatsSiteSettingsForm($this);
+		}
 		switch($request->getUserVar('verb')) {
 			case 'settings':
-				$settingsForm = new UsageStatsSettingsForm($this);
 				$settingsForm->initData();
 				return new JSONMessage(true, $settingsForm->fetch($request));
 			case 'save':
-				$settingsForm = new UsageStatsSettingsForm($this);
 				$settingsForm->readInputData();
 				if ($settingsForm->validate()) {
 					$settingsForm->execute();
@@ -324,6 +352,7 @@ class UsageStatsPlugin extends GenericPlugin {
 		switch ($applicationName) {
 			case 'ojs2':
 				$hooks[] = 'HtmlArticleGalleyPlugin::articleDownloadFinished';
+				$hooks[] = 'LensGalleyPlugin::articleDownloadFinished';
 				break;
 			case 'omp':
 				$hooks[] = 'HtmlMonographFilePlugin::monographDownloadFinished';
@@ -342,7 +371,7 @@ class UsageStatsPlugin extends GenericPlugin {
 	 *  @option string hook name
 	 *  @option array usage event = compact(
 	 *		'time', 'pubObject', 'assocType', 'canonicalUrl', 'mimeType',
-	 *		'identifiers', 'docSize', 'downloadSuccess', 'serviceUri',
+	 *		'identifiers', 'downloadSuccess', 'serviceUri',
 	 *		'ip', 'host', 'user', 'roles', 'userAgent', 'referrer',
 	 *		'classification')
 	 * ]
@@ -580,10 +609,10 @@ class UsageStatsPlugin extends GenericPlugin {
 		if (($contextDisplaySettingExists && $contextDisplaySetting) ||
 			(!$contextDisplaySettingExists && $siteDisplaySetting)) {
 
-				$pubObject = $smarty->getTemplateVars('publication');
-				assert(is_a($pubObject, 'Publication'));
+				$pubObject = $smarty->getTemplateVars('publishedSubmission');
+				assert(is_a($pubObject, 'Submission'));
 				$pubObjectId = $pubObject->getId();
-				$pubObjectType = 'Publication';
+				$pubObjectType = 'Submission';
 
 				$output .= $this->getTemplate(
 					array(
@@ -649,7 +678,7 @@ class UsageStatsPlugin extends GenericPlugin {
 	/**
 	 * @param $usageEvent array = compact(
 	 *		'time', 'pubObject', 'assocType', 'canonicalUrl', 'mimeType',
-	 *		'identifiers', 'docSize', 'downloadSuccess', 'serviceUri',
+	 *		'identifiers', 'downloadSuccess', 'serviceUri',
 	 *		'ip', 'host', 'user', 'roles', 'userAgent', 'referrer',
 	 *		'classification')
 	 */

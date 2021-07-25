@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2020-05-01 00:25+0000\n"
-"Last-Translator: Tran Ngoc Trung <khuchatthienduong@gmail.com>\n"
+"PO-Revision-Date: 2020-08-14 15:14+0000\n"
+"Last-Translator: Nguyen Xuan Giao <giaonxb@gmail.com>\n"
 "Language-Team: Vietnamese <http://translate.pkp.sfu.ca/projects/ojs/"
 "importexport-users/vi_VN/>\n"
 "Language: vi_VN\n"
@@ -28,14 +28,11 @@ msgstr "Kết quả"
 
 msgid "plugins.importexport.users.importComplete"
 msgstr ""
-"Việc nhập thành công. Người dùng có username và địa chỉ email chưa được sử "
-"dụng đã được nhập cùng với các nhóm người dùng đi kèm."
-
-msgid "plugins.importexport.users.export.couldNotWriteFile"
-msgstr "Không thể ghi vào tập tin \"{$fileName}\"."
+"Việc nhập thành công. Người dùng có tên người dùng và địa chỉ email chưa "
+"được sử dụng đã được nhập cùng với các nhóm người dùng đi kèm."
 
 msgid "plugins.importexport.users.export.errorsOccurred"
-msgstr "Xuất dữ liệu người dùng"
+msgstr "Đã có lỗi xảy ra khi Xuất dữ liệu người dùng"
 
 msgid "plugins.importexport.users.unknownPress"
 msgstr ""
@@ -54,7 +51,7 @@ msgid "plugins.importexport.users.import.confirmUsers"
 msgstr "Xác nhận rằng đây là những người dùng bạn muốn nhập vào hệ thống"
 
 msgid "plugins.importexport.users.import.errorsOccurred"
-msgstr "Xảy ra lỗi trong quá trình nhập"
+msgstr "Đã có lỗi xảy ra trong quá trình nhập"
 
 msgid "plugins.importexport.users.import.usersWereImported"
 msgstr "Những người dùng sau đã được nhập thành công vào hệ thống"
@@ -64,8 +61,8 @@ msgstr "Tiếp tục nhập người dùng khác nếu xảy ra lỗi."
 
 msgid "plugins.importexport.users.import.sendNotify"
 msgstr ""
-"Gửi email thông báo cho mỗi người dùng được nhập có chứa username và mật "
-"khẩu của người dùng."
+"Gửi email thông báo cho mỗi người dùng được nhập vào với tên tài khoản và "
+"mật khẩu tương ứng."
 
 msgid "plugins.importexport.users.import.dataFile"
 msgstr "Tập tin dữ liệu người dùng"
@@ -97,7 +94,7 @@ msgstr ""
 
 msgid "plugins.importexport.users.cliUsage"
 msgstr ""
-"Usage: {$scriptName} {$pluginName} [command] ...\n"
+"Sử dụng: {$scriptName} {$pluginName} [command] ...\n"
 "Các lệnh:\n"
 "\tnhập [xmlFileName] [journal_path]\n"
 "\txuất [xmlFileName] [journal_path]\n"
@@ -107,4 +104,4 @@ msgid "plugins.importexport.users.description"
 msgstr "Nhập và xuất người dùng"
 
 msgid "plugins.importexport.users.displayName"
-msgstr "Plugin XML người dùng"
+msgstr "Plugin người dùng XML"

@@ -35,21 +35,6 @@ msgstr "Да ли сте сигурни да желите да обришете 
 msgid "admin.languages.installNewLocalesInstructions"
 msgstr "Одаберите додатне локализације које желите да инсталирате.Погледајте ОЈС документацију за више информација како да обезбедите подршку за нове језике."
 
-msgid "admin.languages.downloadFailed"
-msgstr "Преузимање локализације није успело. Порука о грешкама ниже објашњава разлоге."
-
-msgid "admin.languages.localeInstalled"
-msgstr "\"{$locale}\" локализација је инсталирана."
-
-msgid "admin.languages.download"
-msgstr "Преузми локализацију"
-
-msgid "admin.languages.download.cannotOpen"
-msgstr "Не могу да отворим дескриптор језика са PKP wеб сајта."
-
-msgid "admin.languages.download.cannotModifyRegistry"
-msgstr "Не могу да додам нову локализацију у локални registry фајл, обично \"registry/locales.xml\"."
-
 msgid "admin.auth.ojs"
 msgstr "OJS корисничка база података"
 
@@ -160,11 +145,3 @@ msgstr "Обавештење о Отвореном приступу"
 
 msgid "admin.scheduledTask.reviewReminder"
 msgstr "Подсетник о рецензирању"
-
-msgid "admin.languages.downloadUnavailable"
-msgstr ""
-"<p>Није тренутно могуће преузети пакете за преводе са сервера Public Knowledge Project јер:</p>\n"
-"\t<ul>\n"
-"\t\t<li> Ваш сервер не дозвољава извршење GNU \"tar\" алата.</li><li>OJS  није у могућности да модификује локални регистарски фајл \"registry/locales.xml\".</li>\n"
-"\t</ul>\n"
-"<p> Пакети превод на језик могу да се преузму ручно са<a href=\"http://pkp.sfu.ca\">PKP web сајта</a>.</p>"

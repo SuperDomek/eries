@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2020-02-05 23:35+0000\n"
-"Last-Translator: Ramli Baharuddin <ramli.baharuddin@relawanjurnal.id>\n"
-"Language-Team: Indonesian <http://translate.pkp.sfu.ca/projects/ojs/api/id/>"
-"\n"
+"PO-Revision-Date: 2021-02-03 05:53+0000\n"
+"Last-Translator: Sam Idoeb <idoebsam@gmail.com>\n"
+"Language-Team: Indonesian <http://translate.pkp.sfu.ca/projects/ojs/api/"
+"id_ID/>\n"
 "Language: id_ID\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -59,3 +59,13 @@ msgstr ""
 
 msgid "api.submissions.403.cantChangeContext"
 msgstr "Anda tidak dapat mengubah naskah jurnal yang masuk."
+
+msgid "api.submissionFiles.400.badRepresentationAssocType"
+msgstr ""
+"Anda tidak bisa mengasosiasikan file dari tahapan file denga sebuah galley."
+
+msgid "api.announcements.400.contextsNotMatched"
+msgstr "Pengumuman yang Anda cari bukan bagian dari jurnal ini."
+
+msgid "api.emails.403.disabled"
+msgstr "Fitur pemberitahuan melalui email tidak diaktifkan untuk jurnal ini."

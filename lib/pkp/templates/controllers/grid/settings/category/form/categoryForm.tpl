@@ -1,8 +1,8 @@
 {**
  * lib/pkp/templates/controllers/grid/settings/category/form/categoryForm.tpl
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Form to edit or create a category
@@ -74,18 +74,11 @@
 			{/fbvFormSection}
 		{/if}
 
-		{if $hasSubEditors}
-			{fbvFormSection}
-				{assign var="uuid" value=""|uniqid|escape}
-				<div id="subeditors-{$uuid}">
-					<list-panel
-						v-bind="components.subeditors"
-						@set="set"
-					/>
-				</div>
-				<script type="text/javascript">
-					pkp.registry.init('subeditors-{$uuid}', 'Container', {$subEditorsListData|json_encode});
-				</script>
+		{if count($availableSubeditors)}
+			{fbvFormSection list=true title="submissionGroup.assignedSubEditors"}
+				{foreach from=$availableSubeditors item="subEditor" key="id"}
+					{fbvElement type="checkbox" id="subEditors[]" value=$id checked=in_array($id, $assignedToCategory) label=$subEditor translate=false}
+				{/foreach}
 			{/fbvFormSection}
 		{/if}
 

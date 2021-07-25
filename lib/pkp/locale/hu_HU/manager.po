@@ -522,6 +522,7 @@ msgstr "Város"
 msgid "manager.statistics.region"
 msgstr "Régió"
 
+#, fuzzy
 msgid "manager.statistics.reports"
 msgstr "Jelentés generáló"
 
@@ -763,9 +764,6 @@ msgstr "Hivatkozás kicsomagoló szolgáltatások"
 msgid "manager.setup.filter.pleaseSelect"
 msgstr "Kérem, válasszon..."
 
-msgid "manager.setup.groupType"
-msgstr "Fájl típus csoportosítás"
-
 msgid "manager.setup.homeHeaderImageInvalid"
 msgstr "Érvénytelen honlap fejléc logó képformátum vagy a feltöltés sikertelen. Az elfogadott formátumok .gif, .jpg, vagy .png."
 
@@ -872,7 +870,8 @@ msgstr "Ha a lektor nem végzi el a lektorálást határidőre, ennyi idő múlv
 msgid "manager.setup.reviewOptions.reviewTime"
 msgstr "Alapértelmezett lektorálási határidők"
 
-msgid "manager.setup.reviewOptions.showBlindReviewLink"
+#, fuzzy
+msgid "manager.setup.reviewOptions.showAnonymousReviewLink"
 msgstr ""
 "Ez a link <button type=\"button\">biztosítja a vak lektorálást</button> a "
 "feltöltés során"
@@ -1286,12 +1285,6 @@ msgstr "Komponensek visszaállítása az alapértelmezett beállításokra"
 
 msgid "manager.setup.genres.sortable"
 msgstr "Allow files of this type to be sorted by chapter"
-
-msgid "manager.setup.genres.dependent"
-msgstr "Ehhez a típushoz tartozó fájlokat ne független anyagnak jelölje (tipikusan ne kerüljön megjelenítésre a publikált anyaggal)"
-
-msgid "manager.setup.genres.supplementary"
-msgstr "Ehhez a típushoz tartozó fájlokat kiegészítő anyagnak jelölje (tipikusan nem az elsődleges, fő tartalom)"
 
 msgid "manager.settings.wizard"
 msgstr "Beállítás varázsló"
@@ -2079,9 +2072,6 @@ msgstr "Nyelvi metaadatok engedélyezése"
 msgid "manager.setup.metadata.coverage"
 msgstr "Lefedettség"
 
-msgid "manager.setup.metadata.success"
-msgstr "A beküldés metaadatai sikeresen frissültek."
-
 msgid "settings.roles.permitMetadataEdit"
 msgstr "A beküldés metaadatainak szerkesztési engedélyezése."
 
@@ -2105,17 +2095,11 @@ msgstr "Licenc feltételek"
 msgid "manager.distribution.license.other"
 msgstr "Egyéb licenc URL"
 
-msgid "manager.distribution.license.success"
-msgstr "Az licenc kezelésének részleteit frissítettük. "
-
 msgid "manager.distribution.license"
 msgstr "Licenc"
 
 msgid "manager.statistics.statistics.registeredUsers"
 msgstr "Regisztrált felhasználók"
-
-msgid "manager.setup.userAccess.success"
-msgstr "A folyóirat felhasználói hozzáférési adatai frissültek."
 
 msgid "manager.setup.theme.notFound"
 msgstr "A kiválasztott téma nincs telepítve vagy engedélyezve."
@@ -2125,9 +2109,6 @@ msgstr "Új témák telepíthetők az oldal tetején található Plugins fül al
 
 msgid "manager.setup.theme"
 msgstr "Téma"
-
-msgid "manager.setup.theme.success"
-msgstr "A téma frissült. <a href=\"{$url}\" target=\"_blank\">Megtekintése</a>"
 
 msgid "manager.setup.reviewOptions.reviewMode"
 msgstr "Alapértelmezett lektorálási mód"
@@ -2173,9 +2154,6 @@ msgstr "Töltsön fel egy képet, ami jól láthatóan megjelenik a főoldalon."
 msgid "manager.setup.checklist"
 msgstr "Ellenőrző lista"
 
-msgid "manager.setup.authorGuidelines.success"
-msgstr "A szerzői irányelveket sikeresen frissítettük."
-
 msgid "manager.setup.copyrightNotice.description"
 msgstr ""
 "A szerzőknek a benyújtási folyamat részeként el kell fogadniuk a következő "
@@ -2183,12 +2161,6 @@ msgstr ""
 
 msgid "manager.setup.copyrightNotice"
 msgstr "Szerzői jogi közlemény"
-
-msgid "manager.setup.contact.success"
-msgstr "A kiadó elérhetőségei frissültek."
-
-msgid "manager.setup.appearance.success"
-msgstr "A megjelenési beállításokat frissítettük."
 
 msgid "manager.setup.advanced"
 msgstr "Haladó beállítások"
@@ -2214,29 +2186,14 @@ msgstr "E-mail sablon hozzáadásakor meg kell adnia egy ' context ID'-t."
 msgid "manager.emails.emailKey.description"
 msgstr "Az e-mail kulcs csak betűket, számokat és aláhúzást tartalmazhat."
 
-msgid "manager.emails.editEmail.success"
-msgstr "Az e-mail sablon módosult."
-
 msgid "manager.emails.customTemplate"
 msgstr "Egyéni sablon"
-
-msgid "manager.emails.addEmail.success"
-msgstr "Az e-mail sablon hozzáadva."
 
 msgid "manager.publication.reviewReminders.success"
 msgstr "A szakmai lektorálási emlékeztető részletei frissítve."
 
-msgid "manager.publication.reviewSetup.success"
-msgstr "A szakmai lektorálási beállítások frissítve."
-
-msgid "manager.publication.reviewerGuidance.success"
-msgstr "Szakmai lektorálási útmutató frissítve."
-
 msgid "manager.publication.reviewerGuidance"
 msgstr "Szakmai lektorálási útmutató"
-
-msgid "manager.publication.emailSetup.success"
-msgstr "Az e-mail beállítások frissültek."
 
 msgid "stats.description.daysToDecision"
 msgstr ""

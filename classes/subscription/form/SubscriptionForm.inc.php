@@ -3,8 +3,8 @@
 /**
  * @file classes/subscription/form/SubscriptionForm.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SubscriptionForm
@@ -204,7 +204,8 @@ class SubscriptionForm extends Form {
 		$subscriptionType = $subscriptionTypeDao->getById($subscription->getTypeId());
 		if (!$subscriptionType->getNonExpiring()) {
 			$subscription->setDateStart($this->getData('dateStart'));
-			$subscription->setDateEnd($this->getData('dateEnd'));
+			$dateEnd = strtotime($this->getData('dateEnd'));
+			$subscription->setDateEnd(mktime(23, 59, 59, (int) date("m", $dateEnd), (int) date("d", $dateEnd), (int) date("Y", $dateEnd)));
 		}
 	}
 

@@ -1,20 +1,29 @@
 {**
  * templates/admin/settings.tpl
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Administration settings page.
  *}
-{include file="common/header.tpl" pageTitle="admin.settings"}
+{extends file="layouts/backend.tpl"}
 
-{assign var="uuid" value=""|uniqid|escape}
-<div id="settings-admin-{$uuid}">
-	<tabs>
+{block name="page"}
+	<h1 class="app__pageHeading">
+		{translate key="admin.siteSettings"}
+	</h1>
+
+	{if $newVersionAvailable}
+		<notification>
+			{translate key="site.upgradeAvailable.admin" currentVersion=$currentVersion->getVersionString(false) latestVersion=$latestVersion}
+		</notification>
+	{/if}
+
+	<tabs :track-history="true">
 		{if $componentAvailability['siteSetup']}
 		<tab id="setup" label="{translate key="admin.siteSetup"}">
-			<tabs :is-side-tabs="true">
+			<tabs :is-side-tabs="true" :track-history="true">
 				{if $componentAvailability['siteConfig']}
 				<tab id="settings" label="{translate key="admin.settings"}">
 					<pkp-form
@@ -45,13 +54,21 @@
 					{load_url_in_div id="navigationMenuItemsGridContainer" url=$navigationMenuItemsGridUrl}
 				</tab>
 				{/if}
+				{if $componentAvailability['bulkEmails']}
+				<tab id="bulkEmails" label="{translate key="admin.settings.enableBulkEmails.label"}">
+					<pkp-form
+						v-bind="components.{$smarty.const.FORM_SITE_BULK_EMAILS}"
+						@set="set"
+					/>
+				</tab>
+				{/if}
 				{call_hook name="Template::Settings::admin::setup"}
 			</tabs>
 		</tab>
 		{/if}
 		{if $componentAvailability['siteAppearance']}
 		<tab id="appearance" label="{translate key="manager.website.appearance"}">
-			<tabs :is-side-tabs="true">
+			<tabs :is-side-tabs="true" :track-history="true">
 				{if $componentAvailability['siteTheme']}
 				<tab id="theme" label="{translate key="manager.setup.theme"}">
 					<theme-form
@@ -80,9 +97,4 @@
 		{/if}
 		{call_hook name="Template::Settings::admin"}
 	</tabs>
-</div>
-<script type="text/javascript">
-	pkp.registry.init('settings-admin-{$uuid}', 'SettingsContainer', {$settingsData|json_encode});
-</script>
-
-{include file="common/footer.tpl"}
+{/block}

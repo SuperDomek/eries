@@ -3,8 +3,8 @@
 /**
  * @file classes/subscription/form/UserInstitutionalSubscriptionForm.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class UserInstitutionalSubscriptionForm
@@ -60,7 +60,7 @@ class UserInstitutionalSubscriptionForm extends Form {
 		// Ensure subscription type is valid
 		$this->addCheck(new FormValidatorCustom($this, 'typeId', 'required', 'user.subscriptions.form.typeIdValid', function($typeId) use ($journalId) {
 			$subscriptionTypeDao = DAORegistry::getDAO('SubscriptionTypeDAO'); /* @var $subscriptionTypeDao SubscriptionTypeDAO */
-			return ($subscriptionTypeDao->subscriptionTypeExistsByTypeId($typeId, $journalId) && $subscriptionTypeDao->getSubscriptionTypeInstitutional($typeId) == 1) && $subscriptionTypeDao->getSubscriptionTypeDisablePublicDisplay($typeId) == 0;
+			return $subscriptionTypeDao->subscriptionTypeExistsByTypeId($typeId, $journalId) && $subscriptionTypeDao->getSubscriptionTypeInstitutional($typeId) && !$subscriptionTypeDao->getSubscriptionTypeDisablePublicDisplay($typeId);
 		}));
 
 		// Ensure institution name is provided
@@ -87,7 +87,7 @@ class UserInstitutionalSubscriptionForm extends Form {
 				'institutionName' => $subscription->getInstitutionName(),
 				'institutionMailingAddress' => $subscription->getInstitutionMailingAddress(),
 				'domain' => $subscription->getDomain(),
-				'ipRanges' => $subscription->getIPRanges()
+				'ipRanges' => $subscription->getIPRangesString()
 			);
 		}
 	}

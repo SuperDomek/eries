@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-19T10:49:16+00:00\n"
-"PO-Revision-Date: 2020-06-14 15:53+0000\n"
+"PO-Revision-Date: 2021-01-30 12:54+0000\n"
 "Last-Translator: M. Ali <vorteem@gmail.com>\n"
 "Language-Team: Arabic <http://translate.pkp.sfu.ca/projects/ojs/locale/ar_IQ/"
 ">\n"
@@ -1612,9 +1612,11 @@ msgstr ""
 msgid "about.aboutThisPublishingSystem.altText"
 msgstr "عملية التحرير والنشر لنظام المجلات المفتوحة"
 
+#, fuzzy
 msgid "about.aboutOJSJournal"
 msgstr "هذه المجلة تستعمل نظام المجلات المفتوحة {$ojsVersion}، والذي هو نظام مفتوح المصدر لإدارة النشر مطور ومدعوم وموزع مجاناً عبر الرابط <a href=\"http://pkp.sfu.ca/\">مشروع المعرفة العامة</a> تحت رخصة GNU General Public License."
 
+#, fuzzy
 msgid "about.aboutOJSSite"
 msgstr "هذا الموقع يستعمل نظام المجلات المفتوحة {$ojsVersion} والذي هو نظام مفتوح المصدر لإدارة النشر العلمي، مطور ومدعوم وموزع مجاناً عبر الرابط <a href=\"http://pkp.sfu.ca/\">مشروع المعرفة العامة</a> تحت رخصة GNU General Public License."
 
@@ -1741,6 +1743,7 @@ msgstr "تنصيب نظام المجلات المفتوحة"
 msgid "installer.ojsUpgrade"
 msgstr "ترقية نظام المجلات المفتوحة"
 
+#, fuzzy
 msgid "installer.installationInstructions"
 msgstr ""
 "<h4>نسخة نظام المجلات المفتوحة {$version}</h4>\n"
@@ -1749,7 +1752,7 @@ msgstr ""
 "\n"
 "<h4>الترقية</h4>\n"
 "\n"
-"<p>إن كنت بصدد ترقية التنصيب الحالي من OJS 2.x, <a href=\"{$upgradeUrl}\">أنقر هنا</a> للمتابعة.</p>\n"
+"<p>إن كنت بصدد ترقية التنصيب الحالي من OJS, <a href=\"{$upgradeUrl}\">أنقر هنا</a> للمتابعة.</p>\n"
 "\n"
 "<h4>المتطلبات المستحسنة لتشغيل النظام</h4>\n"
 "\n"
@@ -2026,9 +2029,6 @@ msgstr "تم طلب عدد غير موجود!"
 msgid "user.authorization.invalidCopyditorSubmission"
 msgstr "تقديم المدقق غير صحيح، أو لم تتم المطالبة به!"
 
-msgid "debug.notes.currencyListLoad"
-msgstr "قائمة العملات المحملة \"{$filename}\" من ملف بصيغة XML"
-
 msgid "grid.action.createContext"
 msgstr "إنشاء مجلة جديدة"
 
@@ -2091,3 +2091,23 @@ msgstr "ترتيب المقالات"
 
 msgid "catalog.sortBy.categoryDescription"
 msgstr "إختر كيفية ترتيب المقالات ضمن هذا القطاع."
+
+msgid "about.aboutSoftware"
+msgstr "عن نظام المجلات المفتوحة"
+
+msgid "user.authorization.representationNotFound"
+msgstr "تعذر العثور على اللوح الطباعي المطلوب."
+
+msgid "category.category"
+msgstr "الفئات"
+
+msgid "installer.updatingInstructions"
+msgstr ""
+"إذا كنت بصدد ترقية تنصيبك الحالي من نظام المجلات المفتوحة، <a href=\""
+"{$upgradeUrl}\">أنقر هنا</a> للمتابعة."
+
+msgid "payment.waived"
+msgstr "مخصوم"
+
+msgid "payment.unpaid"
+msgstr "غير مدفوع"

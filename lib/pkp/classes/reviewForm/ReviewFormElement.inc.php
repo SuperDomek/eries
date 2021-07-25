@@ -3,8 +3,8 @@
 /**
  * @file classes/reviewForm/ReviewFormElement.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ReviewFormElement
@@ -191,8 +191,8 @@ class ReviewFormElement extends DataObject {
 	 * (Includes default '' => "Choose One" string.)
 	 * @return array reviewFormElementType => localeString
 	 */
-	function &getReviewFormElementTypeOptions() {
-		static $reviewFormElementTypeOptions = array(
+	function getReviewFormElementTypeOptions() {
+		return [
 			'' => 'manager.reviewFormElements.chooseType',
 			REVIEW_FORM_ELEMENT_TYPE_SMALL_TEXT_FIELD => 'manager.reviewFormElements.smalltextfield',
 			REVIEW_FORM_ELEMENT_TYPE_TEXT_FIELD => 'manager.reviewFormElements.textfield',
@@ -200,17 +200,19 @@ class ReviewFormElement extends DataObject {
 			REVIEW_FORM_ELEMENT_TYPE_CHECKBOXES => 'manager.reviewFormElements.checkboxes',
 			REVIEW_FORM_ELEMENT_TYPE_RADIO_BUTTONS => 'manager.reviewFormElements.radiobuttons',
 			REVIEW_FORM_ELEMENT_TYPE_DROP_DOWN_BOX => 'manager.reviewFormElements.dropdownbox'
-		);
-		return $reviewFormElementTypeOptions;
+		];
 	}
 
 	/**
 	 * Get an array of all multiple responses element types.
 	 * @return array reviewFormElementTypes
 	 */
-	function &getMultipleResponsesElementTypes() {
-		static $multipleResponsesElementTypes = array(REVIEW_FORM_ELEMENT_TYPE_CHECKBOXES, REVIEW_FORM_ELEMENT_TYPE_RADIO_BUTTONS, REVIEW_FORM_ELEMENT_TYPE_DROP_DOWN_BOX);
-		return $multipleResponsesElementTypes;
+	function getMultipleResponsesElementTypes() {
+		return [
+			REVIEW_FORM_ELEMENT_TYPE_CHECKBOXES,
+			REVIEW_FORM_ELEMENT_TYPE_RADIO_BUTTONS,
+			REVIEW_FORM_ELEMENT_TYPE_DROP_DOWN_BOX,
+		];
 	}
 }
 

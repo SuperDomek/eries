@@ -3,8 +3,8 @@
 /**
  * @file pages/workflow/PKPWorkflowHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class WorkflowHandler
@@ -22,6 +22,9 @@ import('lib.pkp.classes.linkAction.LinkAction');
 import('lib.pkp.classes.linkAction.request.AjaxModal');
 
 abstract class PKPWorkflowHandler extends Handler {
+
+	/** @copydoc PKPHandler::_isBackendPage */
+	var $_isBackendPage = true;
 
 	//
 	// Implement template methods from PKPHandler
@@ -122,8 +125,7 @@ abstract class PKPWorkflowHandler extends Handler {
 		$result = $userGroupDao->getByContextId($submission->getData('contextId'));
 		$authorUserGroups = [];
 		$workflowUserGroups = [];
-		while (!$result->eof()) {
-			$userGroup = $result->next();
+		while ($userGroup = $result->next()) {
 			if ($userGroup->getRoleId() == ROLE_ID_AUTHOR) {
 				$authorUserGroups[] = $userGroup;
 			}
@@ -160,19 +162,18 @@ abstract class PKPWorkflowHandler extends Handler {
 				$submission->getId(),
 				$request->getUser()->getId(),
 				WORKFLOW_STAGE_ID_PRODUCTION
-			);
+			)->toArray();
 
 			// If they have no stage assignments, check the role they have been granted
 			// for the production workflow stage. An unassigned admin or manager may
 			// have been granted access and should be allowed to publish.
-			if ($result->wasEmpty() && is_array($accessibleWorkflowStages[WORKFLOW_STAGE_ID_PRODUCTION])) {
+			if (empty($result) && is_array($accessibleWorkflowStages[WORKFLOW_STAGE_ID_PRODUCTION])) {
 				$canPublish = (bool) array_intersect([ROLE_ID_SITE_ADMIN, ROLE_ID_MANAGER], $accessibleWorkflowStages[WORKFLOW_STAGE_ID_PRODUCTION]);
 
 			// Otherwise, check stage assignments
 			// "Recommend only" stage assignments can not publish
 			} else {
-				while (!$result->eof()) {
-					$stageAssignment = $result->next();
+				foreach ($result as $stageAssignment) {
 					foreach ($workflowUserGroups as $workflowUserGroup) {
 						if ($stageAssignment->getUserGroupId() == $workflowUserGroup->getId() &&
 								!$stageAssignment->getRecommendOnly()) {
@@ -244,10 +245,7 @@ abstract class PKPWorkflowHandler extends Handler {
 			]
 		);
 
-		$citationDao = DAORegistry::getDAO('CitationDAO'); /* @var $citationDao CitationDAO */
-		$parsedCitations = $citationDao->getByPublicationId($latestPublication->getId());
-
-		$citationsForm = new PKP\components\forms\publication\PKPCitationsForm($latestPublicationApiUrl, $latestPublication, $parsedCitations);
+		$citationsForm = new PKP\components\forms\publication\PKPCitationsForm($latestPublicationApiUrl, $latestPublication);
 		$publicationLicenseForm = new PKP\components\forms\publication\PKPPublicationLicenseForm($latestPublicationApiUrl, $locales, $latestPublication, $submissionContext, $authorUserGroups);
 		$titleAbstractForm = new PKP\components\forms\publication\PKPTitleAbstractForm($latestPublicationApiUrl, $locales, $latestPublication);
 
@@ -318,7 +316,8 @@ abstract class PKPWorkflowHandler extends Handler {
 			);
 		}
 
-		$workflowData = [
+		$state = [
+			'activityLogLabel' => __('submission.list.infoCenter'),
 			'canAccessPublication' => $canAccessPublication,
 			'canEditPublication' => $canEditPublication,
 			'components' => [
@@ -327,7 +326,6 @@ abstract class PKPWorkflowHandler extends Handler {
 				FORM_TITLE_ABSTRACT => $titleAbstractForm->getConfig(),
 			],
 			'contributorsGridUrl' => $contributorsGridUrl,
-			'csrfToken' => $request->getSession()->getCSRFToken(),
 			'currentPublication' => $currentPublicationProps,
 			'editorialHistoryUrl' => $editorialHistoryUrl,
 			'publicationFormIds' => [
@@ -337,31 +335,25 @@ abstract class PKPWorkflowHandler extends Handler {
 				FORM_TITLE_ABSTRACT,
 			],
 			'publicationList' => $publicationList,
+			'publicationTabsLabel' => __('publication.version.details'),
+			'publishLabel' => __('publication.publish'),
 			'publishUrl' => $publishUrl,
 			'representationsGridUrl' => $this->_getRepresentationsGridUrl($request, $submission),
+			'schedulePublicationLabel' => __('editor.submission.schedulePublication'),
+			'statusLabel' => __('semicolon', ['label' => __('common.status')]),
 			'submission' => $submissionProps,
 			'submissionApiUrl' => $submissionApiUrl,
+			'submissionLibraryLabel' => __('grid.libraryFiles.submission.title'),
 			'submissionLibraryUrl' => $submissionLibraryUrl,
 			'supportsReferences' => !!$submissionContext->getData('citations'),
+			'unpublishConfirmLabel' => __('publication.unpublish.confirm'),
+			'unpublishLabel' => __('publication.unpublish'),
+			'unscheduleConfirmLabel' => __('publication.unschedule.confirm'),
+			'unscheduleLabel' => __('publication.unschedule'),
+			'versionLabel' => __('semicolon', ['label' => __('admin.version')]),
+			'versionConfirmTitle' => __('publication.createVersion'),
+			'versionConfirmMessage' => __('publication.version.confirm'),
 			'workingPublication' => $workingPublicationProps,
-			'i18n' => [
-				'activityLog' => __('submission.list.infoCenter'),
-				'cancel' => __('common.cancel'),
-				'ok' => __('common.ok'),
-				'no' => __('common.no'),
-				'publicationTabsLabel' => __('publication.version.details'),
-				'publish' => __('publication.publish'),
-				'schedulePublication' => __('editor.submission.schedulePublication'),
-				'save' => __('common.save'),
-				'status' => __('semicolon', ['label' => __('common.status')]),
-				'submissionLibrary' => __('grid.libraryFiles.submission.title'),
-				'unpublishConfirm' => __('publication.unpublish.confirm'),
-				'unscheduleConfirm' => __('publication.unschedule.confirm'),
-				'view' => __('common.view'),
-				'version' => __('semicolon', ['label' => __('admin.version')]),
-				'versionConfirm' => __('publication.version.confirm'),
-				'yes' => __('common.yes'),
-			],
 		];
 
 		// Add the metadata form if one or more metadata fields are enabled
@@ -373,12 +365,12 @@ abstract class PKPWorkflowHandler extends Handler {
 				break;
 			}
 		}
-		if ($metadataEnabled || in_array('publication', $submissionContext->getData('enablePublisherId'))) {
+		if ($metadataEnabled || in_array('publication', (array) $submissionContext->getData('enablePublisherId'))) {
 			$vocabSuggestionUrlBase =$request->getDispatcher()->url($request, ROUTE_API, $submissionContext->getData('urlPath'), 'vocabs', null, null, ['vocab' => '__vocab__']);
 			$metadataForm = new PKP\components\forms\publication\PKPMetadataForm($latestPublicationApiUrl, $locales, $latestPublication, $submissionContext, $vocabSuggestionUrlBase);
 			$templateMgr->setConstants(['FORM_METADATA']);
-			$workflowData['components'][FORM_METADATA] = $metadataForm->getConfig();
-			$workflowData['publicationFormIds'][] = FORM_METADATA;
+			$state['components'][FORM_METADATA] = $metadataForm->getConfig();
+			$state['publicationFormIds'][] = FORM_METADATA;
 		}
 
 		// Add the identifieres form if one or more identifier is enabled
@@ -393,9 +385,11 @@ abstract class PKPWorkflowHandler extends Handler {
 		if ($identifiersEnabled) {
 			$identifiersForm = new PKP\components\forms\publication\PKPPublicationIdentifiersForm($latestPublicationApiUrl, $locales, $latestPublication, $submissionContext);
 			$templateMgr->setConstants(['FORM_PUBLICATION_IDENTIFIERS']);
-			$workflowData['components'][FORM_PUBLICATION_IDENTIFIERS] = $identifiersForm->getConfig();
-			$workflowData['publicationFormIds'][] = FORM_PUBLICATION_IDENTIFIERS;
+			$state['components'][FORM_PUBLICATION_IDENTIFIERS] = $identifiersForm->getConfig();
+			$state['publicationFormIds'][] = FORM_PUBLICATION_IDENTIFIERS;
 		}
+
+		$templateMgr->setState($state);
 
 		$templateMgr->assign([
 			'canAccessEditorialHistory' => $canAccessEditorialHistory,
@@ -405,9 +399,14 @@ abstract class PKPWorkflowHandler extends Handler {
 			'canPublish' => $canPublish,
 			'identifiersEnabled' => $identifiersEnabled,
 			'metadataEnabled' => $metadataEnabled,
+			'pageComponent' => 'WorkflowPage',
+			'pageTitle' => join(__('common.titleSeparator'), [
+				$submission->getShortAuthorString(),
+				$submission->getLocalizedTitle()
+			]),
+			'pageWidth' => PAGE_WIDTH_WIDE,
 			'requestedStageId' => $requestedStageId,
 			'submission' => $submission,
-			'workflowData' => $workflowData,
 			'workflowStages' => $workflowStages,
 		]);
 
@@ -601,7 +600,7 @@ abstract class PKPWorkflowHandler extends Handler {
 				}
 			}
 			// Get the possible editor decisions for this stage
-			$decisions = (new EditorDecisionActionsManager())->getStageDecisions($request->getContext(), $stageId, $makeDecision);
+			$decisions = (new EditorDecisionActionsManager())->getStageDecisions($request->getContext(), $submission, $stageId, $makeDecision);
 			// Iterate through the editor decisions and create a link action
 			// for each decision which as an operation associated with it.
 			foreach($decisions as $decision => $action) {
@@ -760,14 +759,14 @@ abstract class PKPWorkflowHandler extends Handler {
 		$editorAssignments = $notificationDao->getByAssoc(ASSOC_TYPE_SUBMISSION, $submission->getId(), null, $editorAssignmentNotificationType, $contextId);
 
 		// if the User has assigned TASKs in this stage check, return true
-		if (!$editorAssignments->wasEmpty()) {
+		if ($editorAssignments->next()) {
 			return true;
 		}
 
 		// check for more specific notifications on those stages that have them.
 		if ($stageId == WORKFLOW_STAGE_ID_PRODUCTION) {
 			$submissionApprovalNotification = $notificationDao->getByAssoc(ASSOC_TYPE_SUBMISSION, $submission->getId(), null, NOTIFICATION_TYPE_APPROVE_SUBMISSION, $contextId);
-			if (!$submissionApprovalNotification->wasEmpty()) {
+			if ($submissionApprovalNotification->next()) {
 				return true;
 			}
 		}

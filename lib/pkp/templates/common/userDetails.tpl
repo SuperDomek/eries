@@ -1,8 +1,8 @@
 {**
  * templates/common/userDetails.tpl
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Common user details form.
@@ -114,7 +114,7 @@
 		{fbvFormSection}
 			{fbvElement type="text" label="user.url" name="userUrl" id="userUrl" value=$userUrl maxlength="255" inline=true size=$fbvStyles.size.SMALL}
 			{if !$disablePhoneSection}
-				{fbvElement type="text" label="user.phone" name="phone" id="phone" value=$phone maxlength="24" inline=true size=$fbvStyles.size.SMALL}
+				{fbvElement type="tel" label="user.phone" name="phone" id="phone" value=$phone maxlength="24" inline=true size=$fbvStyles.size.SMALL}
 			{/if}
 			{fbvElement type="text" label="user.orcid" name="orcid" id="orcid" value=$orcid maxlength="37" inline=true size=$fbvStyles.size.SMALL}
 		{/fbvFormSection}

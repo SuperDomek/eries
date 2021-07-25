@@ -8,8 +8,8 @@
 /**
  * @file classes/i18n/PKPLocale.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPLocale
@@ -70,8 +70,158 @@ define('LOCALE_COMPONENT_APP_DEFAULT',		0x00000106);
 define('LOCALE_COMPONENT_APP_API',		0x00000107);
 define('LOCALE_COMPONENT_APP_EMAIL',		0x00000108);
 
+use Illuminate\Database\Capsule\Manager as Capsule;
+
 class PKPLocale {
 	static $request;
+
+	/**
+	 * Get all supported UI locales for the current context.
+	 * @return array
+	 */
+	static function getSupportedLocales() {
+		static $supportedLocales;
+		if (!isset($supportedLocales)) {
+			if (defined('SESSION_DISABLE_INIT')) {
+				$supportedLocales = AppLocale::getAllLocales();
+			} elseif (($context = self::$request->getContext())) {
+				$supportedLocales = $context->getSupportedLocaleNames();
+			} else {
+				$site = self::$request->getSite();
+				$supportedLocales = $site->getSupportedLocaleNames();
+			}
+		}
+		return $supportedLocales;
+	}
+
+	/**
+	 * Get all supported form locales for the current context.
+	 * @return array
+	 */
+	static function getSupportedFormLocales() {
+		static $supportedFormLocales;
+		if (!isset($supportedFormLocales)) {
+			if (defined('SESSION_DISABLE_INIT')) {
+				$supportedFormLocales = AppLocale::getAllLocales();
+			} elseif (($context = self::$request->getContext())) {
+				$supportedFormLocales = $context->getSupportedFormLocaleNames();
+			} else {
+				$site = self::$request->getSite();
+				$supportedFormLocales = $site->getSupportedLocaleNames();
+			}
+		}
+		return $supportedFormLocales;
+	}
+
+	/**
+	 * Return the key name of the user's currently selected locale (default
+	 * is "en_US" for U.S. English).
+	 * @return string
+	 */
+	static function getLocale() {
+		static $currentLocale;
+		if (!isset($currentLocale)) {
+			if (defined('SESSION_DISABLE_INIT')) {
+				// If the locale is specified in the URL, allow
+				// it to override. (Necessary when locale is
+				// being set, as cookie will not yet be re-set)
+				$locale = self::$request->getUserVar('setLocale');
+				if (empty($locale) || !in_array($locale, array_keys(AppLocale::getSupportedLocales()))) $locale = self::$request->getCookieVar('currentLocale');
+			} else {
+				$sessionManager = SessionManager::getManager();
+				$session = $sessionManager->getUserSession();
+				$locale = self::$request->getUserVar('uiLocale');
+
+				$context = self::$request->getContext();
+				$site = self::$request->getSite();
+
+				if (!isset($locale)) {
+					$locale = $session->getSessionVar('currentLocale');
+				}
+
+				if (!isset($locale)) {
+					$locale = self::$request->getCookieVar('currentLocale');
+				}
+
+				if (isset($locale)) {
+					// Check if user-specified locale is supported
+					if ($context != null) {
+						$locales = $context->getSupportedLocaleNames();
+					} else {
+						$locales = $site->getSupportedLocaleNames();
+					}
+
+					if (!in_array($locale, array_keys($locales))) {
+						unset($locale);
+					}
+				}
+
+				if (!isset($locale)) {
+					// Use context/site default
+					if ($context != null) {
+						$locale = $context->getPrimaryLocale();
+					}
+
+					if (!isset($locale)) {
+						$locale = $site->getPrimaryLocale();
+					}
+				}
+			}
+
+			if (!AppLocale::isLocaleValid($locale)) {
+				$locale = LOCALE_DEFAULT;
+			}
+
+			$currentLocale = $locale;
+		}
+		return $currentLocale;
+	}
+
+	/**
+	 * Get the stack of "important" locales, most important first.
+	 * @return array
+	 */
+	static function getLocalePrecedence() {
+		static $localePrecedence;
+		if (!isset($localePrecedence)) {
+			$localePrecedence = array(AppLocale::getLocale());
+
+			$context = self::$request->getContext();
+			if ($context && !in_array($context->getPrimaryLocale(), $localePrecedence)) $localePrecedence[] = $context->getPrimaryLocale();
+
+			$site = self::$request->getSite();
+			if ($site && !in_array($site->getPrimaryLocale(), $localePrecedence)) $localePrecedence[] = $site->getPrimaryLocale();
+		}
+		return $localePrecedence;
+	}
+
+	/**
+	 * Retrieve the primary locale of the current context.
+	 * @return string
+	 */
+	static function getPrimaryLocale() {
+		static $locale;
+		if ($locale) return $locale;
+
+		if (defined('SESSION_DISABLE_INIT')) return $locale = LOCALE_DEFAULT;
+
+		$context = self::$request->getContext();
+
+		if (isset($context)) {
+			$locale = $context->getPrimaryLocale();
+		}
+
+		if (!isset($locale)) {
+			$site = self::$request->getSite();
+			$locale = $site->getPrimaryLocale();
+		}
+
+		if (!isset($locale) || !AppLocale::isLocaleValid($locale)) {
+			$locale = LOCALE_DEFAULT;
+		}
+
+		return $locale;
+	}
 
 	/**
 	 * Get a list of locale files currently registered, either in all
@@ -161,19 +311,17 @@ class PKPLocale {
 			$mins -= $hrs * 60;
 			$offset = sprintf('%+d:%02d', $hrs*$sgn, $mins);
 
-			$conn = DBConnection::getInstance();
-			$dbconn =& $conn->getDBConn();
-			switch($conn->getDriver()) {
+			switch(Config::getVar('database', 'driver')) {
 				case 'mysql':
 				case 'mysqli':
-					$dbconn->execute('SET time_zone = \''.$offset.'\'');
+					Capsule::statement('SET time_zone = \''.$offset.'\'');
 					break;
 				case 'postgres':
 				case 'postgres64':
 				case 'postgres7':
 				case 'postgres8':
 				case 'postgres9':
-					$dbconn->execute('SET TIME ZONE INTERVAL \''.$offset.'\' HOUR TO MINUTE');
+					Capsule::statement('SET TIME ZONE INTERVAL \''.$offset.'\' HOUR TO MINUTE');
 					break;
 				default: assert(false);
 			}
@@ -438,7 +586,6 @@ class PKPLocale {
 	 * @param $locale string
 	 */
 	static function reloadLocale($locale) {
-		AppLocale::uninstallLocale($locale);
 		AppLocale::installLocale($locale);
 	}
 
@@ -754,7 +901,6 @@ class PKPLocale {
 	}
 }
 
-
 /**
  * Wrapper around PKPLocale::translate().
  *
@@ -775,3 +921,4 @@ class PKPLocale {
 function __($key, $params = array(), $locale = null, $missingKeyHandler = array('PKPLocale', 'addOctothorpes')) {
 	return AppLocale::translate($key, $params, $locale, $missingKeyHandler);
 }
+

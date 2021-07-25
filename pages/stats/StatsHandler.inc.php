@@ -3,8 +3,8 @@
 /**
  * @file pages/stats/StatsHandler.inc.php
  *
- * Copyright (c) 2013-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2013-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class StatsHandler
@@ -40,12 +40,59 @@ class StatsHandler extends PKPStatsHandler {
 			return;
 		}
 
-		$statsComponent = $templateMgr->getTemplateVars('statsComponent');
-		$statsComponent->filters = [
-			[
-				'heading' => __('section.sections'),
-				'filters' => APP\components\listPanels\SubmissionsListPanel::getSectionFilters(),
-			],
+		$context = Application::get()->getRequest()->getContext();
+
+		$filters = $templateMgr->getState('filters');
+		if (is_null($filters)) {
+			$filters = [];
+		}
+		$sections = \Services::get('section')->getSectionList($context->getId());
+		$filters[] = [
+			'heading' => __('section.sections'),
+			'filters' => array_map(function($section) {
+				return [
+					'param' => 'sectionIds',
+					'value' => (int) $section['id'],
+					'title' => $section['title'],
+				];
+			}, $sections),
 		];
+		$templateMgr->setState([
+			'filters' => $filters
+		]);
+	}
+
+	/**
+	 * @copydoc PKPStatsHandler::getReportRowValue()
+	 */
+	protected function getReportRowValue($key, $record) {
+		$returnValue = parent::getReportRowValue($key, $record);
+
+		if (!$returnValue && $key == STATISTICS_DIMENSION_ISSUE_ID) {
+			$assocId = $record[STATISTICS_DIMENSION_ISSUE_ID];
+			$assocType = ASSOC_TYPE_ISSUE;
+			$returnValue = $this->getObjectTitle($assocId, $assocType);
+		}
+
+		return $returnValue;
+	}
+
+	/**
+	 * @copydoc PKPStatsHandler::getObjectTitle()
+	 */
+	protected function getObjectTitle($assocId, $assocType) {
+		$objectTitle = parent::getObjectTitle($assocId, $assocType);
+
+		switch ($assocType) {
+			case ASSOC_TYPE_ISSUE:
+				$issueDao = DAORegistry::getDAO('IssueDAO'); /* @var $issueDao IssueDAO */
+				$issue = $issueDao->getById($assocId);
+				if ($issue) {
+					$objectTitle = $issue->getIssueIdentification();
+				}
+				break;
+		}
+
+		return $objectTitle;
 	}
 }

@@ -3,8 +3,8 @@
 /**
  * @file classes/submission/reviewAssignment/ReviewAssignment.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ReviewAssignment
@@ -27,8 +27,8 @@ define('SUBMISSION_REVIEWER_RATING_AVERAGE', 3);
 define('SUBMISSION_REVIEWER_RATING_POOR', 2);
 define('SUBMISSION_REVIEWER_RATING_VERY_POOR', 1);
 
-define('SUBMISSION_REVIEW_METHOD_BLIND', 1);
-define('SUBMISSION_REVIEW_METHOD_DOUBLEBLIND', 2);
+define('SUBMISSION_REVIEW_METHOD_ANONYMOUS', 1);
+define('SUBMISSION_REVIEW_METHOD_DOUBLEANONYMOUS', 2);
 define('SUBMISSION_REVIEW_METHOD_OPEN', 3);
 
 // A review is "unconsidered" when it is confirmed by an editor and then that
@@ -135,7 +135,7 @@ class ReviewAssignment extends DataObject {
 
 	/**
 	 * Get the workflow stage id.
-	 * @return int
+	 * @return int WORKFLOW_STAGE_ID_...
 	 */
 	function getStageId() {
 		return $this->getData('stageId');
@@ -143,14 +143,14 @@ class ReviewAssignment extends DataObject {
 
 	/**
 	 * Set the workflow stage id.
-	 * @param $stageId int
+	 * @param $stageId int WORKFLOW_STAGE_ID_...
 	 */
 	function setStageId($stageId) {
 		$this->setData('stageId', $stageId);
 	}
 
 	/**
-	 * Get the method of the review (open, blind, or double-blind).
+	 * Get the method of the review (open, anonymous, or double-anonymous).
 	 * @return int
 	 */
 	function getReviewMethod() {
@@ -586,6 +586,8 @@ class ReviewAssignment extends DataObject {
 		switch ($status) {
 			case REVIEW_ASSIGNMENT_STATUS_AWAITING_RESPONSE:
 				return 'submission.review.status.awaitingResponse';
+			case REVIEW_ASSIGNMENT_STATUS_CANCELLED:
+				return 'common.cancelled';
 			case REVIEW_ASSIGNMENT_STATUS_DECLINED:
 				return 'submission.review.status.declined';
 			case REVIEW_ASSIGNMENT_STATUS_RESPONSE_OVERDUE:
@@ -623,10 +625,10 @@ class ReviewAssignment extends DataObject {
 		switch ($method) {
 			case SUBMISSION_REVIEW_METHOD_OPEN:
 				return 'editor.submissionReview.open';
-			case SUBMISSION_REVIEW_METHOD_BLIND:
-				return 'editor.submissionReview.blind';
-			case SUBMISSION_REVIEW_METHOD_DOUBLEBLIND:
-				return 'editor.submissionReview.doubleBlind';
+			case SUBMISSION_REVIEW_METHOD_ANONYMOUS:
+				return 'editor.submissionReview.anonymous';
+			case SUBMISSION_REVIEW_METHOD_DOUBLEANONYMOUS:
+				return 'editor.submissionReview.doubleAnonymous';
 		}
 
 		assert(false, 'No review method key could be found for ' . get_class($this) . ' on ' . __LINE__);
@@ -659,10 +661,10 @@ class ReviewAssignment extends DataObject {
 				'' => 'common.chooseOne',
 				SUBMISSION_REVIEWER_RECOMMENDATION_ACCEPT => 'reviewer.article.decision.accept',
 				SUBMISSION_REVIEWER_RECOMMENDATION_PENDING_REVISIONS => 'reviewer.article.decision.pendingRevisions',
-				//SUBMISSION_REVIEWER_RECOMMENDATION_RESUBMIT_HERE => 'reviewer.article.decision.resubmitHere',
-				//SUBMISSION_REVIEWER_RECOMMENDATION_RESUBMIT_ELSEWHERE => 'reviewer.article.decision.resubmitElsewhere',
+				SUBMISSION_REVIEWER_RECOMMENDATION_RESUBMIT_HERE => 'reviewer.article.decision.resubmitHere',
+				SUBMISSION_REVIEWER_RECOMMENDATION_RESUBMIT_ELSEWHERE => 'reviewer.article.decision.resubmitElsewhere',
 				SUBMISSION_REVIEWER_RECOMMENDATION_DECLINE => 'reviewer.article.decision.decline',
-				//SUBMISSION_REVIEWER_RECOMMENDATION_SEE_COMMENTS => 'reviewer.article.decision.seeComments'
+				SUBMISSION_REVIEWER_RECOMMENDATION_SEE_COMMENTS => 'reviewer.article.decision.seeComments'
 		);
 		return $reviewerRecommendationOptions;
 	}

@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/admin/languages/AdminLanguageGridHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class AdminLanguageGridHandler
@@ -30,8 +30,7 @@ class AdminLanguageGridHandler extends LanguageGridHandler {
 			array(
 				'fetchGrid', 'fetchRow',
 				'installLocale', 'saveInstallLocale', 'uninstallLocale',
-				'downloadLocale', 'disableLocale', 'enableLocale',
-				'setPrimaryLocale'
+				'disableLocale', 'enableLocale', 'setPrimaryLocale'
 			)
 		);
 	}
@@ -86,8 +85,6 @@ class AdminLanguageGridHandler extends LanguageGridHandler {
 				'add')
 		);
 
-		$cellProvider = $this->getCellProvider();
-
 		// Columns.
 		// Enable locale.
 		$this->addColumn(
@@ -96,7 +93,7 @@ class AdminLanguageGridHandler extends LanguageGridHandler {
 				'common.enable',
 				null,
 				'controllers/grid/common/cell/selectStatusCell.tpl',
-				$cellProvider,
+				$this->getCellProvider(),
 				array('width' => 10)
 			)
 		);
@@ -206,49 +203,6 @@ class AdminLanguageGridHandler extends LanguageGridHandler {
 			);
 		}
 		return DAO::getDataChangedEvent();
-	}
-
-	/**
-	 * Download a locale from the PKP web site.
-	 * @param $args array
-	 * @param $request object
-	 * @return JSONMessage JSON object
-	 */
-	public function downloadLocale($args, $request) {
-		$this->setupTemplate($request, true);
-		$locale = $request->getUserVar('locale');
-
-		import('lib.pkp.classes.i18n.LanguageAction');
-		$languageAction = new LanguageAction();
-
-		if (!$languageAction->isDownloadAvailable() || !preg_match('/^[a-z]{2}_[A-Z]{2}$/', $locale)) {
-			$request->redirect(null, 'admin', 'settings');
-		}
-
-		$notificationManager = new NotificationManager();
-		$user = $request->getUser();
-		$json = new JSONMessage(true);
-
-		$errors = array();
-		if (!$languageAction->downloadLocale($locale, $errors)) {
-			$notificationManager->createTrivialNotification(
-				$user->getId(),
-				NOTIFICATION_TYPE_ERROR,
-				array('contents' => $errors));
-			$json->setEvent('refreshForm', $this->_fetchReviewerForm($args, $request));
-		} else {
-			$notificationManager->createTrivialNotification(
-				$user->getId(),
-				NOTIFICATION_TYPE_SUCCESS,
-				array('contentLocaleKey' => __('admin.languages.localeInstalled'),
-					 'params' => array('locale' => $locale)));
-		}
-
-		// Refresh form.
-		$installLanguageForm = new InstallLanguageForm();
-		$installLanguageForm->initData();
-		$json->setEvent('refreshForm', $installLanguageForm->fetch($request));
-		return $json;
 	}
 
 	/**
@@ -465,7 +419,7 @@ class AdminLanguageGridHandler extends LanguageGridHandler {
 		$contextDao = Application::getContextDAO();
 		$contexts = $contextDao->getAll();
 		$userRoles = $this->getAuthorizedContextObject(ASSOC_TYPE_USER_ROLES);
-		$context = $request->getContext();
-		return ($contexts->getCount() == 1 && $context && in_array(ROLE_ID_MANAGER, $userRoles));
+		list($firstContext, $secondContext) = [$contexts->next(), $contexts->next()];
+		return ($firstContext && !$secondContext && $request->getContext() && in_array(ROLE_ID_MANAGER, $userRoles));
 	}
 }

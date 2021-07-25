@@ -11,6 +11,9 @@ msgstr ""
 "PO-Revision-Date: 2019-11-19T10:49:55+00:00\n"
 "Language: \n"
 
+msgid "editor.submissionArchive.confirmDelete"
+msgstr "Weet u zeker dat u deze inzending definitief wilt verwijderen?"
+
 msgid "editor.submissionLibrary"
 msgstr "Bibliotheek van de inzending"
 
@@ -89,10 +92,12 @@ msgstr "Verstuur geen verwittigings-e-mail"
 msgid "editor.submissionReview.open"
 msgstr "Open"
 
-msgid "editor.submissionReview.blind"
+#, fuzzy
+msgid "editor.submissionReview.anonymous"
 msgstr "Blind"
 
-msgid "editor.submissionReview.doubleBlind"
+#, fuzzy
+msgid "editor.submissionReview.doubleAnonymous"
 msgstr "Dubbel blind"
 
 msgid "editor.submissionReview.restrictFiles"
@@ -359,12 +364,6 @@ msgstr "Het patroon {$pattern} is niet toegelaten voor de publieke identificatie
 msgid "editor.submission.schedulePublication"
 msgstr "Inplannen voor publicatie in"
 
-msgid "reviewer.list.count"
-msgstr "{$count} reviewers"
-
-msgid "reviewer.list.itemsOfTotal"
-msgstr "{$count} van {$total} reviewers"
-
 msgid "reviewer.list.filterRating"
 msgstr "Minimumbeoordeling"
 
@@ -401,6 +400,7 @@ msgstr "Nooit toegewezen"
 msgid "reviewer.list.currentlyAssigned"
 msgstr "Deze reviewer werd al toegewezen als reviewer voor deze inzending."
 
+#, fuzzy
 msgid "reviewer.list.warnOnAssign"
 msgstr "Deze reviewer is geblokkeerd omdat hij/zij de identiteit van de auteur kan zien. Blinde peer review kan niet worden gegarandaard. Wilt u deze reviewer toch de-blokkeren?"
 

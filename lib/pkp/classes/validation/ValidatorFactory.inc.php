@@ -2,8 +2,8 @@
 /**
  * @file classes/validation/ValidatorFactory.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ValidatorFactory
@@ -17,6 +17,9 @@ use Illuminate\Translation\FileLoader;
 use Illuminate\Translation\Translator;
 use Illuminate\Validation\DatabasePresenceVerifier;
 use Illuminate\Validation\Factory;
+
+// Import VALIDATE_ACTION_... constants
+import('lib.pkp.classes.services.interfaces.EntityWriteInterface');
 
 class ValidatorFactory {
 
@@ -94,7 +97,7 @@ class ValidatorFactory {
 		$validation->extend('orcid', function($attribute, $value, $parameters, $validator) use ($validation) {
 			$orcidRegexValidator = $validation->make(
 				['value' => $value],
-				['value' => 'regex:/^http[s]?:\/\/orcid.org\/(\d{4})-(\d{4})-(\d{4})-(\d{3}[0-9X])$/']
+				['value' => 'regex:/^https:\/\/orcid.org\/(\d{4})-(\d{4})-(\d{4})-(\d{3}[0-9X])$/']
 			);
 			if ($orcidRegexValidator->fails()) {
 				return false;
@@ -275,22 +278,22 @@ class ValidatorFactory {
 				if (in_array($requiredProp, $multilingualProps)) {
 					if ($action === VALIDATE_ACTION_ADD) {
 						if (self::isEmpty($props[$requiredProp]) || self::isEmpty($props[$requiredProp][$primaryLocale])) {
-							$validator->errors()->add($requiredProp . '.' . $primaryLocale, __('form.missingRequired'));
+							$validator->errors()->add($requiredProp . '.' . $primaryLocale, __('validator.required'));
 						}
 					} else {
 						if (isset($props[$requiredProp]) && array_key_exists($primaryLocale, $props[$requiredProp]) && self::isEmpty($props[$requiredProp][$primaryLocale])) {
-							if (count($allowedLocales) === 1) {
-								$validator->errors()->add($requiredProp, __('form.missingRequired'));
-							} else {
-								$validator->errors()->add($requiredProp . '.' . $primaryLocale, __('form.requirePrimaryLocale', array('language' => $primaryLocaleName)));
+							$message = __('validator.required');
+							if (count($allowedLocales) > 1) {
+								$message = __('form.requirePrimaryLocale', array('language' => $primaryLocaleName));
 							}
+							$validator->errors()->add($requiredProp . '.' . $primaryLocale, $message);
 						}
 					}
 
 				} else {
 					if (($action === VALIDATE_ACTION_ADD && self::isEmpty($props[$requiredProp])) ||
 							($action === VALIDATE_ACTION_EDIT && array_key_exists($requiredProp, $props) && self::isEmpty($props[$requiredProp]))) {
-						$validator->errors()->add($requiredProp, __('form.missingRequired'));
+						$validator->errors()->add($requiredProp, __('validator.required'));
 					}
 				}
 			}
@@ -303,7 +306,9 @@ class ValidatorFactory {
 	 * @param $value string
 	 */
 	static private function isEmpty($value) {
-		return $value == '';
+		return is_string($value)
+			? trim($value) == ''
+			: $value == '';
 	}
 
 	/**

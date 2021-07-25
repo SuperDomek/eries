@@ -81,7 +81,7 @@ msgid "reviewer.submission.reviewDescription"
 msgstr "Enter (or paste) your review of this submission into the form below."
 
 msgid "reviewer.submission.uploadDescription"
-msgstr "In case you would like to upload files you would like the editor and/or author to consult, including revised versions of the original review file(s) do it here. Please keep in mind that your comments in the revised word file should be anonymous."
+msgstr "Upload files you would like the editor and/or author to consult, including revised versions of the original review file(s)."
 
 msgid "reviewer.complete"
 msgstr "Review Submitted"
@@ -103,6 +103,12 @@ msgstr "For author and editor"
 
 msgid "submission.comments.cannotShareWithAuthor"
 msgstr "For editor only"
+
+msgid "submission.comments.sendCopyToReviewers"
+msgstr "Send a copy of this email notification by BCC to the following reviewers."
+
+msgid "submission.comments.sendToReviewers"
+msgstr "Send to Reviewers"
 
 msgid "user.authorization.submissionReviewer"
 msgstr "The current user is not assigned as a reviewer for the requested document."

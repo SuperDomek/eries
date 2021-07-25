@@ -3,8 +3,8 @@
 /**
  * @file pages/reviewer/PKPReviewerHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPReviewerHandler
@@ -18,6 +18,9 @@ import('lib.pkp.classes.core.JSONMessage');
 import('lib.pkp.classes.submission.reviewer.ReviewerAction');
 
 class PKPReviewerHandler extends Handler {
+
+	/** @copydoc PKPHandler::_isBackendPage */
+	var $_isBackendPage = true;
 
 	/**
 	 * Display the submission review page.
@@ -33,14 +36,17 @@ class PKPReviewerHandler extends Handler {
 		$this->setupTemplate($request);
 
 		$templateMgr = TemplateManager::getManager($request);
-		$templateMgr->assign('submission', $reviewerSubmission);
 		$reviewStep = max($reviewerSubmission->getStep(), 1);
 		$userStep = (int) $request->getUserVar('step');
 		$step = (int) (!empty($userStep) ? $userStep: $reviewStep);
 		if ($step > $reviewStep) $step = $reviewStep; // Reviewer can't go past incomplete steps
-		if ($step < 1 || $step > 4) fatalError('Invalid step!');
-		$templateMgr->assign('reviewStep', $reviewStep);
-		$templateMgr->assign('selected', $step - 1);
+		if ($step < 1 || $step > 4) throw new Exception('Invalid step!');
+		$templateMgr->assign([
+			'pageTitle' => __('semicolon', ['label' => __('submission.review')]) . $reviewerSubmission->getLocalizedTitle(),
+			'reviewStep' => $reviewStep,
+			'selected' => $step - 1,
+			'submission' => $reviewerSubmission,
+		]);
 
 		$templateMgr->display('reviewer/review/reviewStepHeader.tpl');
 	}
@@ -74,8 +80,11 @@ class PKPReviewerHandler extends Handler {
 			return new JSONMessage(true, $reviewerForm->fetch($request));
 		} else {
 			$templateMgr = TemplateManager::getManager($request);
-			$templateMgr->assign('submission', $reviewerSubmission);
-			$templateMgr->assign('step', 4);
+			$templateMgr->assign([
+				'submission' => $reviewerSubmission,
+				'step' => 4,
+				'reviewAssignment' => $reviewAssignment,
+			]);
 			return $templateMgr->fetchJson('reviewer/review/reviewCompleted.tpl');
 		}
 	}
@@ -89,7 +98,6 @@ class PKPReviewerHandler extends Handler {
 	function saveStep($args, $request) {
 		$step = (int)$request->getUserVar('step');
 		if ($step<1 || $step>3) fatalError('Invalid step!');
-		$saveFormButton = (bool)$request->getUserVar('saveFormButton');
 
 		$reviewAssignment = $this->getAuthorizedContextObject(ASSOC_TYPE_REVIEW_ASSIGNMENT); /* @var $reviewAssignment ReviewAssignment */
 		if ($reviewAssignment->getDateCompleted()) fatalError('Review already completed!');
@@ -102,7 +110,7 @@ class PKPReviewerHandler extends Handler {
 		$reviewerForm->readInputData();
 
 		// Save the available form data, but do not submit
-		if ($saveFormButton) {
+		if ($request->getUserVar('isSave')) {
 			$reviewerForm->saveForLater();
 			$notificationMgr = new NotificationManager();
 			$user = $request->getUser();

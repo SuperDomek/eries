@@ -3,8 +3,8 @@
 /**
  * @file classes/services/SubmissionService.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SubmissionService
@@ -16,7 +16,13 @@
 
 namespace APP\Services;
 
-class SubmissionService extends \PKP\Services\PKPSubmissionService {
+use \Application;
+use \DAORegistry;
+use \PKP\Services\PKPSubmissionService;
+use \Services;
+use \Submission;
+
+class SubmissionService extends PKPSubmissionService {
 
 	/**
 	 * Initialize hooks for extending PKPSubmissionService
@@ -29,12 +35,39 @@ class SubmissionService extends \PKP\Services\PKPSubmissionService {
 	}
 
 	/**
+	 * @copydoc PKPSubmissionService::updateStatus()
+	 */
+	public function updateStatus($submission) {
+		$oldStatus = $submission->getData('status');
+		$submission = parent::updateStatus($submission);
+		$newStatus = $submission->getData('status');
+
+		// Add or remove tombstones when submission is published or unpublished
+		if ($newStatus === STATUS_PUBLISHED && $newStatus !== $oldStatus) {
+			$tombstoneDao = DAORegistry::getDAO('DataObjectTombstoneDAO'); /* @var $tombstoneDao DataObjectTombstoneDAO */
+			$tombstoneDao->deleteByDataObjectId($submission->getId());
+		} elseif ($oldStatus === STATUS_PUBLISHED && $newStatus !== $oldStatus) {
+			$requestContext = Application::get()->getRequest()->getContext();
+			if ($requestContext && $requestContext->getId() === $submission->getData('contextId')) {
+				$context = $requestContext;
+			} else {
+				$context = Services::get('context')->get($submission->getData('contextId'));
+			}
+			import('classes.article.ArticleTombstoneManager');
+			$articleTombstoneManager = new \ArticleTombstoneManager();
+			$articleTombstoneManager->insertArticleTombstone($submission, $context);
+		}
+
+		return $submission;
+	}
+
+	/**
 	 * Collect and sanitize request params for submissions API endpoint
 	 *
 	 * @param $hookName string
 	 * @param $args array [
-	 *		@option array $returnParams
-	 *		@option SlimRequest $slimRequest
+	 *      @option array $returnParams
+	 *      @option SlimRequest $slimRequest
 	 * ]
 	 *
 	 * @return array
@@ -63,9 +96,9 @@ class SubmissionService extends \PKP\Services\PKPSubmissionService {
 	 *
 	 * @param $hookName string
 	 * @param $args array [
-	 *		@option \APP\Services\QueryBuilders\SubmissionQueryBuilder
-	 *		@option int Context ID
-	 *		@option array Request args
+	 *      @option \APP\Services\QueryBuilders\SubmissionQueryBuilder
+	 *      @option int Context ID
+	 *      @option array Request args
 	 * ]
 	 *
 	 * @return \APP\Services\QueryBuilders\SubmissionQueryBuilder
@@ -88,8 +121,8 @@ class SubmissionService extends \PKP\Services\PKPSubmissionService {
 	 *
 	 * @param $hookName string
 	 * @param $args array [
-	 *		@option object $queryObject
-	 *		@option \APP\Services\QueryBuilders\SubmissionQueryBuilder $queryBuilder
+	 *      @option object $queryObject
+	 *      @option \APP\Services\QueryBuilders\SubmissionQueryBuilder $queryBuilder
 	 * ]
 	 *
 	 * @return object
@@ -107,9 +140,9 @@ class SubmissionService extends \PKP\Services\PKPSubmissionService {
 	 * @param $hookName string Submission::getProperties::values
 	 * @param $args array [
 	 *    @option $values array Key/value store of property values
-	 * 		@option $submission Submission The associated submission
-	 * 		@option $props array Requested properties
-	 * 		@option $args array Request args
+	 *      @option $submission Submission The associated submission
+	 *      @option $props array Requested properties
+	 *      @option $args array Request args
 	 * ]
 	 *
 	 * @return array

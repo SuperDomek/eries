@@ -3,7 +3,7 @@
  *
  * Copyright (c) 2014-2020 Simon Fraser University
  * Copyright (c) 2000-2020 John Willinsky
- * Distributed under the GNU GPL v2. For full terms see the file docs/COPYING.
+ * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  */
 
@@ -11,8 +11,7 @@ describe('Static Pages plugin tests', function() {
 	it('Creates and exercises a static page', function() {
 		cy.login('admin', 'admin', 'publicknowledge');
 
-		cy.get('ul[id="navigationPrimary"] a:contains("Settings")').click();
-		cy.get('ul[id="navigationPrimary"] a:contains("Website")').click();
+		cy.get('.app__nav a').contains('Website').click();
 		cy.get('button[id="plugins-button"]').click();
 
 		// Find and enable the plugin
@@ -27,8 +26,7 @@ describe('Static Pages plugin tests', function() {
 		cy.visit('');
 		cy.get('a:contains("admin")').click();
 		cy.get('ul[id="navigationUser"] a:contains("Dashboard")').click();
-		cy.get('ul[id="navigationPrimary"] a:contains("Settings")').click();
-		cy.get('ul[id="navigationPrimary"] a:contains("Website")').click();
+		cy.get('.app__nav a').contains('Website').click();
 		cy.get('button[id="staticPages-button"]').click();
 
 		// Create a static page

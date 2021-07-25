@@ -3,8 +3,8 @@
 /**
  * @file classes/journal/JournalDAO.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class JournalDAO
@@ -78,9 +78,9 @@ class JournalDAO extends ContextDAO {
 			$dao = DAORegistry::getDAO($daoName);
 			$dao->deleteAllPubIds($journalId, $pubIdType);
 		}
-		import('lib.pkp.classes.submission.SubmissionFileDAODelegate');
-		$submissionFileDaoDelegate = new SubmissionFileDAODelegate();
-		$submissionFileDaoDelegate->deleteAllPubIds($journalId, $pubIdType);
+		import('classes.submission.SubmissionFileDAO');
+		$submissionFileDao = new SubmissionFileDAO();
+		$submissionFileDao->deleteAllPubIds($journalId, $pubIdType);
 
 	}
 

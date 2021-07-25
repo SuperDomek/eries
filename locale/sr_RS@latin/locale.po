@@ -982,9 +982,11 @@ msgstr "Tipovi pretplata"
 msgid "about.aboutThisPublishingSystem"
 msgstr "O ovom izdavačkom sistemu"
 
+#, fuzzy
 msgid "about.aboutOJSJournal"
 msgstr "Ovaj časopis koristi Open Journal Systems {$ojsVersion}, koji je open source softver namenjen uređivanju i izdavanju časopisa, razvijan,  podržan i besplatno distribuiran od <a href=\"http://pkp.sfu.ca/\">Public Knowledge Project</a>-a pod GNU General Public License."
 
+#, fuzzy
 msgid "about.aboutOJSSite"
 msgstr "Ovaj sajt koristi Open Journal Systems {$ojsVersion}, koji je open source sistem za  upravljanja časopisima i program za izdavanje, podržan i besplatno distribuiran od <a href=\"http://pkp.sfu.ca/\">Public Knowledge Project</a>-а под GNU General Public License."
 
@@ -1000,6 +1002,7 @@ msgstr "OJS instalacija"
 msgid "installer.ojsUpgrade"
 msgstr "OJS nadogradnja"
 
+#, fuzzy
 msgid "installer.installationInstructions"
 msgstr ""
 "<h4>OJS verzija {$version}</h4>\n"
@@ -1008,7 +1011,7 @@ msgstr ""
 "\n"
 "<h4>Nadogradnja</h4>\n"
 "\n"
-"<p>Ako nadograđujete postojeću instalaciju OJS 2.x, <a href=\"{$upgradeUrl}\">kliknite ovde</a> za nastavak.</p>\n"
+"<p>Ako nadograđujete postojeću instalaciju OJS, <a href=\"{$upgradeUrl}\">kliknite ovde</a> za nastavak.</p>\n"
 "\n"
 "<h4>Preporučeni uslovi za sistem</h4>\n"
 "\n"
@@ -1375,9 +1378,6 @@ msgstr "{$userName} je odbio/la {$round} recenziju priloga {$submissionId} u ime
 
 msgid "log.editor.decision"
 msgstr "{$editorName} je evidentirao uredničku odluku ({$decision}) za članak {$submissionId}."
-
-msgid "debug.notes.currencyListLoad"
-msgstr "Učitana je lista valuta \"{$filename}\" iz XML-a."
 
 msgid "reviewer.article.enterReviewForm"
 msgstr "Kliknite na ikonu i ispunite obrazac za recencziju."

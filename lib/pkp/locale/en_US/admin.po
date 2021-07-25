@@ -68,18 +68,6 @@ msgstr "Display New Configuration"
 msgid "admin.expireSessions"
 msgstr "Expire User Sessions"
 
-msgid "admin.languages.download"
-msgstr "Download Locale"
-
-msgid "admin.languages.downloadLocales"
-msgstr "Download Locales"
-
-msgid "admin.languages.download.cannotOpen"
-msgstr "Cannot open language descriptor from PKP web site."
-
-msgid "admin.languages.download.cannotModifyRegistry"
-msgstr "Cannot add the new locale to the locale registry file, typically \"registry/locales.xml\"."
-
 msgid "admin.languages.cantDisable"
 msgstr "This locale is the primary language of the site. You can't disable it until you choose another primary locale."
 
@@ -176,6 +164,9 @@ msgstr "Settings"
 msgid "admin.settings.about"
 msgstr "About the Site"
 
+msgid "admin.settings.enableBulkEmails.label"
+msgstr "Bulk Emails"
+
 msgid "admin.settings.contactEmail"
 msgstr "Email of principal contact"
 
@@ -195,6 +186,15 @@ msgstr "Introduction"
 
 msgid "admin.settings.minPasswordLength"
 msgstr "Minimum password length (characters)"
+
+msgid "admin.settings.restrictBulkEmails"
+msgstr "Restrict Bulk Emails"
+
+msgid "admin.settings.disableBulkEmailRoles.label"
+msgstr "Disable Roles"
+
+msgid "admin.settings.disableBulkEmailRoles.adminOnly"
+msgstr "Only an administrator is allowed to modify this setting."
 
 msgid "admin.settings.siteLanguage"
 msgstr "Site language"

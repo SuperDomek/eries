@@ -1,8 +1,8 @@
 {**
  * templates/editor/issues/articleGalleyForm.tpl
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Form to add/edit an issue galley.
@@ -42,8 +42,8 @@
 		{/fbvFormSection}
 	{/fbvFormArea}
 
-	{if $articleGalleyFile && $articleGalleyFile->supportsDependentFiles()}
-		{capture assign=dependentFilesGridUrl}{url router=$smarty.const.ROUTE_COMPONENT component="grid.files.dependent.DependentFilesGridHandler" op="fetchGrid" submissionId=$submissionId fileId=$articleGalleyFile->getFileId() stageId=$smarty.const.WORKFLOW_STAGE_ID_PRODUCTION escape=false}{/capture}
+	{if $supportsDependentFiles}
+		{capture assign=dependentFilesGridUrl}{url router=$smarty.const.ROUTE_COMPONENT component="grid.files.dependent.DependentFilesGridHandler" op="fetchGrid" submissionId=$submissionId submissionFileId=$articleGalleyFile->getId() stageId=$smarty.const.WORKFLOW_STAGE_ID_PRODUCTION escape=false}{/capture}
 		{load_url_in_div id="dependentFilesGridDiv" url=$dependentFilesGridUrl}
 	{/if}
 

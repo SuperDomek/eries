@@ -48,6 +48,9 @@ class OrcidProfilePlugin extends GenericPlugin {
 		if ($success && $this->getEnabled($mainContextId)) {
 			$contextId = ($mainContextId === null) ? $this->getCurrentContextId() : $mainContextId;
 
+			HookRegistry::register('ArticleHandler::view', array(&$this, 'submissionView'));
+			HookRegistry::register('PreprintHandler::view', array(&$this, 'submissionView'));
+
 			// Insert the OrcidHandler to handle ORCID redirects
 			HookRegistry::register('LoadHandler', array($this, 'setupCallbackHandler'));
 
@@ -255,23 +258,6 @@ class OrcidProfilePlugin extends GenericPlugin {
 		switch ($template) {
 			case 'frontend/pages/userRegister.tpl':
 				$templateMgr->registerFilter("output", array($this, 'registrationFilter'));
-				break;
-			case 'frontend/pages/article.tpl':
-			case 'frontend/pages/preprint.tpl':
-				$script = 'var orcidIconSvg = ' . json_encode($this->getIcon()) . ';';
-
-				$publication = $templateMgr->getTemplateVars('publication');
-
-				$authors = $publication->getData('authors');
-				/** @var $authors Author[] */
-				foreach ($authors as $author) {
-					if (!empty($author->getOrcid()) && !empty($author->getData('orcidAccessToken'))) {
-						$script .= '$("a[href=\"' . $author->getOrcid() . '\"]").prepend(orcidIconSvg);';
-					}
-				}
-
-				$templateMgr->addJavaScript('orcidIconDisplay', $script, ['inline' => true]);
-
 				break;
 		}
 		return false;
@@ -561,6 +547,12 @@ class OrcidProfilePlugin extends GenericPlugin {
 		return $smarty->smartyUrl($params, $smarty);
 	}
 
+	function submissionView($hookName, $args) {
+		$request = $args[0];
+		$templateMgr = TemplateManager::getManager($request);
+		$templateMgr->assign(array("orcidIcon" => $this->getIcon()));
+	}
+
 	/**
 	 * @see Plugin::getActions()
 	 */
@@ -676,46 +668,47 @@ class OrcidProfilePlugin extends GenericPlugin {
 		$context = $request->getContext();
 
 		// This should only ever happen within a context, never site-wide.
-		assert($context != null);
+		if ($context != null) {
 
-		$contextId = $context->getId();
+			$contextId = $context->getId();
 
-		if ($this->isMemberApiEnabled($contextId)) {
-			$mailTemplate = 'ORCID_REQUEST_AUTHOR_AUTHORIZATION';
-		} else {
-			$mailTemplate = 'ORCID_COLLECT_AUTHOR_ID';
-		}
+			if ($this->isMemberApiEnabled($contextId)) {
+				$mailTemplate = 'ORCID_REQUEST_AUTHOR_AUTHORIZATION';
+			} else {
+				$mailTemplate = 'ORCID_COLLECT_AUTHOR_ID';
+			}
 
-		$mail = $this->getMailTemplate($mailTemplate, $context);
-		$emailToken = md5(microtime() . $author->getEmail());
+			$mail = $this->getMailTemplate($mailTemplate, $context);
+			$emailToken = md5(microtime() . $author->getEmail());
 
-		$author->setData('orcidEmailToken', $emailToken);
+			$author->setData('orcidEmailToken', $emailToken);
 
-		$publicationDao = DAORegistry::getDAO('PublicationDAO');
-		/** @var PublicationDAO $publicationDao */
-		$publication = $publicationDao->getById($author->getData('publicationId'));
+			$publicationDao = DAORegistry::getDAO('PublicationDAO');
+			/** @var PublicationDAO $publicationDao */
+			$publication = $publicationDao->getById($author->getData('publicationId'));
 
-		$oauthUrl = $this->buildOAuthUrl('orcidVerify', array('token' => $emailToken, 'publicationId' => $publication->getId()));
-		$aboutUrl = $request->getDispatcher()->url($request, ROUTE_PAGE, null, 'orcidapi', 'about', null);
+			$oauthUrl = $this->buildOAuthUrl('orcidVerify', array('token' => $emailToken, 'publicationId' => $publication->getId()));
+			$aboutUrl = $request->getDispatcher()->url($request, ROUTE_PAGE, null, 'orcidapi', 'about', null);
 
-		// Set From to primary journal contact
-		$mail->setFrom($context->getData('contactEmail'), $context->getData('contactName'));
+			// Set From to primary journal contact
+			$mail->setFrom($context->getData('contactEmail'), $context->getData('contactName'));
 
-		// Send to author
-		$mail->setRecipients(array(array('name' => $author->getFullName(), 'email' => $author->getEmail())));
+			// Send to author
+			$mail->setRecipients(array(array('name' => $author->getFullName(), 'email' => $author->getEmail())));
 
-		// Send the mail with parameters
-		$mail->sendWithParams(array(
-			'orcidAboutUrl' => $aboutUrl,
-			'authorOrcidUrl' => $oauthUrl,
-			'authorName' => $author->getFullName(),
-			'articleTitle' => $publication->getLocalizedTitle(), // Backwards compatibility only
-			'submissionTitle' => $publication->getLocalizedTitle(),
-		));
+			// Send the mail with parameters
+			$mail->sendWithParams(array(
+				'orcidAboutUrl' => $aboutUrl,
+				'authorOrcidUrl' => $oauthUrl,
+				'authorName' => $author->getFullName(),
+				'articleTitle' => $publication->getLocalizedTitle(), // Backwards compatibility only
+				'submissionTitle' => $publication->getLocalizedTitle(),
+			));
 
-		if ($updateAuthor) {
-			$authorDao = DAORegistry::getDAO('AuthorDAO');
-			$authorDao->updateObject($author);
+			if ($updateAuthor) {
+				$authorDao = DAORegistry::getDAO('AuthorDAO');
+				$authorDao->updateObject($author);
+			}
 		}
 	}
 
@@ -741,6 +734,8 @@ class OrcidProfilePlugin extends GenericPlugin {
 
 		switch ($newPublication->getData('status')) {
 			case STATUS_PUBLISHED:
+				$this->sendSubmissionToOrcid($newPublication, $request);
+				break;
 			case STATUS_SCHEDULED:
 				$this->sendSubmissionToOrcid($newPublication, $request);
 				break;
@@ -838,12 +833,12 @@ class OrcidProfilePlugin extends GenericPlugin {
 
 		$requestsSuccess = [];
 		foreach ($authorsWithOrcid as $orcid => $author) {
-			$url = $this->getSetting($contextId, 'orcidProfileAPIPath') . ORCID_API_VERSION_URL . $orcid . '/' . ORCID_WORK_URL;
+			$uri = $this->getSetting($contextId, 'orcidProfileAPIPath') . ORCID_API_VERSION_URL . $orcid . '/' . ORCID_WORK_URL;
 			$method = "POST";
 
 			if ($putCode = $author->getData('orcidWorkPutCode')) {
 				// Submission has already been sent to ORCID. Use PUT to update meta data
-				$url .= '/' . $putCode;
+				$uri .= '/' . $putCode;
 				$method = "PUT";
 				$orcidWork['put-code'] = $putCode;
 			} else {
@@ -853,69 +848,33 @@ class OrcidProfilePlugin extends GenericPlugin {
 
 			$orcidWorkJson = json_encode($orcidWork);
 
-			$header = [
-				'Content-Type: application/vnd.orcid+json',
-				'Content-Length: ' . strlen($orcidWorkJson),
-				'Accept: application/json',
-				'Authorization: Bearer ' . $author->getData('orcidAccessToken')
+			$headers = [
+				'Content-type: application/vnd.orcid+json',
+				'Accept' => 'application/json',
+				'Authorization' => 'Bearer ' . $author->getData('orcidAccessToken')
 			];
 
-			$this->logInfo("$method $url");
-			$this->logInfo("Header: " . var_export($header, true));
+			$this->logInfo("$method $uri");
+			$this->logInfo("Header: " . var_export($headers, true));
 
-			$ch = curl_init($url);
-			curl_setopt_array($ch, [
-				CURLOPT_CUSTOMREQUEST => $method,
-				CURLOPT_POSTFIELDS => $orcidWorkJson,
-				CURLOPT_RETURNTRANSFER => true,
-				CURLOPT_HTTPHEADER => $header
-			]);
-			// Use proxy if configured
-			if ($httpProxyHost = Config::getVar('proxy', 'http_host')) {
-				curl_setopt($ch, CURLOPT_PROXY, $httpProxyHost);
-				curl_setopt($ch, CURLOPT_PROXYPORT, Config::getVar('proxy', 'http_port', '80'));
-				if ($username = Config::getVar('proxy', 'username')) {
-					curl_setopt($ch, CURLOPT_PROXYUSERPWD, $username . ':' . Config::getVar('proxy', 'password'));
-				}
+			$httpClient = Application::get()->getHttpClient();
+			try {
+				$response = $httpClient->request(
+					$method,
+					$uri,
+					[
+						'headers' => $headers,
+						'json' => $orcidWork,
+					]
+				);
+			} catch (\GuzzleHttp\Exception\ClientException $exception) {
+				$reason = $exception->getResponse()->getBody(false);
+				$this->logInfo("Publication fail: $reason");
+				return new JSONMessage(false);
 			}
-
-			$responseHeaders = [];
-			// Needed to correctly process response headers.
-			// This function is called by curl for each received line of the header.
-			// Code from StackOverflow answer here: https://stackoverflow.com/a/41135574/8938233
-			// Thanks to StackOverflow user Geoffrey.
-			curl_setopt($ch, CURLOPT_HEADERFUNCTION,
-				function ($curl, $header) use (&$responseHeaders) {
-					$len = strlen($header);
-					$header = explode(':', $header, 2);
-					if (count($header) < 2) {
-						// ignore invalid headers
-						return $len;
-					}
-
-					$name = strtolower(trim($header[0]));
-					if (!array_key_exists($name, $responseHeaders)) {
-						$responseHeaders[$name] = [trim($header[1])];
-					} else {
-						$responseHeaders[$name][] = trim($header[1]);
-					}
-
-					return $len;
-				}
-			);
-
-			$result = curl_exec($ch);
-
-			if (curl_error($ch)) {
-				$this->logError('Unable to post to ORCID API, curl error: ' . curl_error($ch));
-				curl_close($ch);
-				return false;
-			}
-
-			$httpstatus = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-			curl_close($ch);
-
+			$httpstatus = $response->getStatusCode();
 			$this->logInfo("Response status: $httpstatus");
+			$responseHeaders = $response->getHeaders();
 
 			switch ($httpstatus) {
 				case 200:
@@ -934,11 +893,15 @@ class OrcidProfilePlugin extends GenericPlugin {
 					break;
 				case 401:
 					// invalid access token, token was revoked
-					$error = json_decode($result);
-					if ($error->error === 'invalid_token') {
-						$this->logError("$error->error_description, deleting orcidAccessToken from author");
+					$error = json_decode($response->getBody(),true);
+					if ($error['error'] === 'invalid_token') {
+						$this->logError($error['error_description'] . ', deleting orcidAccessToken from author');
 						$this->removeOrcidAccessToken($author);
 					}
+					$requestsSuccess[$orcid] = false;
+					break;
+				case 403:
+					$this->logError('Work update forbidden: ' . $response->getBody());
 					$requestsSuccess[$orcid] = false;
 					break;
 				case 404:
@@ -949,16 +912,16 @@ class OrcidProfilePlugin extends GenericPlugin {
 						$authorDao->updateObject($author);
 						$requestsSuccess[$orcid] = false;
 					} else {
-						$this->logError("Unexpected status $httpstatus response, body: $result");
+						$this->logError("Unexpected status $httpstatus response, body: " . $response->getBody());
 						$requestsSuccess[$orcid] = false;
 					}
 					break;
 				case 409:
-					$this->logError('Work already added to profile, response body: ' . $result);
+					$this->logError('Work already added to profile, response body: ' . $response->getBody());
 					$requestsSuccess[$orcid] = false;
 					break;
 				default:
-					$this->logError("Unexpected status $httpstatus response, body: $result");
+					$this->logError("Unexpected status $httpstatus response, body: " . $response->getBody());
 					$requestsSuccess[$orcid] = false;
 			}
 		}
@@ -985,10 +948,8 @@ class OrcidProfilePlugin extends GenericPlugin {
 	public function buildOrcidWork($publication, $context, $authors, $request, $issue = null) {
 		$submission = Services::get('submission')->get($publication->getData('submissionId'));
 
-		PluginRegistry::loadCategory('generic');
-		$citationPlugin = PluginRegistry::getPlugin('generic', 'citationstylelanguageplugin');
-		/** @var CitationStyleLanguagePlugin $citationPlugin */
-		$bibtexCitation = trim(strip_tags($citationPlugin->getCitation($request, $submission, 'bibtex', $issue, $publication)));
+		$applicationName = Application::get()->getName();
+		$bibtexCitation= '';
 
 		$publicationLocale = ($publication->getData('locale')) ? $publication->getData('locale') : 'en_US';
 		$supportedSubmissionLocales = $context->getSupportedSubmissionLocales();
@@ -1014,15 +975,25 @@ class OrcidProfilePlugin extends GenericPlugin {
 			],
 			'publication-date' => $this->buildOrcidPublicationDate($publication, $issue),
 			'url' => $publicationUrl,
-			'citation' => [
-				'citation-type' => 'BIBTEX',
-				'citation-value' => $bibtexCitation
-			],
 			'language-code' => substr($publicationLocale, 0, 2),
 			'contributors' => [
 				'contributor' => $this->buildOrcidContributors($authors, $context, $publication)
 			]
 		];
+
+		if ($applicationName == 'ojs2') {
+			PluginRegistry::loadCategory('generic');
+			$citationPlugin = PluginRegistry::getPlugin('generic', 'citationstylelanguageplugin');
+			/** @var CitationStyleLanguagePlugin $citationPlugin */
+			$bibtexCitation = trim(strip_tags($citationPlugin->getCitation($request, $submission, 'bibtex', $issue, $publication)));
+			$orcidWork['citation'] = [
+				'citation-type' => 'BIBTEX',
+				'citation-value' => $bibtexCitation
+			];
+
+		}
+
+
 		$translatedTitleAvailable = false;
 		foreach ($supportedSubmissionLocales as $defaultLanguage) {
 			if ($defaultLanguage !== $publicationLocale) {

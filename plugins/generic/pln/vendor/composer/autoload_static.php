@@ -4,16 +4,9 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit8cd493c5bc88e101bd70677e7c5087ca
+class ComposerStaticInit5eaa024b0ae40120786e5a9f99647e50
 {
     public static $prefixesPsr0 = array (
-        'P' => 
-        array (
-            'PEAR' => 
-            array (
-                0 => __DIR__ . '/..' . '/pear/pear_exception',
-            ),
-        ),
         'C' => 
         array (
             'Console' => 
@@ -34,11 +27,16 @@ class ComposerStaticInit8cd493c5bc88e101bd70677e7c5087ca
         0 => __DIR__ . '/..' . '/pear/pear-core-minimal/src',
     );
 
+    public static $classMap = array (
+        'PEAR_Exception' => __DIR__ . '/..' . '/pear/pear_exception/PEAR/Exception.php',
+    );
+
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixesPsr0 = ComposerStaticInit8cd493c5bc88e101bd70677e7c5087ca::$prefixesPsr0;
-            $loader->fallbackDirsPsr0 = ComposerStaticInit8cd493c5bc88e101bd70677e7c5087ca::$fallbackDirsPsr0;
+            $loader->prefixesPsr0 = ComposerStaticInit5eaa024b0ae40120786e5a9f99647e50::$prefixesPsr0;
+            $loader->fallbackDirsPsr0 = ComposerStaticInit5eaa024b0ae40120786e5a9f99647e50::$fallbackDirsPsr0;
+            $loader->classMap = ComposerStaticInit5eaa024b0ae40120786e5a9f99647e50::$classMap;
 
         }, null, ClassLoader::class);
     }

@@ -3,8 +3,8 @@
 /**
  * @file plugins/importexport/doaj/DOAJExportPlugin.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class DOAJExportPlugin
@@ -19,8 +19,8 @@ define('DOAJ_XSD_URL', 'https://www.doaj.org/schemas/doajArticles.xsd');
 
 define('DOAJ_API_DEPOSIT_OK', 201);
 
-define('DOAJ_API_URL', 'https://doaj.org/api/v1/');
-define('DOAJ_API_URL_DEV', 'https://testdoaj.cottagelabs.com/api/v1/');
+define('DOAJ_API_URL', 'https://doaj.org/api/v2/');
+define('DOAJ_API_URL_DEV', 'https://testdoaj.cottagelabs.com/api/v2/');
 define('DOAJ_API_OPERATION', 'articles');
 
 class DOAJExportPlugin extends PubObjectsExportPlugin {
@@ -103,45 +103,30 @@ class DOAJExportPlugin extends PubObjectsExportPlugin {
 	 * @param $objects Submission
 	 * @param $context Context
 	 * @param $jsonString string Export JSON string
-	 * @return boolean Whether the JSON string has been registered
+	 * @return boolean|array Whether the JSON string has been registered
 	 */
 	function depositXML($objects, $context, $jsonString) {
-
-		import('lib.pkp.classes.helpers.PKPCurlHelper');
-		$curlCh = PKPCurlHelper::getCurlObject();
-
-		curl_setopt($curlCh, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($curlCh, CURLOPT_POST, true);
-		curl_setopt($curlCh, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-
-		curl_setopt($curlCh, CURLOPT_POSTFIELDS, $jsonString);
-
-		$endpoint = ($this->isTestMode($context) ? DOAJ_API_URL_DEV : DOAJ_API_URL);
 		$apiKey = $this->getSetting($context->getId(), 'apiKey');
-		$params = 'api_key=' . $apiKey;
-
-		curl_setopt(
-			$curlCh,
-			CURLOPT_URL,
-			$endpoint . DOAJ_API_OPERATION . (strpos($endpoint,'?')===false?'?':'&') . $params
-		);
-
-		$response = curl_exec($curlCh);
-
-		if ($response === false) {
-			$result = array(array('plugins.importexport.doaj.register.error.mdsError', 'No response from server.'));
-		} elseif ( $status = curl_getinfo($curlCh, CURLINFO_HTTP_CODE) != DOAJ_API_DEPOSIT_OK ) {
-			$result = array(array('plugins.importexport.doaj.register.error.mdsError', "$status - $response"));
-		} else {
-			// Deposit was received
-			$result = true;
-			// set the status
-			$objects->setData($this->getDepositStatusSettingName(), EXPORT_STATUS_REGISTERED);
-			// Update the object
-			$this->updateObject($objects);
+		$httpClient = Application::get()->getHttpClient();
+		try {
+			$response = $httpClient->request(
+				'POST',
+				($this->isTestMode($context) ? DOAJ_API_URL_DEV : DOAJ_API_URL) . DOAJ_API_OPERATION,
+				[
+					'query' => ['api_key' => $apiKey],
+					'json' => json_decode($jsonString)
+				]
+			);
+		} catch (Exception $e) {
+			return [['plugins.importexport.doaj.register.error.mdsError', $e->getMessage()]];
 		}
-		curl_close($curlCh);
-		return $result;
+		if (($status = $response->getStatusCode()) != DOAJ_API_DEPOSIT_OK) {
+			return [['plugins.importexport.doaj.register.error.mdsError', $status . ' - ' . $response->getBody()]];
+		}
+		// Deposit was received; set the status
+		$objects->setData($this->getDepositStatusSettingName(), EXPORT_STATUS_REGISTERED);
+		$this->updateObject($objects);
+		return true;
 	}
 
 	/**

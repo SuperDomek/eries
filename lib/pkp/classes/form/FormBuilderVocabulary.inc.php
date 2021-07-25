@@ -8,8 +8,8 @@
 /**
  * @file classes/form/FormBuilderVocabulary.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class Fbv
@@ -162,7 +162,7 @@ class FormBuilderVocabulary {
 				'FBV_translate' => isset($params['translate']) ? $params['translate'] : true,
 			));
 
-			$class = $params['class'];
+			$class = $params['class'] ?? null;
 
 			// Check if we are using the Form class and if there are any errors
 			if (isset($form) && !empty($form->formSectionErrors)) {
@@ -214,7 +214,6 @@ class FormBuilderVocabulary {
 			'FBV_cancelUrlTarget' => isset($params['cancelUrlTarget']) ? $params['cancelUrlTarget'] : '',
 			'FBV_translate' => isset($params['translate']) ? $params['translate'] : true,
 			'FBV_saveText' => isset($params['saveText']) ? $params['saveText'] : null,
-			'FBV_saveValue' => isset($params['saveValue']) ? (boolean)$params['saveValue'] : null,
 		));
 		return $smarty->fetch('form/formButtons.tpl');
 	}
@@ -265,9 +264,6 @@ class FormBuilderVocabulary {
 				$content = $this->_smartyFBVCheckboxGroup($params, $smarty);
 				unset($params['label']);
 				break;
-			case 'email':
-				$content = $this->_smartyFBVTextInput($params, $smarty);
-				break;
 			case 'file':
 				$content = $this->_smartyFBVFileInput($params, $smarty);
 				break;
@@ -284,18 +280,15 @@ class FormBuilderVocabulary {
 				$content = $this->_smartyFBVRadioButton($params, $smarty);
 				unset($params['label']);
 				break;
+			case 'email':
 			case 'search':
+			case 'tel':
 			case 'text':
+			case 'url':
 				$content = $this->_smartyFBVTextInput($params, $smarty);
 				break;
 			case 'select':
 				$content = $this->_smartyFBVSelect($params, $smarty);
-				break;
-			case 'text':
-				$content = $this->_smartyFBVTextInput($params, $smarty);
-				break;
-			case 'url':
-				$content = $this->_smartyFBVTextInput($params, $smarty);
 				break;
 			case 'textarea':
 				$content = $this->_smartyFBVTextArea($params, $smarty);
@@ -391,6 +384,8 @@ class FormBuilderVocabulary {
 			'FBV_isPassword' => isset($params['password']) ? true : false,
 			'FBV_isTypeURL' => $params['type'] === 'url' ? true : false,
 			'FBV_isTypeSearch' => $params['type'] === 'search' ? true : false,
+			'FBV_isTypeEmail' => $params['type'] === 'email' ? true : false,
+			'FBV_isTypeTel' => $params['type'] === 'tel' ? true : false,
 			'FBV_disabled' => false,
 			'FBV_readonly' => false,
 			'FBV_multilingual' => false,
@@ -402,17 +397,22 @@ class FormBuilderVocabulary {
 		));
 		foreach ($params as $key => $value) {
 			switch ($key) {
-				case 'label': $smarty->assign('FBV_label_content', $this->_smartyFBVSubLabel($params, $smarty)); break;
-				case 'type': break;
-				case 'size': break;
-				case 'inline': break;
-				case 'subLabelTranslate': break;
+				case 'label': 
+					$smarty->assign('FBV_label_content', $this->_smartyFBVSubLabel($params, $smarty)); 
+				break;
+				case 'type':
+				case 'size':
+				case 'inline': 
+				case 'subLabelTranslate':
+					break;
 				case 'urlValidationErrorMsg':
 					if ($params['type'] === 'url') {
 						$smarty->assign('FBV_urlValidationErrorMessage', __($value));
 					}
 					break;
-				case 'placeholder': $textInputParams .= 'placeholder="' . htmlspecialchars(__($value), ENT_QUOTES, LOCALE_ENCODING) . '" '; break;
+				case 'placeholder': 
+					$textInputParams .= 'placeholder="' . htmlspecialchars(__($value), ENT_QUOTES, LOCALE_ENCODING) . '" '; 
+				break;
 				case 'disabled':
 				case 'readonly':
 				case 'multilingual':
@@ -421,8 +421,11 @@ class FormBuilderVocabulary {
 				case 'value':
 				case 'uniqId':
 					$smarty->assign('FBV_' . $key, $value); break;
-				case 'required': if ($value) $textInputParams .= 'required="' . htmlspecialchars($value, ENT_QUOTES, LOCALE_ENCODING) . '"'; break;
-				default: $textInputParams .= htmlspecialchars($key, ENT_QUOTES, LOCALE_ENCODING) . '="' . htmlspecialchars($value, ENT_QUOTES, LOCALE_ENCODING). '" ';
+				case 'required': 
+					if ($value) $textInputParams .= 'required="' . htmlspecialchars($value, ENT_QUOTES, LOCALE_ENCODING) . '"'; 
+				break;
+				default: 
+					$textInputParams .= htmlspecialchars($key, ENT_QUOTES, LOCALE_ENCODING) . '="' . htmlspecialchars($value, ENT_QUOTES, LOCALE_ENCODING). '" ';
 			}
 		}
 

@@ -3,8 +3,8 @@
 /**
  * @file classes/handler/PKPHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @package core
@@ -48,6 +48,9 @@ class PKPHandler {
 
 	/** @var boolean Whether role assignments have been checked. */
 	var $_roleAssignmentsChecked = false;
+
+	/** @var boolean Whether this is a handler for a page in the backend editorial UI */
+	var $_isBackendPage = false;
 
 	/**
 	 * Constructor
@@ -136,8 +139,13 @@ class PKPHandler {
 	}
 
 	/**
-	 * Retrieve authorized context objects from the
-	 * decision manager.
+	 * Retrieve authorized context objects from the decision manager.
+	 * 
+	 * Gets an object that was previously stored using the same assoc type.
+	 * The authorization policies populate these -- when an object is fetched
+	 * and checked for permission in the policy class, it's then chucked into
+	 * the authorized context for later retrieval by code that needs it.
+	 * 
 	 * @param $assocType integer any of the ASSOC_TYPE_* constants
 	 * @return mixed
 	 */
@@ -167,7 +175,9 @@ class PKPHandler {
 	 * @return string
 	 */
 	function getLastAuthorizationMessage() {
-		assert(is_a($this->_authorizationDecisionManager, 'AuthorizationDecisionManager'));
+		if (!is_a($this->_authorizationDecisionManager, 'AuthorizationDecisionManager')) {
+			return '';
+		}
 		$authorizationMessages = $this->_authorizationDecisionManager->getAuthorizationMessages();
 		return end($authorizationMessages);
 	}
@@ -457,6 +467,11 @@ class PKPHandler {
 
 		$accessibleWorkflowStages = $this->getAuthorizedContextObject(ASSOC_TYPE_ACCESSIBLE_WORKFLOW_STAGES);
 		if ($accessibleWorkflowStages) $templateMgr->assign('accessibleWorkflowStages', $accessibleWorkflowStages);
+
+		// Set up template requirements for the backend editorial UI
+		if ($this->_isBackendPage) {
+			$templateMgr->setupBackendPage();
+		}
 	}
 
 	/**
@@ -474,20 +489,6 @@ class PKPHandler {
 			$request->getRequestedOp() . ',' .
 			serialize($contextData)
 		);
-	}
-
-	/**
-	 * Get the iterator of working contexts.
-	 * @param $request PKPRequest
-	 * @return ItemIterator
-	 */
-	function getWorkingContexts($request) {
-		// For installation process
-		if (defined('SESSION_DISABLE_INIT')) return null;
-
-		$user = $request->getUser();
-		$contextDao = Application::getContextDAO();
-		return $contextDao->getAvailable($user?$user->getId():null);
 	}
 
 	/**
@@ -553,10 +554,10 @@ class PKPHandler {
 	 * a request needs to have one in its context but may be in a site-level
 	 * context as specified in the URL.
 	 * @param $request Request
-	 * @param $contextsCount int Optional reference to receive context count
+	 * @param $hasNoContexts boolean Optional reference to receive true iff no contexts were found.
 	 * @return mixed Either a Context or null if none could be determined.
 	 */
-	function getTargetContext($request, &$contextsCount = null) {
+	function getTargetContext($request, &$hasNoContexts = null) {
 		// Get the requested path.
 		$router = $request->getRouter();
 		$requestedPath = $router->getRequestedContextPath($request);
@@ -565,15 +566,18 @@ class PKPHandler {
 			// No context requested. Check how many contexts the site has.
 			$contextDao = Application::getContextDAO(); /* @var $contextDao ContextDAO */
 			$contexts = $contextDao->getAll(true);
-			$contextsCount = $contexts->getCount();
-			$context = null;
-			if ($contextsCount === 1) {
+			list($firstContext, $secondContext) = [$contexts->next(), $contexts->next()];
+			if ($firstContext && !$secondContext) {
 				// Return the unique context.
-				$context = $contexts->next();
-			}
-			if (!$context && $contextsCount > 1) {
+				$context = $firstContext;
+				$hasNoContexts = false;
+			} elseif ($firstContext && $secondContext) {
 				// Get the site redirect.
 				$context = $this->getSiteRedirectContext($request);
+				$hasNoContexts = false;
+			} else {
+				$context = null;
+				$hasNoContexts = true;
 			}
 		} else {
 			// Return the requested context.

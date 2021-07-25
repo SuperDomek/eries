@@ -3,8 +3,10 @@
 	"description": "A journal or press.",
 	"type": "object",
 	"required": [
-		"urlPath",
-		"name"
+		"name",
+		"primaryLocale",
+		"supportedLocales",
+		"urlPath"
 	],
 	"properties": {
 		"_href": {
@@ -149,6 +151,34 @@
 				"nullable"
 			]
 		},
+		"dateFormatLong": {
+			"type": "string",
+			"multilingual": true,
+			"validation": [
+				"nullable"
+			]
+		},
+		"dateFormatShort": {
+			"type": "string",
+			"multilingual": true,
+			"validation": [
+				"nullable"
+			]
+		},
+		"datetimeFormatLong": {
+			"type": "string",
+			"multilingual": true,
+			"validation": [
+				"nullable"
+			]
+		},
+		"datetimeFormatShort": {
+			"type": "string",
+			"multilingual": true,
+			"validation": [
+				"nullable"
+			]
+		},
 		"defaultReviewMode": {
 			"type": "integer",
 			"default": 2,
@@ -170,6 +200,13 @@
 			"validation": [
 				"nullable"
 			]
+		},
+		"disableBulkEmailUserGroups": {
+			"type": "array",
+			"description": "User groups that a manager will be prevented from sending bulk email to using the notify feature. Only the admin may edit this property.",
+			"items": {
+				"type": "integer"
+			}
 		},
 		"disableUserReg": {
 			"type": "boolean",
@@ -201,6 +238,13 @@
 		},
 		"enableAnnouncements": {
 			"type": "boolean",
+			"validation": [
+				"nullable"
+			]
+		},
+		"disableSubmissions": {
+			"type": "boolean",
+			"default": false,
 			"validation": [
 				"nullable"
 			]
@@ -535,7 +579,7 @@
 			"items": {
 				"type": "string",
 				"validation": [
-					"alpha_num"
+					"alpha_dash"
 				]
 			}
 		},
@@ -680,6 +724,13 @@
 			"type": "string",
 			"default": "default"
 		},
+		"timeFormat": {
+			"type": "string",
+			"multilingual": true,
+			"validation": [
+				"nullable"
+			]
+		},
 		"type": {
 			"type": "string",
 			"description": "Enable types metadata. `0` is disabled. `enable` will make it available in the workflow. `request` will allow an author to enter a value during submission. `require` will require that the author enter a value during submission.",
@@ -696,7 +747,7 @@
 		"urlPath": {
 			"type": "string",
 			"validation": [
-				"regex:/^[a-z0-9]+([\\-_][a-z0-9]+)*$/"
+				"regex:/^[a-zA-Z0-9]+([\\-_][a-zA-Z0-9]+)*$/"
 			],
 			"apiSummary": true
 		}

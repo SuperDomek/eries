@@ -3,10 +3,10 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-19T10:49:23+00:00\n"
-"PO-Revision-Date: 2020-03-18 07:36+0000\n"
+"PO-Revision-Date: 2020-12-12 08:52+0000\n"
 "Last-Translator: Antti-Jussi Nygård <ajnyga@gmail.com>\n"
-"Language-Team: Finnish <http://translate.pkp.sfu.ca/projects/ojs/manager/fi/>"
-"\n"
+"Language-Team: Finnish <http://translate.pkp.sfu.ca/projects/ojs/manager/"
+"fi_FI/>\n"
 "Language: fi_FI\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -90,7 +90,10 @@ msgid "manager.payment.generalFees"
 msgstr "Yleiset maksut"
 
 msgid "manager.payment.generalFeesDescription"
-msgstr "Yhdistyksen jäsenyys näkyy Tietoa julkaisusta -sivulla Toimintaperiaatteet-kohdassa ja lahjoituslinkki näkyy hakutoiminnon yläpuolella, oikeanpuoleisessa kehyksessä."
+msgstr ""
+"Yhdistyksen jäsenyys näkyy Tietoa julkaisusta -sivulla Toimintaperiaatteet-"
+"kohdassa ja lahjoituslinkki näkyy hakutoiminnon yläpuolella, "
+"oikeanpuoleisessa kehyksessä."
 
 msgid "manager.payment.generalOptions"
 msgstr "Yleiset valinnat"
@@ -218,6 +221,7 @@ msgstr "Tämän osaston toimittajat"
 msgid "manager.sections.confirmDelete"
 msgstr "Haluatko varmasti poistaa tämän osaston pysyvästi?"
 
+#, fuzzy
 msgid "manager.sections.alertDelete"
 msgstr "Ennen kuin tämä osasto voidaan poistaa, sinun on siirrettävä kyseisessä osastossa julkaistut artikkelit muihin osastoihin."
 
@@ -751,9 +755,6 @@ msgstr "Automaattiset sähköpostimuistutukset"
 msgid "manager.setup.reviewOptions.automatedRemindersDisabled"
 msgstr "Aktivoidakseen nämä valinnat sivuston ylläpitäjän täytyy ottaa käyttöön <tt>scheduled_tasks</tt> -valinta OJS:n määritystiedostossa. Palvelimen lisämäärityksiä saatetaan edellyttää tämän toiminnon tukemiseksi (joka ei välttämättä ole mahdollista kaikilla palvelimilla), kuten OJS:n käyttöohjeissa mainitaan."
 
-msgid "manager.setup.reviewOptions.blindReview"
-msgstr "Sokkoarviointi"
-
 msgid "manager.setup.reviewOptions.numWeeksPerReview"
 msgstr "Arvioinnin suorittamiseen annettava aika (viikkoa)"
 
@@ -779,9 +780,6 @@ msgstr "Arvioijien arvostelu"
 
 msgid "manager.setup.reviewOptions.reviewerReminders"
 msgstr "Arvioijan muistutukset"
-
-msgid "manager.setup.reviewOptions.showEnsuringLink"
-msgstr "Anna linkki kohtaan <a href=\"javascript:openHelp('{$blindReviewHelpId}')\" class=\"action\">Sokkoarvioinnin varmistaminen</a> sellaisilla sivuilla, joissa kirjoittajat ja arvioijat lataavat tiedostoja."
 
 msgid "manager.setup.reviewPolicy"
 msgstr "Arviointiperiaatteet"
@@ -906,7 +904,7 @@ msgid "manager.statistics.statistics.daysPerReview"
 msgstr "Arviointiaika (pv)"
 
 msgid "manager.statistics.statistics.daysToPublication"
-msgstr "Julkaisemisaika (pv)"
+msgstr "Aikaa julkaisuun (pv)"
 
 msgid "manager.statistics.statistics.description"
 msgstr "OJS laskee seuraavat tilastot jokaiselle julkaisulle: \"Arviointiaika\" lasketaan käsikirjoituksen lähettämispäivästä (tai arviointiversion nimeämisestä) ensimmäiseen toimittajan päätökseen. \"Julkaisemisaika\" puolestaan lasketaan hyväksytyille käsikirjoituksille käsikirjoituksen alkuperäisestä järjestelmään lataamisesta sen julkaisemiseen."
@@ -1679,9 +1677,6 @@ msgid "manager.subscriptions.form.dateStartEmpty"
 msgstr ""
 "Tämä on pysyvästi voimassa oleva tilaustyyppi. Älä anna aloitusajankohtaa."
 
-msgid "manager.setup.userAccess.success"
-msgstr "Käyttäjien pääsyä koskevat asetukset on päivitetty."
-
 msgid "manager.setup.enableOai.description"
 msgstr ""
 "Tarjoa julkaisun kuvailutietoja kolmansille osapuolille <a href=\""
@@ -1702,9 +1697,6 @@ msgstr ""
 "Anna lyhyt (50-300 merkkiä) kuvaus, jonka hakukoneet voivat näyttää "
 "hakutuloksissaan."
 
-msgid "manager.setup.searchEngineIndexing.success"
-msgstr "Hakukoneindeksointia koskevat asetukset on päivitetty."
-
 msgid "manager.setup.reviewOptions.reviewerAccessKeysEnabled.label"
 msgstr "Lisää turvallinen linkki arvioijille lähtevään kutsuun."
 
@@ -1714,17 +1706,8 @@ msgstr "Rajoita pääsyä tiedostoihin"
 msgid "manager.setup.publishing"
 msgstr "Julkaisua koskevat tiedot"
 
-msgid "manager.setup.privacyStatement.success"
-msgstr "Tietosuojaselostetta koskevat asetukset on päivitetty."
-
 msgid "manager.setup.numPageLinks.description"
 msgstr "Rajoita listauksessa näkyvien sivulinkkien määrää."
-
-msgid "manager.setup.masthead.success"
-msgstr "Tunnuslaatikkoa koskevat asetukset on päivitetty."
-
-msgid "manager.setup.lists.success"
-msgstr "Listauksia koskevat asetukset on päivitetty."
 
 msgid "manager.setup.keyInfo.description"
 msgstr "Anna julkaisun lyhyt kuvaus ja esittele toimituskunnan jäsenet."
@@ -1737,9 +1720,6 @@ msgstr ""
 "Rajoita niiden kohteiden (käsikirjoitus, käyttäjä jne.) lukumäärä, jotka "
 "näytetään yhdellä sivulla."
 
-msgid "manager.setup.information.success"
-msgstr "Julkaisun tietoja koskevat asetukset on päivitetty."
-
 msgid "manager.setup.identity"
 msgstr "Julkaisun tiedot"
 
@@ -1751,29 +1731,14 @@ msgstr ""
 msgid "manager.setup.numAnnouncementsHomepage"
 msgstr "Näytä kotisivulla"
 
-msgid "manager.setup.contact.success"
-msgstr "Yhteystietoja koskevat asetukset on päivitetty."
-
-msgid "manager.setup.archiving.success"
-msgstr "Arkistointia koskevat asetukset on päivitetty."
-
 msgid "manager.setup.announcementsIntroduction"
 msgstr "Esittely"
-
-msgid "manager.setup.announcements.success"
-msgstr "Ilmoituksia koskevat asetukset on päivitetty."
-
-msgid "manager.payment.success"
-msgstr "Maksuja koskevat asetukset on päivitetty."
-
-msgid "manager.distribution.publishingMode.success"
-msgstr "Julkaisemista koskevat tiedot on tallennettu."
 
 msgid "manager.distribution.publishingMode"
 msgstr "Julkaisun sisällön saatavuus"
 
 msgid "manager.distribution.publication"
-msgstr "Käsikirjoitusversio"
+msgstr "Julkaistu versio"
 
 msgid "manager.distribution.copyrightYearBasis.submission"
 msgstr "Käytä artikkelin julkaisuajankohtaa"
@@ -1786,3 +1751,25 @@ msgstr ""
 "Valitse miten tekijänoikeuden ajoitus tapahtuu oletuksena artikkeleissa. "
 "Tämä oletus voidaan ohittaa artikkelikohtaisesti. Mikäli et julkaise koko "
 "numeroa kerralla, älä valitse numeron julkaisuajankohtaa tähän asetukseen."
+
+msgid "plugins.importexport.common.validation.fail"
+msgstr "Vahvistaminen epäonnistui."
+
+msgid "plugins.importexport.common.validation.success"
+msgstr "Vahvistaminen onnistui!"
+
+msgid "manager.setup.disableSubmissions.notAccepting"
+msgstr ""
+"Julkaisu ei ota vastaan käsikirjoituksia tällä hetkellä. Käy työnkulun "
+"asetuksissa sallimassa käsikirjoitukset."
+
+msgid "manager.setup.disableSubmissions.description"
+msgstr ""
+"Estä käyttäjiä lähettämästä uusia artikkeleita julkaisuun. Käsikirjoitukset "
+"yksittäisiin julkaisun osastoihin voidaan estää <a href=\"{$url}\">julkaisun "
+"osastojen</a> asetussivulla."
+
+msgid "manager.sections.confirmDeactivateSection.error"
+msgstr ""
+"Vähintään yhden osaston tulee olla käytössä. Käy työnkulun asetuksissa "
+"estämässä käsikirjoitusten lähettäminen tähän julkaisuun."

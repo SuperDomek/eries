@@ -1,8 +1,8 @@
 {**
  * templates/submission/form/step1.tpl
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * Step 1 of author submission process.
@@ -35,13 +35,13 @@
 	{if $currentContext->getLocalizedData('submissionChecklist')}
 		{fbvFormSection list="true" label="submission.submit.submissionChecklist" description="submission.submit.submissionChecklistDescription" id="pkp_submissionChecklist"}
 			{foreach name=checklist from=$currentContext->getLocalizedData('submissionChecklist') key=checklistId item=checklistItem}
-				{fbvElement type="checkbox" id="checklist-$checklistId" required=true value=1 label=$checklistItem.content|strip_unsafe_html translate=false checked=false}
+				{fbvElement type="checkbox" id="checklist-$checklistId" required=true value=1 label=$checklistItem.content|nl2br translate=false checked=false}
 			{/foreach}
 		{/fbvFormSection}
 	{/if}
 
 	{* Cover Note To Editor*}
-	{fbvFormSection for="commentsToEditor" label="submission.submit.coverNote" description="submission.submit.coverNoteDescription"}
+	{fbvFormSection for="commentsToEditor" title="submission.submit.coverNote"}
 		{fbvElement type="textarea" name="commentsToEditor" id="commentsToEditor" value=$commentsToEditor rich=true}
 	{/fbvFormSection}
 

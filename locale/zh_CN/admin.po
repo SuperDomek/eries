@@ -3,10 +3,10 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-04T08:59:12-08:00\n"
-"PO-Revision-Date: 2020-06-15 16:01+0000\n"
+"PO-Revision-Date: 2020-12-29 11:53+0000\n"
 "Last-Translator: Yukari Chiba <Charles@nia.ac.cn>\n"
 "Language-Team: Chinese (Simplified) <http://translate.pkp.sfu.ca/projects/"
-"ojs/admin/zh_Hans/>\n"
+"ojs/admin/zh_CN/>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -37,21 +37,6 @@ msgstr "您确认卸载这个语言环境?这个将影响使用该语言环境�
 
 msgid "admin.languages.installNewLocalesInstructions"
 msgstr "安装额外的地区配置以在这个系统取得语言支持。地区配置必须先安装，系统上的期刊才能使用该地区语言。请参考OJS文件以取得关于增加语言支持的信息。"
-
-msgid "admin.languages.downloadFailed"
-msgstr "语言环境下载失败.错误提示信息描述如下."
-
-msgid "admin.languages.localeInstalled"
-msgstr "语言环境 \"{$locale}\" 已经被安装."
-
-msgid "admin.languages.download"
-msgstr "下载语言环境"
-
-msgid "admin.languages.download.cannotOpen"
-msgstr "无法从PKP网站打开语言描述."
-
-msgid "admin.languages.download.cannotModifyRegistry"
-msgstr "无法添加一个新的语言环境到注册文件\"registry/locales.xml\"."
 
 msgid "admin.auth.ojs"
 msgstr "OJS用户数据库"
@@ -157,38 +142,14 @@ msgstr ""
 msgid "admin.scheduledTask.subscriptionExpiryReminder"
 msgstr "订阅到期提醒"
 
-msgid "admin.contexts.form.edit.success"
-msgstr "{$name} 已成功编辑。"
-
-msgid "admin.contexts.form.create.success"
-msgstr "{$name} 已成功创建。"
-
 msgid "admin.contexts.form.titleRequired"
 msgstr "标题为必填项。"
-
-msgid "admin.languages.downloadUnavailable"
-msgstr ""
-"<p>当前无法从Public Knowledge Project Web服务器下载语言包，因为：</p>\n"
-"\t<ul>\n"
-"\t\t<li>您的服务器没有或不允许执行GNU \"tar\" 程序。</li>\n"
-"\t\t<li>OJS无法修改语言环境文件，它通常位于 \"registry/locales.xml\"。</li>\n"
-"\t</ul>\n"
-"<p>可以从<a href=\"http://pkp.sfu.ca\"> PKP网站</a>手动下载语言包。</p>"
 
 msgid "admin.languages.confirmDisable"
 msgstr "您确定要禁用此语言吗？ 任何使用该语言的托管期刊都会受到影响。"
 
-msgid "admin.settings.info.success"
-msgstr "站点信息已成功更新。"
-
-msgid "admin.settings.config.success"
-msgstr "站点配置设置已成功更新。"
-
-msgid "admin.settings.appearance.success"
-msgstr "站点外观设置已成功更新。"
+msgid "admin.scheduledTask.openAccessNotification"
+msgstr "开放获取提醒"
 
 msgid "admin.scheduledTask.reviewReminder"
 msgstr "评审提醒"
-
-msgid "admin.scheduledTask.openAccessNotification"
-msgstr "开放获取通知"

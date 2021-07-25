@@ -2,8 +2,8 @@
 /**
  * @file classes/components/form/context/PKPAppearanceSetupForm.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPAppearanceSetupForm
@@ -39,17 +39,35 @@ class PKPAppearanceSetupForm extends FormComponent {
 	 */
 	public function __construct($action, $locales, $context, $baseUrl, $temporaryFileApiUrl, $imageUploadUrl) {
 		$this->action = $action;
-		$this->successMessage = __('manager.setup.appearance.success');
 		$this->locales = $locales;
 
 		$sidebarOptions = [];
+		$enabledOptions = [];
+		$disabledOptions = [];
+
+		$currentBlocks = (array) $context->getData('sidebar');
+
 		$plugins = \PluginRegistry::loadCategory('blocks', true);
-		foreach ($plugins as $pluginName => $plugin) {
-			$sidebarOptions[] = [
-				'value' => $pluginName,
-				'label' => $plugin->getDisplayName(),
-			];
+
+		foreach ($currentBlocks as $plugin) {
+			if (isset($plugins[$plugin])) {
+				$enabledOptions[] = [
+					'value' => $plugin,
+					'label' => $plugins[$plugin]->getDisplayName(),
+				];
+			}
 		}
+
+		foreach ($plugins as $pluginName => $plugin) {
+			if (!in_array($pluginName, $currentBlocks)) {
+				$disabledOptions[] = [
+					'value' => $pluginName,
+					'label' => $plugin->getDisplayName(),
+				];
+			}
+		}
+
+		$sidebarOptions = array_merge($enabledOptions, $disabledOptions);
 
 		$this->addField(new FieldUploadImage('pageHeaderLogoImage', [
 				'label' => __('manager.setup.logo'),
@@ -82,7 +100,7 @@ class PKPAppearanceSetupForm extends FormComponent {
 			->addField(new FieldOptions('sidebar', [
 				'label' => __('manager.setup.layout.sidebar'),
 				'isOrderable' => true,
-				'value' => (array) $context->getData('sidebar'),
+				'value' => $currentBlocks,
 				'options' => $sidebarOptions,
 			]));
 

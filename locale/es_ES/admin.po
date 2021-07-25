@@ -43,21 +43,6 @@ msgstr "¿Está seguro/a de que desea desinstalar esta configuración regional? 
 msgid "admin.languages.installNewLocalesInstructions"
 msgstr "Seleccione cualquier configuración regional adicional para instalar su soporte en este sistema. Debe instalar las configuraciones regionales antes de que otras revistas alojadas puedan utilizarlas. Vea la documentación de OJS para obtener más información o para añadir soporte para nuevos idiomas."
 
-msgid "admin.languages.downloadFailed"
-msgstr "Fallo en la descarga de configuraciones regionales. El siguiente mensaje/s de error describe el fallo."
-
-msgid "admin.languages.localeInstalled"
-msgstr "La configuración regional \"{$locale}\" se instaló."
-
-msgid "admin.languages.download"
-msgstr "Descargar configuración regional"
-
-msgid "admin.languages.download.cannotOpen"
-msgstr "No se puede abrir el descriptor de idiomas del sitio web PKP."
-
-msgid "admin.languages.download.cannotModifyRegistry"
-msgstr "No se puede añadir la nueva configuración regional al archivo de registro de configuraciones locales, normalmente \"registry/locales.xml\"."
-
 msgid "admin.auth.ojs"
 msgstr "Base de datos de usuarios/as de OJS"
 
@@ -156,15 +141,6 @@ msgstr "Usuarios/as no registrados."
 msgid "admin.languages.confirmDisable"
 msgstr "¿Está seguro de que desea desactivar esta configuración regional? Esto puede afectar a las revistas alojadas que actualmente usan esta configuración regional."
 
-msgid "admin.languages.downloadUnavailable"
-msgstr ""
-"<p>La descarga de paquetes de lenguaje desde el servidor web de Public Knowledge Project no está disponible en este momento porque:</p>\n"
-"\t<ul>\n"
-"\t\t<li>Su servidor no dispone o no permite la ejecución de la utilidad GNU \"tar\".</li>\n"
-"\t\t<li>OJS no es capaz de modificar el archivo de registro de configuración regional, normalmente \"registry/locales.xml\".</li>\n"
-"\t</ul>\n"
-"<p>Los paquetes de lenguaje se pueden descargar manualmente desde la página web de PKP <a href=\"https://pkp.sfu.ca\"></a>.</p>"
-
 msgid "admin.contexts.form.titleRequired"
 msgstr "Se necesita un título."
 
@@ -176,19 +152,3 @@ msgstr "Notificación de acceso abierto"
 
 msgid "admin.scheduledTask.reviewReminder"
 msgstr "Recordatorio de revisión"
-
-msgid "admin.contexts.form.create.success"
-msgstr "{$name} se ha creado con éxito."
-
-msgid "admin.settings.info.success"
-msgstr "La información del sitio ha sido actualizada con éxito."
-
-msgid "admin.settings.config.success"
-msgstr ""
-"Los ajustes de configuración del sitio se han actualizado correctamente."
-
-msgid "admin.settings.appearance.success"
-msgstr "Los ajustes de apariencia del sitio se han actualizado correctamente."
-
-msgid "admin.contexts.form.edit.success"
-msgstr "{$name} se ha editado con éxito."

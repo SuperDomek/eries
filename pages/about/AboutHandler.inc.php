@@ -3,8 +3,8 @@
 /**
  * @file pages/about/AboutHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class AboutHandler
@@ -40,8 +40,8 @@ class AboutHandler extends AboutContextHandler {
 			'subscriptionName' => $journal->getData('subscriptionName'),
 			'subscriptionPhone' => $journal->getData('subscriptionPhone'),
 			'subscriptionEmail' => $journal->getData('subscriptionEmail'),
-			'individualSubscriptionTypes' => $subscriptionTypeDao->getByInstitutional($journal->getId(), false, false),
-			'institutionalSubscriptionTypes' => $subscriptionTypeDao->getByInstitutional($journal->getId(), true, false),
+			'individualSubscriptionTypes' => $subscriptionTypeDao->getByInstitutional($journal->getId(), false, false)->toArray(),
+			'institutionalSubscriptionTypes' => $subscriptionTypeDao->getByInstitutional($journal->getId(), true, false)->toArray(),
 		));
 		$templateMgr->display('frontend/pages/subscriptions.tpl');
 	}

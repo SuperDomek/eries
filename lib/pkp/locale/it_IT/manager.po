@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2019-11-19T10:49:53+00:00\n"
-"PO-Revision-Date: 2020-01-01 12:34+0000\n"
+"PO-Revision-Date: 2020-08-04 07:48+0000\n"
 "Last-Translator: Lucia Steele <lucia.steele@aboutscience.eu>\n"
 "Language-Team: Italian <http://translate.pkp.sfu.ca/projects/pkp-lib/manager/"
 "it/>\n"
@@ -817,6 +817,7 @@ msgstr "Città"
 msgid "manager.statistics.region"
 msgstr "Regione"
 
+#, fuzzy
 msgid "manager.statistics.reports"
 msgstr "Generatore report"
 
@@ -931,9 +932,6 @@ msgstr "Dichiarazione di copyright"
 
 msgid "manager.setup.authorCopyrightNoticeAgree"
 msgstr "Richiedi agli autori di condividere la dichiarazione di copyright come parte del processo di invio di una proposta."
-
-msgid "manager.setup.groupType"
-msgstr "Insieme di tipo file"
 
 msgid "manager.setup.homepageImage"
 msgstr "Immagine della homepage"
@@ -1250,12 +1248,6 @@ msgstr "Cancella questo componente"
 
 msgid "grid.action.restoreGenres"
 msgstr "Riporto il componente alle configurazioni di default"
-
-msgid "manager.setup.genres.dependent"
-msgstr "Segna i file di questo tipo come file dipendenti (ad esempio non verranno elencati nei contenuti pubblicati)"
-
-msgid "manager.setup.genres.supplementary"
-msgstr "Segna i file di questo tipo come file supplementati (ad esempio non sono il contenuto primario di una proposta)"
 
 msgid "manager.settings.wizard"
 msgstr "Configurazione guidata"
@@ -1969,9 +1961,6 @@ msgstr ""
 msgid "manager.setup.metadata.coverage"
 msgstr "Copertura"
 
-msgid "manager.setup.metadata.success"
-msgstr "I metadati della sottomissione sono stati aggiornati correttamente."
-
 msgid "settings.roles.permitMetadataEdit"
 msgstr "Consentire la modifica dei metadati della sottomissione."
 
@@ -1995,26 +1984,17 @@ msgstr "Condizioni di licenza"
 msgid "manager.distribution.license.other"
 msgstr "Altro URL per la licenza"
 
-msgid "manager.distribution.license.success"
-msgstr "I dettagli della licenza sono stati aggiornati. "
-
 msgid "manager.distribution.license"
 msgstr "Licenza"
 
 msgid "manager.statistics.statistics.registeredUsers"
 msgstr "Utenti registrati"
 
-msgid "manager.setup.userAccess.success"
-msgstr "I dettagli di accesso utente per questo testato sono stati aggiornati."
-
 msgid "manager.setup.theme.notFound"
 msgstr "Il tema selezionato non è installato o abilitato."
 
-msgid "manager.setup.theme.success"
-msgstr ""
-"Il tema è stato aggiornato.  1<a href=\"{$url}\" target=\"_blank\">View</a>"
-
-msgid "manager.setup.reviewOptions.showBlindReviewLink"
+#, fuzzy
+msgid "manager.setup.reviewOptions.showAnonymousReviewLink"
 msgstr ""
 "Visualizzare il link a <button type=\"button\">Come effettuare una revisione "
 "in cieco</button> in fase di importazione"
@@ -2048,9 +2028,6 @@ msgstr "Importare un'immagine da visualizzare nella homepage."
 msgid "manager.setup.checklist"
 msgstr "Checklist"
 
-msgid "manager.setup.authorGuidelines.success"
-msgstr "Le linee guida per gli autori sono state aggiornate."
-
 msgid "manager.setup.copyrightNotice.description"
 msgstr ""
 "Chiedere agli autori di accettare le norme di copyright durante il processo "
@@ -2058,12 +2035,6 @@ msgstr ""
 
 msgid "manager.setup.copyrightNotice"
 msgstr "Norme di copyright"
-
-msgid "manager.setup.contact.success"
-msgstr "I contatti di questa testata sono stati aggiornati."
-
-msgid "manager.setup.appearance.success"
-msgstr "Le impostazioni grafiche sono state aggiornate."
 
 msgid "manager.setup.advanced"
 msgstr "Avanzate"
@@ -2101,14 +2072,8 @@ msgid "manager.emails.emailKey.description"
 msgstr ""
 "Il codice della mail puo' contenere solo lettera, numeri e sottolineature."
 
-msgid "manager.emails.editEmail.success"
-msgstr "Il template della mail è stato modificato."
-
 msgid "manager.emails.customTemplate"
 msgstr "Template personalizzato"
-
-msgid "manager.emails.addEmail.success"
-msgstr "Il template della mail è stato aggiunto."
 
 msgid "manager.emails.addEmail"
 msgstr "Aggiungere un template"
@@ -2116,14 +2081,11 @@ msgstr "Aggiungere un template"
 msgid "manager.publication.reviewReminders.success"
 msgstr "I dettagli relativi ai solleciti dei revisori sono stati aggiornati."
 
-msgid "manager.publication.reviewSetup.success"
-msgstr "Le con.figurazioni di revisione sono state aggiornate."
-
-msgid "manager.publication.reviewerGuidance.success"
-msgstr "Le indicazioni per i revisori sono state aggiornate."
-
 msgid "manager.publication.reviewerGuidance"
 msgstr "Indicazioni per i revisori"
 
 msgid "manager.publication.emailSetup.success"
 msgstr "Le configurazione della mail sono state aggiornate."
+
+msgid "stats.countWithYearlyAverage"
+msgstr "{$count} ({$average}/anno)"

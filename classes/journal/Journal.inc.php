@@ -9,8 +9,8 @@
 /**
  * @file classes/journal/Journal.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class Journal
@@ -31,7 +31,8 @@ class Journal extends Context {
 
 	/**
 	 * Get "localized" journal page title (if applicable).
-	 * @return string
+	 * @return string|null
+	 * @deprecated 3.3.0, use getLocalizedData() instead
 	 */
 	function getLocalizedPageHeaderTitle() {
 		$titleArray = $this->getData('name');
@@ -45,7 +46,8 @@ class Journal extends Context {
 
 	/**
 	 * Get "localized" journal page logo (if applicable).
-	 * @return string
+	 * @return array|null
+	 * @deprecated 3.3.0, use getLocalizedData() instead
 	 */
 	function getLocalizedPageHeaderLogo() {
 		$logoArray = $this->getData('pageHeaderLogoImage');

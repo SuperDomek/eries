@@ -2,14 +2,20 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"Last-Translator: \n"
-"Language-Team: \n"
+"POT-Creation-Date: 2019-11-19T10:49:43+00:00\n"
+"PO-Revision-Date: 2020-07-30 09:35+0000\n"
+"Last-Translator: Manolis Saldaris <omanos@gmail.com>\n"
+"Language-Team: Greek <http://translate.pkp.sfu.ca/projects/pkp-lib/editor/"
+"el_GR/>\n"
+"Language: el_GR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2019-11-19T10:49:43+00:00\n"
-"PO-Revision-Date: 2019-11-19T10:49:43+00:00\n"
-"Language: \n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 3.9.1\n"
+
+msgid "editor.submissionArchive.confirmDelete"
+msgstr "Επιβεβαιώνετε την οριστική διαγραφή της συγκεκριμένης υποβολής;"
 
 msgid "editor.submissionLibrary"
 msgstr "Αρχείο υποβολής"
@@ -89,10 +95,12 @@ msgstr "Να μην αποσταλεί ειδοποίηση."
 msgid "editor.submissionReview.open"
 msgstr "Ανοικτή"
 
-msgid "editor.submissionReview.blind"
+#, fuzzy
+msgid "editor.submissionReview.anonymous"
 msgstr "\"Τυφλή\""
 
-msgid "editor.submissionReview.doubleBlind"
+#, fuzzy
+msgid "editor.submissionReview.doubleAnonymous"
 msgstr "Διπλή \"Τυφλή\""
 
 msgid "editor.submissionReview.restrictFiles"
@@ -359,12 +367,6 @@ msgstr "Το δημόσιο αναγνωριστικό '{$publicIdentifier}' δ�
 msgid "editor.publicIdentificationPatternNotAllowed"
 msgstr "Το πρότυπο {$pattern} δεν επιτρέπεται για το δημόσιο αναγνωριστικό."
 
-msgid "reviewer.list.count"
-msgstr "{$count} Αξιολογητές"
-
-msgid "reviewer.list.itemsOfTotal"
-msgstr "{$count} από {$total} Αξιολογητές"
-
 msgid "reviewer.list.filterRating"
 msgstr "Έχει βαθμολογηθεί τουλάχιστον"
 
@@ -401,6 +403,7 @@ msgstr "Χωρίς καμία ανάθεση"
 msgid "reviewer.list.currentlyAssigned"
 msgstr "Η αξιολόγηση έχει ήδη ανατεθεί σε αυτόν τον Αξιολογητή."
 
+#, fuzzy
 msgid "reviewer.list.warnOnAssign"
 msgstr "Αυτός ο Αξιολογητής έχει εξαιρεθεί, γιατί κατέχει έναν ρόλο που του επιτρέπει την πρόσβαση στην ταυτότητα του Συγγραφέα και δεν διασφαλίζεται η \"τυφλή\" Αξιολόγηση. Θέλετε να συμπεριληφθεί στους Αξιολογητές;"
 
@@ -412,3 +415,49 @@ msgstr "Ενδιαφέροντα αξιολόγησης"
 
 msgid "reviewer.list.biography"
 msgstr "Βιογραφικό"
+
+msgid "reviewer.list.empty"
+msgstr "Δεν βρέθηκαν Αξιολογητές"
+
+msgid "reviewer.list.cancelledReviews"
+msgstr "Ακύρωση αιτημάτων αξιολόγησης"
+
+msgid "editor.review.errorReinstatingReviewer"
+msgstr ""
+"Παρουσιάστηκε σφάλμα κατά την επαναφορά του Αξιολογητή. Προσπαθήστε ξανά."
+
+msgid "editor.review.requestCancelled"
+msgstr "Το αίτημα ακυρώθηκε"
+
+msgid "editor.review.reinstateReviewer"
+msgstr "Επαναφορά Αξιολογητή"
+
+msgid "editor.review.cancelReviewer"
+msgstr "Ακύρωση Αξιολογητή"
+
+msgid "editor.submission.workflowDecision.changeDecision"
+msgstr "Αλλαγή απόφασης"
+
+msgid "editor.submission.workflowDecision.submission.underReview"
+msgstr "Η υποβολή έγινε αποδεκτή για αξιολόγηση."
+
+msgid "editor.submission.workflowDecision.submission.production"
+msgstr "Στάλθηκε στην παραγωγή."
+
+msgid "editor.submission.workflowDecision.submission.reviewRound"
+msgstr "Στάλθηκε για έναν νέο γύρο αξιολογήσεων."
+
+msgid "editor.submission.workflowDecision.submission.published"
+msgstr "Η υποβολή δημοσιεύτηκε."
+
+msgid "editor.submission.workflowDecision.submission.accepted"
+msgstr "Η υποβολή έγινε αποδεκτή."
+
+msgid "editor.submission.workflowDecision.submission.declined"
+msgstr "Η υποβολή απορρίφθηκε."
+
+msgid "editor.submission.workflowDecision.submission"
+msgstr "Η απόφαση καταγράφηκε"
+
+msgid "editor.activityLog"
+msgstr "Αρχείο Καταγραφής Δραστηριότητας"

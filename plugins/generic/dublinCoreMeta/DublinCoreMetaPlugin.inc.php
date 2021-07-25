@@ -3,8 +3,8 @@
 /**
  * @file plugins/generic/dublinCoreMeta/DublinCoreMetaPlugin.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class DublinCoreMetaPlugin
@@ -94,7 +94,6 @@ class DublinCoreMetaPlugin extends GenericPlugin {
 
 		$i=0;
 		if (is_a($article, 'Submission')) foreach($article->getGalleys() as $galley) {
-			if (is_a($galley, 'SupplementaryFile')) continue;
 			$templateMgr->addHeader('dublinCoreFormat' . $i++, '<meta name="DC.Format" scheme="IMT" content="' . htmlspecialchars($galley->getFileType()) . '"/>');
 		}
 

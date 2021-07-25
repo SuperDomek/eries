@@ -2,8 +2,8 @@
 /**
  * @file classes/components/form/context/PKPReviewGuidanceForm.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2000-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2000-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class PKPReviewGuidanceForm
@@ -34,7 +34,6 @@ class PKPReviewGuidanceForm extends FormComponent {
 	 */
 	public function __construct($action, $locales, $context) {
 		$this->action = $action;
-		$this->successMessage = __('manager.publication.reviewerGuidance.success');
 		$this->locales = $locales;
 
 		$this->addField(new FieldRichTextarea('reviewGuidelines', [
@@ -53,7 +52,7 @@ class PKPReviewGuidanceForm extends FormComponent {
 			]))
 			->addField(new FieldShowEnsuringLink('showEnsuringLink', [
 				'options' => [
-					['value' => true, 'label' => __('manager.setup.reviewOptions.showBlindReviewLink')],
+					['value' => true, 'label' => __('manager.setup.reviewOptions.showAnonymousReviewLink')],
 				],
 				'value' => $context->getData('showEnsuringLink'),
 			]));

@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/users/reviewer/form/ReviewReminderForm.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class ReviewReminderForm
@@ -71,7 +71,7 @@ class ReviewReminderForm extends Form {
 
 		// Format the review due date
 		$reviewDueDate = strtotime($reviewAssignment->getDateDue());
-		$dateFormatShort = Config::getVar('general', 'date_format_short');
+		$dateFormatShort = $context->getLocalizedDateFormatShort();
 		if ($reviewDueDate == -1) $reviewDueDate = $dateFormatShort; // Default to something human-readable if no date specified
 		else $reviewDueDate = strftime($dateFormatShort, $reviewDueDate);
 

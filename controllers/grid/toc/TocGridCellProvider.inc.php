@@ -3,8 +3,8 @@
 /**
  * @file controllers/grid/toc/TocGridCellProvider.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class TocGridCellProvider
@@ -47,6 +47,7 @@ class TocGridCellProvider extends GridCellProvider {
 	 * @copydoc GridCellProvider::getCellActions()
 	 */
 	function getCellActions($request, $row, $column, $position = GRID_ACTION_POSITION_DEFAULT) {
+		import('lib.pkp.classes.linkAction.request.AjaxAction');
 		switch ($column->getId()) {
 			case 'access':
 				$article = $row->getData(); /* @var $article Submission */

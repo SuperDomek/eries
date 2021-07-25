@@ -3,8 +3,8 @@
 /**
  * @file api/v1/submissions/PKPSubmissionHandler.inc.php
  *
- * Copyright (c) 2014-2020 Simon Fraser University
- * Copyright (c) 2003-2020 John Willinsky
+ * Copyright (c) 2014-2021 Simon Fraser University
+ * Copyright (c) 2003-2021 John Willinsky
  * Distributed under the GNU GPL v3. For full terms see the file docs/COPYING.
  *
  * @class SubmissionHandler
@@ -18,6 +18,45 @@ import('lib.pkp.classes.handler.APIHandler');
 import('classes.core.Services');
 
 class PKPSubmissionHandler extends APIHandler {
+
+	/** @var array Handlers that must be authorized to access a submission */
+	public $requiresSubmissionAccess = [
+		'get',
+		'edit',
+		'delete',
+		'getGalleys',
+		'getParticipants',
+		'getPublications',
+		'getPublication',
+		'addPublication',
+		'versionPublication',
+		'editPublication',
+		'publishPublication',
+		'unpublishPublication',
+		'deletePublication',
+	];
+
+	/** @var array Handlers that must be authorized to write to a publication */
+	public $requiresPublicationWriteAccess = [
+		'addPublication',
+		'editPublication',
+	];
+
+	/** @var array Handlers that must be authorized to access a submission's production stage */
+	public $requiresProductionStageAccess = [
+		'addPublication',
+		'versionPublication',
+		'publishPublication',
+		'unpublishPublication',
+		'deletePublication',
+	];
+
+	/** @var array Roles that can access a submission's production stage */
+	public $productionStageAccessRoles = [
+		ROLE_ID_MANAGER,
+		ROLE_ID_SUB_EDITOR,
+		ROLE_ID_ASSISTANT
+	];
 
 	/**
 	 * Constructor
@@ -121,43 +160,19 @@ class PKPSubmissionHandler extends APIHandler {
 		import('lib.pkp.classes.security.authorization.ContextAccessPolicy');
 		$this->addPolicy(new ContextAccessPolicy($request, $roleAssignments));
 
-		$requiresSubmissionAccess = [
-			'get',
-			'edit',
-			'delete',
-			'getParticipants',
-			'getPublications',
-			'getPublication',
-			'addPublication',
-			'versionPublication',
-			'editPublication',
-			'publishPublication',
-			'unpublishPublication',
-			'deletePublication',
-		];
-		if (in_array($routeName, $requiresSubmissionAccess)) {
+		if (in_array($routeName, $this->requiresSubmissionAccess)) {
 			import('lib.pkp.classes.security.authorization.SubmissionAccessPolicy');
 			$this->addPolicy(new SubmissionAccessPolicy($request, $args, $roleAssignments));
 		}
 
-		$requiresPublicationWriteAccess = [
-			'editPublication',
-		];
-		if (in_array($routeName, $requiresPublicationWriteAccess)) {
+		if (in_array($routeName, $this->requiresPublicationWriteAccess)) {
 			import('lib.pkp.classes.security.authorization.PublicationWritePolicy');
 			$this->addPolicy(new PublicationWritePolicy($request, $args, $roleAssignments));
 		}
 
-		$requiresProductionStageAccess = [
-			'addPublication',
-			'versionPublication',
-			'publishPublication',
-			'unpublishPublication',
-			'deletePublication',
-		];
-		if (in_array($routeName, $requiresProductionStageAccess)) {
+		if (in_array($routeName, $this->requiresProductionStageAccess)) {
 			import('lib.pkp.classes.security.authorization.StageRolePolicy');
-			$this->addPolicy(new StageRolePolicy([ROLE_ID_MANAGER, ROLE_ID_SUB_EDITOR, ROLE_ID_ASSISTANT], WORKFLOW_STAGE_ID_PRODUCTION, false));
+			$this->addPolicy(new StageRolePolicy($this->productionStageAccessRoles, WORKFLOW_STAGE_ID_PRODUCTION, false));
 		}
 
 		return parent::authorize($request, $args, $roleAssignments);
@@ -188,7 +203,7 @@ class PKPSubmissionHandler extends APIHandler {
 		$userRoles = $this->getAuthorizedContextObject(ASSOC_TYPE_USER_ROLES);
 		$canAccessUnassignedSubmission = !empty(array_intersect(array(ROLE_ID_SITE_ADMIN, ROLE_ID_MANAGER), $userRoles));
 		if (!$canAccessUnassignedSubmission) {
-			$defaultParams['assignedTo'] = $currentUser->getId();
+			$defaultParams['assignedTo'] = [$currentUser->getId()];
 		}
 
 		$params = array_merge($defaultParams, $slimRequest->getQueryParams());
@@ -208,15 +223,17 @@ class PKPSubmissionHandler extends APIHandler {
 				// Always convert status and stageIds to array
 				case 'status':
 				case 'stageIds':
-					if (is_string($val) && strpos($val, ',') > -1) {
+				case 'assignedTo':
+					if (is_string($val)) {
 						$val = explode(',', $val);
 					} elseif (!is_array($val)) {
 						$val = array($val);
 					}
 					$params[$param] = array_map('intval', $val);
+					// Special case: assignedTo can be -1 for unassigned
+					if ($param == 'assignedTo' && $val == [-1]) $params[$param] = -1;
 					break;
 
-				case 'assignedTo':
 				case 'daysInactive':
 				case 'offset':
 					$params[$param] = (int) $val;
@@ -247,7 +264,7 @@ class PKPSubmissionHandler extends APIHandler {
 		// except for journal managers and admins.
 		$userRoles = $this->getAuthorizedContextObject(ASSOC_TYPE_USER_ROLES);
 		$canAccessUnassignedSubmission = !empty(array_intersect(array(ROLE_ID_SITE_ADMIN, ROLE_ID_MANAGER), $userRoles));
-		if (!$canAccessUnassignedSubmission && $params['assignedTo'] != $currentUser->getId()) {
+		if (!$canAccessUnassignedSubmission && !in_array($currentUser->getId(), $params['assignedTo'])) {
 			return $response->withStatus(403)->withJsonError('api.submissions.403.requestedOthersUnpublishedSubmissions');
 		}
 
@@ -305,11 +322,17 @@ class PKPSubmissionHandler extends APIHandler {
 	 * @return Response
 	 */
 	public function add($slimRequest, $response, $args) {
+		AppLocale::requireComponents(LOCALE_COMPONENT_APP_AUTHOR);
+
 		$request = $this->getRequest();
 
 		// Don't allow submissions to be added via the site-wide API
 		if (!$request->getContext()) {
 			return $response->withStatus(400)->withJsonError('api.submissions.403.contextRequired');
+		}
+
+		if ($request->getContext()->getData('disableSubmissions')) {
+			return $response->withStatus(403)->withJsonError('author.submit.notAccepting');
 		}
 
 		$params = $this->convertStringsToSchema(SCHEMA_SUBMISSION, $slimRequest->getParsedBody());
@@ -326,7 +349,7 @@ class PKPSubmissionHandler extends APIHandler {
 
 		$submissionDao = DAORegistry::getDAO('SubmissionDAO'); /* @var $submissionDao SubmissionDAO */
 		$submission = $submissionDao->newDataObject();
-		$submission->_data = $params;
+		$submission->setAllData($params);
 		$submission = Services::get('submission')->add($submission, $request);
 		$userGroupDao = DAORegistry::getDAO('UserGroupDAO'); /* @var $userGroupDao UserGroupDAO */
 
@@ -579,7 +602,7 @@ class PKPSubmissionHandler extends APIHandler {
 		$publicationDao = DAORegistry::getDAO('PublicationDAO'); /* @var $publicationDao PublicationDAO */
 		$userGroupDao = DAORegistry::getDAO('UserGroupDAO'); /* @var $userGroupDao UserGroupDAO */
 		$publication = $publicationDao->newDataObject();
-		$publication->_data = $params;
+		$publication->setAllData($params);
 		$publication = Services::get('publication')->add($publication, $request);
 		$publicationProps = Services::get('publication')->getFullProperties(
 			$publication,
@@ -602,6 +625,7 @@ class PKPSubmissionHandler extends APIHandler {
 	 */
 	public function versionPublication($slimRequest, $response, $args) {
 		$request = $this->getRequest();
+		AppLocale::requireComponents(LOCALE_COMPONENT_PKP_SUBMISSION, LOCALE_COMPONENT_APP_SUBMISSION); // notification.type.submissionNewVersion
 		$submission = $this->getAuthorizedContextObject(ASSOC_TYPE_SUBMISSION);
 		$publication = Services::get('publication')->get((int) $args['publicationId']);
 
@@ -623,6 +647,25 @@ class PKPSubmissionHandler extends APIHandler {
 				'userGroups' => $userGroupDao->getByContextId($submission->getData('contextId'))->toArray(),
 			]
 		);
+
+		$notificationManager = new NotificationManager();
+		$userService = Services::get('user');
+		$usersIterator = $userService->getMany(array(
+			'contextId' => $submission->getContextId(),
+			'assignedToSubmission' => $submission->getId(),
+		));
+
+		foreach ($usersIterator as $user) {
+			$notificationManager->createNotification(
+				$request,
+				$user->getId(),
+				NOTIFICATION_TYPE_SUBMISSION_NEW_VERSION,
+				$submission->getContextId(),
+				ASSOC_TYPE_SUBMISSION,
+				$submission->getId(),
+				NOTIFICATION_LEVEL_TASK
+			);
+		}
 
 		return $response->withJson($publicationProps, 200);
 	}
