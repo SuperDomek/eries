@@ -159,6 +159,7 @@ class PKPv3_3_0UpgradeMigration extends Migration {
 
 		// pkp/pkp-lib#4017 and pkp/pkp-lib#4622
 		Capsule::schema()->create('jobs', function (Blueprint $table) {
+			$table->engine = 'InnoDB';
 			$table->bigIncrements('id');
 			$table->string('queue');
 			$table->longText('payload');
@@ -307,6 +308,7 @@ class PKPv3_3_0UpgradeMigration extends Migration {
 
 		// Create a new table to track files in file storage
 		Capsule::schema()->create('files', function (Blueprint $table) {
+			$table->engine = 'InnoDB';
 			$table->bigIncrements('file_id');
 			$table->string('path', 255);
 			$table->string('mimetype', 255);
@@ -314,6 +316,7 @@ class PKPv3_3_0UpgradeMigration extends Migration {
 
 		// Create a new table to track submission file revisions
 		Capsule::schema()->create('submission_file_revisions', function (Blueprint $table) {
+			$table->engine = 'InnoDB';
 			$table->bigIncrements('revision_id');
 			$table->unsignedBigInteger('submission_file_id');
 			$table->unsignedBigInteger('file_id');
