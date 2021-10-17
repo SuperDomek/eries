@@ -651,6 +651,9 @@ msgstr "Re:"
 msgid "common.readMore"
 msgstr "Read More"
 
+msgid "common.readLess"
+msgstr "Read less"
+
 msgid "common.readMoreWithTitle"
 msgstr "Read more about {$title}"
 

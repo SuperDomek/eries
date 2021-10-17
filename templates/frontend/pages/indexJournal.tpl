@@ -16,6 +16,7 @@
  *       homepage
  * @uses $issue Issue Current issue
  *}
+
 {include file="frontend/components/header.tpl" pageTitleTranslated=$currentJournal->getLocalizedName()}
 
 <div class="page_index_journal">
@@ -27,6 +28,39 @@
 			<img src="{$publicFilesDir}/{$homepageImage.uploadName|escape:"url"}"{if $homepageImage.altText} alt="{$homepageImage.altText|escape}"{/if}>
 		</div>
 	{/if} *}
+
+	{* Additional Homepage Content *}
+	{if $additionalHomeContent}
+		<div class="additional_content">
+			{$additionalHomeContent}
+			<a id="showMoreBtn" class="cmp_button_full" href="#">{translate key="common.readMore"}</a>
+		</div>
+		{* javascript function to show hide the extended text *}
+		<script language="JavaScript" type="text/javascript">
+		{literal}
+		function showMoreFcn() {
+			var lessText = document.getElementById("descriptionLess");
+			var moreText = document.getElementById("descriptionMore");
+			var btn = document.getElementById("showMoreBtn");
+			var btnTextMore = "{/literal}{translate key="common.readMore"}{literal}";
+			var btnTextLess = "{/literal}{translate key="common.readLess"}{literal}";
+			if (lessText.style.display === "none") { // show less
+			btn.innerHTML = btnTextMore;
+			moreText.style.display = "none";
+			lessText.style.display = "inline";
+			}
+			else { // show more
+			btn.innerHTML = btnTextLess;
+			moreText.style.display = "inline";
+			lessText.style.display = "none";
+			}
+			btn.blur();
+		}
+		document.getElementById('showMoreBtn').onclick = function() {showMoreFcn()};
+		{/literal}
+		</script>
+		
+	{/if}
 
 	{* Journal Description *}
 	{if $activeTheme->getOption('showDescriptionInJournalIndex')}
@@ -82,14 +116,8 @@
 		</section>
 	{/if}
 
-	{* Additional Homepage Content *}
-	{if $additionalHomeContent}
-		<hr />
-		<div class="additional_content">
-			{$additionalHomeContent}
-		</div>
-	{/if}
-
+	
+		
 	
 </div><!-- .page -->
 

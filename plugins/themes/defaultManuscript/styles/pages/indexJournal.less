@@ -10,6 +10,21 @@
  */
 .pkp_page_index {
 
+	.additional_content {
+		padding-top: @triple;
+		padding-bottom: @triple;
+
+		@media (min-width: @screen-phone) {
+			padding-top: @double;
+			padding-bottom: @double;
+		}
+
+		@media (min-width: @screen-desktop) {
+			padding-top: @triple;
+			padding-bottom: @triple;
+		}
+	}
+
 	.homepage_image {
 		position: relative;
 		margin-top: -1px; // covers up the border
@@ -151,4 +166,9 @@
 	.additional_content {
 		border-top: none;
 	}
+}
+
+// hide additional description on home page load
+#descriptionMore {
+	display: none;
 }

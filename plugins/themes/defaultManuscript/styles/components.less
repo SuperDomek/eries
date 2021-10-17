@@ -23,6 +23,21 @@
 	}
 }
 
+.cmp_button_full {
+	&:extend(.cmp_manuscript_button);
+	&:extend(.cmp_button);
+	margin-top: @base;
+	margin-bottom: @base;
+
+	&:hover,
+	&:focus,
+	&:active {
+		box-shadow: inset 0 -1em 1em rgba(0, 0, 0, 0.1);
+		background: @accent;
+		color: @text-bg-base;
+	}
+}
+
 // Breadcrumb navigation
 .cmp_breadcrumbs {
 	padding: @triple 0;
