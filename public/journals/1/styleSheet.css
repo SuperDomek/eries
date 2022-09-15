@@ -11,21 +11,21 @@
 .pkp_page_index .additional_content {
 	padding-top: 2.143rem;
 	padding-bottom: 2.143rem;
-	margin-left: -0.714rem;
-	margin-right: -0.714rem;
+	/* margin-left: -0.714rem;
+	margin-right: -0.714rem; */
 
 	@media (min-width: 480px) {
 		padding-top: 1.43rem;
 		padding-bottom: 1.43rem;
-		margin-left: -1.43rem;
-		margin-right: -1.43rem;
+		/* margin-left: -1.43rem;
+		margin-right: -1.43rem; */
 	}
 
 	@media (min-width: 992px) {
 		padding-top: 2.143rem;
 		padding-bottom: 2.143rem;
-		margin-left: -2.143rem;
-		margin-right: -2.143rem;
+		/* margin-left: -2.143rem;
+		margin-right: -2.143rem; */
 	}
 }
  
